@@ -23,14 +23,18 @@ __pycache__
 *.log
 *.pid
 *.restart
-*.db3
+
+## Keep the database -- elixx 04122020
+#*.db3
 
 # Installation-specific.
 # For group efforts, comment out some or all of these.
-server/conf/secret_settings.py
-server/logs/*.log.*
-web/static/*
-web/media/*
+
+## ... and keep all of this -- elixx 04122020
+#server/conf/secret_settings.py
+#server/logs/*.log.*
+#web/static/*
+#web/media/*
 
 # Installer logs
 pip-log.txt
