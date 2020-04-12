@@ -7,7 +7,7 @@ Commands describe the input the account can do to the game.
 
 from evennia import Command as BaseCommand
 
-# from evennia import default_cmds
+from evennia import default_cmds
 
 
 class Command(BaseCommand):
@@ -33,6 +33,13 @@ class Command(BaseCommand):
 
     pass
 
+class MuxCommand(default_cmds.MuxCommand):
+    def parse(self):
+        """Implement an additional parsing of 'to'"""
+        super().parse()
+        if " to " in self.args:
+            self.lhs, self.rhs = self.args.split(" to ", 1)
+
 
 # -------------------------------------------------------------
 #
@@ -51,7 +58,7 @@ class Command(BaseCommand):
 #
 # -------------------------------------------------------------
 
-# from evennia.utils import utils
+from evennia.utils import utils
 #
 #
 # class MuxCommand(Command):

@@ -93,6 +93,17 @@ class Account(DefaultAccount):
     """
 
     pass
+    
+    def at_post_login(self, session=None, **kwargs):
+        super().at_post_login(session=session, **kwargs)
+        do_not_exceed = 24  # Keep the last two dozen entries
+        session = self.sessions.all()[-1]  # Most recent session
+        if not self.db.lastsite:
+           self.db.lastsite = []
+        self.db.lastsite.insert(0, (session.address, int(time.time())))
+        if len(self.db.lastsite) > do_not_exceed:
+            self.db.lastsite.pop()
+    
 
 
 class Guest(DefaultGuest):

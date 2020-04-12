@@ -41,6 +41,7 @@ GRAPEVINE_ENABLED = True
 DEBUG = True
 ADMINS = ('elixx', 'elixx@drastical.net')
 
+#COMMAND_DEFAULT_CLASS = "commands.command.MuxCommand"
 ######################################################################
 # Settings given in secret_settings.py override those in this file.
 ######################################################################
