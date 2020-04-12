@@ -41,6 +41,7 @@ GRAPEVINE_ENABLED = True
 IRC_ENABLED = True
 DEBUG = True
 ADMINS = ('elixx', 'elixx@drastical.net')
+WEBSOCKET_CLIENT_URL = "wss://mud.drastical.net/ws"
 
 #COMMAND_DEFAULT_CLASS = "commands.command.MuxCommand"
 ######################################################################
