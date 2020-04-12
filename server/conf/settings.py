@@ -38,6 +38,7 @@ GAME_SLOGAN = "I don't know what's going on, here..."
 #CHANNEL_CONNECTINFO = {}
 RSS_ENABLED = True
 GRAPEVINE_ENABLED = True
+IRC_ENABLED = True
 DEBUG = True
 ADMINS = ('elixx', 'elixx@drastical.net')
 
