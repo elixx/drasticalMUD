@@ -39,6 +39,7 @@ GAME_SLOGAN = "I don't know what's going on, here..."
 RSS_ENABLED = True
 GRAPEVINE_ENABLED = True
 IRC_ENABLED = True
+IMC2_ENABLED = True
 DEBUG = True
 ADMINS = ('elixx', 'elixx@drastical.net')
 WEBSOCKET_CLIENT_URL = "wss://mud.drastical.tech/ws"
