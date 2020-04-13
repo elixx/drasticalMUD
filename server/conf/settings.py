@@ -36,10 +36,14 @@ SERVERNAME = "drastical"
 
 GAME_SLOGAN = "I don't know what's going on, here..."
 #CHANNEL_CONNECTINFO = {}
+
 RSS_ENABLED = True
 GRAPEVINE_ENABLED = True
 IRC_ENABLED = True
 IMC2_ENABLED = True
+
+MULTISESSION_MODE = 0
+
 DEBUG = True
 ADMINS = ('elixx', 'elixx@drastical.net')
 WEBSOCKET_CLIENT_URL = "wss://mud.drastical.tech/ws"
