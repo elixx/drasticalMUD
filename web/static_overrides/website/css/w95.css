@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'Windows 95';
-    src: url('w-95-sans-serif.woff2') format('woff2'),
-        url('w-95-sans-serif.woff') format('woff');
+    src: url('/static/website/css/w-95-sans-serif.woff2') format('woff2'),
+        url('/static/website/css/w-95-sans-serif.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
