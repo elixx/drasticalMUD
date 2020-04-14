@@ -16,7 +16,7 @@ class devRobot01(Character):
         # find out).
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
         # We don't want to add the command to the robot.. but users in the same room...
-        self.cmdset.add_default(DevRobotCmdSet, permanent=True)
+        self.cmdset.add(DevRobotCmdSet, permanent=True)
         
         self.db.max = 20
         if(self.db.quotes is None):
@@ -93,6 +93,3 @@ class DevRobotCmdSet(CmdSet):
 
     def at_cmdset_creation(self):
         self.add(CmdRobotPoke())
-
-
-
