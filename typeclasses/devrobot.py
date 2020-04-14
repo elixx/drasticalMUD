@@ -79,6 +79,8 @@ class devRobot01(Character):
 class CmdRobotPoke(Command):
     key = "poke robot"
     aliases = ["poke"]
+    locks = "cmd:all()"
+    
     def func(self):
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
