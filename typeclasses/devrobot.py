@@ -74,7 +74,7 @@ class devRobot01(Character):
     def doQuote(self):
         self.ndb.sleep = random.randint(60,280)
         quote = random.choice(self.db.quotes)
-        self.location.msg_content("%s says, '%s'." % (self.name, quote) )
+        self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
 #class CmdRobotPoke(default_cmds.MuxCommand):
