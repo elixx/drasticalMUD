@@ -48,6 +48,8 @@ DEBUG = True
 ADMINS = ('elixx', 'elixx@drastical.net')
 WEBSOCKET_CLIENT_URL = "wss://mud.drastical.tech/ws"
 
+UPSTREAM_IPS = ["10.10.0.191"]
+
 #COMMAND_DEFAULT_CLASS = "commands.command.MuxCommand"
 ######################################################################
 # Settings given in secret_settings.py override those in this file.
