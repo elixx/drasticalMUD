@@ -120,7 +120,7 @@ class ScriptPokeRobot(DefaultScript):
         self.obj is the red_button on which this script is defined.
         """
         #return not self.obj.db.lid_open
-        pass
+        return True
 
     def at_stop(self):
         """
