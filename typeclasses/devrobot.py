@@ -47,10 +47,10 @@ class devRobot01(Character):
                 response = self.at_heard_say(say_text, from_obj)
                 # If there is a response
                 if response != None:
-                    chances = [True,False]
+                    chances = [True,False,False] # 1/3 chance of listening
                     chosen = random.choice(chances)
                     if(chosen):
-                        self.ndb.quotes.append(response)
+                        self.ndb.quotes.insert(response)
                     # speak ourselves, using the return
                     #self.execute_cmd("say %s" % response)   
 
