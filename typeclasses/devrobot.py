@@ -18,7 +18,7 @@ class devRobot01(Character):
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
         # We don't want to add the command to the robot.. but users in the same room...
         self.cmdset.add("typeclasses.devrobot.DevRobotCmdSet", permanent=True)
-        self.scripts.add(typeclasses.devrobot.ScriptPokeRobot)
+        self.scripts.add("typeclasses.devrobot.ScriptPokeRobot")
         
         self.db.max = 20
         if(self.db.quotes is None):
