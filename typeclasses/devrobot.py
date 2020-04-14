@@ -15,7 +15,7 @@ class devRobot01(Character):
         self.db.get_err_msg = "This is too heavy to pick up."
         self.db.max = 20
         self.db.quotes = []
-        self.ndb.sleep = random.randint(1,5)
+        self.ndb.sleep = random.randint(5,10)
 
     def at_init(self):
         "Called when object is loaded into memory"
@@ -65,7 +65,7 @@ class devRobot01(Character):
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
     def doQuote(self):
-        self.db.sleep = random.randint(20,200)
+        self.ndb.sleep = random.randint(20,200)
         quote = random.choice(self.db.quotes)
         self.execute_cmd("say %s" % quote)
-        self.deferred = utils.delay(self.db.sleep, self.doQuote)
+        self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
