@@ -44,6 +44,8 @@ IMC2_ENABLED = True
 
 MULTISESSION_MODE = 0
 
+trust_x_forwarded_for = 2
+
 DEBUG = True
 ADMINS = ('elixx', 'elixx@drastical.net')
 WEBSOCKET_CLIENT_URL = "wss://mud.drastical.tech/ws"
