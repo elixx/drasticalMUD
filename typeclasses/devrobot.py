@@ -17,8 +17,8 @@ class devRobot01(Character):
         try:
             if(len(self.db.quotes) <=1):
                 self.db.quotes = ["I was a cockatoo, once..."]
-            except:
-                self.db.quotes = ["I was a cockatoo, once..."]
+        except:
+            self.db.quotes = ["I was a cockatoo, once..."]
         self.ndb.sleep = random.randint(1,3)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
