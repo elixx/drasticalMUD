@@ -11,17 +11,18 @@ class devRobot01(Character):
         # to return a customized error message (we just happen to know
         # this, you'd have to look at the code of the 'get' command to
         # find out).
-        self.db.get_err_msg = "This is too heavy to pick up."   
-
-    def at_init(self):
-        "Called when object is loaded into memory"
+        self.db.get_err_msg = "This is too heavy to pick up."
         self.ndb.max = 20
         self.ndb.quotes = []
+
+    #def at_init(self):
+    #    "Called when object is loaded into memory"
+    #    pass
 
     def at_heard_say(self, message, from_obj):
         """
         A simple listener and response. This makes it easy to change for
-        subclasses of NPCs reacting differently to says.       
+        subclasses of NPCs reacting differently to says.
 
         """ 
         # message will be on the form `<Person> says, "say_text"`
