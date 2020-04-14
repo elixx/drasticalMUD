@@ -1,7 +1,7 @@
 #from evennia import DefaultCharacter as Character
 from typeclasses.characters import Character
 import random
-from evennia import utils
+from evennia import utils, default_cmds
 from evennia import Command, CmdSet
 
 class devRobot01(Character):
@@ -74,7 +74,7 @@ class devRobot01(Character):
         self.execute_cmd("say %s" % quote)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
-class CmdRobotPoke(Command):
+class CmdRobotPoke(default_cmds.MuxCommand):
     key = "poke"
     aliases = ["poke robot"]
     locks = "cmd:all()"
