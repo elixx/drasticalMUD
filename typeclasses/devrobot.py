@@ -28,7 +28,8 @@ class devRobot01(Character):
         message = message.split('says, ')[1].strip(' "')
 
         # we'll make use of this in .msg() below
-        return "%s said: '%s'" % (from_obj, message)
+        #return "%s said: '%s'" % (from_obj, message)
+        return message
 
     def msg(self, text=None, from_obj=None, **kwargs):
         "Custom msg() method reacting to say."
@@ -45,12 +46,12 @@ class devRobot01(Character):
                 response = self.at_heard_say(say_text, from_obj)
                 # If there is a response
                 if response != None:
-                    chances = [True,False]
+                    chances = [True,False,False] # 1/3 chance of listening
                     chosen = random.choice(chances)
                     if(chosen):
                         self.ndb.quotes.append(response)
                     # speak ourselves, using the return
-                    self.execute_cmd("say %s" % response)   
+                    #self.execute_cmd("say %s" % response)   
     
         # this is needed if anyone ever puppets this NPC - without it you would never
         # get any feedback from the server (not even the results of look)
