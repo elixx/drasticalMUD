@@ -85,8 +85,9 @@ class CmdRobotPoke(default_cmds.MuxCommand):
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
         else:
-            self.caller.msg("You poke the %s" % self.args)
-            self.caller.location.msg_contents("%s pokes the robot." % (self.caller.name), exclude=self.caller)
+            obj = self.caller.search(self.args.strip())
+            self.caller.msg("You poke the %s" % obj)
+            self.caller.location.msg_contents("%s pokes the %s." % (self.caller.name, obj), exclude=self.caller)
             obj.doQuote()
         
 class DevRobotCmdSet(default_cmds.CharacterCmdSet):
