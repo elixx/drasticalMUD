@@ -15,7 +15,7 @@ class devRobot01(Character):
         # this, you'd have to look at the code of the 'get' command to
         # find out).
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
-        self.cmdset.add("devrobot.DevRobotCmdSet", permanent=True)
+        self.cmdset.add("DevRobotCmdSet", permanent=True)
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
