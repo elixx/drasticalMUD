@@ -1,4 +1,4 @@
-from typeclasses import Character
+from characters import Character
 import random
 
 class devRobot01(Character):
