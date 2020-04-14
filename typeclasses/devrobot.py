@@ -63,8 +63,6 @@ class devRobot01(Character):
                         self.db.quotes.insert(0,response)
                         if(len(self.db.quotes) > self.db.max):
                             self.db.quotes.pop()
-                    # speak ourselves, using the return
-                    #self.execute_cmd("say %s" % response)   
 
         # this is needed if anyone ever puppets this NPC - without it you would never
         # get any feedback from the server (not even the results of look)
@@ -77,8 +75,8 @@ class devRobot01(Character):
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
 class CmdRobotPoke(Command):
-    key = "poke robot"
-    aliases = ["poke"]
+    key = "poke"
+    aliases = ["poke robot"]
     locks = "cmd:all()"
     
     def func(self):
