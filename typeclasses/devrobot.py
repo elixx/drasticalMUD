@@ -14,8 +14,12 @@ class devRobot01(Character):
         # find out).
         self.db.get_err_msg = "This is too heavy to pick up."
         self.db.max = 20
-        self.db.quotes = ["I was a cockatoo, once..."]
-        self.ndb.sleep = random.randint(5,10)
+        try:
+            if(len(self.db.quotes) <=1):
+                self.db.quotes = ["I was a cockatoo, once..."]
+            except:
+                self.db.quotes = ["I was a cockatoo, once..."]
+        self.ndb.sleep = random.randint(1,3)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
     #def at_init(self):
