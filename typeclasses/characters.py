@@ -32,6 +32,7 @@ class Character(DefaultCharacter):
     """
 
     self.db.has_avatar = False
+    
     self.db.stats = {}
     self.db.stats['kills'] = 0
     self.db.stats['deaths'] = 0
