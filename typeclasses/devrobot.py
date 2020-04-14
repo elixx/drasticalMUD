@@ -1,10 +1,9 @@
-#from evennia import DefaultCharacter as Character
-from typeclasses.characters import Character
+#from typeclasses.characters import Character
 import random
 from evennia import utils, default_cmds
-from evennia import Command, CmdSet, Object
+from evennia import Command, CmdSet, DefaultObject
 
-class devRobot01(Object):
+class devRobot01(DefaultObject):
     def at_object_creation(self):
         "Called whenever a new object is created"
         super().at_object_creation()
