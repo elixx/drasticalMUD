@@ -23,14 +23,14 @@ class devRobot01(Object):
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
-        self.ndb.sleep = random.randint(1,3)
-        self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
+        self.db.sleep = random.randint(1,3)
+        self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
     def at_init(self):
         super().at_init()
         "Called when object is loaded into memory"
-        self.ndb.sleep = random.randint(1,5)
-        self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
+        self.db.sleep = random.randint(1,5)
+        self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
     def at_heard_say(self, message, from_obj):
         """
@@ -73,10 +73,10 @@ class devRobot01(Object):
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
     def doQuote(self):
-        self.ndb.sleep = random.randint(60,280)
+        self.db.sleep = random.randint(60,280)
         quote = random.choice(self.db.quotes)
         self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
-        self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
+        self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
 #class CmdRobotPoke(default_cmds.MuxCommand):
 class CmdRobotPoke(Command):
