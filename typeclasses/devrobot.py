@@ -80,15 +80,22 @@ class CmdRobotPoke(default_cmds.MuxCommand):
     aliases = ["poke robot"]
     locks = "cmd:all()"
     
+    def parse(self):
+        target = self.args.strip()
+
     def func(self):
         super().func()
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
         else:
-            obj = self.caller.search(self.args.strip())
-            self.caller.msg("You poke the %s" % obj)
-            self.caller.location.msg_contents("%s pokes the %s." % (self.caller.name, obj), exclude=self.caller)
-            obj.doQuote()
+            obj = self.caller.search(target)
+            if not obj:
+                self.caller.msg("You can't find it!")
+            else:
+                self.caller.msg("You poke %s." % obj)
+                self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
+                obj.doQuote()
+
         
 class DevRobotCmdSet(default_cmds.CharacterCmdSet):
     key = "DevRobotCmdSet"
