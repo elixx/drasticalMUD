@@ -15,7 +15,7 @@ class devRobot01(Character):
 
     def at_init(self):
         "Called when object is loaded into memory"
-        self.ndb.counter = 0
+        self.ndb.max = 20
         self.ndb.quotes = []
 
     def at_heard_say(self, message, from_obj):
@@ -50,7 +50,9 @@ class devRobot01(Character):
                     chances = [True,False,False] # 1/3 chance of listening
                     chosen = random.choice(chances)
                     if(chosen):
-                        self.ndb.quotes.insert(response)
+                        self.ndb.quotes.insert(0,response)
+                        if(len(self.ndb.quotes) > self.ndb.max):
+                            self.ndb.quotes.pop()
                     # speak ourselves, using the return
                     #self.execute_cmd("say %s" % response)   
 
