@@ -1,6 +1,7 @@
 #from evennia import DefaultCharacter as Character
 from typeclasses.characters import Character
 import random
+from evennia import utils
 
 class devRobot01(Character):
     def at_object_creation(self):
@@ -14,10 +15,12 @@ class devRobot01(Character):
         self.db.get_err_msg = "This is too heavy to pick up."
         self.ndb.max = 20
         self.ndb.quotes = []
+        self.ndb.sleep = random.randint(30,300)
 
-    #def at_init(self):
-    #    "Called when object is loaded into memory"
-    #    pass
+    def at_init(self):
+        "Called when object is loaded into memory"
+        self.ndb.sleep = random.randint(30,300)
+        self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
     def at_heard_say(self, message, from_obj):
         """
@@ -60,3 +63,9 @@ class devRobot01(Character):
         # this is needed if anyone ever puppets this NPC - without it you would never
         # get any feedback from the server (not even the results of look)
         super().msg(text=text, from_obj=from_obj, **kwargs)         
+
+    def doQuote(self):
+        self.ndb.sleep = random.randint(30,300)
+        quote = random.choice(self.ndb.quotes)
+        self.execute_cmd("say %s" % quote)
+        self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
