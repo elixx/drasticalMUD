@@ -10,16 +10,15 @@ class devRobot01(Object):
         super().at_object_creation()
         # lock the object down by default
         self.locks.add("get:false()")
-        #self.locks.add("call:false()")
         # the default "get" command looks for this Attribute in order
         # to return a customized error message (we just happen to know
         # this, you'd have to look at the code of the 'get' command to
         # find out).
-        self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
+        self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."        
+        #self.locks.add("call:false()")
         # We don't want to add the command to the robot.. but users in the same room...
         self.cmdset.add_default(DevRobotCmdSet, permanent=True)
         #self.cmdset.add("commands.default_cmdsets.CharacterCmdSet",permanent=True)
-        
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
