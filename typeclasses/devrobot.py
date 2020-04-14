@@ -10,7 +10,6 @@ class devRobot01(Character):
         super().at_object_creation()
         # lock the object down by default
         self.locks.add("get:false()")
-        self.locks.add("call:true()")        
         # the default "get" command looks for this Attribute in order
         # to return a customized error message (we just happen to know
         # this, you'd have to look at the code of the 'get' command to
