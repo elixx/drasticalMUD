@@ -104,7 +104,7 @@ class ScriptPokeRobot(DefaultScript):
         self.desc = "Script that manages poking the robot."
         self.persistent = True
 
-   def at_start(self):
+    def at_start(self):
         """
         This is called once every server restart, so we want to add the
         (memory-resident) cmdset to the object here. is_valid is automatically
@@ -114,7 +114,7 @@ class ScriptPokeRobot(DefaultScript):
         # All we do is add the cmdset for the closed state.
         self.obj.cmdset.add("typeclasses.devrobot.DevRobotCmdSet")
 
-   def is_valid(self):
+    def is_valid(self):
         """
         The script is only valid while the lid is closed.
         self.obj is the red_button on which this script is defined.
