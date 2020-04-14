@@ -13,13 +13,13 @@ class devRobot01(Character):
         # this, you'd have to look at the code of the 'get' command to
         # find out).
         self.db.get_err_msg = "This is too heavy to pick up."
-        self.ndb.max = 20
-        self.ndb.quotes = []
-        self.ndb.sleep = random.randint(30,300)
+        self.db.max = 20
+        self.db.quotes = []
+        self.ndb.sleep = random.randint(1,5)
 
     def at_init(self):
         "Called when object is loaded into memory"
-        self.ndb.sleep = random.randint(30,300)
+        self.ndb.sleep = random.randint(1,5)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
     def at_heard_say(self, message, from_obj):
@@ -54,9 +54,9 @@ class devRobot01(Character):
                     chances = [True,False,False] # 1/3 chance of listening
                     chosen = random.choice(chances)
                     if(chosen):
-                        self.ndb.quotes.insert(0,response)
-                        if(len(self.ndb.quotes) > self.ndb.max):
-                            self.ndb.quotes.pop()
+                        self.db.quotes.insert(0,response)
+                        if(len(self.db.quotes) > self.ndb.max):
+                            self.db.quotes.pop()
                     # speak ourselves, using the return
                     #self.execute_cmd("say %s" % response)   
 
@@ -65,7 +65,7 @@ class devRobot01(Character):
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
     def doQuote(self):
-        self.ndb.sleep = random.randint(30,300)
-        quote = random.choice(self.ndb.quotes)
+        self.db.sleep = random.randint(20,200)
+        quote = random.choice(self.db.quotes)
         self.execute_cmd("say %s" % quote)
-        self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
+        self.deferred = utils.delay(self.db.sleep, self.doQuote)
