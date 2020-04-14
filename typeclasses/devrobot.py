@@ -99,7 +99,7 @@ class CmdRobotPoke(Command):
                 obj.doQuote()
 
         
-class DevRobotCmdSet(default_cmds.CharacterCmdSet):
+class DevRobotCmdSet(CmdSet):
     key = "DevRobotCmdSet"
 
     def at_cmdset_creation(self):
