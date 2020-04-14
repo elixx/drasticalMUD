@@ -14,13 +14,14 @@ class devRobot01(Character):
         # find out).
         self.db.get_err_msg = "This is too heavy to pick up."
         self.db.max = 20
-        self.db.quotes = []
+        self.db.quotes = ["I was a cockatoo, once..."]
         self.ndb.sleep = random.randint(5,10)
-
-    def at_init(self):
-        "Called when object is loaded into memory"
-        self.ndb.sleep = random.randint(1,5)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
+
+    #def at_init(self):
+    #    "Called when object is loaded into memory"
+    #    self.ndb.sleep = random.randint(1,5)
+    #
 
     def at_heard_say(self, message, from_obj):
         """
