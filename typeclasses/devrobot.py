@@ -55,7 +55,7 @@ class devRobot01(Character):
                     chosen = random.choice(chances)
                     if(chosen):
                         self.db.quotes.insert(0,response)
-                        if(len(self.db.quotes) > self.ndb.max):
+                        if(len(self.db.quotes) > self.db.max):
                             self.db.quotes.pop()
                     # speak ourselves, using the return
                     #self.execute_cmd("say %s" % response)   
