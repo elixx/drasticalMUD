@@ -1,4 +1,5 @@
-from characters import Character
+#from evennia import DefaultCharacter as Character
+from typeclasses.characters import Character
 import random
 
 class devRobot01(Character):
@@ -28,7 +29,8 @@ class devRobot01(Character):
         message = message.split('says, ')[1].strip(' "')
 
         # we'll make use of this in .msg() below
-        return "%s said: '%s'" % (from_obj, message)
+        #return "%s said: '%s'" % (from_obj, message)
+        return message
 
     def msg(self, text=None, from_obj=None, **kwargs):
         "Custom msg() method reacting to say."
@@ -50,8 +52,8 @@ class devRobot01(Character):
                     if(chosen):
                         self.ndb.quotes.append(response)
                     # speak ourselves, using the return
-                    self.execute_cmd("say %s" % response)   
-    
+                    #self.execute_cmd("say %s" % response)   
+
         # this is needed if anyone ever puppets this NPC - without it you would never
         # get any feedback from the server (not even the results of look)
         super().msg(text=text, from_obj=from_obj, **kwargs)         
