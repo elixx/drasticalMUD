@@ -2,6 +2,8 @@
 from typeclasses.characters import Character
 import random
 from evennia import utils
+from evennia import default_cmds
+from evennia import CmdSet
 
 class devRobot01(Character):
     def at_object_creation(self):
@@ -12,7 +14,7 @@ class devRobot01(Character):
         # to return a customized error message (we just happen to know
         # this, you'd have to look at the code of the 'get' command to
         # find out).
-        self.db.get_err_msg = "This is too heavy to pick up."
+        self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
@@ -71,3 +73,18 @@ class devRobot01(Character):
         quote = random.choice(self.db.quotes)
         self.execute_cmd("say %s" % quote)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
+
+class CmdRobotPoke(default_cmds.MuxCommand):
+    key = "poke"
+
+    def func(self):
+        if not self.args:
+            self.caller.msg("You poke yourself in the face.")
+        else:
+            self.caller.msg("You poke the %s" % self.args)
+    
+class DevRobotCmdSet(CmdSet):
+    key = "DevRobotCmdSet"
+
+    def at_cmdset_creation(self):
+        self.add(CmdRobotPoke())
