@@ -15,7 +15,8 @@ class devRobot01(Character):
         # this, you'd have to look at the code of the 'get' command to
         # find out).
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
-        self.cmdset.add("typeclasses.devrobot.DevRobotCmdSet", permanent=True)
+        # We don't want to add the command to the robot.. but users in the same room...
+        #self.cmdset.add("typeclasses.devrobot.DevRobotCmdSet", permanent=True)
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
@@ -70,7 +71,7 @@ class devRobot01(Character):
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
     def doQuote(self):
-        self.ndb.sleep = random.randint(20,200)
+        self.ndb.sleep = random.randint(60,280)
         quote = random.choice(self.db.quotes)
         self.execute_cmd("say %s" % quote)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
