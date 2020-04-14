@@ -7,6 +7,7 @@ from evennia import Command, CmdSet
 class devRobot01(Character):
     def at_object_creation(self):
         "Called whenever a new object is created"
+        super().at_object_creation()
         # lock the object down by default
         self.locks.add("get:false()")
         # the default "get" command looks for this Attribute in order
@@ -16,7 +17,6 @@ class devRobot01(Character):
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
         # We don't want to add the command to the robot.. but users in the same room...
         self.cmdset.add(DevRobotCmdSet, permanent=True)
-        
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
@@ -24,6 +24,7 @@ class devRobot01(Character):
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
     def at_init(self):
+        super().at_init()
         "Called when object is loaded into memory"
         self.ndb.sleep = random.randint(1,5)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
@@ -80,12 +81,13 @@ class CmdRobotPoke(default_cmds.MuxCommand):
     locks = "cmd:all()"
     
     def func(self):
+        super().func()
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
         else:
             self.caller.msg("You poke the %s" % self.args)
             self.caller.location.msg_contents("%s pokes the robot." % (self.caller.name), exclude=self.caller)
-            self.obj.doQuote()
+            obj.doQuote()
         
 class DevRobotCmdSet(default_cmds.CharacterCmdSet):
     key = "DevRobotCmdSet"
