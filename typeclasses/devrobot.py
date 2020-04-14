@@ -2,7 +2,7 @@
 from typeclasses.characters import Character
 import random
 from evennia import utils, default_cmds
-from evennia import Command, CmdSet
+from evennia import Command, CmdSet, Object
 
 class devRobot01(Object):
     def at_object_creation(self):
