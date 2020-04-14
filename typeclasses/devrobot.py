@@ -14,10 +14,7 @@ class devRobot01(Character):
         # find out).
         self.db.get_err_msg = "This is too heavy to pick up."
         self.db.max = 20
-        try:
-            if(len(self.db.quotes) < 3):
-                self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
-        except:
+        if(len(self.db.quotes) < 3):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
         self.ndb.sleep = random.randint(1,3)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
