@@ -4,13 +4,13 @@ import random
 from evennia import utils, default_cmds
 from evennia import Command, CmdSet
 
-class devRobot01(Character):
+class devRobot01(Object):
     def at_object_creation(self):
         "Called whenever a new object is created"
         super().at_object_creation()
         # lock the object down by default
         self.locks.add("get:false()")
-        self.locks.add("call:false()")
+        #self.locks.add("call:false()")
         # the default "get" command looks for this Attribute in order
         # to return a customized error message (we just happen to know
         # this, you'd have to look at the code of the 'get' command to
@@ -19,6 +19,7 @@ class devRobot01(Character):
         # We don't want to add the command to the robot.. but users in the same room...
         self.cmdset.add_default(DevRobotCmdSet, permanent=True)
         #self.cmdset.add("commands.default_cmdsets.CharacterCmdSet",permanent=True)
+        
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
