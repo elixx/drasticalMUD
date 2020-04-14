@@ -31,4 +31,4 @@ class Character(DefaultCharacter):
 
     """
 
-    pass
+    self.db.has_avatar = False
