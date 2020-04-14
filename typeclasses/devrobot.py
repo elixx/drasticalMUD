@@ -22,10 +22,10 @@ class devRobot01(Character):
         self.ndb.sleep = random.randint(1,3)
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
-    #def at_init(self):
-    #    "Called when object is loaded into memory"
-    #    self.ndb.sleep = random.randint(1,5)
-    #
+    def at_init(self):
+        "Called when object is loaded into memory"
+        self.ndb.sleep = random.randint(1,5)
+    
 
     def at_heard_say(self, message, from_obj):
         """
