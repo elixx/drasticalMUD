@@ -87,8 +87,9 @@ class CmdRobotPoke(default_cmds.MuxCommand):
             self.caller.location.msg_contents("%s pokes the robot." % (self.caller.name), exclude=self.caller)
             self.obj.doQuote()
         
-class DevRobotCmdSet(CmdSet):
+class DevRobotCmdSet(default_cmds.CharacterCmdSet):
     key = "DevRobotCmdSet"
 
     def at_cmdset_creation(self):
+        super().at_cmdset_creation()
         self.add(CmdRobotPoke())
