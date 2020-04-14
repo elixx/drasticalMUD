@@ -16,7 +16,7 @@ class devRobot01(Character):
         # find out).
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
         # We don't want to add the command to the robot.. but users in the same room...
-        #self.cmdset.add("typeclasses.devrobot.DevRobotCmdSet", permanent=True)
+        self.cmdset.add_default("typeclasses.devrobot.DevRobotCmdSet", permanent=True)
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
@@ -77,13 +77,16 @@ class devRobot01(Character):
         self.deferred = utils.delay(self.ndb.sleep, self.doQuote)
 
 class CmdRobotPoke(default_cmds.MuxCommand):
-    key = "poke"
-
+    key = "poke robot"
+    aliases = ["poke"]
     def func(self):
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
         else:
             self.caller.msg("You poke the %s" % self.args)
+            self.caller.location.msg_contents("%s pokes the robot." % (self.caller.name), exclude=self.caller)
+            self.obj.doQuote()
+        
     
 class DevRobotCmdSet(CmdSet):
     key = "DevRobotCmdSet"
