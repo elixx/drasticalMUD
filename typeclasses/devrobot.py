@@ -56,7 +56,7 @@ class devRobot01(DefaultObject):
             quote = random.choice(self.db.quotes)
             self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
             self.deferred = utils.delay(self.db.sleep, self.doQuote)
-        else if not to_ungag:
+        elif not to_ungag:
             self.deferred = utils.delay(600, self.doQuote,True,permanent=False)
         else:
             self.db.gagged = False
