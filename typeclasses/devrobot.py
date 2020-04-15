@@ -112,4 +112,5 @@ class DevRobotCmdSet(CmdSet):
 
     def at_cmdset_creation(self):
         self.add(CmdRobotPoke())
+        self.add(CmdRobotGag())
         super().at_cmdset_creation()       
