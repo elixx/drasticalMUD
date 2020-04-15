@@ -51,13 +51,13 @@ class devRobot01(DefaultObject):
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
     def doQuote(self,to_ungag=False):
+        self.db.sleep = random.randint(60,360)
         if not self.db.gagged:
-            self.db.sleep = random.randint(60,360)
             quote = random.choice(self.db.quotes)
             self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
             self.deferred = utils.delay(self.db.sleep, self.doQuote)
         elif not to_ungag:
-            self.deferred = utils.delay(600, self.doQuote,True,permanent=False)
+            self.deferred = utils.delay(600, self.doQuote,True)
         else:
             self.db.gagged = False
             self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
@@ -107,6 +107,31 @@ class CmdRobotGag(Command):
                 else:
                     self.caller.msg("You can't gag " + self.args.strip() + "!")
 
+class CmdRobotUngag(Command):
+    "remove gag from the robot"
+
+    key = "ungag"
+    locks = "cmd:all()"
+
+    def func(self):
+        if not self.args:
+            self.caller.msg("Remove a gag from whom? The robot?")
+        else:
+            target = self.args.strip()
+            obj = self.caller.search(target)
+            if not obj:
+                self.caller.msg("You can't find it!")
+            else:
+                if('doQuote' in dir(obj)):
+                    if(obj.gagged):
+                        self.caller.msg("You yank the piece of take off of %s's speaker." % obj)
+                        self.caller.location.msg_contents("%s violently rips the masking tape from %s's speaker." % (self.caller, obj), exclude=self.caller)
+                        obj.db.gagged = False
+                    else:
+                        self.caller.msg("%s isn't gagged." % obj)
+                else:
+                    self.caller.msg("You can't ungag " + self.args.strip() + "!")
+
 class DevRobotCmdSet(CmdSet):
     "commandset for the dev robot"
 
@@ -115,4 +140,5 @@ class DevRobotCmdSet(CmdSet):
     def at_cmdset_creation(self):
         self.add(CmdRobotPoke())
         self.add(CmdRobotGag())
+        self.add(CmdRobotUngag())        
         super().at_cmdset_creation()       
