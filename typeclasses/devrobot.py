@@ -14,6 +14,7 @@ class devRobot01(DefaultObject):
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
         self.db.sleep = random.randint(1,5)
+        self.db.gagged = False
         self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
     def at_init(self):
@@ -50,10 +51,15 @@ class devRobot01(DefaultObject):
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
     def doQuote(self):
-        self.db.sleep = random.randint(60,360)
-        quote = random.choice(self.db.quotes)
-        self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
-        self.deferred = utils.delay(self.db.sleep, self.doQuote)
+        if not self.db.gagged:
+            self.db.sleep = random.randint(60,360)
+            quote = random.choice(self.db.quotes)
+            self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
+            self.deferred = utils.delay(self.db.sleep, self.doQuote)
+        else:
+            self.db.gagged = False
+            self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
+            self.deferred = utils.delay(300, self.doQuote)
 
 class CmdRobotPoke(Command):
     "poke the robot"
@@ -76,7 +82,29 @@ class CmdRobotPoke(Command):
                     obj.doQuote()
                 else:
                     self.caller.msg("That wouldn't be nice.")
-       
+
+lass CmdRobotGag(Command):
+    "temporarily gag the robot"
+
+    key = "gag"
+    locks = "cmd:all()"
+
+    def func(self):
+        if not self.args:
+            self.caller.msg("Gag whom? The robot?")
+        else:
+            target = self.args.strip()
+            obj = self.caller.search(target)
+            if not obj:
+                self.caller.msg("You can't find it!")
+            else:
+                if('doQuote' in dir(obj)):
+                    self.caller.msg("You sneak up and put a strip of masking tape over %s's speaker." % obj)
+                    self.location.msg_contents("%s sneaks up and puts a strip of masking tape over %s's speaker." % (self.caller, obj), exclude=self.caller)
+                    obj.db.gagged = True
+                else:
+                    self.caller.msg("You can't gag " + self.args.strip() + "!")
+
 class DevRobotCmdSet(CmdSet):
     "commandset for the dev robot"
 
