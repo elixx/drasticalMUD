@@ -60,6 +60,7 @@ class devRobot01(DefaultObject):
             yield 300
             self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
             self.db.gagged = False
+            del self.deferred
             self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
 class CmdRobotPoke(Command):
@@ -80,7 +81,6 @@ class CmdRobotPoke(Command):
                 if('doQuote' in dir(obj)):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
-                    if(obj.deferred): obj.deferred.cancel()
                     obj.doQuote()
                 else:
                     self.caller.msg("That wouldn't be nice.")
