@@ -80,7 +80,6 @@ class CmdRobotPoke(Command):
     "poke the robot"
 
     key = "poke"
-    aliases = ["poke robot"]
     locks = "cmd:all()"
     
     def parse(self):
