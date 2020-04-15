@@ -100,7 +100,7 @@ class CmdRobotGag(Command):
             else:
                 if('doQuote' in dir(obj)):
                     self.caller.msg("You sneak up and put a strip of masking tape over %s's speaker." % obj)
-                    self.location.msg_contents("%s sneaks up and puts a strip of masking tape over %s's speaker." % (self.caller, obj), exclude=self.caller)
+                    self.caller.location.msg_contents("%s sneaks up and puts a strip of masking tape over %s's speaker." % (self.caller, obj), exclude=self.caller)
                     obj.db.gagged = True
                 else:
                     self.caller.msg("You can't gag " + self.args.strip() + "!")
