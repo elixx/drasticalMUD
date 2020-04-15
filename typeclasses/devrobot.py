@@ -83,7 +83,7 @@ class CmdRobotPoke(Command):
                 else:
                     self.caller.msg("That wouldn't be nice.")
 
-lass CmdRobotGag(Command):
+class CmdRobotGag(Command):
     "temporarily gag the robot"
 
     key = "gag"
