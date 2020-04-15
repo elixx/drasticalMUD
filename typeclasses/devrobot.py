@@ -81,6 +81,7 @@ class CmdRobotPoke(Command):
                 if('doQuote' in dir(obj)):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
+                    del obj.deferred
                     obj.doQuote()
                 else:
                     self.caller.msg("That wouldn't be nice.")
