@@ -59,7 +59,7 @@ class devRobot01(DefaultObject):
         else:
             self.db.gagged = False
             self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
-            self.deferred = utils.delay(300, self.doQuote)
+            self.deferred = utils.delay(600, self.doQuote)
 
 class CmdRobotPoke(Command):
     "poke the robot"
