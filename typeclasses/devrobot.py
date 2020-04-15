@@ -1,6 +1,6 @@
 #from typeclasses.characters import Character
 import random
-from evennia import utils, default_cmds
+from evennia import utils
 from evennia import Command, CmdSet, DefaultObject
 
 class devRobot01(DefaultObject):
@@ -13,7 +13,7 @@ class devRobot01(DefaultObject):
         self.db.max = 20
         if(self.db.quotes is None):
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
-        self.db.sleep = random.randint(1,3)
+        self.db.sleep = random.randint(1,5)
         self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
     def at_init(self):
@@ -50,7 +50,7 @@ class devRobot01(DefaultObject):
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
     def doQuote(self):
-        self.db.sleep = random.randint(60,280)
+        self.db.sleep = random.randint(60,360)
         quote = random.choice(self.db.quotes)
         self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
         self.deferred = utils.delay(self.db.sleep, self.doQuote)
