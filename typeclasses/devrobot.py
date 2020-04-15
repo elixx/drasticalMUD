@@ -81,14 +81,12 @@ class CmdRobotPoke(Command):
 
     key = "poke"
     locks = "cmd:all()"
-    
-    def parse(self):
-        target = self.args.strip()
 
     def func(self):
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
         else:
+            target = self.args.strip()
             obj = self.caller.search(target)
             if not obj:
                 self.caller.msg("You can't find it!")
