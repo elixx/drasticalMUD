@@ -50,17 +50,16 @@ class devRobot01(DefaultObject):
 
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
-    def doQuote(self,to_ungag=False):
+    def doQuote(self):
         self.db.sleep = random.randint(60,360)
-        if not self.db.gagged:
+        if (self.db.gagged == False):
             quote = random.choice(self.db.quotes)
             self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
             self.deferred = utils.delay(self.db.sleep, self.doQuote)
-        elif not to_ungag:
-            self.deferred = utils.delay(600, self.doQuote,to_ungag=True)
         else:
-            self.db.gagged = False
+            yield 300
             self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
+            self.db.gagged = False
             self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
 class CmdRobotPoke(Command):
