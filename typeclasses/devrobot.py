@@ -76,8 +76,9 @@ class devRobot01(DefaultObject):
         self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
         self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
-#class CmdRobotPoke(default_cmds.MuxCommand):
 class CmdRobotPoke(Command):
+    "poke the robot"
+
     key = "poke"
     aliases = ["poke robot"]
     locks = "cmd:all()"
@@ -86,7 +87,6 @@ class CmdRobotPoke(Command):
         target = self.args.strip()
 
     def func(self):
-        super().func()
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
         else:
@@ -100,6 +100,8 @@ class CmdRobotPoke(Command):
 
         
 class DevRobotCmdSet(CmdSet):
+    "commandset for the dev robot"
+
     key = "DevRobotCmdSet"
 
     def at_cmdset_creation(self):
