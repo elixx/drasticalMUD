@@ -1,4 +1,4 @@
-# Welcome to Evennia!
+[![Build Status](http://jenkins.chatsubo.local/buildStatus/icon?job=evennia)](http://jenkins.chatsubo.local/job/evennia/)
 
 This is your game directory, set up to let you start with
 your new game right away. An overview of this directory is found here:
