@@ -60,7 +60,6 @@ class devRobot01(DefaultObject):
             yield 300
             self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
             self.db.gagged = False
-            del self.deferred
             self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
 class CmdRobotPoke(Command):
