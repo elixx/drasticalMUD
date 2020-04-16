@@ -1,11 +1,10 @@
-#from typeclasses.characters import Character
 import random
 from evennia import utils
 from evennia.objects.objects import DefaultObject
 from evennia.commands.command import Command
 from evennia.commands.cmdset import CmdSet
 
-class devRobot01(DefaultObject):
+class robot(DefaultObject):
     def at_object_creation(self):
         """
 
@@ -16,7 +15,7 @@ class devRobot01(DefaultObject):
         super().at_object_creation()
         self.locks.add("get:false()")
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."        
-        self.cmdset.add_default(DevRobotCmdSet, permanent=True)
+        self.cmdset.add_default(RobotCmdSet, permanent=True)
         self.db.max = 20
         if self.db.quotes is None:
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
@@ -160,13 +159,13 @@ class CmdRobotUngag(Command):
                 else:
                     self.caller.msg("You can't ungag " + self.args.strip() + "!")
 
-class DevRobotCmdSet(CmdSet):
+class RobotCmdSet(CmdSet):
     """
     CmdSet for the dev robot"
 
     """
 
-    key = "DevRobotCmdSet"
+    key = "RobotCmdSet"
 
     def at_cmdset_creation(self):
         self.add(CmdRobotPoke())
