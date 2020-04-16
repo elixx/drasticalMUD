@@ -1,25 +1,35 @@
 #from typeclasses.characters import Character
 import random
 from evennia import utils
-from evennia import Command, CmdSet, DefaultObject
+from evennia.objects.objects import DefaultObject
+from evennia.commands.command import Command
+from evennia.commands.cmdset import CmdSet
 
 class devRobot01(DefaultObject):
     def at_object_creation(self):
-        "Called whenever a new object is created"
+        """
+
+        Called whenever a new object is created
+
+        """
+
         super().at_object_creation()
         self.locks.add("get:false()")
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."        
         self.cmdset.add_default(DevRobotCmdSet, permanent=True)
         self.db.max = 20
-        if(self.db.quotes is None):
+        if self.db.quotes is None:
             self.db.quotes = ["I was a cockatoo, once...","hmmm...","I am working on... nothing!"]
         self.db.sleep = random.randint(1,5)
         self.db.gagged = False
-        self.deferred = utils.delay(self.db.sleep, self.doQuote)
+        self.delayQuote()
 
     def at_init(self):
+        """
+        Called when object is loaded into memory"
+
+        """
         super().at_init()
-        "Called when object is loaded into memory"
         self.db.sleep = random.randint(1,5)
         self.deferred = utils.delay(self.db.sleep, self.doQuote)
 
@@ -31,7 +41,10 @@ class devRobot01(DefaultObject):
         return message
 
     def msg(self, text=None, from_obj=None, **kwargs):
-        "Custom msg() method reacting to say."
+        """
+        Custom msg() method reacting to say."
+
+        """
 
         if from_obj != self:
             try:
@@ -43,29 +56,38 @@ class devRobot01(DefaultObject):
                 if response != None:
                     chances = [True,False,False] # 1/3 chance of listening
                     chosen = random.choice(chances)
-                    if(chosen):
+                    if chosen:
                         self.db.quotes.insert(0,response)
-                        if(len(self.db.quotes) > self.db.max):
+                        if len(self.db.quotes) > self.db.max:
                             self.db.quotes.pop()
 
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
+    def delayQuote(self,to_ungag=False):
+        self.deferred = utils.delay(self.db.sleep, self.doQuote, to_ungag)
+
     def doQuote(self,to_ungag=False):
         self.db.sleep = random.randint(60,360)
-        if (self.db.gagged == False):
+        if self.db.gagged == False:
+            if to_ungag:
+                self.db.sleep = 1
             quote = random.choice(self.db.quotes)
             self.location.msg_contents("%s says, '%s'." % (self.name, quote) )
-            self.deferred = utils.delay(self.db.sleep, self.doQuote)
+            self.delayQuote()
         else:
-            if(to_ungag):
+            if to_ungag:
                 self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
                 self.db.gagged = False
-                self.deferred = utils.delay(self.db.sleep, self.doQuote)
+                self.delayQuote()
             else:
-                self.deferred = utils.delay(600, self.doQuote, to_ungag=True)
+                self.db.sleep = 600
+                self.delayQuote(True)
 
 class CmdRobotPoke(Command):
-    "poke the robot"
+    """
+    poke the robot
+
+    """
 
     key = "poke"
     locks = "cmd:all()"
@@ -79,15 +101,18 @@ class CmdRobotPoke(Command):
             if not obj:
                 self.caller.msg("You can't find it!")
             else:
-                if('doQuote' in dir(obj)):
+                if 'doQuote' in dir(obj):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
-                    obj.deferred = utils.delay(obj.db.sleep, obj.doQuote, to_ungag=True)
+                    obj.delayQuote(True)
                 else:
                     self.caller.msg("That wouldn't be nice.")
 
 class CmdRobotGag(Command):
-    "temporarily gag the robot"
+    """
+    temporarily gag the robot
+
+    """
 
     key = "gag"
     locks = "cmd:all()"
@@ -101,7 +126,7 @@ class CmdRobotGag(Command):
             if not obj:
                 self.caller.msg("You can't find it!")
             else:
-                if('doQuote' in dir(obj)):
+                if 'doQuote' in dir(obj):
                     self.caller.msg("You sneak up and put a strip of masking tape over %s's speaker." % obj)
                     self.caller.location.msg_contents("%s sneaks up and puts a strip of masking tape over %s's speaker." % (self.caller, obj), exclude=self.caller)
                     obj.db.gagged = True
@@ -123,7 +148,7 @@ class CmdRobotUngag(Command):
             if not obj:
                 self.caller.msg("You can't find it!")
             else:
-                if('doQuote' in dir(obj)):
+                if 'doQuote' in dir(obj):
                     if(obj.db.gagged):
                         self.caller.msg("You yank the piece of take off of %s's speaker." % obj)
                         self.caller.location.msg_contents("%s violently rips the masking tape from %s's speaker." % (self.caller, obj), exclude=self.caller)
@@ -134,7 +159,10 @@ class CmdRobotUngag(Command):
                     self.caller.msg("You can't ungag " + self.args.strip() + "!")
 
 class DevRobotCmdSet(CmdSet):
-    "commandset for the dev robot"
+    """
+    CmdSet for the dev robot"
+
+    """
 
     key = "DevRobotCmdSet"
 
