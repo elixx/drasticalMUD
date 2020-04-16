@@ -63,8 +63,10 @@ class devRobot01(DefaultObject):
 
         super().msg(text=text, from_obj=from_obj, **kwargs)         
 
-    def delayQuote(self,to_ungag=False):
-        self.deferred = utils.delay(self.db.sleep, self.doQuote, to_ungag)
+    def delayQuote(self, to_ungag=False, sleeptime=-1):
+        if sleeptime == -1:
+            sleeptime = self.db.sleep
+        self.deferred = utils.delay(sleeptime, self.doQuote, to_ungag)
 
     def doQuote(self,to_ungag=False):
         self.db.sleep = random.randint(60,360)
@@ -104,7 +106,7 @@ class CmdRobotPoke(Command):
                 if 'doQuote' in dir(obj):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
-                    obj.delayQuote(True)
+                    obj.delayQuote(to_ungag=True,sleeptime=1)
                 else:
                     self.caller.msg("That wouldn't be nice.")
 
