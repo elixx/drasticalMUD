@@ -15,3 +15,7 @@ to override your public, shared settings.
 # generally not be changed once people have registered with the game
 # since it will invalidate their existing sessions.
 SECRET_KEY = 'lX23_@-|bc4!M,]hY6>9uiGasDx%:JFyEg(kv7"V'
+
+GRAPEVINE_CLIENT_ID = "fb96322d-634e-45fd-a69c-384809300133"
+GRAPEVINE_CLIENT_SECRET = "bf7ca23a-16d9-48f7-9dd2-38301d5d7eb2"
+
