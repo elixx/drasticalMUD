@@ -26,7 +26,11 @@ __pycache__
 
 ## Keep the database -- elixx 04122020
 ## Not anymore! -- elixx 04162020
-*.db3*
+server/*.db3*
+evennia.db3
+
+# No logs
+server/logs/*
 
 # Installation-specific.
 # For group efforts, comment out some or all of these.
