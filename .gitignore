@@ -25,7 +25,8 @@ __pycache__
 *.restart
 
 ## Keep the database -- elixx 04122020
-#*.db3
+## Not anymore! -- elixx 04162020
+*.db3*
 
 # Installation-specific.
 # For group efforts, comment out some or all of these.
