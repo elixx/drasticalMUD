@@ -22,9 +22,12 @@ several more options for customizing the Guest account system.
 
 """
 
-from evennia import DefaultAccount, DefaultGuest
-
+from random import shuffle, getrandbits
 from time import time
+from evennia import DefaultAccount, DefaultGuest
+from evennia.utils import class_from_module, create, logger
+from evennia.accounts.models import AccountDB
+from django.conf import settings
 
 class Account(DefaultAccount):
     """
@@ -111,4 +114,69 @@ class Guest(DefaultGuest):
     characters are deleted after disconnection.
     """
 
-    pass
+    @classmethod
+    def authenticate(cls, **kwargs):
+        """
+        Gets or creates a Guest account object.
+
+        Kwargs:
+            ip (str, optional): IP address of requestor; used for ban checking,
+                throttling and logging
+
+        Returns:
+            account (Object): Guest account object, if available
+            errors (list): List of error messages accrued during this request.
+
+        """
+        errors = []
+        account = None
+        username = None
+        ip = kwargs.get("ip", "").strip()
+
+        # check if guests are enabled.
+        if not settings.GUEST_ENABLED:
+            errors.append("Guest accounts are not enabled on this server.")
+            return None, errors
+
+        try:
+            GUEST_LIST = settings.GUEST_LIST
+            shuffle(GUEST_LIST)
+            # Find an available guest name.
+            for name in GUEST_LIST:
+                if not AccountDB.objects.filter(username__iexact=name).count():
+                    username = name
+                    break
+            if not username:
+                errors.append("All guest accounts are in use. Please try again later.")
+                if ip:
+                    LOGIN_THROTTLE.update(ip, "Too many requests for Guest access.")
+                return None, errors
+            else:
+                # build a new account with the found guest username
+                password = "%016x" % getrandbits(64)
+                home = settings.GUEST_HOME
+                permissions = settings.PERMISSION_GUEST_DEFAULT
+                typeclass = settings.BASE_GUEST_TYPECLASS
+
+                # Call parent class creator
+                account, errs = super(DefaultGuest, cls).create(
+                    guest=True,
+                    username=username,
+                    password=password,
+                    permissions=permissions,
+                    typeclass=typeclass,
+                    home=home,
+                    ip=ip,
+                )
+                errors.extend(errs)
+                return account, errors
+
+        except Exception as e:
+            # We are in the middle between logged in and -not, so we have
+            # to handle tracebacks ourselves at this point. If we don't,
+            # we won't see any errors at all.
+            errors.append("An error occurred. Please e-mail an admin if the problem persists.")
+            logger.log_trace()
+            return None, errors
+
+        return account, errors
