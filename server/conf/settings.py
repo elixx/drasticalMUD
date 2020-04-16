@@ -43,6 +43,11 @@ IMC2_ENABLED = True
 
 MULTISESSION_MODE = 0
 
+
+TIME_FACTOR = 1.0
+TIME_GAME_EPOCH = None
+TIME_IGNORE_DOWNTIMES = True
+
 ADMINS = ('elixx', 'elixx@drastical.net')
 
 # Prod
