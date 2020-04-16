@@ -31,29 +31,24 @@ from evennia.settings_default import *
 # Evennia base server config
 ######################################################################
 
-# This is the name of your game. Make it catchy!
-
-
 #CHANNEL_CONNECTINFO = {}
 RSS_ENABLED = True
-GRAPEVINE_ENABLED = True
-IRC_ENABLED = True
 IMC2_ENABLED = True
 
 MULTISESSION_MODE = 0
-
 TIME_FACTOR = 1.0
 TIME_GAME_EPOCH = None
 TIME_IGNORE_DOWNTIMES = True
 
 ADMINS = ('elixx', 'elixx@drastical.net')
 GUEST_ENABLED = True
+
 # Typeclass for guest account objects (linked to a character)
 BASE_GUEST_TYPECLASS = "typeclasses.accounts.Guest"
 GUEST_COLORS = ['Amaranth','Amber','Amethyst','Apricot','Aquamarine','Azure','Baby','Beige','Black','Blue','Blush','Bronze','Brown','Burgundy','Byzantium','Carmine','Cerise','Cerulean','Champagne','Chartreuse','Chocolate','Cobalt','Coffee','Copper','Coral','Crimson','Cyan','Desert','Electric','Emerald','Erin','Gold','Gray','Green','Harlequin','Indigo','Ivory','Jade','Jungle','Lavender','Lemon','Lilac','Lime','Magenta','Magenta','Maroon','Mauve','Navy','Ochre','Olive','Orange','Orchid','Peach','Pear','Periwinkle','Persian','Pink','Plum','Prussian','Puce','Purple','Raspberry','Red','Rose','Ruby','Salmon','Sangria','Sapphire','Scarlet','Silver','Slate','Spring','Spring','Tan','Taupe','Teal','Turquoise','Ultramarine','Violet','Viridian','White','Yellow']
 GUEST_LIST = [str(s) + "_Guest" for s in GUEST_COLORS ]
 
-## Prod
+# Prod
 SERVERNAME = "drastical"
 GAME_SLOGAN = "I don't know what's going on, here..."
 WEBSOCKET_CLIENT_URL = "wss://mud.drastical.tech/ws"
@@ -62,8 +57,9 @@ UPSTREAM_IPS = ["10.10.0.191"]
 IDLE_TIMEOUT = 86400
 IN_GAME_ERRORS = False
 DEBUG = False
+GRAPEVINE_ENABLED = True
 
-# Dev
+# # Dev
 # SERVERNAME = "[DEV] drastical"
 # GAME_SLOGAN = "dev"*5
 # SERVER_LOG_DAY_ROTATION = 2
@@ -73,6 +69,8 @@ DEBUG = False
 # IDLE_TIMEOUT = -1
 # IN_GAME_ERRORS = True
 # DEBUG = True
+# GRAPEVINE_ENABLED = False
+# IRC_ENABLED = False
 
 #COMMAND_DEFAULT_CLASS = "commands.command.MuxCommand"
 
