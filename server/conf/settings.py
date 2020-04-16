@@ -33,10 +33,9 @@ from evennia.settings_default import *
 
 # This is the name of your game. Make it catchy!
 SERVERNAME = "drastical"
-
 GAME_SLOGAN = "I don't know what's going on, here..."
-#CHANNEL_CONNECTINFO = {}
 
+#CHANNEL_CONNECTINFO = {}
 RSS_ENABLED = True
 GRAPEVINE_ENABLED = True
 IRC_ENABLED = True
@@ -44,15 +43,27 @@ IMC2_ENABLED = True
 
 MULTISESSION_MODE = 0
 
-trust_x_forwarded_for = 2
-
-DEBUG = True
 ADMINS = ('elixx', 'elixx@drastical.net')
-WEBSOCKET_CLIENT_URL = "wss://mud.drastical.tech/ws"
 
+# Prod
+WEBSOCKET_CLIENT_URL = "wss://mud.drastical.tech/ws"
+trust_x_forwarded_for = 2
 UPSTREAM_IPS = ["10.10.0.191"]
+IDLE_TIMEOUT = 86400
+IN_GAME_ERRORS = False
+DEBUG = False
+
+# Dev
+# SERVER_LOG_DAY_ROTATION = 2
+# SERVER_LOG_MAX_SIZE = 1000000
+# PORTAL_LOG_DAY_ROTATION = 2
+# PORTAL_LOG_MAX_SIZE = 1000000
+# IDLE_TIMEOUT = -1
+# IN_GAME_ERRORS = True
+# DEBUG = True
 
 #COMMAND_DEFAULT_CLASS = "commands.command.MuxCommand"
+
 ######################################################################
 # Settings given in secret_settings.py override those in this file.
 ######################################################################
