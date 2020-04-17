@@ -93,6 +93,9 @@ class CmdSocialSwoon(CmdSocial):
 class CmdSocialFart(CmdSocial):
     key = "fart"
 
+class CmdSocialGlare(CmdSocial):
+    key = "glare"
+
 class CmdSocialYeet(CmdSocialGoes):
     key = "yeet"
 
