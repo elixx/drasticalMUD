@@ -15,6 +15,7 @@ at_server_cold_start()
 at_server_cold_stop()
 
 """
+import evennia
 
 
 def at_server_start():
@@ -22,6 +23,9 @@ def at_server_start():
     This is called every time the server starts up, regardless of
     how it was shut down.
     """
+
+    evennia.search_object("#2")[0].db.startups += 1
+
     pass
 
 
