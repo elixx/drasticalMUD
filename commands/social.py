@@ -53,8 +53,26 @@ class CmdSocialGoes(CmdSocial):
                                                   exclude=[self.caller, self.target])
                 self.target.msg("%s %s at you." % (self.caller, self.goes.replace("go","goes")))
 
+class CmdSocialDirect(CmdSocial):
+    def func(self):
+        if self.no_args:
+            caller = self.caller
+            self.caller.msg("You " + self.key +".")
+            self.caller.location.msg_contents("%s %ss." % (caller, self.key), exclude=caller)
+        else:
+            if not self.target:
+                self.caller.msg("You can't find it!")
+            else:
+                self.caller.msg("You %s %s." % (self.key, self.target))
+                self.caller.location.msg_contents("%s %ss %s." % (self.caller, self.key, self.target),
+                                                  exclude=[self.caller, self.target])
+                self.target.msg("%s %ss you." % (self.caller, self.key))
+
 class CmdSocialNod(CmdSocial):
     key = "nod"
+
+class CmdSocialSwoon(CmdSocial):
+    key = "swoon"
 
 class CmdSocialFart(CmdSocial):
     key = "fart"
@@ -79,6 +97,11 @@ class CmdSocialWoot(CmdSocialGoes):
 class CmdSocialWoot(CmdSocialGoes):
     key = "wtf"
 
+class CmdSocialGlomp(CmdSocialDirect):
+    key = "glomp"
+
+class CmdSocialNerf(CmdSocialDirect):
+    key = "nerf"
 
         # receivers = [recv.strip() for recv in self.lhs.split(",")]
         #
