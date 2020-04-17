@@ -35,7 +35,6 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         super().at_cmdset_creation()
 
         socials = [ n for n in dir(commands.social) if n[:3] == "Cmd" ]
-
         for social in socials:
             self.add(eval(social))
 

@@ -4,8 +4,14 @@ from evennia.utils import utils
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 class CmdSocial(COMMAND_DEFAULT_CLASS):
+    """
+    generic social command, self verbs at target
+
+    """
+
     key = "verb"
     locks = "cmd:all()"
+    help_category = "social"
 
     def parse(self):
         if not self.args:
@@ -33,6 +39,11 @@ class CmdSocial(COMMAND_DEFAULT_CLASS):
                 self.target.msg("%s %ss at you." % (self.caller, key))
 
 class CmdSocialGoes(CmdSocial):
+    """
+    generic social command, self goes verb! at target
+
+    """
+
     def parse(self):
         super().parse()
         self.goes = "go '" + self.key +"!'"
@@ -54,6 +65,11 @@ class CmdSocialGoes(CmdSocial):
                 self.target.msg("%s %s at you." % (self.caller, self.goes.replace("go","goes")))
 
 class CmdSocialDirect(CmdSocial):
+    """
+    generic social command, self verbs target
+
+    """
+
     def func(self):
         if self.no_args:
             caller = self.caller
