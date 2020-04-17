@@ -16,8 +16,8 @@ own cmdsets by inheriting from them or directly from `evennia.CmdSet`.
 
 from evennia import default_cmds
 
-from commands.social import CmdSocialNod
-from commands.social import CmdSocialNarf
+import commands.social
+from commands.social import *
 
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
     """
@@ -34,8 +34,10 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         """
         super().at_cmdset_creation()
 
-        self.add(CmdSocialNod)
-        self.add(CmdSocialNarf)
+        socials = [ n for n in dir(commands.social) if n[:3] == "Cmd" ]
+
+        for social in socials:
+            self.add(eval(social))
 
         #
         # any commands you add below will overload the default ones.
