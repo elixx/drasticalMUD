@@ -42,7 +42,7 @@ class robot(DefaultObject):
 
     def msg(self, text=None, from_obj=None, **kwargs):
         """
-        Custom msg() method reacting to say."
+        Custom msg() method reacting to say.
 
         """
 
@@ -98,6 +98,7 @@ class CmdRobotPoke(Command):
     def func(self):
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
+            self.caller.location.msg_contents("%s pokes their self in the face." % (self.caller, obj), exclude=self.caller)
         else:
             target = self.args.strip()
             obj = self.caller.search(target)
@@ -141,7 +142,10 @@ class CmdRobotGag(Command):
 
 
 class CmdRobotUngag(Command):
-    "remove gag from the robot"
+    """
+    remove gag from the robot
+
+    """
 
     key = "ungag"
     locks = "cmd:all()"
@@ -170,7 +174,7 @@ class CmdRobotUngag(Command):
 
 class RobotCmdSet(CmdSet):
     """
-    CmdSet for the dev robot"
+    CmdSet for the dev robot
 
     """
 
