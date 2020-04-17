@@ -1,6 +1,7 @@
 from django.conf import settings
 from evennia.utils import utils
-from commands.command import CmdSocial, CmdSocialFmt
+
+from typeclasses.social import CmdSocial, CmdSocialFmt
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

@@ -19,6 +19,9 @@ from evennia import default_cmds
 import commands.social
 from commands.social import *
 
+from commands.command import CmdLook2
+
+
 from evennia.contrib import mail
 
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
@@ -39,6 +42,8 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         socials = [ n for n in dir(commands.social) if n[:9] == "CmdSocial" ]
         for social in socials:
             self.add(eval(social))
+
+        self.add(CmdLook2())
 
         #
         # any commands you add below will overload the default ones.

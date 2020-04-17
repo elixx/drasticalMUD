@@ -98,7 +98,7 @@ class CmdRobotPoke(Command):
     def func(self):
         if not self.args:
             self.caller.msg("You poke yourself in the face.")
-            self.caller.location.msg_contents("%s pokes their self in the face." % (self.caller, obj), exclude=self.caller)
+            self.caller.location.msg_contents("%s pokes themself in the face." % self.caller, exclude=self.caller)
         else:
             target = self.args.strip()
             obj = self.caller.search(target)

@@ -24,7 +24,7 @@ several more options for customizing the Guest account system.
 
 from random import shuffle, getrandbits
 from time import time
-from evennia import DefaultAccount, DefaultGuest
+from evennia.accounts.accounts import DefaultAccount, DefaultGuest
 from evennia.utils import class_from_module, create, logger
 from evennia.accounts.models import AccountDB
 from django.conf import settings
