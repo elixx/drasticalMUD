@@ -70,6 +70,7 @@ class CmdLook2(COMMAND_DEFAULT_CLASS):
         caller = self.caller
         if not self.args:
             target = caller.location
+            caller.msg("You look around.")
             caller.location.msg_contents("%s looks around." % caller, exclude=caller)
             if not target:
                 caller.msg("You have no location to look at!")
@@ -79,7 +80,7 @@ class CmdLook2(COMMAND_DEFAULT_CLASS):
             if not target:
                 return
 
-        if('false' not in target.locks.get('puppet') or target.has_account != 0):
+        if 'false' not in target.locks.get('puppet') or target.has_account != 0:
             self.msg("You look at %s" % target, options=None)
             caller.location.msg_contents("%s looks at %s." % (caller, target), exclude=[caller,target])
             target.msg("%s looks at you." % caller)
