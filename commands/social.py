@@ -119,7 +119,7 @@ class CmdSocialWoot(CmdSocialGoes):
     key = "w00t"
     aliases = ["woot"]
 
-class CmdSocialWoot(CmdSocialGoes):
+class CmdSocialWtf(CmdSocialGoes):
     key = "wtf"
 
 class CmdSocialGlomp(CmdSocialDirect):
