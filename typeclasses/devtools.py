@@ -15,6 +15,7 @@ class robot(DefaultObject):
 
         super().at_object_creation()
         self.locks.add("get:false()")
+        self.db.desc = "{xHe's here for two reasons: to listen, and to be {ypoke{xd. You can {ygag{x him if you need (or want!)"
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
         self.cmdset.add_default(RobotCmdSet, permanent=True)
         self.db.max = 20
