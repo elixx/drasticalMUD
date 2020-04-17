@@ -109,7 +109,7 @@ class CmdSocialGlomp(DefaultCmdSocialFmt):
     def parse(self):
         super().parse()
         if(self.no_args):
-            self.no_target_self_msg = "You glomp around." % self.target
+            self.no_target_self_msg = "You glomp around."
             self.no_target_room_msg = "%s glomps around the room." % self.caller
         elif(self.target_found):
             self.target_found_self_msg = "You glomp %s." % self.target
