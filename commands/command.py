@@ -77,10 +77,13 @@ class CmdLook2(COMMAND_DEFAULT_CLASS):
             target = caller.search(self.args)
             if not target:
                 return
-        self.msg("You look at %s" % target, options=None)
+
+        if(target.has_account is not 0):
+            self.msg("You look at %s" % target, options=None)
+            caller.location.msg_contents("%s looks at %s." % (caller, target), exclude=[caller,target])
+            target.msg("%s looks at you." % caller)
+
         self.msg((caller.at_look(target), {"type": "look"}), options=None)
-        caller.location.msg_contents("%s looks at %s." % (caller, target), exclude=[caller,target])
-        target.msg("%s looks at you." % caller)
 
 # -------------------------------------------------------------
 #
