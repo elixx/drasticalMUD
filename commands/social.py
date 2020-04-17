@@ -1,23 +1,23 @@
 from django.conf import settings
 from evennia.utils import utils
 
-from typeclasses.social import CmdSocial, CmdSocialFmt
+from typeclasses.social import DefaultCmdSocial, DefaultCmdSocialFmt
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
-class CmdSocialNod(CmdSocial):    key = "nod"
-class CmdSocialSwoon(CmdSocial):  key = "swoon"
-class CmdSocialFart(CmdSocial):   key = "fart"
-class CmdSocialGlare(CmdSocial):  key = "glare"
-class CmdSocialLeer(CmdSocial):   key = "leer"
-class CmdSocialWink(CmdSocial):   key = "wink"
-class CmdSocialWave(CmdSocial):   key = "wave"
-class CmdSocialShrug(CmdSocial):  key = "shrug"
-class CmdSocialBog(CmdSocial):
+class CmdSocialNod(DefaultCmdSocial):    key = "nod"
+class CmdSocialSwoon(DefaultCmdSocial):  key = "swoon"
+class CmdSocialFart(DefaultCmdSocial):   key = "fart"
+class CmdSocialGlare(DefaultCmdSocial):  key = "glare"
+class CmdSocialLeer(DefaultCmdSocial):   key = "leer"
+class CmdSocialWink(DefaultCmdSocial):   key = "wink"
+class CmdSocialWave(DefaultCmdSocial):   key = "wave"
+class CmdSocialShrug(DefaultCmdSocial):  key = "shrug"
+class CmdSocialBog(DefaultCmdSocial):
     key = "boggle"
     aliases = ["bog"]
 
-class CmdSocialYeet(CmdSocialFmt):
+class CmdSocialYeet(DefaultCmdSocialFmt):
     key = "yeet"
     def parse(self):
         super().parse()
@@ -31,7 +31,7 @@ class CmdSocialYeet(CmdSocialFmt):
         else:
             self.target_not_found_room_msg = "%s looks around for someone to yeet." % self.caller
 
-class CmdSocialNarf(CmdSocialFmt):
+class CmdSocialNarf(DefaultCmdSocialFmt):
     key = "narf"
     def parse(self):
         super().parse()
@@ -45,7 +45,7 @@ class CmdSocialNarf(CmdSocialFmt):
         else:
             self.target_not_found_room_msg = "%s looks around for a moment, and then stares off into space." % self.caller
 
-class CmdSocialWoot(CmdSocialFmt):
+class CmdSocialWoot(DefaultCmdSocialFmt):
     key = "w00t"
     aliases = ["woot"]
     def parse(self):
@@ -62,7 +62,7 @@ class CmdSocialWoot(CmdSocialFmt):
 
 
 # noinspection PyAttributeOutsideInit
-class CmdSocialWtf(CmdSocialFmt):
+class CmdSocialWtf(DefaultCmdSocialFmt):
     key = "wtf"
     def parse(self):
         super().parse()
@@ -76,7 +76,7 @@ class CmdSocialWtf(CmdSocialFmt):
         else:
             self.target_not_found_room_msg = "%s wtfs." % self.caller
 
-class CmdSocialShake(CmdSocialFmt):
+class CmdSocialShake(DefaultCmdSocialFmt):
     key = "shake"
     def parse(self):
         super().parse()
@@ -90,7 +90,7 @@ class CmdSocialShake(CmdSocialFmt):
         else:
             self.target_not_found_room_msg = "%s shakes and shivers uncontrollably." % self.caller
 
-class CmdSocialWiggle(CmdSocialFmt):
+class CmdSocialWiggle(DefaultCmdSocialFmt):
     key = "wiggle"
     def parse(self):
         super().parse()
@@ -104,7 +104,7 @@ class CmdSocialWiggle(CmdSocialFmt):
         else:
             self.target_not_found_room_msg = "%s wiggles around like a worm." % self.caller
 
-class CmdSocialGlomp(CmdSocialFmt):
+class CmdSocialGlomp(DefaultCmdSocialFmt):
     key = "glomp"
     def parse(self):
         super().parse()
@@ -118,7 +118,7 @@ class CmdSocialGlomp(CmdSocialFmt):
         else:
             self.target_not_found_room_msg = "%s looks for someone to glomp." % self.caller
 
-class CmdSocialArgh(CmdSocialFmt):
+class CmdSocialArgh(DefaultCmdSocialFmt):
     key = "argh"
     def parse(self):
         super().parse()

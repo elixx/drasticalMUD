@@ -5,7 +5,7 @@ from evennia.utils import utils
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
-class CmdSocial(COMMAND_DEFAULT_CLASS):
+class DefaultCmdSocial(COMMAND_DEFAULT_CLASS):
     """
     generic social command, self verbs at target
 
@@ -42,7 +42,7 @@ class CmdSocial(COMMAND_DEFAULT_CLASS):
 
 
 
-class CmdSocialFmt(COMMAND_DEFAULT_CLASS):
+class DefaultCmdSocialFmt(COMMAND_DEFAULT_CLASS):
     """
     generic social command, override parse() vars after super():
         no_target_self_msg
