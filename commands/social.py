@@ -3,66 +3,6 @@ from evennia.utils import utils
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
-class CmdSocialFmt(COMMAND_DEFAULT_CLASS):
-    """
-    generic social command, format string support
-
-    """
-
-    key = "verb2"
-    locks = "cmd:all()"
-    help_category = "social"
-
-    def parse(self):
-        caller = self.caller
-        if not self.args:
-            self.no_args = True
-            self.no_target_self_msg = "You %s." % self.key
-            self.no_target_room_msg = "%s %ss." % (self.caller, self.key)
-        else:
-            self.no_args = False
-            self.target = self.caller.search(self.args.strip())
-            if not self.target:
-                self.target_found = False
-                self.target_not_found_room_msg = "%s looks for a %s." % (self.caller, self.args.strip())
-                self.target_not_found_self_msg = "You look around for %s, but can't find it!" % self.args.strip()
-            else:
-                self.target_found = True
-                self.target_found_self_msg = "You %s at %s." % (self.key, self.target)
-                self.target_found_room_msg = "%s %ss at %s." % (self.caller, self.key, self.target)
-                self.target_found_target_msg = "%s %ss at you." % (self.caller, self.key)
-
-    def func(self):
-        key = self.key
-        if self.no_args:
-            self.caller.msg(self.no_target_self_msg)
-            self.caller.location.msg_contents(self.no_target_room_msg, exclude=self.caller)
-        else:
-            if not self.target:
-                self.caller.msg(self.target_not_found_self_msg)
-                self.caller.location.msg_contents(self.target_not_found_room_msg,
-                                                  exclude=[self.caller, self.target])
-                return
-            else:
-                self.caller.msg(self.target_found_self_msg)
-                self.caller.location.msg_contents(self.target_found_room_msg,
-                                                  exclude=[self.caller, self.target])
-                self.target.msg(self.target_found_target_msg)
-
-class CmdSocialGlomp(CmdSocialFmt):
-    key = "glomp"
-    def parse(self):
-        super().parse()
-        if(self.no_args):
-            self.no_target_self_msg = "You glomp around." % self.target
-            self.no_target_room_msg = "%s glomps around the room." % self.caller
-        elif(self.target_found):
-            self.target_found_self_msg = "You glomp %s." % self.target
-            self.target_found_room_msg = "%s glomps %s." % (self.caller, self.target)
-            self.target_found_target_msg = "%s glomps you!" % self.caller
-        else:
-            self.target_not_found_room_msg = "%s looks for someone to glomp." % self.caller
-
 class CmdSocial(COMMAND_DEFAULT_CLASS):
     """
     generic social command, self verbs at target
@@ -100,146 +40,175 @@ class CmdSocial(COMMAND_DEFAULT_CLASS):
 
 
 
-class CmdSocialGoes(CmdSocial):
+class CmdSocialFmt(COMMAND_DEFAULT_CLASS):
     """
-    generic social command, self goes verb! at target
+    generic social command, override parse() vars after super():
+        no_target_self_msg
+        no_target_room_msg
+        target_not_found_room_msg
+        target_not_found_self_msg
+        target_found_self_msg
+        target_found_room_msg
+        target_found_target_msg
 
     """
+
+    key = "verb2"
+    locks = "cmd:all()"
+    help_category = "social"
 
     def parse(self):
-        super().parse()
-        self.goes = "go '" + self.key +"!'"
+        caller = self.caller
+        if not self.args:
+            self.no_args = True
+            self.no_target_self_msg = "You %s." % self.key
+            self.no_target_room_msg = "%s %ss." % (self.caller, self.key)
+        else:
+            self.no_args = False
+            self.target = self.caller.search(self.args.strip())
+            if not self.target:
+                self.target_found = False
+                self.target_not_found_room_msg = "%s looks for a %s." % (self.caller, self.args.strip())
+                self.target_not_found_self_msg = "You look around for %s, but can't find it!" % self.args.strip()
+            else:
+                self.target_found = True
+                self.target_found_self_msg = "You %s at %s." % (self.key, self.target)
+                self.target_found_room_msg = "%s %ss at %s." % (self.caller, self.key, self.target)
+                self.target_found_target_msg = "%s %ss at you." % (self.caller, self.key)
 
     def func(self):
-        key = self.key + "!"
+        key = self.key
         if self.no_args:
-            caller = self.caller
-            goes = self.goes
-            self.caller.msg("You " + goes +".")
-            self.caller.location.msg_contents("%s %s." % (caller, goes.replace("go","goes")), exclude=caller)
+            if self.no_target_self_msg != "":
+                self.caller.msg(self.no_target_self_msg)
+            if self.no_target_room_msg != "":
+                self.caller.location.msg_contents(self.no_target_room_msg, exclude=self.caller)
         else:
-            if not self.target:
-                self.caller.msg("You can't find it!")
+            if not self.target_found:
+                if self.target_not_found_self_msg != "":
+                    self.caller.msg(self.target_not_found_self_msg)
+                if self.target_not_found_room_msg != "":
+                    self.caller.location.msg_contents(self.target_not_found_room_msg,
+                                                      exclude=[self.caller, self.target])
+                return
             else:
-                self.caller.msg("You go '%s' at %s." % (key, self.target))
-                self.caller.location.msg_contents("%s goes '%s' at %s." % (self.caller, key, self.target),
-                                                  exclude=[self.caller, self.target])
-                self.target.msg("%s %s at you." % (self.caller, self.goes.replace("go","goes")))
+                if self.target_found_self_msg != "":
+                    self.caller.msg(self.target_found_self_msg)
+                if self.target_found_room_msg != "":
+                    self.caller.location.msg_contents(self.target_found_room_msg,
+                                                      exclude=[self.caller, self.target])
+                if self.target_found_target_msg != "":
+                    self.target.msg(self.target_found_target_msg)
 
 
 
-class CmdSocialDirect(CmdSocial):
-    """
-    generic social command, self verbs target
-
-    """
-
-    def func(self):
-        if self.no_args:
-            caller = self.caller
-            self.caller.msg("You " + self.key +".")
-            self.caller.location.msg_contents("%s %ss." % (caller, self.key), exclude=caller)
-        else:
-            if not self.target:
-                self.caller.msg("You can't find it!")
-            else:
-                self.caller.msg("You %s %s." % (self.key, self.target))
-                self.caller.location.msg_contents("%s %ss %s." % (self.caller, self.key, self.target),
-                                                  exclude=[self.caller, self.target])
-                self.target.msg("%s %ss you." % (self.caller, self.key))
-
-
-class CmdSocialNod(CmdSocial):
-    key = "nod"
-
-class CmdSocialSwoon(CmdSocial):
-    key = "swoon"
-
-class CmdSocialFart(CmdSocial):
-    key = "fart"
-
-class CmdSocialGlare(CmdSocial):
-    key = "glare"
-
-class CmdSocialYeet(CmdSocialGoes):
-    key = "yeet"
-
-class CmdSocialLeer(CmdSocial):
-    key = "leer"
-
-class CmdSocialWink(CmdSocial):
-    key = "wink"
-
-class CmdSocialWave(CmdSocial):
-    key = "wave"
-
-class CmdSocialShrug(CmdSocial):
-    key = "shrug"
-
+class CmdSocialNod(CmdSocial):    key = "nod"
+class CmdSocialSwoon(CmdSocial):  key = "swoon"
+class CmdSocialFart(CmdSocial):   key = "fart"
+class CmdSocialGlare(CmdSocial):  key = "glare"
+class CmdSocialLeer(CmdSocial):   key = "leer"
+class CmdSocialWink(CmdSocial):   key = "wink"
+class CmdSocialWave(CmdSocial):   key = "wave"
+class CmdSocialShrug(CmdSocial):  key = "shrug"
 class CmdSocialBog(CmdSocial):
     key = "boggle"
     aliases = ["bog"]
 
-class CmdSocialNarf(CmdSocialGoes):
-    key = "narf"
+class CmdSocialYeet(CmdSocialFmt):
+    key = "yeet"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You yeet and YOLO and totes get extra."
+            self.no_target_room_msg = "%s goes, 'YEET!' and complains about boomers" % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You yeet %s." % self.target
+            self.target_found_room_msg = "%s grabs %s and.... YEET!" % (self.caller, self.target)
+            self.target_found_target_msg = "%s grabs you and.. YEET!" % self.caller
+        else:
+            self.target_not_found_room_msg = "%s looks for someone to yeet." % self.caller
 
-class CmdSocialWoot(CmdSocialGoes):
+class CmdSocialNarf(CmdSocialFmt):
+    key = "narf"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You blurt out, 'NARF!'."
+            self.no_target_room_msg = "%s goes, 'NARF!', and stares off absently." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You go, 'NARF!' at %s." % self.target
+            self.target_found_room_msg = "%s looks at %s and goes, 'NARF!'." % (self.caller, self.target)
+            self.target_found_target_msg = "%s looks at you and goes, 'NARF!'." % self.caller
+        else:
+            self.target_not_found_room_msg = "%s looks around for a moment, and then stares off into space." % self.caller
+
+class CmdSocialWoot(CmdSocialFmt):
     key = "w00t"
     aliases = ["woot"]
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You go 'w00t!'."
+            self.no_target_room_msg = "%s goes, 'w00t!'." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You go, 'w00t!' at %s." % self.target
+            self.target_found_room_msg = "%s looks at %s and goes, 'w00t!'." % (self.caller, self.target)
+            self.target_found_target_msg = "%s looks at you and goes, 'w00t!'." % self.caller
+        else:
+            self.target_not_found_room_msg = ""
 
-class CmdSocialWtf(CmdSocialGoes):
+class CmdSocialWtf(CmdSocialFmt):
     key = "wtf"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You go 'wtf?!'."
+            self.no_target_room_msg = "%s goes, 'wtf?!'." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You go, 'wtf?!' at %s." % self.target
+            self.target_found_room_msg = "%s looks at %s and goes, 'wtf?!'." % (self.caller, self.target)
+            self.target_found_target_msg = "%s looks at you and goes, 'wtf?!'." % self.caller
+        else:
+            self.target_not_found_room_msg = "%s wtfs." % self.caller
 
-class CmdSocialGlomp(CmdSocialDirect):
-    key = "glomp"
-
-class CmdSocialHate(CmdSocialDirect):
-    key = "hate"
-
-class CmdSocialNerf(CmdSocialDirect):
-    key = "nerf"
-
-class CmdSocialShake(CmdSocial):
-    """
-    shake something
-
-    """
+class CmdSocialShake(CmdSocialFmt):
     key = "shake"
-
-    def func(self):
-        key = self.key
-        if self.no_args:
-            self.caller.msg("You shake your head.")
-            self.caller.location.msg_contents("%s shakes their head." % self.caller, exclude=self.caller)
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You shake your head."
+            self.no_target_room_msg = "%s shakes their head." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You shake your head at %s." % self.target
+            self.target_found_room_msg = "%s shakes their head at %s." % (self.caller, self.target)
+            self.target_found_target_msg = "%s shakes their head at you." % (self.caller)
         else:
-            if not self.target:
-                self.caller.msg("You shake and shiver uncontrollably.")
-                self.caller.location.msg_contents("%s shakes and shivers uncontrollably." % self.caller, exclude=self.caller)
-            else:
-                self.caller.msg("You shake your head at %s." % self.target)
-                self.caller.location.msg_contents("%s shakes their head at %s." % (self.caller, self.target),
-                                                  exclude=[self.caller, self.target])
-                self.target.msg("%s shakes their head at you." % (self.caller))
+            self.target_not_found_room_msg = "%s shakes and shivers uncontrollably." % self.caller
 
-class CmdSocialWiggle(CmdSocial):
-    """
-    wiggle something
-
-    """
+class CmdSocialWiggle(CmdSocialFmt):
     key = "wiggle"
-
-    def func(self):
-        key = self.key
-        if self.no_args:
-            self.caller.msg("You wiggle your bottom.")
-            self.caller.location.msg_contents("%s wiggles their bottom." % self.caller, exclude=self.caller)
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You wiggle your bottom."
+            self.no_target_room_msg = "%s wiggles their bottom." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You wiggle your bottom at %s." % self.target
+            self.target_found_room_msg = "%s wiggles their bottom at %s." % (self.caller, self.target)
+            self.target_found_target_msg = "%s wiggles their bottom at you." % (self.caller)
         else:
-            if not self.target:
-                self.caller.msg("You wiggle around like a worm.")
-                self.caller.location.msg_contents("%s wiggles around like a worm." % self.caller, exclude=self.caller)
-            else:
-                self.caller.msg("You wiggle your bottom at %s." % self.target)
-                self.caller.location.msg_contents("%s wiggles their bottom at %s." % (self.caller, self.target),
-                                                  exclude=[self.caller, self.target])
-                self.target.msg("%s wiggles their bottom at you." % (self.caller))
+            self.target_not_found_room_msg = "%s wiggles around like a worm." % self.caller
 
+class CmdSocialGlomp(CmdSocialFmt):
+    key = "glomp"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You glomp around." % self.target
+            self.no_target_room_msg = "%s glomps around the room." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You glomp %s." % self.target
+            self.target_found_room_msg = "%s glomps %s." % (self.caller, self.target)
+            self.target_found_target_msg = "%s glomps you!" % self.caller
+        else:
+            self.target_not_found_room_msg = "%s looks for someone to glomp." % self.caller
