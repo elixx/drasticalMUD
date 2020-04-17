@@ -77,6 +77,15 @@ class CmdSocialSwoon(CmdSocial):
 class CmdSocialFart(CmdSocial):
     key = "fart"
 
+class CmdSocialYeet(CmdSocialGoes):
+    key = "yeet"
+
+class CmdSocialLeer(CmdSocial):
+    key = "leer"
+
+class CmdSocialWink(CmdSocial):
+    key = "wink"
+
 class CmdSocialWave(CmdSocial):
     key = "wave"
 
@@ -100,23 +109,8 @@ class CmdSocialWoot(CmdSocialGoes):
 class CmdSocialGlomp(CmdSocialDirect):
     key = "glomp"
 
+class CmdSocialHate(CmdSocialDirect):
+    key = "hate"
+
 class CmdSocialNerf(CmdSocialDirect):
     key = "nerf"
-
-        # receivers = [recv.strip() for recv in self.lhs.split(",")]
-        #
-        # receivers = [caller.search(receiver) for receiver in set(receivers)]
-        # receivers = [recv for recv in receivers if recv]
-        #
-        # speech = self.rhs
-        # # If the speech is empty, abort the command
-        # if not speech or not receivers:
-        #     return
-        #
-        # # Call a hook to change the speech before whispering
-        # speech = caller.at_before_say(speech, whisper=True, receivers=receivers)
-        #
-        # # no need for self-message if we are whispering to ourselves (for some reason)
-        # msg_self = None if caller in receivers else True
-        # caller.at_say(speech, msg_self=msg_self, receivers=receivers, whisper=True)
-        #
