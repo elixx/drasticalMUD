@@ -23,6 +23,7 @@ class robot(DefaultObject):
             self.db.quotes = ["I was a cockatoo, once...", "hmmm...", "I am working on... nothing!"]
         self.db.sleep = random.randint(1, 5)
         self.db.gagged = False
+        self.db.broken = False
         self.delayQuote()
 
     def at_init(self):
@@ -172,6 +173,42 @@ class CmdRobotUngag(Command):
                 else:
                     self.caller.msg("You can't ungag " + self.args.strip() + "!")
 
+class CmdRobotFix(Command):
+    """
+    fix the robot
+    """
+
+    key = "fix"
+    locks = "cmd:all()"
+
+    def func(self):
+        if not self.args:
+            self.caller.msg("What, you think you can fix something?")
+        else:
+            target = self.args.strip()
+            obj = self.caller.search(target)
+            if not obj:
+                self.caller.msg("You can't find it!")
+            else:
+                if 'doQuote' in dir(obj):
+                    if (obj.db.broken):
+                        self.caller.msg("You go to work on %s, trying to fix the problem." % obj)
+                        self.caller.location.msg_contents(
+                            "% starts working on fixing %s." % (self.caller, obj),
+                            exclude=self.caller)
+                        #
+                        #
+                        obj.db.broken = False
+                    else:
+                        self.caller.msg("You try to fix %s, but it beeps angrily and gives you an electric shock." % obj.name)
+                        self.caller.location.msg_contents("%s screws around with %s, but it gets pissed off and shocks them!" % (self.caller, obj.name),
+                                                          exclude=self.caller)
+                else:
+                    self.caller.msg("You try to fix " + obj.name + ", but can't seem to figure them out.")
+                    obj.msg("%s is trying to do something weird to you!" % self.caller)
+                    self.caller.location.msg_contents("%s goes to work on %s, trying to fix something or other." % (self.caller, obj.name),
+                                                        exclude=[self.caller, obj])
+                    self.caller.location.msg_contents("%s gives up." % self.caller, exclude=[self.caller, obj])
 
 class RobotCmdSet(CmdSet):
     """
@@ -185,4 +222,5 @@ class RobotCmdSet(CmdSet):
         self.add(CmdRobotPoke())
         self.add(CmdRobotGag())
         self.add(CmdRobotUngag())
+        self.add(CmdRobotFix())
         super().at_cmdset_creation()
