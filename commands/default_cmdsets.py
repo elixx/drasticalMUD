@@ -19,6 +19,8 @@ from evennia import default_cmds
 import commands.social
 from commands.social import *
 
+from evennia.contrib import mail
+
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
     """
     The `CharacterCmdSet` contains general in-game commands like `look`,
@@ -58,6 +60,8 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
         Populates the cmdset
         """
         super().at_cmdset_creation()
+        self.add(mail.CmdMail())
+
         #
         # any commands you add below will overload the default ones.
         #
