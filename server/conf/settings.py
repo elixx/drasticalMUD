@@ -30,6 +30,8 @@ from evennia.settings_default import *
 ######################################################################
 # Evennia base server config
 ######################################################################
+from evennia.contrib import color_markups
+COLOR_ANSI_EXTRA_MAP = color_markups.CURLY_COLOR_ANSI_EXTRA_MAP
 
 #CHANNEL_CONNECTINFO = {}
 RSS_ENABLED = True
@@ -59,18 +61,18 @@ IN_GAME_ERRORS = False
 DEBUG = False
 GRAPEVINE_ENABLED = True
 
-# Dev
-#SERVERNAME = "[DEV] drastical"
-#GAME_SLOGAN = "dev"*5
-#SERVER_LOG_DAY_ROTATION = 2
-#SERVER_LOG_MAX_SIZE = 1000000
-#PORTAL_LOG_DAY_ROTATION = 2
-#PORTAL_LOG_MAX_SIZE = 1000000
-#IDLE_TIMEOUT = -1
-#IN_GAME_ERRORS = True
-#DEBUG = True
-#GRAPEVINE_ENABLED = False
-#IRC_ENABLED = False
+# # Dev
+# SERVERNAME = "[DEV] drastical"
+# GAME_SLOGAN = "dev"*5
+# SERVER_LOG_DAY_ROTATION = 2
+# SERVER_LOG_MAX_SIZE = 1000000
+# PORTAL_LOG_DAY_ROTATION = 2
+# PORTAL_LOG_MAX_SIZE = 1000000
+# IDLE_TIMEOUT = -1
+# IN_GAME_ERRORS = True
+# DEBUG = True
+# GRAPEVINE_ENABLED = False
+# IRC_ENABLED = False
 
 #COMMAND_DEFAULT_CLASS = "commands.command.MuxCommand"
 
