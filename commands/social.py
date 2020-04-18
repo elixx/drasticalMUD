@@ -174,7 +174,6 @@ class CmdSocialRage(DefaultCmdSocialFmt):
         else:
             self.target_not_found_room_msg = "%s wants to rage out, but can't find a reason why." % self.caller
 
-
 class CmdSocialTwerk(DefaultCmdSocialFmt):
     key = "twerk"
     def parse(self):
@@ -188,3 +187,17 @@ class CmdSocialTwerk(DefaultCmdSocialFmt):
             self.target_found_target_msg = "%s starts twerking on you!" % self.caller
         else:
             self.target_not_found_room_msg = ""
+
+class CmdSocialBlaze(DefaultCmdSocialFmt):
+    key = "blaze"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "{xYou roll up a fat {yBackwoods{x and get {Clifted{x!"
+            self.no_target_room_msg = "%s rolls up a fat {yBackwoods{x and get {Clifted{x!" % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You blaze up with %s." % self.target
+            self.target_found_room_msg = "%s rolls up a fat blunt and gets high with %s." % (self.caller, self.target)
+            self.target_found_target_msg = "%s rolls up a fat blunt and gets high with you." % self.caller
+        else:
+            self.target_not_found_room_msg = "%s looks around for someone to get high with." % self.caller
