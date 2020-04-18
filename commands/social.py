@@ -123,12 +123,12 @@ class CmdSocialArgh(DefaultCmdSocialFmt):
     def parse(self):
         super().parse()
         if(self.no_args):
-            self.no_target_self_msg = "You let out an 'ARRGHHHH!' of frustration."
-            self.no_target_room_msg = "%s lets out a frustrated 'ARRGHHHH!'." % self.caller
+            self.no_target_self_msg = "You let out an 'ARRGHHHH!!!' of frustration."
+            self.no_target_room_msg = "%s lets out a frustrated 'ARRGHHHH!!!'." % self.caller
         elif(self.target_found):
-            self.target_found_self_msg = "You go, 'ARRGHHHH!' at %s." % self.target
-            self.target_found_room_msg = "%s looks at %s and goes, 'ARRGHHHH!', frustratedly." % (self.caller, self.target)
-            self.target_found_target_msg = "%s looks at you and goes, 'ARRGHHHH!' in frustration.." % self.caller
+            self.target_found_self_msg = "You go, 'ARRGHHHH!!!' at %s." % self.target
+            self.target_found_room_msg = "%s looks at %s and goes, 'ARRGHHHH!!!', frustratedly." % (self.caller, self.target)
+            self.target_found_target_msg = "%s looks at you and goes, 'ARRGHHHH!!!' in frustration.." % self.caller
         else:
             self.target_not_found_room_msg = ""
 
@@ -140,8 +140,8 @@ class CmdSocialScream(DefaultCmdSocialFmt):
             self.no_target_self_msg = "You scream loudly! "
             self.no_target_room_msg = "%s lets out a scream!'." % self.caller
         elif(self.target_found):
-            self.target_found_self_msg = "You scream at %s." % self.target
-            self.target_found_room_msg = "%s screams madly at %s." % (self.caller, self.target)
-            self.target_found_target_msg = "%s screams at you." % self.caller
+            self.target_found_self_msg = "You scream at %s!" % self.target
+            self.target_found_room_msg = "%s screams madly at %s!" % (self.caller, self.target)
+            self.target_found_target_msg = "%s screams at you!" % self.caller
         else:
             self.target_not_found_room_msg = ""
