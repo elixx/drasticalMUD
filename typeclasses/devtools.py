@@ -244,22 +244,19 @@ class CmdRobotFix(Command):
             else:
                 if 'doQuote' in dir(obj):
                     if obj.db.broken:
-                        if self.caller.id in obj.db.fixers:
+                        if self.caller.name in obj.db.fixers:
                             self.caller.msg("You're already working on fixing the %s! Maybe you need more help." % obj.name)
                             self.caller.location.msg_contents("%s continues to work on the %s. Maybe you can help?" % (self.caller,obj.name),
                                                               exclude=self.caller)
                         else:
-                            obj.db.fixers.append(self.caller.id)
+                            obj.db.fixers.append(self.caller.name)
                             if len(obj.db.fixers) >= obj.db.needed_fixers:
                                 heroes = []
-                                for id in obj.db.fixers:
-                                    if(id == self.caller.id):
+                                for name in obj.db.fixers:
+                                    if(name == self.caller.name):
                                         pass
                                     else:
-                                        try:
-                                            heroes.append(search_object("#"+str(id))[0].name)
-                                        except IndexError:
-                                            heroes.append("someone")
+                                        heroes.append(name)
                                 self.caller.msg("You got it! The %s is fixed!" % obj.name)
                                 self.caller.location.msg_contents("%s has saved the day! The %s is fixed!" % (self.caller, obj.name),
                                                                   exclude=self.caller)
