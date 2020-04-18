@@ -159,3 +159,17 @@ class CmdSocialFall(DefaultCmdSocialFmt):
             self.target_found_target_msg = "%s falls on top of you. Watch it!" % self.caller
         else:
             self.target_not_found_room_msg = ""
+
+class CmdSocialRage(DefaultCmdSocialFmt):
+    key = "rage"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You rage out. Fuck this shit."
+            self.no_target_room_msg = "%s explodes in rage!" % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You rage out on %s." % self.target
+            self.target_found_room_msg = "%s explodes in rage at %s!" % (self.caller, self.target)
+            self.target_found_target_msg = "%s rages at you!" % self.caller
+        else:
+            self.target_not_found_room_msg = "%s wants to rage out, but can't find a reason why." % self.caller
