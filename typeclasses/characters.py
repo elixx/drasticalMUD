@@ -10,6 +10,8 @@ creation commands.
 #from evennia.objects.objects import DefaultCharacter
 from evennia.contrib.clothing import ClothedCharacter
 
+from commands.default_cmdsets import SocialCmdSet
+
 class Character(ClothedCharacter):
     """
     The Character defaults to reimplementing some of base Object's hook methods with the
@@ -35,6 +37,8 @@ class Character(ClothedCharacter):
         self.db.stats = {}
         self.db.stats['kills'] = 0
         self.db.stats['deaths'] = 0
+
+        self.cmdset.add(SocialCmdSet)
 
     def at_before_say(self, message, **kwargs):
         """

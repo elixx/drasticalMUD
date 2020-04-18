@@ -39,10 +39,6 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         """
         super().at_cmdset_creation()
 
-        socials = [ n for n in dir(commands.social) if n[:9] == "CmdSocial" ]
-        for social in socials:
-            self.add(eval(social))
-
         self.add(ClothedCharacterCmdSet)
         self.add(CmdLook2())
 
@@ -111,3 +107,23 @@ class SessionCmdSet(default_cmds.SessionCmdSet):
         #
         # any commands you add below will overload the default ones.
         #
+
+class SocialCmdSet(default_cmds.CharacterCmdSet):
+    """
+    The `CharacterCmdSet` contains general in-game commands like `look`,
+    `get`, etc available on in-game Character objects. It is merged with
+    the `AccountCmdSet` when an Account puppets a Character.
+    """
+
+    key = "DefaultSocial"
+
+    def at_cmdset_creation(self):
+        """
+        Populates the cmdset
+        """
+        super().at_cmdset_creation()
+
+        socials = [ n for n in dir(commands.social) if n[:9] == "CmdSocial" ]
+        for social in socials:
+            self.add(eval(social))
+
