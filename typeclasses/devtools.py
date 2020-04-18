@@ -262,7 +262,7 @@ class CmdRobotFix(Command):
                                                                   exclude=self.caller)
                                 message = "{Y%s{c has fixed the robot"
                                 if(len(heroes)>=1):
-                                    message += "! With help from: {Y%s{x!"
+                                    message += "! With help from: {Y%s{x !"
                                     search_channel("public")[0].msg(message % (self.caller, ', '.join(heroes)))
                                 else:
                                     message += "!"
@@ -270,18 +270,18 @@ class CmdRobotFix(Command):
                                 yield 1
                                 obj.repair()
                             else:
-                                self.caller.msg("You set to work fixing the %s, but it seems beyond your skill. Maybe you need more help." % obj.name)
+                                self.caller.msg("You set to work fixing the %s, but it seems beyond your skill. Maybe you need more help?" % obj.name)
                                 self.caller.location.msg_contents(
                                     "%s starts work on the robot, looking perplexed." % self.caller,
                                     exclude=self.caller)
                     else:
                         self.caller.msg("You try to fix %s, but it beeps angrily and gives you an electric shock." % obj.name)
-                        self.caller.location.msg_contents("%s screws around with %s, but it gets pissed off and shocks them!" % (self.caller, obj.name),
+                        self.caller.location.msg_contents("%s screws around with the %s, but it gets pissed off and shocks them!" % (self.caller, obj.name),
                                                           exclude=self.caller)
                 else:
-                    self.caller.msg("You try to fix " + obj.name + ", but can't seem to figure them out.")
+                    self.caller.msg("You try to fix the" + obj.name + ", but can't seem to figure them out.")
                     obj.msg("%s is trying to do something weird to you!" % self.caller)
-                    self.caller.location.msg_contents("%s goes to work on %s, trying to fix something or other." % (self.caller, obj.name),
+                    self.caller.location.msg_contents("%s goes to work on the %s, trying to fix something or other." % (self.caller, obj.name),
                                                         exclude=[self.caller, obj])
                     yield 2
                     self.caller.location.msg_contents("%s gives up." % self.caller, exclude=[self.caller, obj])
