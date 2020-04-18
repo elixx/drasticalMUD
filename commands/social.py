@@ -137,7 +137,7 @@ class CmdSocialScream(DefaultCmdSocialFmt):
     def parse(self):
         super().parse()
         if(self.no_args):
-            self.no_target_self_msg = "You scream loudly."
+            self.no_target_self_msg = "You scream loudly! "
             self.no_target_room_msg = "%s lets out a scream!'." % self.caller
         elif(self.target_found):
             self.target_found_self_msg = "You scream at %s." % self.target
