@@ -99,12 +99,14 @@ class robot(DefaultObject):
             self.location.msg_contents("The %s makes a dull rumbling sound sound. I think it's broken." % self.name)
             if chosen:
                 self.repair()
+                self.delayQuote()
         else:
             if not self.db.gagged:
                 if to_ungag:
                     self.db.sleep = 2
                 if chosen:
                     self.malfunction()
+                    self.delayQuote()
                 else:
                     quote = random.choice(self.db.quotes)
                     self.location.msg_contents("%s says, '%s'." % (self.name, quote))
