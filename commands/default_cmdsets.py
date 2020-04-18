@@ -43,8 +43,8 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         for social in socials:
             self.add(eval(social))
 
-        self.add(CmdLook2())
         self.add(ClothedCharacterCmdSet)
+        self.add(CmdLook2())
 
         #
         # any commands you add below will overload the default ones.
@@ -67,7 +67,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
         """
         super().at_cmdset_creation()
         self.add(mail.CmdMail())
-
+        self.add(CmdLook2())
         #
         # any commands you add below will overload the default ones.
         #
