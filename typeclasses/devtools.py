@@ -3,7 +3,7 @@ from evennia import utils
 from evennia.objects.objects import DefaultObject
 from evennia.commands.command import Command
 from evennia.commands.cmdset import CmdSet
-
+from evennia import search_channel, search_object
 
 class robot(DefaultObject):
     def at_object_creation(self):
@@ -22,11 +22,11 @@ class robot(DefaultObject):
         self.db.max = 20
         if self.db.quotes is None:
             self.db.quotes = ["I was a cockatoo, once...", "hmmm...", "I am working on... nothing!"]
-        self.db.sleep = random.randint(1, 5)
+        self.db.sleep = random.randint(1, 3)
         self.db.gagged = False
         self.db.broken = False
-        self.db.fixers = 0
-        self.db.needed_fixers = 0
+        self.db.fixers = []
+        self.db.needed_fixers = -1
         self.db.desc = self.db.good_desc
         self.delayQuote()
 
@@ -36,8 +36,11 @@ class robot(DefaultObject):
 
         """
         super().at_init()
-        self.db.sleep = random.randint(1, 5)
-        self.deferred = utils.delay(self.db.sleep, self.doQuote)
+        self.db.sleep = random.randint(1, 3)
+        self.db.broken = False
+        self.db.fixers = []
+        self.db.needed_fixers = -1
+        self.delayQuote()
 
     def at_heard_say(self, message, from_obj):
         """
@@ -69,56 +72,57 @@ class robot(DefaultObject):
 
         super().msg(text=text, from_obj=from_obj, **kwargs)
 
-    def delayQuote(self, to_ungag=False, sleeptime=-1):
-        if sleeptime == -1:
-            sleeptime = self.db.sleep
-        self.deferred = utils.delay(sleeptime, self.doQuote, to_ungag)
-
     def malfunction(self):
-        self.db.broken = True
-        self.db.needed_fixers = random.randint(1,5)
-        self.db.fixers = 0
-        self.db.desc = self.db.broken_desc
-        self.location.msg_contents("The %s gives a final 'clink' and lets out its magic smoke." % self.name)
-
+        if(self.db.broken):
+            self.location.msg_contents("A grinding sound emanates from the %s." % self.name)
+        else:
+            self.db.broken = True
+            self.db.needed_fixers = random.randint(1,3)
+            self.db.fixers = []
+            self.db.desc = self.db.broken_desc
+            self.location.msg_contents("The %s gives off a bad noise and lets out a bunch of magic smoke." % self.name)
 
     def repair(self):
-        self.db.broken = False
-        self.db.needed_fixers = 0
-        self.db.fixers = 0
-        self.db.desc = self.db.good_desc
-        self.location.msg_contents("Suddenly, the %s whirrs back to life! I think it's fixed!" % self.name)
+        if(self.db.broken):
+            self.db.broken = False
+            self.db.needed_fixers = -1
+            self.db.fixers = []
+            self.db.desc = self.db.good_desc
+            self.location.msg_contents("Suddenly, the %s whirrs back to life." % self.name)
 
-    def doQuote(self, to_ungag=False):
-        self.db.sleep = random.randint(20, 300)
+    def delayQuote(self, poked=False, sleeptime=-1):
+        if sleeptime == -1:
+            sleeptime = self.db.sleep
+        self.deferred = utils.delay(sleeptime, self.doQuote, poked=poked)
+
+    def doQuote(self, poked=False):
+        self.db.sleep = random.randint(10, 120)
         chances = random.randint(0,100)  # chance of break/fix randomly
         if chances < 2: chosen = True
         else: chosen = False
 
         if self.db.broken:
-            self.location.msg_contents("The %s makes a dull rumbling sound sound. I think it's broken." % self.name)
             if chosen:
                 self.repair()
                 self.delayQuote()
+            else:
+                self.location.msg_contents("The %s buzzes. I think it's broken." % self.name)
         else:
-            if not self.db.gagged:
-                if to_ungag:
-                    self.db.sleep = 2
-                if chosen:
-                    self.malfunction()
-                    self.delayQuote()
-                else:
+            if chosen:
+                self.malfunction()
+                self.delayQuote()
+            else:
+                if not self.db.gagged:
                     quote = random.choice(self.db.quotes)
                     self.location.msg_contents("%s says, '%s'." % (self.name, quote))
                     self.delayQuote()
-            else:
-                if to_ungag:
-                    self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
-                    self.db.gagged = False
-                    self.delayQuote()
                 else:
-                    self.db.sleep = 600
-                    self.delayQuote(True)
+                    if poked:
+                        self.location.msg_contents("%s wriggles out of the gag covering its speaker." % (self.name))
+                        self.db.gagged = False
+                        self.delayQuote()
+                    else:
+                        self.delayQuote(poked=True,sleeptime=60)
 
 
 
@@ -145,15 +149,16 @@ class CmdRobotPoke(Command):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
                     chances = random.randint(0,100)  # chance of breaking
-                    if chances < 20: chosen = True
+                    if chances < 10: chosen = True
                     else: chosen = False
                     if chosen:
-                        self.caller.msg("Uh-oh, you sure did something! Sparks fly and the %s makes a frizzing noise." % obj)
-                        self.caller.location.msg_contents("Sparks fly and you hear a frizzing noise. It looks like %s just broke the %s..." % (self.caller, obj.name),
+                        self.caller.msg("You must have hit something! Sparks fly and the %s makes a frizzing noise." % obj)
+                        self.caller.location.msg_contents("Sparks fly and you hear a frizzing noise. It looks like %s just broke the %s." % (self.caller, obj.name),
                                                           exclude=self.caller)
                         obj.malfunction()
+                        obj.delayQuote(poked=True)
                     else:
-                        obj.delayQuote(to_ungag=True, sleeptime=1)
+                        obj.delayQuote(poked=True,sleeptime=1)
                 else:
                     self.caller.msg("That wouldn't be nice.")
 
@@ -238,17 +243,37 @@ class CmdRobotFix(Command):
                 self.caller.msg("You can't find it!")
             else:
                 if 'doQuote' in dir(obj):
-                    self.caller.msg("You go to work on %s, trying to fix the problem." % obj)
-                    self.caller.location.msg_contents(
-                        "% starts working on fixing %s." % (self.caller, obj),
-                        exclude=self.caller)
                     if obj.db.broken:
-                        obj.db.fixers += 1
-                        if obj.db.fixers >= obj.db.needed_fixers:
-                            self.caller.msg("You got it! The %s is fixed!" % obj.name)
-                            self.caller.location.msg_contents("%s has saved the day! The %s is fixed!" % (self.caller, obj.name),
+                        if self.caller.id in obj.db.fixers:
+                            self.caller.msg("You're already working on fixing the %s! Maybe you need more help." % obj.name)
+                            self.caller.location.msg_contents("%s continues to work on the %s. Maybe you can help?" % (self.caller,obj.name),
                                                               exclude=self.caller)
-                            obj.repair()
+                        else:
+                            obj.db.fixers.append(self.caller.id)
+                            if len(obj.db.fixers) >= obj.db.needed_fixers:
+                                heroes = []
+                                for id in obj.db.fixers:
+                                    if(id == self.caller.id):
+                                        pass
+                                    else:
+                                        heroes.append(search_object("#"+str(id))[0].name)
+                                self.caller.msg("You got it! The %s is fixed!" % obj.name)
+                                self.caller.location.msg_contents("%s has saved the day! The %s is fixed!" % (self.caller, obj.name),
+                                                                  exclude=self.caller)
+                                message = "{Y%s{c has fixed the robot"
+                                if(len(heroes)>=1):
+                                    message += "! With help from: {Y%s{x!"
+                                    search_channel("public")[0].msg(message % (self.caller, ', '.join(heroes)))
+                                else:
+                                    message += "!"
+                                    search_channel("public")[0].msg(message % (self.caller))
+                                yield 1
+                                obj.repair()
+                            else:
+                                self.caller.msg("You set to work fixing the %s, but it seems beyond your skill. Maybe you need more help." % obj.name)
+                                self.caller.location.msg_contents(
+                                    "%s starts work on the robot, looking perplexed." % self.caller,
+                                    exclude=self.caller)
                     else:
                         self.caller.msg("You try to fix %s, but it beeps angrily and gives you an electric shock." % obj.name)
                         self.caller.location.msg_contents("%s screws around with %s, but it gets pissed off and shocks them!" % (self.caller, obj.name),
@@ -258,6 +283,7 @@ class CmdRobotFix(Command):
                     obj.msg("%s is trying to do something weird to you!" % self.caller)
                     self.caller.location.msg_contents("%s goes to work on %s, trying to fix something or other." % (self.caller, obj.name),
                                                         exclude=[self.caller, obj])
+                    yield 2
                     self.caller.location.msg_contents("%s gives up." % self.caller, exclude=[self.caller, obj])
 
 
