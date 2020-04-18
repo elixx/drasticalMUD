@@ -216,3 +216,30 @@ class CmdSocialWonk(DefaultCmdSocialFmt):
         else:
             self.target_not_found_room_msg = ""
 
+class CmdSocialWonk(DefaultCmdSocialFmt):
+    key = "wonk"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You think something seems wonky."
+            self.no_target_room_msg = "%s thinks something is a little wonky." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You think %s is a total wonk!" % self.target
+            self.target_found_room_msg = "%s thinks %s is a total wonk." % (self.caller, self.target)
+            self.target_found_target_msg = "%s thinks you are a total wonk!" % self.caller
+        else:
+            self.target_not_found_room_msg = ""
+
+class CmdSocialWank(DefaultCmdSocialFmt):
+    key = "wank"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You crawl into the corner and masturbate violently."
+            self.no_target_room_msg = "%s crawls into the corner and masturbates violently." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You wank off to %s" % self.target
+            self.target_found_room_msg = "%s looks at %s longingly, and begins to masturbate." % (self.caller, self.target)
+            self.target_found_target_msg = "%s looks at you longingly and masturbates." % self.caller
+        else:
+            self.target_not_found_room_msg = ""
