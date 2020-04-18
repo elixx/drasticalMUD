@@ -145,7 +145,7 @@ class CmdRobotPoke(Command):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
                     chances = random.randint(0,100)  # chance of breaking
-                    if chances < 40: chosen = True
+                    if chances < 20: chosen = True
                     else: chosen = False
                     if chosen:
                         self.caller.msg("Uh-oh, you sure did something! Sparks fly and the %s makes a frizzing noise." % obj)
