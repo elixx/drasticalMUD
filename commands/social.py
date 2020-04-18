@@ -173,3 +173,18 @@ class CmdSocialRage(DefaultCmdSocialFmt):
             self.target_found_target_msg = "%s rages at you!" % self.caller
         else:
             self.target_not_found_room_msg = "%s wants to rage out, but can't find a reason why." % self.caller
+
+
+class CmdSocialTwerk(DefaultCmdSocialFmt):
+    key = "twerk"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You get low and twerk. Look at them cheeks ripple!"
+            self.no_target_room_msg = "%s starts twerking!" % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You back dat ass up against %s." % self.target
+            self.target_found_room_msg = "%s drops down and starts twerking against %s." % (self.caller, self.target)
+            self.target_found_target_msg = "%s starts twerking on you!" % self.caller
+        else:
+            self.target_not_found_room_msg = ""
