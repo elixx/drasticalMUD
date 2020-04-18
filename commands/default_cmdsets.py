@@ -20,7 +20,7 @@ import commands.social
 from commands.social import *
 
 from commands.command import CmdLook2
-
+from evennia.contrib.clothing import ClothedCharacterCmdSet
 
 from evennia.contrib import mail
 
@@ -44,6 +44,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
             self.add(eval(social))
 
         self.add(CmdLook2())
+        self.add(ClothedCharacterCmdSet)
 
         #
         # any commands you add below will overload the default ones.
