@@ -145,3 +145,17 @@ class CmdSocialScream(DefaultCmdSocialFmt):
             self.target_found_target_msg = "%s screams at you!" % self.caller
         else:
             self.target_not_found_room_msg = ""
+
+class CmdSocialFall(DefaultCmdSocialFmt):
+    key = "fall"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You fall over. "
+            self.no_target_room_msg = "%s falls over." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You fall on top of %s." % self.target
+            self.target_found_room_msg = "%s falls on top of %s." % (self.caller, self.target)
+            self.target_found_target_msg = "%s falls on top of you. Watch it!" % self.caller
+        else:
+            self.target_not_found_room_msg = ""
