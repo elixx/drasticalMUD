@@ -165,7 +165,7 @@ class CmdSocialRage(DefaultCmdSocialFmt):
     def parse(self):
         super().parse()
         if(self.no_args):
-            self.no_target_self_msg = "You rage out. Fuck this shit."
+            self.no_target_self_msg = "You rage out. Fuck this shit!!"
             self.no_target_room_msg = "%s explodes in rage!" % self.caller
         elif(self.target_found):
             self.target_found_self_msg = "You rage out on %s." % self.target
