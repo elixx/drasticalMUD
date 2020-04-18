@@ -256,7 +256,10 @@ class CmdRobotFix(Command):
                                     if(id == self.caller.id):
                                         pass
                                     else:
-                                        heroes.append(search_object("#"+str(id))[0].name)
+                                        try:
+                                            heroes.append(search_object("#"+str(id))[0].name)
+                                        except IndexError:
+                                            heroes.append("someone")
                                 self.caller.msg("You got it! The %s is fixed!" % obj.name)
                                 self.caller.location.msg_contents("%s has saved the day! The %s is fixed!" % (self.caller, obj.name),
                                                                   exclude=self.caller)
