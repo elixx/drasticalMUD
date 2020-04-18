@@ -201,3 +201,18 @@ class CmdSocialBlaze(DefaultCmdSocialFmt):
             self.target_found_target_msg = "%s rolls up a fat blunt and gets high with you." % self.caller
         else:
             self.target_not_found_room_msg = "%s looks around for someone to get high with." % self.caller
+
+class CmdSocialWonk(DefaultCmdSocialFmt):
+    key = "wonk"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You think something seems wonky."
+            self.no_target_room_msg = "%s thinks something is a little wonky." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "You think %s is a total wonk!" % self.target
+            self.target_found_room_msg = "%s thinks %s is a total wonk." % (self.caller, self.target)
+            self.target_found_target_msg = "%s thinks you are a total wonk!" % self.caller
+        else:
+            self.target_not_found_room_msg = ""
+
