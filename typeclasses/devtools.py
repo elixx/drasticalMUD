@@ -90,7 +90,7 @@ class robot(DefaultObject):
         self.location.msg_contents("Suddenly, the %s whirrs back to life! I think it's fixed!" % self.name)
 
     def doQuote(self, to_ungag=False):
-        self.db.sleep = random.randint(60, 360)
+        self.db.sleep = random.randint(20, 300)
         chances = random.randint(0,100)  # chance of break/fix randomly
         if chances < 2: chosen = True
         else: chosen = False
