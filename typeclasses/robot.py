@@ -18,11 +18,12 @@ class robot(DefaultObject):
         self.db.good_desc = "{It's here for two reasons: to listen, and to be {ypoke{xd. You can {ygag{x him if you need (or like!)"
         self.db.broken_desc = "{XIt looks like something is seriously wrong. It's {rbroken{X. Maybe you can fix it?"
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
-        self.db.broken_messages = ["The %s buzzes. I think it's broken",
+        self.db.broken_messages = ["The %s buzzes. I think it's broken.",
                                    "The %s makes a odd humming noise and spits sparks.",
                                    "You hear a low-pitched whine coming from the %s.",
                                    "A quiet grinding noise comes from the direction of the %s.",
-                                   "Blip-blop. The %s is broken."]
+                                   "Blip-blop. The %s is broken.",
+                                   "The robot starts to glow for a moment, then fades."]
         self.cmdset.add_default(RobotCmdSet, permanent=True)
         self.db.max = 20
         if self.db.quotes is None:
@@ -87,7 +88,7 @@ class robot(DefaultObject):
             self.db.needed_fixers = random.randint(1,5)
             self.db.fixers = []
             self.db.desc = self.db.broken_desc
-            self.location.msg_contents("The %s gives off a bad noise and lets out a bunch of magic smoke." % self.name)
+            self.location.msg_contents("The %s gives off a bad odor and lets out a bunch of magic smoke." % self.name)
 
     def repair(self):
         if(self.db.broken):
@@ -105,7 +106,7 @@ class robot(DefaultObject):
     def doQuote(self, poked=False):
         self.db.sleep = random.randint(10, 120)
         chances = random.randint(0,100)  # chance of break/fix randomly
-        if chances < 2: chosen = True
+        if chances <= 2: chosen = True
         else: chosen = False
 
         if self.db.broken:
@@ -114,7 +115,7 @@ class robot(DefaultObject):
                 self.delayQuote()
             else:
                 chances = random.randint(0, 100)  # chance of break/fix randomly
-                if chances < 50: chosen = True
+                if chances < 20: chosen = True
                 if chosen:
                     self.location.msg_contents(random.choice(self.db.broken_messages) % self.name)
         else:
@@ -159,7 +160,7 @@ class CmdRobotPoke(Command):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
                     chances = random.randint(0,100)  # chance of breaking
-                    if chances < 10: chosen = True
+                    if chances < 8: chosen = True
                     else: chosen = False
                     if chosen:
                         self.caller.msg("{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
@@ -168,7 +169,7 @@ class CmdRobotPoke(Command):
                         yield 1
                         obj.malfunction()
                         yield 1
-                        obj.delayQuote(poked=True)
+                        obj.delayQuote(poked=True,sleeptime=random.randint(1,3))
                     else:
                         obj.delayQuote(poked=True,sleeptime=random.randint(1,3))
                 else:

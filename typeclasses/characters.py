@@ -31,11 +31,19 @@ class Character(ClothedCharacter):
 
     """
     def at_object_creation(self):
+        super().at_object_creation()
+        if self.db.stats == None:
+            self.db.stats = {}
+            self.db.stats['kills'] = 0
+            self.db.stats['deaths'] = 0
+            self.db.stats['logins'] = 0
 
-        self.db.stats = {}
-        self.db.stats['kills'] = 0
-        self.db.stats['deaths'] = 0
-
+    def at_post_puppet(self):
+        super().at_post_puppet()
+        try:
+            self.db.stats['logins'] += 1
+        except KeyError:
+            self.db.stats['logins'] = 1
 
     def at_before_say(self, message, **kwargs):
         """
