@@ -105,7 +105,7 @@ class robot(DefaultObject):
     def doQuote(self, poked=False):
         self.db.sleep = random.randint(10, 120)
         chances = random.randint(0,100)  # chance of break/fix randomly
-        if chances < 2: chosen = True
+        if chances <= 2: chosen = True
         else: chosen = False
 
         if self.db.broken:
@@ -159,7 +159,7 @@ class CmdRobotPoke(Command):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
                     chances = random.randint(0,100)  # chance of breaking
-                    if chances < 10: chosen = True
+                    if chances < 8: chosen = True
                     else: chosen = False
                     if chosen:
                         self.caller.msg("{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
@@ -168,7 +168,7 @@ class CmdRobotPoke(Command):
                         yield 1
                         obj.malfunction()
                         yield 1
-                        obj.delayQuote(poked=True)
+                        obj.delayQuote(poked=True,sleeptime=random.randint(1,3))
                     else:
                         obj.delayQuote(poked=True,sleeptime=random.randint(1,3))
                 else:
