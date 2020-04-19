@@ -1,5 +1,6 @@
 import random
 from evennia import utils
+from evennia.utils.create import create_object
 from evennia.objects.objects import DefaultObject
 from evennia.commands.command import Command
 from evennia.commands.cmdset import CmdSet
@@ -97,6 +98,17 @@ class robot(DefaultObject):
             self.db.fixers = []
             self.db.desc = self.db.good_desc
             self.location.msg_contents("Suddenly, the %s whirrs back to life." % self.name)
+
+    def drop_key(self):
+        adjectives = ["golden","silver","shiny","silicon","rusty","smelly","glowing","dull","crystal","magic"]
+        keyname = "a " + random.choice(adjectives) + " key"
+        newkey = create_object("evennia.objects.objects.DefaultObject",
+                                key=keyname,
+                                home=self.location,
+                                location=self.location,
+                                aliases=["key"],
+                                attributes=[("unlocks",["xyzzy"])])
+        self.location.msg_contents("The %s drops a %s." % (self.name, keyname))
 
     def delayQuote(self, poked=False, sleeptime=-1):
         if sleeptime == -1:
@@ -284,6 +296,8 @@ class CmdRobotFix(Command):
                                 yield 1
                                 search_channel("public")[0].msg("{xThe {Y%s{x has been fixed {Y%i{x times." % (obj.name, obj.db.times_fixed))
                                 obj.repair()
+                                yield 1
+                                obj.drop_key()
                             else:
                                 self.caller.msg("You set to work fixing the %s, but it seems beyond your skill. Maybe you need more help?" % obj.name)
                                 self.caller.location.msg_contents(
