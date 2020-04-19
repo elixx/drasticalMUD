@@ -110,8 +110,11 @@ class SessionCmdSet(default_cmds.SessionCmdSet):
         As and example we just add the empty base `Command` object.
         It prints some info.
         """
-        super().at_cmdset_creation()
+
         self.add(CmdLook2)
+
+        super().at_cmdset_creation()
+
         #
         # any commands you add below will overload the default ones.
         #
