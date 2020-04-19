@@ -111,7 +111,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.crop(location, width=26),
                     session.cmd_total,
                     session.protocol_key,
-                    utils.crop(isinstance(session.address, tuple) and session.address[0] or session.address,witdth=16),
+                    utils.crop(isinstance(session.address, tuple) and session.address[0] or session.address,width=16),
                 )
         else:
             # unprivileged
