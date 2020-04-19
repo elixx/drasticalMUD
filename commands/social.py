@@ -12,10 +12,14 @@ class CmdSocialGlare(DefaultCmdSocial):  key = "glare"
 class CmdSocialLeer(DefaultCmdSocial):   key = "leer"
 class CmdSocialWink(DefaultCmdSocial):   key = "wink"
 class CmdSocialWave(DefaultCmdSocial):   key = "wave"
+class CmdSocialBarf(DefaultCmdSocial):   key = "barf"
 class CmdSocialShrug(DefaultCmdSocial):  key = "shrug"
 class CmdSocialBog(DefaultCmdSocial):
     key = "boggle"
     aliases = ["bog"]
+class CmdSocialNog(DefaultCmdSocial):
+    key = "noggle"
+    aliases = ["nog"]
 
 class CmdSocialYeet(DefaultCmdSocialFmt):
     key = "yeet"
