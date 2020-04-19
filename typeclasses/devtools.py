@@ -122,7 +122,7 @@ class robot(DefaultObject):
                         self.db.gagged = False
                         self.delayQuote()
                     else:
-                        self.delayQuote(poked=True,sleeptime=60)
+                        self.delayQuote(poked=True,sleeptime=300)
 
 
 
@@ -149,16 +149,17 @@ class CmdRobotPoke(Command):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
                     chances = random.randint(0,100)  # chance of breaking
-                    if chances < 10: chosen = True
+                    if chances < 9: chosen = True
                     else: chosen = False
                     if chosen:
                         self.caller.msg("You must have hit something! Sparks fly and the %s makes a frizzing noise." % obj)
                         self.caller.location.msg_contents("Sparks fly and you hear a frizzing noise. It looks like %s just broke the %s." % (self.caller, obj.name),
                                                           exclude=self.caller)
+                        yield 2
                         obj.malfunction()
                         obj.delayQuote(poked=True)
                     else:
-                        obj.delayQuote(poked=True,sleeptime=1)
+                        obj.delayQuote(poked=True,sleeptime=obj.db.sleep)
                 else:
                     self.caller.msg("That wouldn't be nice.")
 
