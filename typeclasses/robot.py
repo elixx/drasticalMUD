@@ -18,6 +18,9 @@ class robot(DefaultObject):
         self.db.good_desc = "{It's here for two reasons: to listen, and to be {ypoke{xd. You can {ygag{x him if you need (or like!)"
         self.db.broken_desc = "{XIt looks like something is seriously wrong. It's {rbroken{X. Maybe you can fix it?"
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
+        self.db.broken_messages = ["The %s buzzes. I think it's broken",
+                                   "The %s makes a odd humming noise and spits sparks.",
+                                   "You hear a low-pitched whine coming from the %s."]
         self.cmdset.add_default(RobotCmdSet, permanent=True)
         self.db.max = 20
         if self.db.quotes is None:
@@ -106,7 +109,7 @@ class robot(DefaultObject):
                 self.repair()
                 self.delayQuote()
             else:
-                self.location.msg_contents("The %s buzzes. I think it's broken." % self.name)
+                self.location.msg_contents(random.choice(self.db.broken_messages) % self.name)
         else:
             if chosen:
                 self.malfunction()
@@ -122,7 +125,7 @@ class robot(DefaultObject):
                         self.db.gagged = False
                         self.delayQuote()
                     else:
-                        self.delayQuote(poked=True,sleeptime=60)
+                        self.delayQuote(poked=True,sleeptime=300)
 
 
 
@@ -149,16 +152,17 @@ class CmdRobotPoke(Command):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
                     chances = random.randint(0,100)  # chance of breaking
-                    if chances < 10: chosen = True
+                    if chances < 9: chosen = True
                     else: chosen = False
                     if chosen:
                         self.caller.msg("You must have hit something! Sparks fly and the %s makes a frizzing noise." % obj)
                         self.caller.location.msg_contents("Sparks fly and you hear a frizzing noise. It looks like %s just broke the %s." % (self.caller, obj.name),
                                                           exclude=self.caller)
+                        yield 2
                         obj.malfunction()
                         obj.delayQuote(poked=True)
                     else:
-                        obj.delayQuote(poked=True,sleeptime=1)
+                        obj.delayQuote(poked=True,sleeptime=obj.db.sleep)
                 else:
                     self.caller.msg("That wouldn't be nice.")
 

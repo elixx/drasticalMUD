@@ -20,23 +20,23 @@ needed on the Evennia side.
 
 MSSPTable = {
     # Required fields
-    "NAME": "Evennia",
+    "NAME": "Drastical",
     # Generic
     "CRAWL DELAY": "-1",  # limit how often crawler updates the listing. -1 for no limit
-    "HOSTNAME": "",  # current or new hostname
-    "PORT": ["4000"],  # most important port should be *last* in list!
+    "HOSTNAME": "mud.drastical.net",  # current or new hostname
+    "PORT": ["9099"],  # most important port should be *last* in list!
     "CODEBASE": "Evennia",
-    "CONTACT": "",  # email for contacting the mud
-    "CREATED": "",  # year MUD was created
+    "CONTACT": "elixx@drastical.net",  # email for contacting the mud
+    "CREATED": "2019",  # year MUD was created
     "ICON": "",  # url to icon 32x32 or larger; <32kb.
     "IP": "",  # current or new IP address
-    "LANGUAGE": "",  # name of language used, e.g. English
-    "LOCATION": "",  # full English name of server country
-    "MINIMUM AGE": "0",  # set to 0 if not applicable
-    "WEBSITE": "www.evennia.com",
+    "LANGUAGE": "en",  # name of language used, e.g. English
+    "LOCATION": "Bodymore, Murdaland",  # full English name of server country
+    "MINIMUM AGE": "21",  # set to 0 if not applicable
+    "WEBSITE": "mud.drastical.tech",
     # Categorisation
     "FAMILY": "Custom",  # evennia goes under 'Custom'
-    "GENRE": "None",  # Adult, Fantasy, Historical, Horror, Modern, None, or Science Fiction
+    "GENRE": "Sandbox",  # Adult, Fantasy, Historical, Horror, Modern, None, or Science Fiction
     # Gameplay: Adventure, Educational, Hack and Slash, None,
     # Player versus Player, Player versus Environment,
     # Roleplaying, Simulation, Social or Strategy
@@ -47,7 +47,7 @@ MSSPTable = {
     # Cyberpunk, Dragonlance, etc. Or None if not available.
     "SUBGENRE": "None",
     # World
-    "AREAS": "0",
+    "AREAS": "1",
     "HELPFILES": "0",
     "MOBILES": "0",
     "OBJECTS": "0",
