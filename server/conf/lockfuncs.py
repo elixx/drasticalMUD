@@ -1,3 +1,4 @@
+
 """
 
 Lockfuncs
@@ -19,6 +20,17 @@ Lock functions in this module extend (and will overload same-named)
 lock functions from evennia.locks.lockfuncs.
 
 """
+
+def keycheck(accessing_obj, accessed_obj, *args, **kwargs):
+    if accessed_obj.db.unlocked_by != None:
+        for item in accessing_obj.contents:
+            if item.db.unlocks != None:
+                for unlocks in item.db.unlocks:
+                    if unlocks == accessed_obj.db.unlocked_by:
+                        return True
+        return False
+    else:
+        return True
 
 # def myfalse(accessing_obj, accessed_obj, *args, **kwargs):
 #    """
