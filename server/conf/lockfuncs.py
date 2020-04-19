@@ -32,7 +32,9 @@ def keycheck(accessing_obj, accessed_obj, *args, **kwargs):
                                                                                         accessed_obj.name, item.name),
                                                             exclude=accessing_obj)
                         return True
-        accessing_obj.location.msg_contents("%s tried to unlock %s, but they don't have the key." % (accessing_obj.name, accessed_obj.name))
+        accessing_obj.location.msg_contents("%s tried to unlock %s, but they don't have the key." % (accessing_obj.name, accessed_obj.name),
+                                            exclue=accessing_obj)
+        accessing_obj.msg("You try to enter %s, but don't have the key." % accessed_obj.name)
         return False
     else:
         accessing_obj.location.msg_contents(
