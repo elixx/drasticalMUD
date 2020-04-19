@@ -63,7 +63,7 @@ class CmdLook2(default_cmds.CmdLook):
     aliases = ["l", "ls", "ll"]
     locks = "cmd:all()"
     arg_regex = r"\s|$"
-    priority = -10
+    priority = -60
 
     def func(self):
         """
