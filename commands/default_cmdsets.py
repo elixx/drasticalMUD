@@ -20,6 +20,7 @@ import commands.social
 from commands.social import *
 
 from commands.command import CmdLook2
+from commands.command import CmdWho2
 
 from evennia.contrib.clothing import ClothedCharacterCmdSet
 from evennia.contrib import mail
@@ -70,7 +71,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
         super().at_cmdset_creation()
 
         self.add(mail.CmdMail())
-
+        self.add(CmdWho2)
         #
         # any commands you add below will overload the default ones.
         #
