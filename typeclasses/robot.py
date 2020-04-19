@@ -37,7 +37,9 @@ class robot(DefaultObject):
         self.db.fixers = []
         self.db.needed_fixers = -1
         self.db.desc = self.db.good_desc
+        self.remove_keys = []
         self.delayQuote()
+
 
     def at_init(self):
         """
@@ -49,7 +51,9 @@ class robot(DefaultObject):
         self.db.broken = False
         self.db.fixers = []
         self.db.needed_fixers = -1
+        self.remove_keys = []
         self.delayQuote()
+
 
     def at_heard_say(self, message, from_obj):
         """
@@ -102,13 +106,21 @@ class robot(DefaultObject):
     def drop_key(self):
         adjectives = ["golden","silver","shiny","silicon","rusty","smelly","glowing","dull","crystal","magic"]
         keyname = "a " + random.choice(adjectives) + " key"
-        newkey = create_object("evennia.objects.objects.DefaultObject",
+        newkey = create_object("typeclasses.objects.Object",
                                 key=keyname,
                                 home=self.location,
                                 location=self.location,
                                 aliases=["key"],
-                                attributes=[("unlocks",["xyzzy"])])
+                                attributes=[("unlocks",["xyzzy"]),
+                                            ("ephemeral", True),
+                                            ("desc","Something seems off about it. Like it could disappear at any time.")])
         self.location.msg_contents("The %s drops a %s." % (self.name, keyname))
+        self.remove_keys.append(utils.delay(600, self.delay_del_key, newkey, persistent=True))
+
+    def delay_del_key(self,obj):
+        obj.location.msg("%s starts to shimmer and fade away." % obj.name)
+        yield 1
+        obj.delete()
 
     def delayQuote(self, poked=False, sleeptime=-1):
         if sleeptime == -1:
@@ -117,6 +129,7 @@ class robot(DefaultObject):
 
     def doQuote(self, poked=False):
         self.db.sleep = random.randint(10, 120)
+
         chances = random.randint(0,100)  # chance of break/fix randomly
         if chances <= 2: chosen = True
         else: chosen = False
@@ -208,11 +221,14 @@ class CmdRobotGag(Command):
                 self.caller.msg("You can't find it!")
             else:
                 if 'doQuote' in dir(obj):
-                    self.caller.msg("You sneak up and put a strip of masking tape over %s's speaker." % obj)
-                    self.caller.location.msg_contents(
-                        "%s sneaks up and puts a strip of masking tape over %s's speaker." % (self.caller, obj),
-                        exclude=self.caller)
-                    obj.db.gagged = True
+                    if obj.db.gagged:
+                        self.caller.msg("It's already gagged!")
+                    else:
+                        self.caller.msg("You sneak up and put a strip of masking tape over %s's speaker." % obj)
+                        self.caller.location.msg_contents(
+                            "%s sneaks up and puts a strip of masking tape over %s's speaker." % (self.caller, obj),
+                            exclude=self.caller)
+                        obj.db.gagged = True
                 else:
                     self.caller.msg("You can't gag " + self.args.strip() + "!")
 
