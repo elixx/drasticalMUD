@@ -24,6 +24,7 @@ from evennia.contrib.clothing import ClothedCharacterCmdSet
 
 from evennia.contrib import mail
 
+
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
     """
     The `CharacterCmdSet` contains general in-game commands like `look`,
@@ -62,6 +63,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
         """
         super().at_cmdset_creation()
         self.add(mail.CmdMail())
+        self.add(CmdLook2)
         #
         # any commands you add below will overload the default ones.
         #
@@ -106,6 +108,7 @@ class SessionCmdSet(default_cmds.SessionCmdSet):
         # any commands you add below will overload the default ones.
         #
 
+
 class SocialCmdSet(default_cmds.CharacterCmdSet):
     """
     The `CharacterCmdSet` contains general in-game commands like `look`,
@@ -121,7 +124,6 @@ class SocialCmdSet(default_cmds.CharacterCmdSet):
         """
         super().at_cmdset_creation()
 
-        socials = [ n for n in dir(commands.social) if n[:9] == "CmdSocial" ]
+        socials = [n for n in dir(commands.social) if n[:9] == "CmdSocial"]
         for social in socials:
             self.add(eval(social))
-
