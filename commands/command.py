@@ -16,7 +16,8 @@ from evennia.server.sessionhandler import SESSIONS
 import time
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
-
+# _MAX_NR_CHARACTERS = settings.MAX_NR_CHARACTERS
+# _MULTISESSION_MODE = settings.MULTISESSION_MODE
 
 class Command(BaseCommand):
     """
@@ -110,7 +111,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.crop(location, width=26),
                     session.cmd_total,
                     session.protocol_key,
-                    isinstance(session.address, tuple) and session.address[0] or session.address,
+                    utils.crop(isinstance(session.address, tuple) and session.address[0] or session.address,witdth=16),
                 )
         else:
             # unprivileged
