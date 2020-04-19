@@ -9,7 +9,6 @@ creation commands.
 """
 from evennia.contrib.clothing import ClothedCharacter
 
-from commands.default_cmdsets import SocialCmdSet
 
 class Character(ClothedCharacter):
     """
@@ -37,7 +36,6 @@ class Character(ClothedCharacter):
         self.db.stats['kills'] = 0
         self.db.stats['deaths'] = 0
 
-        self.cmdset.add(SocialCmdSet)
 
     def at_before_say(self, message, **kwargs):
         """
