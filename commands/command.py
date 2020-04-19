@@ -46,7 +46,8 @@ class MuxCommand(default_cmds.MuxCommand):
         if " to " in self.args:
             self.lhs, self.rhs = self.args.split(" to ", 1)
 
-class CmdLook2(COMMAND_DEFAULT_CLASS):
+
+class CmdLook2(default_cmds.CmdLook):
     """
     look at location or object
 
@@ -59,7 +60,7 @@ class CmdLook2(COMMAND_DEFAULT_CLASS):
     """
 
     key = "look"
-    aliases = ["l", "ls"]
+    aliases = ["l", "ls", "ll"]
     locks = "cmd:all()"
     arg_regex = r"\s|$"
     priority = -10
@@ -83,12 +84,10 @@ class CmdLook2(COMMAND_DEFAULT_CLASS):
 
         if 'false' not in target.locks.get('puppet') or target.has_account != 0:
             self.msg("You look at %s" % target, options=None)
-            caller.location.msg_contents("%s looks at %s." % (caller, target), exclude=[caller,target])
+            caller.location.msg_contents("%s looks at %s." % (caller, target), exclude=[caller, target])
             target.msg("%s looks at you." % caller)
 
         self.msg((caller.at_look(target), {"type": "look"}), options=None)
-
-
 
 # -------------------------------------------------------------
 #
