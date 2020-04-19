@@ -20,11 +20,15 @@ class robot(DefaultObject):
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
         self.db.broken_messages = ["The %s buzzes. I think it's broken",
                                    "The %s makes a odd humming noise and spits sparks.",
-                                   "You hear a low-pitched whine coming from the %s."]
+                                   "You hear a low-pitched whine coming from the %s.",
+                                   "A quiet grinding noise comes from the direction of the %s.",
+                                   "Blip-blop. The %s is broken."]
         self.cmdset.add_default(RobotCmdSet, permanent=True)
         self.db.max = 20
         if self.db.quotes is None:
             self.db.quotes = ["I was a cockatoo, once...", "hmmm...", "I am working on... nothing!"]
+        if self.db.times_fixed is None:
+            self.db.times_fixed = 0
         self.db.sleep = random.randint(1, 3)
         self.db.gagged = False
         self.db.broken = False
@@ -80,7 +84,7 @@ class robot(DefaultObject):
             self.location.msg_contents("A grinding sound emanates from the %s." % self.name)
         else:
             self.db.broken = True
-            self.db.needed_fixers = random.randint(1,3)
+            self.db.needed_fixers = random.randint(1,5)
             self.db.fixers = []
             self.db.desc = self.db.broken_desc
             self.location.msg_contents("The %s gives off a bad noise and lets out a bunch of magic smoke." % self.name)
@@ -109,7 +113,10 @@ class robot(DefaultObject):
                 self.repair()
                 self.delayQuote()
             else:
-                self.location.msg_contents(random.choice(self.db.broken_messages) % self.name)
+                chances = random.randint(0, 100)  # chance of break/fix randomly
+                if chances < 50: chosen = True
+                if chosen:
+                    self.location.msg_contents(random.choice(self.db.broken_messages) % self.name)
         else:
             if chosen:
                 self.malfunction()
@@ -152,17 +159,18 @@ class CmdRobotPoke(Command):
                     self.caller.msg("You poke %s." % obj)
                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
                     chances = random.randint(0,100)  # chance of breaking
-                    if chances < 9: chosen = True
+                    if chances < 10: chosen = True
                     else: chosen = False
                     if chosen:
-                        self.caller.msg("You must have hit something! Sparks fly and the %s makes a frizzing noise." % obj)
-                        self.caller.location.msg_contents("Sparks fly and you hear a frizzing noise. It looks like %s just broke the %s." % (self.caller, obj.name),
+                        self.caller.msg("{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
+                        self.caller.location.msg_contents("{xSparks fly and you hear a frizzing noise. It looks like {Y%s{x just {rbroke{x the %s." % (self.caller, obj.name),
                                                           exclude=self.caller)
-                        yield 2
+                        yield 1
                         obj.malfunction()
+                        yield 1
                         obj.delayQuote(poked=True)
                     else:
-                        obj.delayQuote(poked=True,sleeptime=obj.db.sleep)
+                        obj.delayQuote(poked=True,sleeptime=random.randint(1,3))
                 else:
                     self.caller.msg("That wouldn't be nice.")
 
@@ -261,23 +269,26 @@ class CmdRobotFix(Command):
                                         pass
                                     else:
                                         heroes.append(name)
+                                obj.db.times_fixed += 1
                                 self.caller.msg("You got it! The %s is fixed!" % obj.name)
-                                self.caller.location.msg_contents("%s has saved the day! The %s is fixed!" % (self.caller, obj.name),
+                                self.caller.location.msg_contents("{Y%s{x has saved the day! The {Y%s{x is {yfixed{x!" % (self.caller, obj.name),
                                                                   exclude=self.caller)
-                                message = "{Y%s{c has fixed the robot"
-                                if(len(heroes)>=1):
-                                    message += "! With help from: {Y%s{x !"
+                                message = "{Y%s{x just fixed the robot, again"
+                                if len(heroes)>=1:
+                                    message += ", with help from: {Y%s{x !"
                                     search_channel("public")[0].msg(message % (self.caller, ', '.join(heroes)))
                                 else:
                                     message += "!"
                                     search_channel("public")[0].msg(message % (self.caller))
                                 yield 1
+                                search_channel("public")[0].msg("{xThe {Y%s{x has been fixed {Y%i{x times." % (obj.name, obj.db.times_fixed))
                                 obj.repair()
                             else:
                                 self.caller.msg("You set to work fixing the %s, but it seems beyond your skill. Maybe you need more help?" % obj.name)
                                 self.caller.location.msg_contents(
                                     "%s starts work on the robot, looking perplexed." % self.caller,
                                     exclude=self.caller)
+                                obj.db.desc = "Open panels reveal a loose wiring harness and other gizmos. It is being worked on by: {Y" + " ".join(obj.db.fixers) + "{x."
                     else:
                         self.caller.msg("You try to fix %s, but it beeps angrily and gives you an electric shock." % obj.name)
                         self.caller.location.msg_contents("%s screws around with the %s, but it gets pissed off and shocks them!" % (self.caller, obj.name),
