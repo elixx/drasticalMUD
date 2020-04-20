@@ -5,6 +5,7 @@ from evennia.objects.objects import DefaultObject
 from evennia.commands.command import Command
 from evennia.commands.cmdset import CmdSet
 from evennia import search_channel, search_object
+from world.utils import findStatsMachine
 
 class robot(DefaultObject):
     def at_object_creation(self):
@@ -296,8 +297,8 @@ class CmdRobotFix(Command):
                                     else:
                                         heroes.append(name)
 
-                                stats = findStatsMachine().db.stats
-                                stats.incr("robot_fixed")
+                                machine = findStatsMachine()
+                                machine.incr("robot_fixed")
 
                                 self.caller.msg("You got it! The %s is fixed!" % obj.name)
                                 self.caller.location.msg_contents("{Y%s{x has saved the day! The {Y%s{x is {yfixed{x!" % (self.caller, obj.name),
@@ -310,7 +311,7 @@ class CmdRobotFix(Command):
                                     message += "!"
                                     search_channel("public")[0].msg(message % (self.caller))
                                 yield 1
-                                search_channel("public")[0].msg("{xThe {Y%s{x has been fixed {Y%i{x times." % (obj.name, obj.db.times_fixed))
+                                search_channel("public")[0].msg("{xThe {Y%s{x has been fixed {Y%i{x times." % (obj.name, machine.db.stats['robot_fixed']))
                                 obj.repair()
                                 yield 1
                                 obj.drop_key()
