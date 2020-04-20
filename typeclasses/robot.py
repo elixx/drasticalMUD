@@ -115,11 +115,10 @@ class robot(DefaultObject):
                                             ("ephemeral", True),
                                             ("desc","Something seems off about it. Like it could disappear at any time.")])
         self.location.msg_contents("The %s drops a %s." % (self.name, keyname))
-        self.remove_keys.append(utils.delay(600, self.delay_del_key, newkey, persistent=True))
+        self.remove_keys.append(utils.delay(300, self.delay_del_key, newkey, persistent=True))
 
-    def delay_del_key(self,obj):
-        obj.location.msg("%s starts to shimmer and fade away." % obj.name)
-        yield 1
+    def delay_del_key(self, obj):
+        obj.location.msg_contents("%s shimmers and fades away." % obj.name)
         obj.delete()
 
     def delayQuote(self, poked=False, sleeptime=-1):
@@ -333,7 +332,6 @@ class CmdRobotFix(Command):
                     self.caller.location.msg_contents("%s gives up." % self.caller, exclude=[self.caller, obj])
 
 
-
 class RobotCmdSet(CmdSet):
     """
     CmdSet for the dev robot
@@ -348,3 +346,4 @@ class RobotCmdSet(CmdSet):
         self.add(CmdRobotUngag())
         self.add(CmdRobotFix())
         super().at_cmdset_creation()
+
