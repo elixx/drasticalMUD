@@ -234,3 +234,17 @@ class CmdSocialWank(DefaultCmdSocialFmt):
             self.target_found_target_msg = "%s looks at you longingly and masturbates." % self.caller
         else:
             self.target_not_found_room_msg = ""
+
+class CmdSocialBoomer(DefaultCmdSocialFmt):
+    key = "boomer"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You roll your eyes. OK, boomer."
+            self.no_target_room_msg = "%s rolls their eyes. OK, boomer." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "%s is totes a boomer." % self.target
+            self.target_found_room_msg = "%s rolls their eyes at %s. OK, boomer." % (self.caller, self.target)
+            self.target_found_target_msg = "%s thinks you are a boomer!" % self.caller
+        else:
+            self.target_not_found_room_msg = "%s swipes right." % self.caller
