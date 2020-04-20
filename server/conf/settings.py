@@ -56,7 +56,7 @@ COMMAND_DEFAULT_CLASS = "commands.muxcommand.MuxCommand"
 
 GUEST_COLORS = ['Amaranth','Amber','Amethyst','Apricot','Aquamarine','Azure','Baby','Beige','Black','Blue','Blush','Bronze','Brown','Burgundy','Byzantium','Carmine','Cerise','Cerulean','Champagne','Chartreuse','Chocolate','Cobalt','Coffee','Copper','Coral','Crimson','Cyan','Desert','Electric','Emerald','Erin','Gold','Gray','Green','Harlequin','Indigo','Ivory','Jade','Jungle','Lavender','Lemon','Lilac','Lime','Magenta','Magenta','Maroon','Mauve','Navy','Ochre','Olive','Orange','Orchid','Peach','Pear','Periwinkle','Persian','Pink','Plum','Prussian','Puce','Purple','Raspberry','Red','Rose','Ruby','Salmon','Sangria','Sapphire','Scarlet','Silver','Slate','Spring','Spring','Tan','Taupe','Teal','Turquoise','Ultramarine','Violet','Viridian','White','Yellow']
 GUEST_LIST = [str(s) + "_Guest" for s in GUEST_COLORS ]
-
+#
 # Prod
 SERVERNAME = "drastical"
 GAME_SLOGAN = "I don't know what's going on, here..."
@@ -67,7 +67,7 @@ IDLE_TIMEOUT = 86400
 IN_GAME_ERRORS = False
 DEBUG = False
 GRAPEVINE_ENABLED = True
-
+#
 # # Dev
 # SERVERNAME = "[DEV] drastical"
 # GAME_SLOGAN = "dev"*5
