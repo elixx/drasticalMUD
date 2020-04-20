@@ -108,7 +108,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
             #        utils.crop(puppet.get_display_name(account) if puppet else "None", width=20),
-                    utils.crop(location, width=26),
+                    utils.crop(location, width=15),
                     session.cmd_total,
                     session.protocol_key,
                     utils.crop(isinstance(session.address, tuple) and session.address[0] or session.address,width=18),
@@ -128,7 +128,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.crop(account.get_display_name(account), width=20),
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
-                    utils.crop(location, width=26),
+                    utils.crop(location, width=15),
                     session.cmd_total,
                 )
         is_one = naccounts == 1
