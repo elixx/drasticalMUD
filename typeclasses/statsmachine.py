@@ -3,6 +3,7 @@ from evennia.objects.objects import DefaultObject
 from evennia.commands.command import Command
 from evennia.commands.cmdset import CmdSet
 from evennia import search_channel, search_object
+from datetime import datetime
 
 class StatsMachine(DefaultObject):
     def at_object_creation(self):
@@ -17,7 +18,7 @@ class StatsMachine(DefaultObject):
         self.db.guestlog = []
 
         self.locks.add("get:false()")
-        self.cmdset.add_default(ThingCmdSet, permanent=True)
+        self.cmdset.add_default(StatsMachineCmdSet, permanent=True)
 
 
     def at_init(self):
@@ -27,61 +28,54 @@ class StatsMachine(DefaultObject):
         super().at_init()
         self.db.stats['startups'] += 1
 
-    def at_heard_say(self, message, from_obj):
-        """
-        A simple listener and response.
-        """
-        message = message.split('says, ')[1].strip(' "')
-        return message
-
-    def msg(self, text=None, from_obj=None, **kwargs):
-        """
-        Custom msg() method reacting to say.
-        """
-        if from_obj != self:
-            try:
-                say_text, is_say = text[0], text[1]['type'] == 'say'
-            except Exception:
-                is_say = False
-            if is_say:
-                if("stats machine" in say_text):
-                    response = self.at_heard_say(say_text, from_obj)
-                    if response != None:
-                        # respond to spoken text
-                        pass
-
-        super().msg(text=text, from_obj=from_obj, **kwargs)
-
-
-class CmdThingStuff(Command):
+class CmdStatsMachineStats(Command):
     """
     verb
     """
-    key = "stuff"
+    key = "get stats"
     locks = "cmd:all()"
 
     def func(self):
-        if not self.args:
-            self.caller.msg("You poke yourself in the face.")
-            self.caller.location.msg_contents("%s pokes themself in the face." % self.caller, exclude=self.caller)
-        else:
-            target = self.args.strip()
-            obj = self.caller.search(target)
-            if not obj:
-                self.caller.msg("You can't find it!")
-            else:
-                if 'CmdThingVerb' in dir(obj):
-                    # target was Thing
-                    pass
+        selection = []
+        output = ""
+        game_stats = self.obj.db.stats
+        guestlog = self.obj.db.guestlog
 
-class ThingCmdSet(CmdSet):
+        if not self.args:
+            selection = ["ALL"]
+        else:
+            args = self.args.strip()
+            if "guest" in args.lower():
+                selection.append("GUESTS")
+            if "server" in args.lower():
+                selection.append("SERVER")
+            if "general" in args.lower():
+                selection.append("GENERAL")
+
+        for item in selection:
+            if item == "GENERAL" or item == "ALL":
+                output += "{x***************** {Y General Stats {x********************\n"
+                output += "{xThe server has been {rreloaded{x {Y%i{x times" % game_stats['startups'] + '\n'
+                output += "\n"
+
+            if item=="GUESTS" or item=="ALL":
+                table = self.styled_table("|yTimestamp","|yGuest","|yConnecting IP",
+                                          border="table")
+                for (time,ip,user) in guestlog:
+                    table.add_row(datetime.fromtimestamp(time), user, ip)
+                output += "{x*************** {YGuest Connection Log: {x***************\n"
+                output += str(table) + '\n'
+
+        self.msg(output)
+
+class StatsMachineCmdSet(CmdSet):
     """
     CmdSet for the dev robot
 
     """
 
-    key = "ThingCmdSet"
+    key = "MachineCmdSet"
 
     def at_cmdset_creation(self):
-        self.add(CmdThingStuff())
+        self.add(CmdStatsMachineStats())
 
