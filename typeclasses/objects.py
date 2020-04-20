@@ -158,5 +158,9 @@ class Object(DefaultObject):
                                  object speaks
 
      """
+    def at_server_reload(self):
+        super().at_server_reload()
+        if(self.db.ephemeral):
+            self.location.msg("%s is destroyed." % self.name)
+            self.delete()
 
-    pass
