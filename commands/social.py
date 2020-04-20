@@ -248,3 +248,17 @@ class CmdSocialBoomer(DefaultCmdSocialFmt):
             self.target_found_target_msg = "%s thinks you are a boomer!" % self.caller
         else:
             self.target_not_found_room_msg = "%s swipes right." % self.caller
+
+class CmdSocialWeeaboo(DefaultCmdSocialFmt):
+    key = "weeaboo"
+    def parse(self):
+        super().parse()
+        if(self.no_args):
+            self.no_target_self_msg = "You want a kawaii cat-girl ecchii hentai ^_^"
+            self.no_target_room_msg = "%s dreams about hentai and catgirls. Fckin' weeaboo." % self.caller
+        elif(self.target_found):
+            self.target_found_self_msg = "%s is about as weeaboo as they get." % self.target
+            self.target_found_room_msg = "%s throws hentai and ecchi cosplay shots at %s. " % (self.caller, self.target)
+            self.target_found_target_msg = "%s thinks you are a weeaboo!" % self.caller
+        else:
+            self.target_not_found_room_msg = ""
