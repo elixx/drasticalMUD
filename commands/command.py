@@ -1,49 +1,17 @@
-
 """
 Commands
 
 Commands describe the input the account can do to the game.
 
 """
-
-from evennia import Command as BaseCommand
+from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
 from evennia import default_cmds
 from django.conf import settings
 from evennia.utils import utils
 from evennia.server.sessionhandler import SESSIONS
-from world.utils import genPrompt
 import time
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
-# _MAX_NR_CHARACTERS = settings.MAX_NR_CHARACTERS
-# _MULTISESSION_MODE = settings.MULTISESSION_MODE
-
-class Command(BaseCommand):
-    """
-    Inherit from this if you want to create your own command styles
-    from scratch.  Note that Evennia's default commands inherits from
-    MuxCommand instead.
-
-    Note that the class's `__doc__` string (this text) is
-    used by Evennia to create the automatic help entry for
-    the command, so make sure to document consistently here.
-
-    Each Command implements the following methods, called
-    in this order (only func() is actually required):
-        - at_pre_cmd(): If this returns anything truthy, execution is aborted.
-        - parse(): Should perform any extra parsing needed on self.args
-            and store the result on self.
-        - func(): Performs the actual work.
-        - at_post_cmd(): Extra actions, often things done after
-            every command, like prompts.
-
-    """
-
-    pass
-
-
-# -------------------------------------------------------------
-
 
 class CmdWho2(COMMAND_DEFAULT_CLASS):
     """
@@ -88,12 +56,12 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 "|YAccount Name",
                 "|YOn for",
                 "|YIdle",
-            #    "|YPuppeting",
+                #    "|YPuppeting",
                 "|YRoom",
                 "|YCmds",
                 "|YProtocol",
                 "|YHost",
-                pretty_corners=True,
+                pretty_corners=False,
                 border="table",
                 border_char="-",
                 header_line_char="-"
@@ -113,7 +81,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.crop(location, width=25),
                     session.cmd_total,
                     utils.crop(session.protocol_key, 6, suffix='..'),
-                    utils.crop(isinstance(session.address, tuple) and session.address[0] or session.address ,width=18),
+                    utils.crop(isinstance(session.address, tuple) and session.address[0] or session.address, width=18),
                 )
         else:
             # unprivileged
@@ -142,9 +110,9 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
         is_one = naccounts == 1
         self.caller.msg(
             "|wAccounts:|n\n%s\n%s unique account%s logged in."
-            % (table, "One" if is_one else naccounts, "" if is_one else "s"),
-            prompt=genPrompt(self)
+            % (table, "One" if is_one else naccounts, "" if is_one else "s")
         )
+
 
 class CmdLook2(default_cmds.CmdLook):
     """
@@ -186,25 +154,8 @@ class CmdLook2(default_cmds.CmdLook):
             caller.location.msg_contents("%s looks at %s." % (caller, target), exclude=[caller, target])
             target.msg("%s looks at you." % caller)
 
-        self.msg((caller.at_look(target), {"type": "look"}), options=None, prompt=genPrompt(self))
+        self.msg((caller.at_look(target), {"type": "look"}), options=None)
 
-
-
-class MuxCommand(default_cmds.MuxCommand):
-    def parse(self):
-        """Implement an additional parsing of 'to'"""
-        super().parse()
-        if " to " in self.args:
-            self.lhs, self.rhs = self.args.split(" to ", 1)
-
-    def at_post_cmd(self):
-        """
-        This hook is called after the command has finished executing
-        (after self.func()).
-        """
-        super().at_post_cmd()
-
-        self.caller.msg(prompt=genPrompt(self))
 
 
 # -------------------------------------------------------------

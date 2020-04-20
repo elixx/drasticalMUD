@@ -1,11 +1,13 @@
 import random
 from evennia import utils
+from django.conf import settings
 from evennia.utils.create import create_object
-from evennia.objects.objects import DefaultObject
-from evennia.commands.command import Command
+from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
 from evennia import search_channel, search_object
 from world.utils import findStatsMachine
+
+COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 class robot(DefaultObject):
     def at_object_creation(self):
@@ -160,7 +162,7 @@ class robot(DefaultObject):
 
 
 
-class CmdRobotPoke(Command):
+class CmdRobotPoke(COMMAND_DEFAULT_CLASS):
     """
     poke the robot
 
@@ -200,7 +202,7 @@ class CmdRobotPoke(Command):
 
 
 
-class CmdRobotGag(Command):
+class CmdRobotGag(COMMAND_DEFAULT_CLASS):
     """
     temporarily gag the robot
 
@@ -232,7 +234,7 @@ class CmdRobotGag(Command):
 
 
 
-class CmdRobotUngag(Command):
+class CmdRobotUngag(COMMAND_DEFAULT_CLASS):
     """
     remove gag from the robot
 
@@ -264,7 +266,7 @@ class CmdRobotUngag(Command):
 
 
 
-class CmdRobotFix(Command):
+class CmdRobotFix(COMMAND_DEFAULT_CLASS):
     """
     fix the robot
     """

@@ -1,9 +1,12 @@
 from evennia import utils
-from evennia.objects.objects import DefaultObject
-from evennia.commands.command import Command
+from django.conf import settings
+from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
 from evennia import search_channel, search_object
 from datetime import datetime
+
+COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
+
 
 class StatsMachine(DefaultObject):
     def at_object_creation(self):
@@ -60,7 +63,7 @@ class StatsMachine(DefaultObject):
             else:
                 self.db.userstats[stat][key] += 1
 
-class CmdStatsMachineStats(Command):
+class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
     """
     verb
     """
