@@ -115,7 +115,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 )
         else:
             # unprivileged
-            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YRoom", "|YCmds")
+            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YRoom", "|YCmds", "|YProtocol")
             for session in session_list:
                 if not session.logged_in:
                     continue
@@ -130,6 +130,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.time_format(delta_cmd, 1),
                     utils.crop(location, width=15),
                     session.cmd_total,
+                    session.protocol_key,
                 )
         is_one = naccounts == 1
         self.msg(
