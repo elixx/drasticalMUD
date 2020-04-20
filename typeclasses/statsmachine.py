@@ -111,11 +111,11 @@ class CmdStatsMachineStats(Command):
                 userlog = self.obj.db.userstats
                 table = self.styled_table("|YUser","|YLogins", border=None)
                 count = 0
-                for user in userlog.keys():
+                for k, v in sorted(userlog.items(), key=lambda v: v[1]['logins'], reverse=True):
                     count += 1
                     if count > maxlines:
                         break
-                    table.add_row(user,userlog[user]['logins'])
+                    table.add_row(k,v['logins'])
                 output += "{x***************** {YTop 5 by Logins: {x******************\n"
                 output += str(table) + '\n'
 
