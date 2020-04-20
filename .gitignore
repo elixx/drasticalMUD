@@ -28,7 +28,7 @@ __pycache__
 ## Not anymore! -- elixx 04162020
 server/*.db3*
 evennia.db3
-settings.py
+
 
 # No logs
 server/logs/*
