@@ -17,7 +17,18 @@ def findStatsMachine():
     return
 
 def genPrompt(obj):
-    caller = obj.caller
-    ps1 = caller.name[:4].upper()
-    prompt = "{x%s{r:~{Y>{n " % ps1
+    if('caller' in dir(obj)):
+        targ = obj.caller
+    else:
+        targ = obj
+
+    if('name') in dir(targ):
+        name = targ.name[:4].upper()
+    elif('account') in dir(targ):
+        name = str(targ.account)[:4].upper()
+    else:
+        name = "XXXX"
+
+    prompt = "{x%s{r:~{Y>{n " % name
+
     return(prompt)
