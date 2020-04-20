@@ -94,6 +94,10 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 "|YCmds",
                 "|YProtocol",
                 "|YHost",
+                pretty_corners=True,
+                border="table",
+                border_char="-",
+                header_line_char="-"
             )
             for session in session_list:
                 if not session.logged_in:
@@ -108,14 +112,19 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
             #        utils.crop(puppet.get_display_name(account) if puppet else "None", width=20),
-                    utils.crop(location, width=15),
+                    utils.crop(location, width=25),
                     session.cmd_total,
-                    session.protocol_key,
+                    utils.crop(session.protocol_key, 6, suffix='..'),
                     utils.crop(isinstance(session.address, tuple) and session.address[0] or session.address,width=18),
                 )
         else:
             # unprivileged
-            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YRoom", "|YCmds", "|YProtocol")
+            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YRoom", "|YCmds", "|YProtocol",
+                                      pretty_corners=True,
+                                      border="table",
+                                      border_char="-",
+                                      header_line_char="-",
+                                      )
             for session in session_list:
                 if not session.logged_in:
                     continue
@@ -128,7 +137,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.crop(account.get_display_name(account), width=20),
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
-                    utils.crop(location, width=15),
+                    utils.crop(location, width=25),
                     session.cmd_total,
                     session.protocol_key,
                 )
