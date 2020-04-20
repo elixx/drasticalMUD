@@ -15,3 +15,9 @@ def findStatsMachine():
             if(obj.typename == "StatsMachine"):
                 return(obj)
     return
+
+def genPrompt(obj):
+    caller = obj.caller
+    ps1 = caller.name[:4].upper()
+    prompt = "%s:~> " % ps1
+    return(prompt)
