@@ -29,6 +29,7 @@ from evennia.utils import class_from_module, create, logger
 from evennia import search_object
 from evennia.accounts.models import AccountDB
 from django.conf import settings
+from world.utils import findStatsMachine
 
 class Account(DefaultAccount):
     """
@@ -106,6 +107,10 @@ class Account(DefaultAccount):
         self.db.lastsite.insert(0, (session.address, int(time())))
         if len(self.db.lastsite) > do_not_exceed:
             self.db.lastsite.pop()
+
+        machine = findStatsMachine()
+        if "guest" not in str(session.account).lower():
+            machine.incr_kv(str(session.account),"logins",db="userstats")
     
 
 
@@ -171,12 +176,12 @@ class Guest(DefaultGuest):
                 )
                 errors.extend(errs)
 
-                results = search_object("a stats machine")
-                for result in results:
-                    if result.typename == "StatsMachine":
-                        result.db.guestlog.insert(0, (int(time()), ip, username))
-                        if len(result.db.guestlog) > 24:
-                            result.db.guestlog[username].pop()
+                machine = findStatsMachine()
+                machine.db.guestlog.insert(0, (int(time()), ip, username))
+                if len(machine.db.guestlog) > 24:
+                    machine.db.guestlog[username].pop()
+
+                machine.incr_kv("*Guests", "logins", db="userstats")
 
                 return account, errors
 

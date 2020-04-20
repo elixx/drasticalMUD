@@ -21,6 +21,7 @@ class StatsMachine(DefaultObject):
                          "reload_start": 0,
                          "reload_stop": 0,
                          "loaded": 0}
+        self.db.userstats = {}
         self.db.guestlog = []
 
         self.locks.add("get:false()")
@@ -36,6 +37,28 @@ class StatsMachine(DefaultObject):
             self.db.stats['loaded'] = 1
         else:
             self.db.stats['loaded'] += 1
+
+    def incr(self,statname):
+        if not statname in self.db.stats.keys():
+            self.db.stats[statname] = 1
+        else:
+            self.db.stats[statname] += 1
+
+    def incr_kv(self, stat, key, db="stats"):
+        if(db=="stats"):
+            if not stat in self.db.stats.keys():
+                self.db.stats[stat] = { key: 1 }
+            if not key in self.db.stats[key].keys():
+                self.db.stats[stat][key] = 1
+            else:
+                self.db.stats[stat][key] += 1
+        elif(db=="userstats"):
+            if not stat in self.db.userstats.keys():
+                self.db.userstats[stat] = {}
+            if not key in self.db.userstats[stat].keys():
+                self.db.userstats[stat][key] = 1
+            else:
+                self.db.userstats[stat][key] += 1
 
 class CmdStatsMachineStats(Command):
     """
@@ -76,6 +99,13 @@ class CmdStatsMachineStats(Command):
                 for (time,ip,user) in guestlog:
                     table.add_row(datetime.fromtimestamp(time), user, ip)
                 output += "{x*************** {YGuest Connection Log: {x***************\n"
+                output += str(table) + '\n'
+
+            if item=="USERS" or item=="ALL":
+                userlog = self.obj.db.userstats
+                table = self.styled_table("|YUser","|YLogins", border=None)
+                for user in userlog.keys():
+                    table.add_row(user,userlog[user]['logins'])
                 output += str(table) + '\n'
 
         self.msg(output)
