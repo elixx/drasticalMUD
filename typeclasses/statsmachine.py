@@ -48,7 +48,7 @@ class StatsMachine(DefaultObject):
         if(db=="stats"):
             if not stat in self.db.stats.keys():
                 self.db.stats[stat] = { key: 1 }
-            if not key in self.db.stats[key].keys():
+            if not key in self.db.stats[stat].keys():
                 self.db.stats[stat][key] = 1
             else:
                 self.db.stats[stat][key] += 1
