@@ -93,17 +93,18 @@ class CmdStatsMachineStats(Command):
                 output += str(table) + "\n"
 
             if item=="GUESTS" or item=="ALL":
+                output += "{x****************** {YLast 5 Guests: {x*******************\n"
                 guestlog = self.obj.db.guestlog
                 table = self.styled_table("|yTimestamp","|yGuest","|yConnecting IP",
                                           border="table")
                 count = 0
+                maxlines = 5
                 for (time,ip,user) in guestlog:
                     count += 1
                     if count > maxlines:
                         break
                     table.add_row(datetime.fromtimestamp(time), user, ip)
 
-                output += "{x****************** {YLast 5 Guests: {x*******************\n"
                 output += str(table) + '\n'
 
             if item=="USERS" or item=="ALL":
