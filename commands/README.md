@@ -12,3 +12,5 @@ locations, you need to add the appropriate paths to
 Also remember that if you create new sub directories you must put
 (optionally empty) `__init__.py` files in there so that Python can
 find your modules.
+
+foo
