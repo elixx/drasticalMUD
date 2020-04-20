@@ -26,6 +26,7 @@ from random import shuffle, getrandbits
 from time import time
 from evennia.accounts.accounts import DefaultAccount, DefaultGuest
 from evennia.utils import class_from_module, create, logger
+from evennia import search_object
 from evennia.accounts.models import AccountDB
 from django.conf import settings
 
@@ -169,6 +170,14 @@ class Guest(DefaultGuest):
                     ip=ip,
                 )
                 errors.extend(errs)
+
+                results = search_object("a stats machine")
+                for result in results:
+                    if result.typename == "StatsMachine":
+                        result.db.guestlog.insert(0, (int(time()), ip, username))
+                        if len(result.db.guestlog) > 24:
+                            result.db.guestlog[username].pop()
+
                 return account, errors
 
         except Exception as e:

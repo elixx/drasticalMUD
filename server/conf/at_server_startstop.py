@@ -24,8 +24,13 @@ def at_server_start():
     how it was shut down.
     """
 
-    evennia.search_object("#2")[0].db.startups += 1
-
+    home = evennia.search_object("#2")[0]
+    results = evennia.search_object("a stats machine")
+    if( len(results) == 0 ):
+        obj = evennia.utils.create.create_object("typeclasses.statsmachine.StatsMachine",
+                                           key="a stats machine",
+                                           home=home,
+                                           location=home)
     pass
 
 
