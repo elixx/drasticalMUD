@@ -59,4 +59,34 @@ class Channel(DefaultChannel):
 
     """
 
-    pass
+    def pose_transform(self, msgobj, sender_string, **kwargs):
+        """
+        Hook method. Detects if the sender is posing, and modifies the
+        message accordingly.
+
+        Args:
+            msgobj (Msg or TempMsg): The message to analyze for a pose.
+            sender_string (str): The name of the sender/poser.
+            **kwargs (dict): Arbitrary, optional arguments for users
+                overriding the call (unused by default).
+
+        Returns:
+            string (str): A message that combines the `sender_string`
+                component with `msg` in different ways depending on if a
+                pose was performed or not (this must be analyzed by the
+                hook).
+
+        """
+        pose = False
+        message = msgobj.message
+        message_start = message.lstrip()
+        if message_start.startswith((":", ";")):
+            pose = True
+            message = message[1:]
+            if not message.startswith((":", "'", ",")):
+                if not message.startswith(" "):
+                    message = " " + message
+        if pose:
+            return "{C%s{x%s" % (sender_string, message)
+        else:
+            return "{C%s{x: %s" % (sender_string, message)
