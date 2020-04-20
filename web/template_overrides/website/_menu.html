@@ -5,13 +5,13 @@ folder and edit it to add/remove links to the menu.
 {% endcomment %}
 {% load static %}
 <nav class="navbar navbar-dark font-weight-bold navbar-expand-md">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#menu-content" aria-controls="menu-content" aria-expanded="false" aria-label="Toggle navigation">
+    <!-- button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#menu-content" aria-controls="menu-content" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-    </button>
+    </button --!>
 
     <a class="navbar-brand" href="/">
       <div class="media">
-        <img class="d-flex navbar-brand-logo mx-3" src="{% static "website/images/logo-trans.gif" %}" alt="{{game_name}} logo" />
+        <img class="d-flex navbar-brand-logo mx-3 md-visible" src="{% static "website/images/logo-trans.gif" %}" alt="{{game_name}} logo" />
         <!-- img class="d-flex navbar-brand-logo mx-3" src="{% static "website/images/evennia_logo.png" %}" alt="{{game_name}} logo" / -->
         <div class="media-body">
           {{ game_name }}<br />
@@ -20,13 +20,15 @@ folder and edit it to add/remove links to the menu.
       </div>
     </a>
 
-    <div class="collapse navbar-collapse" id="menu-content">
+    <!-- div class="collapse navbar-collapse" id="menu-content" -->
+    <!-- div class="navbar-collapse" id="menu-content" -->
+    <div class="navbar col-md-6" id="menu-content">
         <ul class="navbar-nav">
             {% block navbar_left %}
             <li>
               <a class="nav-link" href="{% url 'index' %}">Home</a>
             </li>
-            <!-- evennia documentation -->
+            <!-- evennia documentation
             <li>
               <a class="nav-link" href="https://github.com/evennia/evennia/wiki/Evennia-Introduction/">About</a>
             </li>
@@ -59,7 +61,7 @@ folder and edit it to add/remove links to the menu.
                 {% if puppet %}
                   Welcome, {{ puppet }}! <span class="text-muted">({{ account.username }})</span> <span class="caret"></span>
                 {% else %}
-                  Logged in as {{ account.username }} <span class="caret"></span>
+                  User: {{ account.username }} <span class="caret"></span>
                 {% endif %}
               </a>
               <div class="dropdown-menu" aria-labelledby="user_options">
