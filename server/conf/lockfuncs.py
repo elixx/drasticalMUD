@@ -27,7 +27,7 @@ def keycheck(accessing_obj, accessed_obj, *args, **kwargs):
             if item.db.unlocks != None:
                 for unlocks in item.db.unlocks:
                     if unlocks == accessed_obj.db.unlocked_by:
-                        accessing_obj.msg("You unlock the %s with %s" % (accessed_obj.name, item.name))
+                        accessing_obj.msg("You unlock %s with %s" % (accessed_obj.name, item.name))
                         accessing_obj.location.msg_contents("%s unlocks %s with %s." % (accessing_obj.name,
                                                                                         accessed_obj.name, item.name),
                                                             exclude=accessing_obj)
@@ -38,8 +38,8 @@ def keycheck(accessing_obj, accessed_obj, *args, **kwargs):
         return False
     else:
         accessing_obj.location.msg_contents(
-            "%s unlocks the %s." % (accessing_obj.name, accessed_obj.name), exclude=accessing_obj)
-
+            "%s unlocks %s." % (accessing_obj.name, accessed_obj.name), exclude=accessing_obj)
+        accessing_obj.msg("You unlock %s." % accessed_obj.name)
         return True
 
 # def myfalse(accessing_obj, accessed_obj, *args, **kwargs):
