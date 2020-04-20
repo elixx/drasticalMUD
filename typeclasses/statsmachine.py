@@ -13,7 +13,7 @@ class StatsMachine(DefaultObject):
         super().at_object_creation()
 
         self.key = "a stats machine"
-        self.db.desc = "A complicated-looking blinky box."
+        self.db.desc = "{xA statistics keeping machine. You can {Yget stats{x for stuff.{n"
         self.db.stats = {"server_start": 1,
                          "server_stop": 0,
                          "cold_start": 0,
@@ -76,12 +76,14 @@ class CmdStatsMachineStats(Command):
             selection = ["ALL"]
         else:
             args = self.args.strip()
-            if "guest" in args.lower():
-                selection.append("GUESTS")
-            if "server" in args.lower():
-                selection.append("SERVER")
-            if "general" in args.lower():
+            if "gen" in args.lower():
                 selection.append("GENERAL")
+            if "serv" in args.lower():
+                selection.append("SERVER")
+            if "gu" in args.lower():
+                selection.append("GUESTS")
+            if "us" in args.lower():
+                selection.append("USERS")
 
         for item in selection:
             if item == "GENERAL" or item == "ALL":
