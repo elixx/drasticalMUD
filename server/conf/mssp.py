@@ -36,12 +36,12 @@ MSSPTable = {
     "WEBSITE": "mud.drastical.tech",
     # Categorisation
     "FAMILY": "Custom",  # evennia goes under 'Custom'
-    "GENRE": "Sandbox",  # Adult, Fantasy, Historical, Horror, Modern, None, or Science Fiction
+    "GENRE": "Modern",  # Adult, Fantasy, Historical, Horror, Modern, None, or Science Fiction
     # Gameplay: Adventure, Educational, Hack and Slash, None,
     # Player versus Player, Player versus Environment,
     # Roleplaying, Simulation, Social or Strategy
-    "GAMEPLAY": "",
-    "STATUS": "Open Beta",  # Alpha, Closed Beta, Open Beta, Live
+    "GAMEPLAY": "None",
+    "STATUS": "Alpha",  # Alpha, Closed Beta, Open Beta, Live
     "GAMESYSTEM": "Custom",  # D&D, d20 System, World of Darkness, etc. Use Custom if homebrew
     # Subgenre: LASG, Medieval Fantasy, World War II, Frankenstein,
     # Cyberpunk, Dragonlance, etc. Or None if not available.
