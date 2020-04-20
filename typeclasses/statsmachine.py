@@ -14,7 +14,13 @@ class StatsMachine(DefaultObject):
 
         self.key = "a stats machine"
         self.db.desc = "A complicated-looking blinky box."
-        self.db.stats = {"startups": 1}
+        self.db.stats = {"server_start": 1,
+                         "server_stop": 0,
+                         "cold_start": 0,
+                         "cold_stop": 0,
+                         "reload_start": 0,
+                         "reload_stop": 0,
+                         "loaded": 0}
         self.db.guestlog = []
 
         self.locks.add("get:false()")
@@ -26,7 +32,10 @@ class StatsMachine(DefaultObject):
         Called when object is loaded into memory"
         """
         super().at_init()
-        self.db.stats['startups'] += 1
+        if not self.db.stats['loaded']:
+            self.db.stats['loaded'] = 1
+        else:
+            self.db.stats['loaded'] += 1
 
 class CmdStatsMachineStats(Command):
     """
@@ -38,8 +47,6 @@ class CmdStatsMachineStats(Command):
     def func(self):
         selection = []
         output = ""
-        game_stats = self.obj.db.stats
-        guestlog = self.obj.db.guestlog
 
         if not self.args:
             selection = ["ALL"]
@@ -54,11 +61,16 @@ class CmdStatsMachineStats(Command):
 
         for item in selection:
             if item == "GENERAL" or item == "ALL":
+                game_stats = self.obj.db.stats
                 output += "{x***************** {Y General Stats {x********************\n"
-                output += "{xThe server has been {rreloaded{x {Y%i{x times" % game_stats['startups'] + '\n'
+                table = self.styled_table("|YEvent","|YCount")
+                for (key,value) in self.obj.db.stats.items():
+                    table.add_row(key,value)
+                output += str(table) + "\n"
                 output += "\n"
 
             if item=="GUESTS" or item=="ALL":
+                guestlog = self.obj.db.guestlog
                 table = self.styled_table("|yTimestamp","|yGuest","|yConnecting IP",
                                           border="table")
                 for (time,ip,user) in guestlog:

@@ -15,7 +15,9 @@ at_server_cold_start()
 at_server_cold_stop()
 
 """
-import evennia
+from evennia.utils.create import create_object
+from evennia import search_object
+from world.utils import findStatsMachine
 
 
 def at_server_start():
@@ -24,10 +26,9 @@ def at_server_start():
     how it was shut down.
     """
 
-    home = evennia.search_object("#2")[0]
-    results = evennia.search_object("a stats machine")
-    if( len(results) == 0 ):
-        obj = evennia.utils.create.create_object("typeclasses.statsmachine.StatsMachine",
+    if not findStatsMachine():
+        home = search_object("#2")[0]
+        obj = create_object("typeclasses.statsmachine.StatsMachine",
                                            key="a stats machine",
                                            home=home,
                                            location=home)
@@ -39,6 +40,12 @@ def at_server_stop():
     This is called just before the server is shut down, regardless
     of it is for a reload, reset or shutdown.
     """
+    statsmachine = findStatsMachine()
+    if not statsmachine:
+        pass
+    else:
+        stats = statsmachine.db.stats
+        stats['server_stop'] += 1
     pass
 
 
@@ -46,6 +53,12 @@ def at_server_reload_start():
     """
     This is called only when server starts back up after a reload.
     """
+    statsmachine = findStatsMachine()
+    if not statsmachine:
+        pass
+    else:
+        stats = statsmachine.db.stats
+        stats['reload_start'] += 1
     pass
 
 
@@ -53,7 +66,14 @@ def at_server_reload_stop():
     """
     This is called only time the server stops before a reload.
     """
+    statsmachine = findStatsMachine()
+    if not statsmachine:
+        pass
+    else:
+        stats = statsmachine.db.stats
+        stats['reload_stop'] += 1
     pass
+
 
 
 def at_server_cold_start():
@@ -61,6 +81,13 @@ def at_server_cold_start():
     This is called only when the server starts "cold", i.e. after a
     shutdown or a reset.
     """
+    statsmachine = findStatsMachine()
+    if not statsmachine:
+        pass
+    else:
+        stats = statsmachine.db.stats
+        stats['cold_start'] += 1
+
     pass
 
 
@@ -69,4 +96,10 @@ def at_server_cold_stop():
     This is called only when the server goes down due to a shutdown or
     reset.
     """
+    statsmachine = findStatsMachine()
+    if not statsmachine:
+        pass
+    else:
+        stats = statsmachine.db.stats
+        stats['cold_stop'] += 1
     pass
