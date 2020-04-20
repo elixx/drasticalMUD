@@ -111,7 +111,6 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.crop(account.get_display_name(account), width=20),
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
-            #        utils.crop(puppet.get_display_name(account) if puppet else "None", width=20),
                     utils.crop(location, width=25),
                     session.cmd_total,
                     utils.crop(session.protocol_key, 6, suffix='..'),
