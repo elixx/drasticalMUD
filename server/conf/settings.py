@@ -65,7 +65,7 @@ trust_x_forwarded_for = 1
 UPSTREAM_IPS = ["10.15.0.20"]
 IDLE_TIMEOUT = 86400
 IN_GAME_ERRORS = False
-DEBUG = False
+DEBUG = True
 GRAPEVINE_ENABLED = True
 #
 # # Dev
