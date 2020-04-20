@@ -29,8 +29,6 @@ class robot(DefaultObject):
         self.db.max = 20
         if self.db.quotes is None:
             self.db.quotes = ["I was a cockatoo, once...", "hmmm...", "I am working on... nothing!"]
-        if self.db.times_fixed is None:
-            self.db.times_fixed = 0
         self.db.sleep = random.randint(1, 3)
         self.db.gagged = False
         self.db.broken = False
@@ -192,7 +190,7 @@ class CmdRobotPoke(Command):
                                                           exclude=self.caller)
                         yield 1
                         obj.malfunction()
-                        yield 1
+                        yield random.randint(1,3)
                         obj.delayQuote(poked=True,sleeptime=random.randint(1,3))
                     else:
                         obj.delayQuote(poked=True,sleeptime=random.randint(1,3))
@@ -297,7 +295,10 @@ class CmdRobotFix(Command):
                                         pass
                                     else:
                                         heroes.append(name)
-                                obj.db.times_fixed += 1
+
+                                stats = findStatsMachine().db.stats
+                                stats.incr("robot_fixed")
+
                                 self.caller.msg("You got it! The %s is fixed!" % obj.name)
                                 self.caller.location.msg_contents("{Y%s{x has saved the day! The {Y%s{x is {yfixed{x!" % (self.caller, obj.name),
                                                                   exclude=self.caller)

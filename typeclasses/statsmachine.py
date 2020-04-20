@@ -14,7 +14,14 @@ class StatsMachine(DefaultObject):
 
         self.key = "a stats machine"
         self.db.desc = "A complicated-looking blinky box."
-        self.db.stats = {"startups": 1}
+        self.db.stats = {"server_start": 1,
+                         "server_stop": 0,
+                         "cold_start": 0,
+                         "cold_stop": 0,
+                         "reload_start": 0,
+                         "reload_stop": 0,
+                         "loaded": 0}
+        self.db.userstats = {}
         self.db.guestlog = []
 
         self.locks.add("get:false()")
@@ -26,7 +33,32 @@ class StatsMachine(DefaultObject):
         Called when object is loaded into memory"
         """
         super().at_init()
-        self.db.stats['startups'] += 1
+        if not self.db.stats['loaded']:
+            self.db.stats['loaded'] = 1
+        else:
+            self.db.stats['loaded'] += 1
+
+    def incr(self,statname):
+        if not statname in self.db.stats.keys():
+            self.db.stats[statname] = 1
+        else:
+            self.db.stats[statname] += 1
+
+    def incr_kv(self, stat, key, db="stats"):
+        if(db=="stats"):
+            if not stat in self.db.stats.keys():
+                self.db.stats[stat] = { key: 1 }
+            if not key in self.db.stats[stat].keys():
+                self.db.stats[stat][key] = 1
+            else:
+                self.db.stats[stat][key] += 1
+        elif(db=="userstats"):
+            if not stat in self.db.userstats.keys():
+                self.db.userstats[stat] = {}
+            if not key in self.db.userstats[stat].keys():
+                self.db.userstats[stat][key] = 1
+            else:
+                self.db.userstats[stat][key] += 1
 
 class CmdStatsMachineStats(Command):
     """
@@ -38,8 +70,6 @@ class CmdStatsMachineStats(Command):
     def func(self):
         selection = []
         output = ""
-        game_stats = self.obj.db.stats
-        guestlog = self.obj.db.guestlog
 
         if not self.args:
             selection = ["ALL"]
@@ -54,16 +84,28 @@ class CmdStatsMachineStats(Command):
 
         for item in selection:
             if item == "GENERAL" or item == "ALL":
+                game_stats = self.obj.db.stats
                 output += "{x***************** {Y General Stats {x********************\n"
-                output += "{xThe server has been {rreloaded{x {Y%i{x times" % game_stats['startups'] + '\n'
+                table = self.styled_table("|YEvent","|YCount")
+                for (key,value) in self.obj.db.stats.items():
+                    table.add_row(key,value)
+                output += str(table) + "\n"
                 output += "\n"
 
             if item=="GUESTS" or item=="ALL":
+                guestlog = self.obj.db.guestlog
                 table = self.styled_table("|yTimestamp","|yGuest","|yConnecting IP",
                                           border="table")
                 for (time,ip,user) in guestlog:
                     table.add_row(datetime.fromtimestamp(time), user, ip)
                 output += "{x*************** {YGuest Connection Log: {x***************\n"
+                output += str(table) + '\n'
+
+            if item=="USERS" or item=="ALL":
+                userlog = self.obj.db.userstats
+                table = self.styled_table("|YUser","|YLogins", border=None)
+                for user in userlog.keys():
+                    table.add_row(user,userlog[user]['logins'])
                 output += str(table) + '\n'
 
         self.msg(output)
