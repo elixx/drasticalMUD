@@ -114,7 +114,7 @@ class robot(DefaultObject):
                                 attributes=[("unlocks",["xyzzy"]),
                                             ("ephemeral", True),
                                             ("desc","Something seems off about it. Like it could disappear at any time.")])
-        self.location.msg_contents("The %s drops a %s." % (self.name, keyname))
+        self.location.msg_contents("The %s drops %s." % (self.name, keyname))
         self.remove_keys.append(utils.delay(300, self.delay_del_key, newkey, persistent=True))
 
     def delay_del_key(self, obj):
