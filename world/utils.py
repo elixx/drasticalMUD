@@ -19,5 +19,5 @@ def findStatsMachine():
 def genPrompt(obj):
     caller = obj.caller
     ps1 = caller.name[:4].upper()
-    prompt = "%s:~> " % ps1
+    prompt = "{x%s{r:~{Y>{n " % ps1
     return(prompt)
