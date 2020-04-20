@@ -69,7 +69,8 @@ class CmdStatsMachineStats(Command):
 
     def func(self):
         selection = []
-        output = ""
+        output = "{Y****************{W  DRASTICAL STATS  {Y******************{x\n"
+        maxlines=5
 
         if not self.args:
             selection = ["ALL"]
@@ -90,22 +91,31 @@ class CmdStatsMachineStats(Command):
                 for (key,value) in self.obj.db.stats.items():
                     table.add_row(key,value)
                 output += str(table) + "\n"
-                output += "\n"
 
             if item=="GUESTS" or item=="ALL":
                 guestlog = self.obj.db.guestlog
                 table = self.styled_table("|yTimestamp","|yGuest","|yConnecting IP",
                                           border="table")
+                count = 0
                 for (time,ip,user) in guestlog:
+                    count += 1
+                    if count > maxlines:
+                        break
                     table.add_row(datetime.fromtimestamp(time), user, ip)
-                output += "{x*************** {YGuest Connection Log: {x***************\n"
+
+                output += "{x****************** {YLast 5 Guests: {x*******************\n"
                 output += str(table) + '\n'
 
             if item=="USERS" or item=="ALL":
                 userlog = self.obj.db.userstats
                 table = self.styled_table("|YUser","|YLogins", border=None)
+                count = 0
                 for user in userlog.keys():
+                    count += 1
+                    if count > maxlines:
+                        break
                     table.add_row(user,userlog[user]['logins'])
+                output += "{x***************** {YTop 5 by Logins: {x******************\n"
                 output += str(table) + '\n'
 
         self.msg(output)
