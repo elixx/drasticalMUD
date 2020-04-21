@@ -184,6 +184,8 @@ class Guest(DefaultGuest):
 
                 machine.incr_kv("*Guests", "logins", db="userstats")
 
+                sendWebHook("Guest logon: " + self.name)
+
                 return account, errors
 
         except Exception as e:
