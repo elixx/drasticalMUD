@@ -72,26 +72,27 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         selection = []
-        maxlines = 3
+        maxlines = 5
         width = 60
 
         if not self.args:
             selection = ["ALL"]
         else:
             args = self.args.strip()
-            if "gen" in args.lower():
+            args = args.lower().split(" ")
+            if "gen" in args:
                 selection.append("GENERAL")
-            if "serv" in args.lower():
+            if "ser" in args:
                 selection.append("SERVER")
-            if "ga" in args.lower():
+            if "ga" in args:
                 selection.append("GAME")
-            if "gu" in args.lower():
+            if "gu" in args:
                 selection.append("GUESTS")
-            if "us" in args.lower():
+            if "use" in args:
                 selection.append("USERS")
 
 ########################################################################################################################
-        output = ""
+        output = "\n"
         output += "{Y" + pad("{W "+ settings.SERVERNAME.upper() + " STATS {Y",width=width,fillchar="*") + '\n'
         for item in selection:
 
@@ -109,12 +110,13 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 table.add_row("First start", datetime.fromtimestamp(gametime.server_epoch()))
                 table.add_row("Total runtime", utils.time_format(gametime.runtime(), 2))
                 output += str(table)+"\n\n"
-                table = self.styled_table("|YEvent","|YCount",border="none", width=width)
-                for (key, value) in self.obj.db.stats.items():
-                    #if ("start" in key or "stop" in key):
-                    label = key.replace("_", " ").capitalize()
-                    table.add_row(label, value)
-                output += str(table) + "\n\n"
+                if(self.caller.locks.check(self.caller,"cmd:perm_above(Helper)")):
+                    table = self.styled_table("|YEvent","|YCount",border="none", width=width)
+                    for (key, value) in self.obj.db.stats.items():
+                        #if ("start" in key or "stop" in key):
+                        label = key.replace("_", " ").capitalize()
+                        table.add_row(label, value)
+                    output += str(table) + "\n\n"
 
             if item=="USERS" or item=="ALL": #########################################################################
                 output += "{x" + pad(" {YTop "+str(maxlines)+" Users:{x ", width=width, fillchar="*") + '\n'
@@ -126,19 +128,21 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     if count > maxlines:
                         break
                     table.add_row(k,v['logins'])
-                output += str(table) + '\n'
+                output += str(table) + '\n\n'
 
             if item=="GUESTS" or item=="ALL": #########################################################################
-                output += "{x" + pad(" {YLast "+str(maxlines)+" Guests:{x ", width=width, fillchar="*") + '\n'
-                guestlog = self.obj.db.guestlog
-                table = self.styled_table("{yTimestamp","{yGuest","{yConnecting IP", border="none", width=width)
-                count = 0
-                for (time,ip,user) in guestlog:
-                    count += 1
-                    if count > maxlines:
-                        break
-                    table.add_row(datetime.fromtimestamp(time), user, ip)
-                output += str(table) + '\n'
+                if(self.caller.locks.check(self.caller,"cmd:perm_above(Helper)")):
+                    output += "{x" + pad(" {YLast " + str(maxlines) + " Guests:{x ", width=width, fillchar="*") + '\n'
+                    guestlog = self.obj.db.guestlog
+                    table = self.styled_table("{yTimestamp","{yGuest","{yConnecting IP", border="none", width=width)
+                    count = 0
+                    for (time,ip,user) in guestlog:
+                        count += 1
+                        if count > maxlines:
+                            break
+                        table.add_row(datetime.fromtimestamp(time), user, ip)
+                    output += str(table) + '\n'
+
 ########################################################################################################################
         self.msg(output)
 
