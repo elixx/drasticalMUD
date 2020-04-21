@@ -86,6 +86,10 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # IRC_ENABLED = False
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+DRASTICAL_NOTIFY_URL = "http://we-dont.41o.vpn:8065/"
+DRASTICAL_NOTIFY_HOOK = "oobp9pmejb8y9qf37ocxexnu5w"
+
+
 
 ######################################################################
 # Settings given in secret_settings.py override those in this file.

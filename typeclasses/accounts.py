@@ -29,7 +29,7 @@ from evennia.utils import class_from_module, create, logger
 from evennia import search_object
 from evennia.accounts.models import AccountDB
 from django.conf import settings
-from world.utils import findStatsMachine
+from world.utils import findStatsMachine, sendWebHook
 
 class Account(DefaultAccount):
     """
@@ -111,7 +111,8 @@ class Account(DefaultAccount):
         machine = findStatsMachine()
         if "guest" not in str(session.account).lower():
             machine.incr_kv(str(session.account),"logins",db="userstats")
-    
+
+        sendWebHook("New logon: " + self.name)
 
 
 class Guest(DefaultGuest):
