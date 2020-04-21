@@ -1,6 +1,7 @@
 from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
 from world.utils import genPrompt
 
+
 class MuxCommand(DefaultMuxCommand):
     def parse(self):
         """Implement an additional parsing of 'to'"""
@@ -15,7 +16,6 @@ class MuxCommand(DefaultMuxCommand):
         """
         super().at_post_cmd()
         self.caller.msg(prompt=genPrompt(self))
-
 
 # -------------------------------------------------------------
 #
