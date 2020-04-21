@@ -38,6 +38,8 @@ def at_server_stop():
     machine = findStatsMachine()
     stats = machine.db.stats
     machine.incr('server_stop')
+
+    sendWebHook("Server stopped.")
     pass
 
 
