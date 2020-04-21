@@ -15,7 +15,7 @@ at_server_cold_start()
 at_server_cold_stop()
 
 """
-from world.utils import findStatsMachine
+from world.utils import findStatsMachine, sendWebHook
 
 def at_server_start():
     """
@@ -25,6 +25,8 @@ def at_server_start():
     machine = findStatsMachine()
     stats = machine.db.stats
     machine.incr('server_start')
+
+    sendWebHook("Server started.")
     pass
 
 
@@ -36,6 +38,8 @@ def at_server_stop():
     machine = findStatsMachine()
     stats = machine.db.stats
     machine.incr('server_stop')
+
+    sendWebHook("Server stopped.")
     pass
 
 
@@ -46,6 +50,8 @@ def at_server_reload_start():
     machine = findStatsMachine()
     stats = machine.db.stats
     machine.incr('reload_start')
+
+    sendWebHook("Server reloaded.")
     pass
 
 

@@ -71,6 +71,7 @@ STAFF_CONTACT_EMAIL = "elixx@drastical.net"
 SESSION_COOKIE_AGE = 172800   # 86400=1d  # Default: 1209600 (2 weeks, in seconds)
 SESSION_COOKIE_DOMAIN = "mud.drastical.tech"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+DRASTICAL_SEND_WEBHOOK = True
 
 # # Dev
 # SERVERNAME = "[DEV] drastical"
@@ -85,11 +86,10 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # GRAPEVINE_ENABLED = False
 # IRC_ENABLED = False
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# DRASTICAL_SEND_WEBHOOK = False
 
-#DRASTICAL_NOTIFY_URL = "http://we-dont.41o.vpn:8065"
 DRASTICAL_NOTIFY_URL = "http://10.10.0.190:8065"
 DRASTICAL_NOTIFY_HOOK = "oobp9pmejb8y9qf37ocxexnu5w"
-
 
 
 ######################################################################

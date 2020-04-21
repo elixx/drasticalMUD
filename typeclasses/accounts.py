@@ -183,6 +183,7 @@ class Guest(DefaultGuest):
                     machine.db.guestlog[username].pop()
 
                 machine.incr_kv("*Guests", "logins", db="userstats")
+                sendWebHook("Guest logon: " + username)
 
                 return account, errors
 

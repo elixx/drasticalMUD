@@ -1,4 +1,4 @@
-from evennia import utils
+from evennia.utils import logger, utils, gametime, create, search
 from django.conf import settings
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
@@ -72,8 +72,9 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         selection = []
-        output = "{Y****************{W  DRASTICAL STATS  {Y******************{x\n"
-        maxlines=5
+
+        maxlines = 5
+        output = "{Y****************{W  " + settings.SERVERNAME + " STATS  {Y******************{x\n"
 
         if not self.args:
             selection = ["ALL"]
@@ -83,6 +84,8 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 selection.append("GENERAL")
             if "serv" in args.lower():
                 selection.append("SERVER")
+            if "ga" in args.lower():
+                selection.append("GAME")
             if "gu" in args.lower():
                 selection.append("GUESTS")
             if "us" in args.lower():
@@ -92,16 +95,23 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
             if item == "GENERAL" or item == "ALL":
                 game_stats = self.obj.db.stats
                 output += "{x***************** {Y General Stats {x********************\n"
-                table = self.styled_table("|YEvent","|YCount")
-                for (key,value) in self.obj.db.stats.items():
-                    table.add_row(key,value)
+                output += " ... placeholder ... "
+                output += "\n"
+
+
+            if item == "SERVER" or item == "ALL":
+                output += "{x***************** {Y Server Stats  {x********************\n"
+                table = self.styled_table("|YEvent", "|YCount")
+                for (key, value) in self.obj.db.stats.items():
+                    if ("start" in key or "stop" in key):
+                        label = key.replace("_", " ").capitalize()
+                        table.add_row(label, value)
                 output += str(table) + "\n"
 
             if item=="GUESTS" or item=="ALL":
                 output += "{x****************** {YLast 5 Guests: {x*******************\n"
                 guestlog = self.obj.db.guestlog
-                table = self.styled_table("|yTimestamp","|yGuest","|yConnecting IP",
-                                          border="table")
+                table = self.styled_table("|yTimestamp","|yGuest","|yConnecting IP", border="table")
                 count = 0
                 maxlines = 5
                 for (time,ip,user) in guestlog:
@@ -109,8 +119,8 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     if count > maxlines:
                         break
                     table.add_row(datetime.fromtimestamp(time), user, ip)
-
                 output += str(table) + '\n'
+
 
             if item=="USERS" or item=="ALL":
                 userlog = self.obj.db.userstats
@@ -124,6 +134,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 output += "{x***************** {YTop 5 by Logins: {x******************\n"
                 output += str(table) + '\n'
 
+
         self.msg(output)
 
 class StatsMachineCmdSet(CmdSet):
@@ -136,4 +147,6 @@ class StatsMachineCmdSet(CmdSet):
 
     def at_cmdset_creation(self):
         self.add(CmdStatsMachineStats())
+
+
 
