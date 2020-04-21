@@ -1,5 +1,9 @@
 from evennia import search_object
 from evennia.utils.create import create_object
+from django.conf import settings
+
+from matterhook import Webhook
+
 
 def findStatsMachine():
     results = search_object("a stats machine")
@@ -32,3 +36,9 @@ def genPrompt(obj):
     prompt = "{x%s{r:~{Y>{n " % name
 
     return(prompt)
+
+def sendWebHook(text):
+    mwh = Webhook(settings.DRASTICAL_NOTIFY_URL,settings.DRASTICAL_NOTIFY_HOOK)
+    prefix = ":crossed_swords: **DrasticalMUD** - "
+    message = prefix + "`" + text + "`"
+    mwh.send(message)
