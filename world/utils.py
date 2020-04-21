@@ -20,6 +20,7 @@ def findStatsMachine():
                 return(obj)
     return
 
+
 def genPrompt(obj):
     if('caller' in dir(obj)):
         targ = obj.caller
@@ -36,6 +37,7 @@ def genPrompt(obj):
     prompt = "{x%s{r:~{Y>{n " % name
 
     return(prompt)
+
 
 def sendWebHook(text):
     if(settings.DRASTICAL_SEND_WEBHOOK):

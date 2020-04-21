@@ -38,6 +38,7 @@ server/logs/*
 
 ## ... and keep all of this -- elixx 04122020
 #server/conf/secret_settings.py
+#server/conf/settings.py
 #server/logs/*.log.*
 #web/static/*
 #web/media/*

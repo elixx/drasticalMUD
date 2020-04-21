@@ -99,14 +99,14 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         for item in selection:
 
             if item == "GENERAL" or item == "ALL": ##################################################################
-                output += "{x" + pad(" {yGeneral Stats{x",width=width,fillchar="*") + '\n'
+                output += "{x" + pad(" {yGeneral Stats{x ",width=width,fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
                 table.add_row(
                     "Current time ", datetime.fromtimestamp(gametime.gametime(absolute=True)) )
                 output += str(table)+"\n\n"
 
             if item == "SERVER" or item == "ALL": ###################################################################
-                output += "{x" + pad(" {yServer Stats{x",width=width,fillchar="*") + '\n'
+                output += "{x" + pad(" {yServer Stats{x ",width=width,fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
                 table.add_row("Current uptime", utils.time_format(gametime.uptime(), 3))
                 table.add_row("First start", datetime.fromtimestamp(gametime.server_epoch()))
