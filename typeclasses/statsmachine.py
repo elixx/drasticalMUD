@@ -75,6 +75,8 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         maxlines = 5
         width = 60
 
+        privileged=self.caller.locks.check(self.caller,"cmd:perm_above(Helper)")
+
         if not self.args:
             selection = ["ALL"]
         else:
@@ -110,7 +112,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 table.add_row("First start", datetime.fromtimestamp(gametime.server_epoch()))
                 table.add_row("Total runtime", utils.time_format(gametime.runtime(), 2))
                 output += str(table)+"\n\n"
-                if(self.caller.locks.check(self.caller,"cmd:perm_above(Helper)")):
+                if privileged:
                     table = self.styled_table("|YEvent","|YCount",border="none", width=width)
                     for (key, value) in self.obj.db.stats.items():
                         #if ("start" in key or "stop" in key):
@@ -127,11 +129,15 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     count += 1
                     if count > maxlines:
                         break
-                    table.add_row(k,v['logins'])
+                    if not privileged:
+                        user = k[:k.find("(")]
+                    else:
+                        user = k
+                    table.add_row(user,v['logins'])
                 output += str(table) + '\n\n'
 
             if item=="GUESTS" or item=="ALL": #########################################################################
-                if(self.caller.locks.check(self.caller,"cmd:perm_above(Helper)")):
+                if privileged:
                     output += "{x" + pad(" {YLast " + str(maxlines) + " Guests:{x ", width=width, fillchar="*") + '\n'
                     guestlog = self.obj.db.guestlog
                     table = self.styled_table("{yTimestamp","{yGuest","{yConnecting IP", border="none", width=width)
