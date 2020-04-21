@@ -43,3 +43,4 @@ def sendWebHook(text):
         prefix = ":crossed_swords: **" + settings.SERVERNAME + "** - "
         message = prefix + "`" + text + "`"
         mwh.send(message)
+
