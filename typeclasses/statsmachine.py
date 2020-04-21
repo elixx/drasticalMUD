@@ -106,9 +106,8 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 output += "{x" + pad(" {yServer Stats{x",width=width,fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
                 table.add_row("Current uptime", utils.time_format(gametime.uptime(), 3))
-                table.add_row("Total runtime", utils.time_format(gametime.runtime(), 2))
                 table.add_row("First start", datetime.fromtimestamp(gametime.server_epoch()))
-                table.add_row("Total time passed:", utils.time_format(gametime.gametime(), 2))
+                table.add_row("Total runtime", utils.time_format(gametime.runtime(), 2))
                 output += str(table)+"\n\n"
                 table = self.styled_table("|YEvent","|YCount",border="none", width=width)
                 for (key, value) in self.obj.db.stats.items():
@@ -139,7 +138,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     if count > maxlines:
                         break
                     table.add_row(datetime.fromtimestamp(time), user, ip)
-                output += str(table) + '\n\n'
+                output += str(table) + '\n'
 ########################################################################################################################
         self.msg(output)
 
