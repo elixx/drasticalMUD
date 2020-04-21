@@ -131,7 +131,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
             if item=="GUESTS" or item=="ALL": #########################################################################
                 output += "{x" + pad(" {YLast "+str(maxlines)+" Guests:{x ", width=width, fillchar="*") + '\n'
                 guestlog = self.obj.db.guestlog
-                table = self.styled_table("|yTimestamp","|yGuest","|yConnecting IP", border="none", width=width)
+                table = self.styled_table("{yTimestamp","{yGuest","{yConnecting IP", border="none", width=width)
                 count = 0
                 for (time,ip,user) in guestlog:
                     count += 1
