@@ -179,7 +179,7 @@ class Guest(DefaultGuest):
 
                 machine = findStatsMachine()
                 machine.db.guestlog.insert(0, (int(time()), ip, username))
-                if len(machine.db.guestlog) > 24:
+                if len(machine.db.guestlog) > 30:
                     machine.db.guestlog.pop()
 
                 machine.incr_kv("*Guests", "logins", db="userstats")
