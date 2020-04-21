@@ -65,7 +65,7 @@ trust_x_forwarded_for = 1
 UPSTREAM_IPS = ["10.15.0.20"]
 IDLE_TIMEOUT = 86400
 IN_GAME_ERRORS = False
-DEBUG = True
+DEBUG = False
 GRAPEVINE_ENABLED = True
 STAFF_CONTACT_EMAIL = elixx@drastical.net
 SESSION_COOKIE_AGE = 172800   # 86400=1d  # Default: 1209600 (2 weeks, in seconds)
@@ -84,6 +84,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # DEBUG = True
 # GRAPEVINE_ENABLED = False
 # IRC_ENABLED = False
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 ######################################################################
