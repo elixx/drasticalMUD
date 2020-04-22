@@ -38,7 +38,6 @@ COLOR_XTERM256_EXTRA_GFG = color_markups.CURLY_COLOR_XTERM256_EXTRA_GFG
 COLOR_XTERM256_EXTRA_GBG = color_markups.CURLY_COLOR_XTERM256_EXTRA_GBG
 COLOR_ANSI_BRIGHT_BG_EXTRA_MAP = color_markups.CURLY_COLOR_ANSI_XTERM256_BRIGHT_BG_EXTRA_MAP
 
-#CHANNEL_CONNECTINFO = {}
 RSS_ENABLED = True
 IMC2_ENABLED = True
 
@@ -48,12 +47,12 @@ TIME_GAME_EPOCH = None
 TIME_IGNORE_DOWNTIMES = True
 
 ADMINS = ('elixx', 'elixx@drastical.net')
-GUEST_ENABLED = True
 
 BASE_GUEST_TYPECLASS = "typeclasses.accounts.Guest"
 BASE_OBJECT_TYPECLASS = "typeclasses.objects.Object"
 COMMAND_DEFAULT_CLASS = "commands.muxcommand.MuxCommand"
 
+GUEST_ENABLED = True
 GUEST_COLORS = ['Amaranth','Amber','Amethyst','Apricot','Aquamarine','Azure','Baby','Beige','Black','Blue','Blush','Bronze','Brown','Burgundy','Byzantium','Carmine','Cerise','Cerulean','Champagne','Chartreuse','Chocolate','Cobalt','Coffee','Copper','Coral','Crimson','Cyan','Desert','Electric','Emerald','Erin','Gold','Gray','Green','Harlequin','Indigo','Ivory','Jade','Jungle','Lavender','Lemon','Lilac','Lime','Magenta','Magenta','Maroon','Mauve','Navy','Ochre','Olive','Orange','Orchid','Peach','Pear','Periwinkle','Persian','Pink','Plum','Prussian','Puce','Purple','Raspberry','Red','Rose','Ruby','Salmon','Sangria','Sapphire','Scarlet','Silver','Slate','Spring','Spring','Tan','Taupe','Teal','Turquoise','Ultramarine','Violet','Viridian','White','Yellow']
 GUEST_LIST = [str(s) + "_Guest" for s in GUEST_COLORS ]
 
@@ -69,13 +68,13 @@ DEBUG = False
 GRAPEVINE_ENABLED = True
 STAFF_CONTACT_EMAIL = "elixx@drastical.net"
 SESSION_COOKIE_AGE = 172800   # 86400=1d  # Default: 1209600 (2 weeks, in seconds)
-SESSION_COOKIE_DOMAIN = "mud.drastical.tech"
+#SESSION_COOKIE_DOMAIN = "mud.drastical.tech"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 DRASTICAL_SEND_WEBHOOK = True
 
 # # Dev
-# SERVERNAME = "[DEV] drastical"
-# GAME_SLOGAN = "dev"*5
+# SERVERNAME = "devsandbox"
+# GAME_SLOGAN = "foo"*5
 # SERVER_LOG_DAY_ROTATION = 2
 # SERVER_LOG_MAX_SIZE = 1000000
 # PORTAL_LOG_DAY_ROTATION = 2
@@ -88,8 +87,6 @@ DRASTICAL_SEND_WEBHOOK = True
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # DRASTICAL_SEND_WEBHOOK = False
 
-DRASTICAL_NOTIFY_URL = "http://10.10.0.190:8065"
-DRASTICAL_NOTIFY_HOOK = "oobp9pmejb8y9qf37ocxexnu5w"
 
 
 ######################################################################

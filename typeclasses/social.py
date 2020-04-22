@@ -1,9 +1,8 @@
-#from evennia import Command as BaseCommand
-#from evennia import default_cmds
 from django.conf import settings
 from evennia.utils import utils
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
+
 
 class DefaultCmdSocial(COMMAND_DEFAULT_CLASS):
     """
@@ -22,8 +21,8 @@ class DefaultCmdSocial(COMMAND_DEFAULT_CLASS):
             self.no_args = False
             self.target = self.caller.search(self.args.strip())
             if not self.target:
+                self.caller.msg("You can't find %s!" % self.args.strip())
                 return
-                #self.caller.msg("You can't find %s!" % self.args.strip())
 
     def func(self):
         key = self.key
@@ -39,7 +38,6 @@ class DefaultCmdSocial(COMMAND_DEFAULT_CLASS):
                 self.caller.location.msg_contents("%s %ss at %s." % (self.caller, key, self.target),
                                                   exclude=[self.caller, self.target])
                 self.target.msg("%s %ss at you." % (self.caller, key))
-
 
 
 class DefaultCmdSocialFmt(COMMAND_DEFAULT_CLASS):
@@ -101,4 +99,3 @@ class DefaultCmdSocialFmt(COMMAND_DEFAULT_CLASS):
                                                       exclude=[self.caller, self.target])
                 if self.target_found_target_msg != "":
                     self.target.msg(self.target_found_target_msg)
-
