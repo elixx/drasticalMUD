@@ -68,7 +68,7 @@ DEBUG = False
 GRAPEVINE_ENABLED = True
 STAFF_CONTACT_EMAIL = "elixx@drastical.net"
 SESSION_COOKIE_AGE = 172800   # 86400=1d  # Default: 1209600 (2 weeks, in seconds)
-#SESSION_COOKIE_DOMAIN = "mud.drastical.tech"
+SESSION_COOKIE_DOMAIN = "mud.drastical.tech"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 DRASTICAL_SEND_WEBHOOK = True
 
