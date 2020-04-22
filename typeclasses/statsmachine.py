@@ -63,6 +63,21 @@ class StatsMachine(DefaultObject):
             else:
                 self.db.userstats[stat][key] += 1
 
+    def set(self,statname, value):
+        self.db.stats[statname] = value
+
+    def set_kv(self, stat, key, value, db="stats"):
+        if(db=="stats"):
+            if not stat in self.db.stats.keys():
+                self.db.stats[stat] = { key: {} }
+            self.db.stats[stat][key] = value
+        elif(db=="userstats"):
+            if not stat in self.db.userstats.keys():
+                self.db.userstats[stat] = { key: {} }
+            self.db.userstats[stat][key] = value
+
+
+
 class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
     """
     verb
