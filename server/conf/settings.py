@@ -88,6 +88,9 @@ DRASTICAL_SEND_WEBHOOK = True
 # DRASTICAL_SEND_WEBHOOK = False
 
 CSRF_USE_SESSIONS = True
+X_FRAME_OPTIONS = 'ALLOW-FROM *.drastical.net'
+CSRF_TRUSTED_ORIGINS = ['*.drastical.net']
+CSRF_COOKIE_SAMESITE = None
 
 WEBCLIENT_OPTIONS = {
     "gagprompt": True,  # Gags prompt from the output window and keep them
