@@ -87,6 +87,29 @@ DRASTICAL_SEND_WEBHOOK = True
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # DRASTICAL_SEND_WEBHOOK = False
 
+CSRF_USE_SESSIONS = True
+
+WEBCLIENT_OPTIONS = {
+    "gagprompt": True,  # Gags prompt from the output window and keep them
+    # together with the input bar
+    "helppopup": True,  # Shows help files in a new popup window
+    "notification_popup": True,  # Shows notifications of new messages as
+    # popup windows
+    "notification_sound": False  # Plays a sound for notifications of new
+    # messages
+}
+
+
+# MIDDLEWARE = [
+#     "django.middleware.common.CommonMiddleware",
+#     "django.contrib.sessions.middleware.SessionMiddleware",
+#     "django.contrib.messages.middleware.MessageMiddleware",  # 1.4?
+#     "django.contrib.auth.middleware.AuthenticationMiddleware",
+#     "django.middleware.csrf.CsrfViewMiddleware",
+#     "django.contrib.admindocs.middleware.XViewMiddleware",
+#     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
+#     "evennia.web.utils.middleware.SharedLoginMiddleware",
+# ]
 
 
 ######################################################################
