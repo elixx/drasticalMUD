@@ -68,13 +68,12 @@ DEBUG = False
 GRAPEVINE_ENABLED = True
 STAFF_CONTACT_EMAIL = "elixx@drastical.net"
 SESSION_COOKIE_AGE = 172800   # 86400=1d  # Default: 1209600 (2 weeks, in seconds)
-
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 DRASTICAL_SEND_WEBHOOK = True
-CSRF_TRUSTED_ORIGINS = ['.drastical.net','.drastical.tech']
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+CSRF_USE_SESSIONS = True
 CSRF_COOKIE_SAMESITE = None
-# CSRF_USE_SESSIONS = True
-#SESSION_COOKIE_DOMAIN = "mud.drastical.tech"
+
+
 
 # # Dev
 # SERVERNAME = "devsandbox"
