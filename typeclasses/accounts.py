@@ -112,7 +112,7 @@ class Account(DefaultAccount):
         if "guest" not in str(session.account).lower():
             machine.incr_kv(str(session.account),"logins",db="userstats")
 
-        sendWebHook("New logon: " + self.name)
+        sendWebHook("New logon: " + self.name + " from " + session.address)
 
 
 class Guest(DefaultGuest):
@@ -179,11 +179,11 @@ class Guest(DefaultGuest):
 
                 machine = findStatsMachine()
                 machine.db.guestlog.insert(0, (int(time()), ip, username))
-                if len(machine.db.guestlog) > 30:
+                if len(machine.db.guestlog) > 50:
                     machine.db.guestlog.pop()
 
                 machine.incr_kv("*Guests", "logins", db="userstats")
-                sendWebHook("Guest logon: " + username)
+                sendWebHook("Guest logon: " + username + " from " + ip)
 
                 return account, errors
 
