@@ -23,7 +23,7 @@ class robot(DefaultObject):
         self.db.broken_desc = "{XIt looks like something is seriously wrong. It's {rbroken{X. Maybe you can fix it?"
         self.db.get_err_msg = "The robot beeps at you, angrily. That's not a good idea."
         self.db.broken_messages = ["The %s buzzes. I think it's broken.",
-                                   "The %s makes a odd humming noise and spits sparks.",
+                                   "The %s makes an odd humming noise and spits sparks.",
                                    "You hear a low-pitched whine coming from the %s.",
                                    "A quiet grinding noise comes from the direction of the %s.",
                                    "Blip-blop. The %s is broken.",
@@ -189,7 +189,7 @@ class CmdRobotPoke(COMMAND_DEFAULT_CLASS):
                     else: chosen = False
                     if chosen:
                         self.caller.msg("{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
-                        self.caller.location.msg_contents("{xSparks fly and you hear a frizzing noise. It looks like {Y%s{x just {rbroke{x the %s." % (self.caller, obj.name),
+                        self.caller.location.msg_contents("{xSparks fly and you hear a frizzing noise. It looks like {Y%s{x just {rbroke{x %s." % (self.caller, obj.name),
                                                           exclude=self.caller)
                         yield 1
                         obj.malfunction()
