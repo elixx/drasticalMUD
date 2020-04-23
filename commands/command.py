@@ -11,7 +11,15 @@ from evennia.utils import utils
 from evennia.server.sessionhandler import SESSIONS
 import time
 
+
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
+
+
+
+class CmdExamine2(default_cmds.CmdExamine):
+    aliases = ["exa"]
+
+
 
 class CmdWho2(COMMAND_DEFAULT_CLASS):
     """
@@ -112,6 +120,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
             "|wAccounts:|n\n%s\n%s unique account%s logged in."
             % (table, "One" if is_one else naccounts, "" if is_one else "s")
         )
+
 
 
 class CmdLook2(default_cmds.CmdLook):
