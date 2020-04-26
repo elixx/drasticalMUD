@@ -4,7 +4,7 @@ from evennia import search_object
 from evennia.utils.create import create_object
 from evennia import DefaultRoom
 
-
+from random import choice
 
 class MovingRoom(DefaultRoom):
     def at_object_creation(self):
@@ -13,14 +13,14 @@ class MovingRoom(DefaultRoom):
         self.create_exits()
 
         self.db.in_service = False
-        self.db.broken = False
         self.db.in_station = True
-        self.db.destinations = [("#2",20),
-                                ("#214",60)]
+        self.db.route = [ "#2", 30, "#214", 30 ]
         self.db.wait_at_destination = 60
-        self.db.speed = 1
+        self.db.speed = 2
 
         self.db.current_pos = 0
+        self.db.route_pos = 0
+        self.db.next_dest = 1
 
         self.db.last_ticker_interval = None
         self.db.last_hook_key = None
@@ -52,7 +52,7 @@ class MovingRoom(DefaultRoom):
         we need to remember this across reloads.
 
         """
-        idstring = "moving_room_" + str(self.id)
+        idstring = "moving_room"
         last_interval = self.db.last_ticker_interval
         last_hook_key = self.db.last_hook_key
         if last_interval and last_hook_key:
@@ -79,24 +79,61 @@ class MovingRoom(DefaultRoom):
 
     def update_exits(self):
         if self.db.in_station:
-            route = self.db.destinations
+            newloc = search_object( self.db.route[self.db.route_pos] )[0]
+
             exitIn = search_object(self.db.exitIn)[0]
             exitOut = search_object(self.db.exitOut)[0]
             exitOut.location = self
+            exitOut.home = self
 
-            newloc = search_object(route[self.db.last_dest][0])[0]
             exitIn.location = newloc
             exitIn.destination = self
+            exitOut.location = self
             exitOut.destination = newloc
         else:
-            exitIn = search_object(self.db.exitIn)
-            exitOut = search_object(self.db.exitOut)
+            exitIn = search_object(self.db.exitIn)[0]
+            exitOut = search_object(self.db.exitOut)[0]
             exitIn.location = None
             exitOut.location = None
 
     def update_position(self):
-        self.db.last_dest = int( self.db.current_pos / 1000 )
-        self.db.current_dist = int( self.db.current_pos % 1000 )
+        pass
+
+    def start_service(self):
+        self.db.in_service = True
+        if self.db.in_station:
+            self.db.in_station = False
+            self.db.route_pos += 1
+            self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
+            self.update_exits()
+        self._set_ticker(self.db.speed, "travel")
+
+    def stop_service(self):
+        if self.db.in_service:
+            self.msg_contents("%s slows to a halt." % self.name)
+            self.db.in_service = False
+            self._set_ticker(None, None, stop=True)
+
+    def travel(self):
+        if self.db.in_service:
+            self.db.current_pos += self.db.speed
+            if self.db.current_pos >= self.db.route[self.db.route_pos]:
+                self._set_ticker(None, None, stop=True)
+                self.arrive()
+            else:
+                if(choice([True,False,False])):
+                    self.msg_contents("%s shakes slightly as it moves along its course." % self.name)
+
+            route = self.db.destinations
+
+    def arrive(self):
+        self.db.in_station = True
+        self.db.route_pos += 1
+        loc = search_object(self.db.route[self.db.route_pos])[0]
+        self.msg_contents("%s announces, 'Now arriving at %s.'" % (self.name, loc.name))
+        self.update_exits()
+        self.msg_contents("%s glides to a halt and the doors open." % self.name)
+        self._set_ticker(self.db.wait_at_destination, "start_service")
 
     def add_destination(self,dest,time_to_next,index=-1):
         if isinstance(dest,int):
@@ -135,35 +172,6 @@ class MovingRoom(DefaultRoom):
                 del self.db.destinations[i]
                 self.msg_contents(self.name + "announces, '" + loc.name + " has been removed from the route.'")
                 return self.db.destinations
-
-    def start_service(self):
-        self.db.in_service = True
-        destinations = self.db.destinations
-        if self.db.in_station and not self.db.broken:
-            self.msg_contents("%s rumbles to life and begins to move." % self.name)
-            self._set_ticker(self.db.speed, "travel")
-
-    def stop_service(self):
-        self.db.in_service = False
-        self._set_ticker(None, None, stop=True)
-
-    def travel(self):
-        if not self.broken and self.in_service:
-            self.db.current_pos += self.db.speed
-            if self.in_station: self.in_station = False
-            self.update_position()
-            self.update_exits()
-            route = self.db.destinations
-            if self.db.current_dist >= route[self.db.last_dest][1]:
-                self.arrive()
-            else:
-                self.msg_contents("%s shakes slightly as it moves along its course." % self.name)
-
-    def arrive(self):
-        self.msg_contents("%s creaks and slows to a halt." % self.name)
-        self.in_station = True
-        self.update_exits()
-        self._set_ticker(self.db.wait_at_destination, "start_service")
 
 
 
