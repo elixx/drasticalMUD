@@ -20,7 +20,6 @@ class MovingRoom(DefaultRoom):
 
         self.db.current_pos = 0
         self.db.route_pos = 0
-        self.db.next_dest = 1
 
         self.db.last_ticker_interval = None
         self.db.last_hook_key = None
@@ -104,6 +103,10 @@ class MovingRoom(DefaultRoom):
         if self.db.in_station:
             self.db.in_station = False
             self.db.route_pos += 1
+            if self.db.route_pos > len(self.db.route):
+                self.db.route_pos = 0
+            if self.db.route_pos > len(self.db.route):
+                self.db.route_pos = 0
             self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
             self.update_exits()
         self._set_ticker(self.db.speed, "travel")
@@ -129,6 +132,8 @@ class MovingRoom(DefaultRoom):
     def arrive(self):
         self.db.in_station = True
         self.db.route_pos += 1
+        if self.db.route_pos > len(self.db.route):
+            self.db.route_pos = 0
         loc = search_object(self.db.route[self.db.route_pos])[0]
         self.msg_contents("%s announces, 'Now arriving at %s.'" % (self.name, loc.name))
         self.update_exits()
