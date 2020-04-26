@@ -140,10 +140,6 @@ class MovingRoom(DefaultRoom):
         self._set_ticker(self.db.wait_at_destination, "start_service")
 
     def add_destination(self,dest,time_to_next,index=-1):
-        if isinstance(dest,int):
-            dest = "#" + str(dest)
-        elif isinstance(dest,obj):
-            dest = "#" + str(dest.id)
         try:
             loc = search_object(dest)[0]
         except:
@@ -152,20 +148,19 @@ class MovingRoom(DefaultRoom):
         if index == -1:
             index = len(self.db.route)
 
-        for i in db.routes:
-            if d == loc.id:
-                return self.db.destinations
+        for i in self.db.route:
+            if not isinstance(i,int):
+                if i == dest:
+                    return(self.db.routes)
 
-        self.db.destinations.insert(index,(loc.id,time_to_next))
+        self.db.route.append(dest)
+        self.db.route.append(time_to_next)
+
         self.msg_contents(self.name + " announces, '" + loc.name + " has been added to the route.'")
-        return self.db.destinations
+        return self.db.routes
 
 
     def del_destination(self,dest):
-        if isinstance(dest,int):
-            dest = "#" + str(dest)
-        elif isinstance(dest,obj):
-            dest = "#" + str(dest.id)
         try:
             loc = search_object(dest)[0]
         except:
