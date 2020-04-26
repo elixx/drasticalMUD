@@ -33,6 +33,9 @@ class CmdSocialBarf(DefaultCmdSocial):   key = "barf"
 class CmdSocialShrug(DefaultCmdSocial):  key = "shrug"
 
 
+class CmdSocialSlap(DefaultCmdSocial):  key = "slap"
+
+
 class CmdSocialBog(DefaultCmdSocial):
     key = "boggle"
     aliases = ["bog"]
