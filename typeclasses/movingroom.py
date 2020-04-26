@@ -1,3 +1,4 @@
+from evennia import utils
 from evennia import TICKER_HANDLER
 from typeclasses.exits import Exit
 from evennia import search_object
@@ -5,6 +6,7 @@ from evennia.utils.create import create_object
 from evennia import DefaultRoom
 
 from random import choice
+
 
 class MovingRoom(DefaultRoom):
     def at_object_creation(self):
@@ -14,8 +16,8 @@ class MovingRoom(DefaultRoom):
 
         self.db.in_service = False
         self.db.in_station = True
-        self.db.route = [ "#2", 12, "#214", 12 ]
-        self.db.wait_at_destination = 60
+        self.db.route = ["#2", 12, "#214", 12, "#14", 12]
+        self.db.wait_at_destination = 20
         self.db.speed = 2
 
         self.db.current_dist = 0
@@ -26,6 +28,8 @@ class MovingRoom(DefaultRoom):
 
         self.update_position()
         self.update_exits()
+
+        utils.delay(self.db.wait_at_destination, self.start_service)
 
     def _set_ticker(self, interval, hook_key, stop=False):
         """
@@ -69,16 +73,16 @@ class MovingRoom(DefaultRoom):
 
     def create_exits(self):
         exitOut = create_object("typeclasses.movingroom.MovingExit",
-                               key="out", location=self)
+                                key="leave", location=self)
         self.db.exitOut = "#" + str(exitOut.id)
 
         exitIn = create_object("typeclasses.movingroom.MovingExit",
-                               key="enter")
+                               key="board")
         self.db.exitIn = "#" + str(exitIn.id)
 
     def update_exits(self):
         if self.db.in_station:
-            newloc = search_object( self.db.route[self.db.route_pos] )[0]
+            newloc = search_object(self.db.route[self.db.route_pos])[0]
 
             exitIn = search_object(self.db.exitIn)[0]
             exitOut = search_object(self.db.exitOut)[0]
@@ -102,9 +106,10 @@ class MovingRoom(DefaultRoom):
         self.db.in_service = True
         if self.db.in_station:
             self.db.in_station = False
-            self.db.route_pos += 1
-            if self.db.route_pos+1 > len(self.db.route):
+            if self.db.route_pos + 1 > len(self.db.route):
                 self.db.route_pos = 0
+            else:
+                self.db.route_pos += 1
             self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
         self.update_exits()
         self._set_ticker(self.db.speed, "travel")
@@ -122,16 +127,17 @@ class MovingRoom(DefaultRoom):
                 self._set_ticker(None, None, stop=True)
                 self.arrive()
             else:
-                if(choice([True,False,False])):
+                if (choice([True, False, False])):
                     self.msg_contents("%s shakes slightly as it moves along its course." % self.name)
 
             route = self.db.destinations
 
     def arrive(self):
         self.db.in_station = True
-        self.db.route_pos += 1
-        if self.db.route_pos+1 > len(self.db.route):
+        if self.db.route_pos + 1 > len(self.db.route):
             self.db.route_pos = 0
+        else:
+            self.db.route_pos += 1
         loc = search_object(self.db.route[self.db.route_pos])[0]
         self.msg_contents("%s announces, 'Now arriving at %s.'" % (self.name, loc.name))
         self.update_exits()
@@ -139,7 +145,7 @@ class MovingRoom(DefaultRoom):
         self.db.current_dist = 0
         self._set_ticker(self.db.wait_at_destination, "start_service")
 
-    def add_destination(self,dest,time_to_next,index=-1):
+    def add_destination(self, dest, time_to_next, index=-1):
         try:
             loc = search_object(dest)[0]
         except:
@@ -149,9 +155,9 @@ class MovingRoom(DefaultRoom):
             index = len(self.db.route)
 
         for i in self.db.route:
-            if not isinstance(i,int):
+            if not isinstance(i, int):
                 if i == dest:
-                    return(self.db.routes)
+                    return (self.db.routes)
 
         self.db.route.append(dest)
         self.db.route.append(time_to_next)
@@ -159,8 +165,7 @@ class MovingRoom(DefaultRoom):
         self.msg_contents(self.name + " announces, '" + loc.name + " has been added to the route.'")
         return self.db.routes
 
-
-    def del_destination(self,dest):
+    def del_destination(self, dest):
         try:
             loc = search_object(dest)[0]
         except:
@@ -171,7 +176,6 @@ class MovingRoom(DefaultRoom):
                 del self.db.destinations[i]
                 self.msg_contents(self.name + "announces, '" + loc.name + " has been removed from the route.'")
                 return self.db.destinations
-
 
 
 class MovingExit(Exit):
