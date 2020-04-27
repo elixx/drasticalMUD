@@ -114,7 +114,7 @@ class MovingRoom(DefaultRoom):
         if self.db.route_pos + 1 >= len(self.db.route):
             self.db.route_pos = 0
         else:
-            self.db.route_pos +=
+            self.db.route_pos += 1
         loc = search_object(self.db.route[self.db.route_pos])[0]
         next = self.get_next_dest()
         self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext Stop:\t{c%s{x" % (loc.name, next.name)
