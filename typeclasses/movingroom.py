@@ -16,9 +16,10 @@ class MovingRoom(DefaultRoom):
 
         self.db.in_service = False
         self.db.in_station = True
-        self.db.route = ["#2", 12, "#214", 12, "#14", 12]
-        self.db.wait_at_destination = 20
+        self.db.route = ["#2", 6, "#214", 6, "#14", 6]
+        self.db.wait_at_destination = 10
         self.db.speed = 2
+
 
         self.db.current_dist = 0
         self.db.route_pos = 0
@@ -106,7 +107,7 @@ class MovingRoom(DefaultRoom):
         self.db.in_service = True
         if self.db.in_station:
             self.db.in_station = False
-            if self.db.route_pos + 1 > len(self.db.route):
+            if self.db.route_pos+1 >= len(self.db.route):
                 self.db.route_pos = 0
             else:
                 self.db.route_pos += 1
@@ -134,7 +135,7 @@ class MovingRoom(DefaultRoom):
 
     def arrive(self):
         self.db.in_station = True
-        if self.db.route_pos + 1 > len(self.db.route):
+        if self.db.route_pos + 1 >= len(self.db.route):
             self.db.route_pos = 0
         else:
             self.db.route_pos += 1
@@ -142,6 +143,7 @@ class MovingRoom(DefaultRoom):
         self.msg_contents("%s announces, 'Now arriving at %s.'" % (self.name, loc.name))
         self.update_exits()
         self.msg_contents("%s glides to a halt and the doors open." % self.name)
+        loc.msg_contents("%s pulls up and slows to a halt. The doors open." % self.name)
         self.db.current_dist = 0
         self._set_ticker(self.db.wait_at_destination, "start_service")
 
