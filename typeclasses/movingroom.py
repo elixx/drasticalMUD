@@ -16,7 +16,7 @@ class MovingRoom(DefaultRoom):
 
         self.db.in_service = False
         self.db.in_station = True
-        self.db.route = ["#2", 12, "#214", 12, "#14", 24]
+        self.db.route = ["#2", 12]
         self.db.wait_at_destination = 30
         self.db.speed = 2
 
@@ -33,29 +33,6 @@ class MovingRoom(DefaultRoom):
         utils.delay(self.db.wait_at_destination, self.start_service)
 
     def _set_ticker(self, interval, hook_key, stop=False):
-        """
-        Set how often the given hook key should
-        be "ticked".
-
-        Args:
-            interval (int): The number of seconds
-                between ticks
-            hook_key (str): The name of the method
-                (on this mob) to call every interval
-                seconds.
-            stop (bool, optional): Just stop the
-                last ticker without starting a new one.
-                With this set, the interval and hook_key
-                arguments are unused.
-
-        In order to only have one ticker
-        running at a time, we make sure to store the
-        previous ticker subscription so that we can
-        easily find and stop it before setting a
-        new one. The tickerhandler is persistent so
-        we need to remember this across reloads.
-
-        """
         idstring = "moving_room"
         last_interval = self.db.last_ticker_interval
         last_hook_key = self.db.last_hook_key
