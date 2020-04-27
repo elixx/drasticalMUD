@@ -16,8 +16,8 @@ class MovingRoom(DefaultRoom):
 
         self.db.in_service = False
         self.db.in_station = True
-        self.db.route = ["#2", 6, "#214", 6, "#14", 6]
-        self.db.wait_at_destination = 10
+        self.db.route = ["#2", 12, "#214", 12, "#14", 24]
+        self.db.wait_at_destination = 30
         self.db.speed = 2
 
 
@@ -112,6 +112,10 @@ class MovingRoom(DefaultRoom):
             else:
                 self.db.route_pos += 1
             self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
+            loc = search_object(self.db.route[self.db.route_pos-1])[0]
+            loc.msg_contents("The doors close as %s begins picking up speed and pulls off." % self.name)
+            next = search_object(self.db.route[self.db.route_pos+1])[0]
+            self.db.desc = "An electronic sign reads:\n\t{yDeparting:\t{c%s{x\n\t{yNext Stop:\t{c%s{x" % (loc.name, next.name)
         self.update_exits()
         self._set_ticker(self.db.speed, "travel")
 
@@ -119,6 +123,7 @@ class MovingRoom(DefaultRoom):
         if self.db.in_service:
             self.msg_contents("%s slows to a halt." % self.name)
             self.db.in_service = False
+            self.db.desc = "An electronic sign reads:\n\t{rTemporarily out of service.{x"
             self._set_ticker(None, None, stop=True)
 
     def travel(self):
