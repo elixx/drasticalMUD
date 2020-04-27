@@ -7,45 +7,21 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
 class CmdSocialNod(DefaultCmdSocial):    key = "nod"
-
-
 class CmdSocialSwoon(DefaultCmdSocial):  key = "swoon"
-
-
 class CmdSocialFart(DefaultCmdSocial):   key = "fart"
-
-
 class CmdSocialGlare(DefaultCmdSocial):  key = "glare"
-
-
 class CmdSocialLeer(DefaultCmdSocial):   key = "leer"
-
-
 class CmdSocialWink(DefaultCmdSocial):   key = "wink"
-
-
 class CmdSocialWave(DefaultCmdSocial):   key = "wave"
-
-
 class CmdSocialBarf(DefaultCmdSocial):   key = "barf"
-
-
 class CmdSocialShrug(DefaultCmdSocial):  key = "shrug"
-
-
-class CmdSocialSlap(DefaultCmdSocial):  key = "slap"
-
-
+class CmdSocialSlap(DefaultCmdSocial):   key = "slap"
 class CmdSocialBog(DefaultCmdSocial):
     key = "boggle"
     aliases = ["bog"]
-
-
 class CmdSocialNog(DefaultCmdSocial):
     key = "noggle"
     aliases = ["nog"]
-
-
 class CmdSocialYeet(DefaultCmdSocialFmt):
     key = "yeet"
 
