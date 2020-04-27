@@ -11,7 +11,6 @@ from random import choice
 class MovingRoom(DefaultRoom):
     def at_object_creation(self):
         super().at_object_creation()
-
         self.create_exits()
 
         self.db.in_service = False
@@ -20,14 +19,11 @@ class MovingRoom(DefaultRoom):
         self.db.wait_at_destination = 30
         self.db.speed = 2
 
-
         self.db.current_dist = 0
         self.db.route_pos = 0
-
         self.db.last_ticker_interval = None
         self.db.last_hook_key = None
 
-        self.update_position()
         self.update_exits()
 
         utils.delay(self.db.wait_at_destination, self.start_service)
@@ -77,9 +73,6 @@ class MovingRoom(DefaultRoom):
             exitIn.location = None
             exitOut.location = None
 
-    def update_position(self):
-        pass
-
     def start_service(self):
         self.db.in_service = True
         if self.db.in_station:
@@ -122,7 +115,7 @@ class MovingRoom(DefaultRoom):
         else:
             self.db.route_pos += 1
         loc = search_object(self.db.route[self.db.route_pos])[0]
-        self.msg_contents("%s announces, 'Now arriving at %s.'" % (self.name, loc.name))
+        self.msg_contents("%s announces, 'Now arriving at {c%s{x.'" % (self.name, loc.name))
         self.update_exits()
         self.msg_contents("%s glides to a halt and the doors open." % self.name)
         loc.msg_contents("%s pulls up and slows to a halt. The doors open." % self.name)
@@ -146,7 +139,7 @@ class MovingRoom(DefaultRoom):
         self.db.route.append(dest)
         self.db.route.append(time_to_next)
 
-        self.msg_contents(self.name + " announces, '" + loc.name + " has been added to the route.'")
+        self.msg_contents(self.name + " announces, '{c" + loc.name + "{x has been added to the route.'")
         return self.db.routes
 
     def del_destination(self, dest):
@@ -158,7 +151,7 @@ class MovingRoom(DefaultRoom):
         for i, (d, time) in enumerate(self.db.destinations):
             if d == dest:
                 del self.db.destinations[i]
-                self.msg_contents(self.name + "announces, '" + loc.name + " has been removed from the route.'")
+                self.msg_contents(self.name + "announces, '{c" + loc.name + "{x has been removed from the route.'")
                 return self.db.destinations
 
 
