@@ -85,7 +85,7 @@ CSRF_COOKIE_SAMESITE = None
 # DEBUG = True
 # GRAPEVINE_ENABLED = False
 # IRC_ENABLED = False
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 # DRASTICAL_SEND_WEBHOOK = False
 
 
@@ -99,17 +99,6 @@ WEBCLIENT_OPTIONS = {
     # messages
 }
 
-
-# MIDDLEWARE = [
-#     "django.middleware.common.CommonMiddleware",
-#     "django.contrib.sessions.middleware.SessionMiddleware",
-#     "django.contrib.messages.middleware.MessageMiddleware",  # 1.4?
-#     "django.contrib.auth.middleware.AuthenticationMiddleware",
-#     "django.middleware.csrf.CsrfViewMiddleware",
-#     "django.contrib.admindocs.middleware.XViewMiddleware",
-#     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
-#     "evennia.web.utils.middleware.SharedLoginMiddleware",
-# ]
 
 
 ######################################################################
