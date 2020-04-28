@@ -20,3 +20,7 @@ class Room(DefaultRoom):
     """
 
     pass
+
+class LegacyRoom(Room):
+
+    pass
