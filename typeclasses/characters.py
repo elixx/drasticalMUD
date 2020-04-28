@@ -33,7 +33,7 @@ class Character(ClothedCharacter):
     def at_object_creation(self):
         super().at_object_creation()
         if self.db.stats == None:
-            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0}
+            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0, 'visited': []}
 
     def at_post_puppet(self):
         super().at_post_puppet()
@@ -66,3 +66,8 @@ class Character(ClothedCharacter):
         """
         styled_message = "|y" + message + "|n"
         return styled_message
+
+    def at_after_move(self, source_location):
+        if source_location.id not in self.db.stats['visited']:
+            self.db.stats['visited'].append(source_location.id)
+        super().at_after_move(source_location)

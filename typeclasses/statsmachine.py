@@ -3,6 +3,7 @@ from django.conf import settings
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
 from evennia import search_channel, search_object
+from evennia import ObjectDB
 from datetime import datetime
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -114,10 +115,23 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         for item in selection:
 
             if item == "GENERAL" or item == "ALL": ##################################################################
+                totalrooms = 0
+                e = ObjectDB.objects.object_totals()
+                for k in e.keys():
+                    if "room" in k.lower():
+                        totalrooms += e[k]
+                if self.caller.db.stats['visited']:
+                    visited = len(self.caller.db.stats['visited'])
+                else: visited=None
+                if visited: pct = round(visited / totalrooms,2)
+
                 output += "{x" + pad(" {yGeneral Stats{x ",width=width,fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
                 table.add_row(
                     "Current time ", datetime.fromtimestamp(gametime.gametime(absolute=True)) )
+                table.add_row("Total rooms ", totalrooms)
+                if(visited):
+                    table.add_row("You have visited ", str(visited) + " (" + str(pct) + "%)")
                 output += str(table)+"\n\n"
 
             if item == "SERVER" or item == "ALL": ###################################################################
