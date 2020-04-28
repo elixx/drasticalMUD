@@ -44,11 +44,15 @@ class AreaImporter(object):
                                  'exits': exits}
 
     def spawnRooms(self):
+        firstRoom = True
         for vnum, room in self.area.items():
             newroom = create_object(typeclass="typeclasses.rooms.LegacyRoom",
                           key=room['name'])
             newroom.db.desc = room['desc']
             self.translate[vnum] = newroom.id
+            if(firstRoom):
+                print(str(newroom.id) + " = " + room['name'])
+                firstRoom = False
         self.spawnExits()
 
     def spawnExits(self):
