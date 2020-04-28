@@ -84,7 +84,7 @@ class MovingRoom(DefaultRoom):
             self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
             loc = search_object(self.db.route[self.db.route_pos-1])[0]
             loc.msg_contents("The doors close as %s begins picking up speed and pulls off." % self.name)
-            if len(self.db.route) >= (self.db.route_pos + 1):
+            if len(self.db.route)-1 > (self.db.route_pos + 1):
                 next = search_object(self.db.route[self.db.route_pos+1])[0]
             else:
                 next = search_object(self.db.route[0])[0]
