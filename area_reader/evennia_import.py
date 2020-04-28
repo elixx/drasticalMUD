@@ -33,24 +33,29 @@ class AreaImporter(object):
                                  'exits': exits}
 
     def spawnRooms(self):
-        for vnum, room in enumerate(self.area):
+        for vnum, room in self.area.items():
             newroom = create_object(typeclass="typeclasses.rooms.LegacyRoom",
                           key=room['name'])
             newroom.db.desc = room['desc']
             self.translate[vnum] = newroom.id
+        self.spawnExits()
 
-    def spawnExits(selfs):
-        for vnum, room in enumerate(self.area):
-            for dir, exit in room['exits'].items():
-                evid = self.translate[vnum]
+    def spawnExits(self):
+        for vnum, room in self.area.items():
+            for exitDir, exitData in room['exits'].items():
+                evid = "#" + str(self.translate[vnum])
                 try:
                     loc = search_object(evid)[0]
                 except:
-                    raise
+                    loc = search_object(room['name'])[0]
+
                 try:
-                    dest = search_object(self.translate[exit['destination']])[0]
+                    evdestid = "#" + str(self.translate[exitData['dest']])
+                    dest = search_object(evdestid)[0]
+                    newexit = create_object(typeclass="typeclasses.exits.LegacyExit",
+                                            key=exitDir, location=loc, destination=dest)
                 except:
-                    raise
-                newexit = create_object(typeclass="typeclasses.exits.LegacyExit",
-                                        key=dir, location=loc, destination=dest)
+                    print("Exit skipped - vloc " + str(exitData['dest']))
+                    continue
+
 
