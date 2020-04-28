@@ -13,6 +13,17 @@ DIRS = {0: "north",
         9: "southwest",
         10: "somewhere"}
 
+DIRALIAS = {"north": 'n',
+            "south": 's',
+            "east": 'e',
+            "west": 'w',
+            "up": 'u',
+            "down": 'd',
+            "northwest": 'nw',
+            "southwest": 'sw',
+            "northeast": 'ne',
+            "southeast": 'se',
+            "somewhere": 'xyzzy'}
 
 class AreaImporter(object):
     def __init__(self, filename):
@@ -54,8 +65,9 @@ class AreaImporter(object):
                     dest = search_object(evdestid)[0]
                     newexit = create_object(typeclass="typeclasses.exits.LegacyExit",
                                             key=exitDir, location=loc, destination=dest)
+                    newexit.aliases.add(DIRALIAS[exitDir])
                 except:
-                    print("Exit skipped - vloc " + str(exitData['dest']))
+                    print("Exit " + exitDir + " in " + str(evid) + " skipped - vloc " + str(exitData['dest']) + " not found.")
                     continue
 
 
