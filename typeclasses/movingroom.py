@@ -15,7 +15,7 @@ class MovingRoom(DefaultRoom):
 
         self.db.in_service = False
         self.db.in_station = True
-        self.db.route = ["#2", 12]
+        self.db.route = ["#2", 6, "#14", 6]
         self.db.wait_at_destination = 30
         self.db.speed = 2
 
@@ -122,11 +122,9 @@ class MovingRoom(DefaultRoom):
         self.db.current_dist = 0
         try:
             next = search_object(self.db.route[self.db.route_pos + 2])
-            if len(next) < 1:
-                next = search_object(self.db.route[0])
             next = next[0].name
         except:
-            next = "Unknown"
+            next = search_object(self.db.route[0])[0].name
         self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t{c%s{x" % (loc.name, next)
         self._set_ticker(self.db.wait_at_destination, "start_service")
 
