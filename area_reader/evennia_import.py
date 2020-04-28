@@ -31,6 +31,9 @@ class AreaImporter(object):
         self.translate = {}
         area_file = area_reader.RomAreaFile(filename)
         area_file.load_sections()
+        self.areaname = area_file.area.name
+        if self.areaname == "":
+            self.areaname = area_file.area.original_filename
         for i, v in area_file.area.rooms.items():
             name = v.name
             desc = v.description
@@ -49,6 +52,7 @@ class AreaImporter(object):
             newroom = create_object(typeclass="typeclasses.rooms.LegacyRoom",
                           key=room['name'])
             newroom.db.desc = room['desc']
+            newroom.tags.add(self.areaname)
             self.translate[vnum] = newroom.id
             if(firstRoom):
                 print(str(newroom.id) + " = " + room['name'])
@@ -70,6 +74,7 @@ class AreaImporter(object):
                     newexit = create_object(typeclass="typeclasses.exits.LegacyExit",
                                             key=exitDir, location=loc, destination=dest)
                     newexit.aliases.add(DIRALIAS[exitDir])
+                    newexit.tags.add(self.areaname)
                 except:
                     print("Exit " + exitDir + " in " + str(evid) + " skipped - vloc " + str(exitData['dest']) + " not found.")
                     continue
