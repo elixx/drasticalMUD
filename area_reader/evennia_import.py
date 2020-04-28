@@ -52,7 +52,7 @@ class AreaImporter(object):
             newroom = create_object(typeclass="typeclasses.rooms.LegacyRoom",
                           key=room['name'])
             newroom.db.desc = room['desc']
-            newroom.tags.add(self.areaname)
+            newroom.tags.add(self.areaname, category='area')
             self.translate[vnum] = newroom.id
             if(firstRoom):
                 print(str(newroom.id) + " = " + room['name'])
@@ -74,7 +74,7 @@ class AreaImporter(object):
                     newexit = create_object(typeclass="typeclasses.exits.LegacyExit",
                                             key=exitDir, location=loc, destination=dest)
                     newexit.aliases.add(DIRALIAS[exitDir])
-                    newexit.tags.add(self.areaname)
+                    newexit.tags.add(self.areaname, category='area')
                 except:
                     print("Exit " + exitDir + " in " + str(evid) + " skipped - vloc " + str(exitData['dest']) + " not found.")
                     continue
