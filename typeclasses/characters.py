@@ -68,6 +68,8 @@ class Character(ClothedCharacter):
         return styled_message
 
     def at_after_move(self, source_location):
+        if not 'visited' in self.db.stats.keys():
+            self.db.stats['visited'] = []
         if source_location.id not in self.db.stats['visited']:
             self.db.stats['visited'].append(source_location.id)
         super().at_after_move(source_location)
