@@ -121,8 +121,10 @@ class MovingRoom(DefaultRoom):
         loc.msg_contents("%s pulls up and slows to a halt. The doors open." % self.name)
         self.db.current_dist = 0
         try:
-            next = search_object(self.db.route[self.db.route_pos + 2])[0]
-            next = next.name
+            next = search_object(self.db.route[self.db.route_pos + 2])
+            if len(next) < 1:
+                next = search_object(self.db.route[0])
+            next = next[0].name
         except:
             next = "Unknown"
         self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t{c%s{x" % (loc.name, next)
