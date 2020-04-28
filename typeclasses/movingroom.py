@@ -99,7 +99,6 @@ class MovingRoom(DefaultRoom):
     def travel(self):
         if self.db.in_service:
             self.db.current_dist += self.db.speed
-            #if self.db.current_dist >= self.db.route[self.db.route_pos]:
                 self._set_ticker(None, None, stop=True)
                 self.arrive()
             else:
