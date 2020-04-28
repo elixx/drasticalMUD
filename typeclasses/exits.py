@@ -36,3 +36,6 @@ class Exit(DefaultExit):
     """
 
     pass
+
+class LegacyExit(Exit):
+    pass
