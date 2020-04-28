@@ -77,16 +77,19 @@ class MovingRoom(DefaultRoom):
         self.db.in_service = True
         if self.db.in_station:
             self.db.in_station = False
-            if self.db.route_pos+1 >= len(self.db.route):
+            if self.db.route_pos+1 > len(self.db.route)-1:
                 self.db.route_pos = 0
             else:
                 self.db.route_pos += 1
             self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
             loc = search_object(self.db.route[self.db.route_pos-1])[0]
             loc.msg_contents("The doors close as %s begins picking up speed and pulls off." % self.name)
-            next = search_object(self.db.route[self.db.route_pos+1])[0]
+            if len(self.db.route) >= (self.db.route_pos + 1):
+                next = search_object(self.db.route[self.db.route_pos+1])[0]
+            else:
+                next = search_object(self.db.route[0])[0]
             self.db.desc = "An electronic sign reads:\n\t{yDeparting:\t{c%s{x\n\t{yNext Stop:\t{c%s{x" % (loc.name, next.name)
-        self.update_exits()
+            self.update_exits()
         self._set_ticker(self.db.speed, "travel")
 
     def stop_service(self):
@@ -110,7 +113,7 @@ class MovingRoom(DefaultRoom):
 
     def arrive(self):
         self.db.in_station = True
-        if self.db.route_pos + 1 >= len(self.db.route):
+        if self.db.route_pos + 1 >= len(self.db.route)-1:
             self.db.route_pos = 0
         else:
             self.db.route_pos += 1
@@ -120,12 +123,11 @@ class MovingRoom(DefaultRoom):
         self.msg_contents("%s glides to a halt and the doors open." % self.name)
         loc.msg_contents("%s pulls up and slows to a halt. The doors open." % self.name)
         self.db.current_dist = 0
-        try:
-            next = search_object(self.db.route[self.db.route_pos + 2])
-            next = next[0].name
-        except:
-            next = search_object(self.db.route[0])[0].name
-        self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t{c%s{x" % (loc.name, next)
+        if self.db.route_pos < len(self.db.route) - 3:
+            next = search_object(self.db.route[self.db.route_pos + 2])[0]
+        else:
+            next = search_object(self.db.route[0])[0]
+        self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t{c%s{x" % (loc.name, next.name)
         self._set_ticker(self.db.wait_at_destination, "start_service")
 
     def add_destination(self, dest, time_to_next, index=-1):
