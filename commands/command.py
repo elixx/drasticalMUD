@@ -130,7 +130,6 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     """
 
     key = "areas"
-    aliases = ["where"]
     locks = "cmd:all()"
     priority = -60
 
@@ -140,6 +139,24 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
             table.add_row(key, value)
         output = str(table) + '\n'
         self.caller.msg(output)
+
+class CmdWhere(COMMAND_DEFAULT_CLASS):
+    """
+    Show current area
+
+    """
+
+    key = "where"
+    locks = "cmd:all()"
+
+    def func(self):
+        roomname = self.caller.location.name
+        if(self.caller.location.db.area):
+            areaname = self.caller.location.db.area
+            areaname = areaname.title()
+        else:
+            areaname = "Unknown"
+        self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
 
 
 
