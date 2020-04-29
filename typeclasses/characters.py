@@ -73,15 +73,16 @@ class Character(ClothedCharacter):
                 self.db.stats['visited'].append(source_location.id)
         except KeyError:
             self.db.stats['visited'] = []
+
+        if source_location.db.area:
+            area_name = str(source_location.db.area)
+        else:
+            area_name = "unknown territory"
         try:
-            areaname = source_location.db.area.title()
-        except KeyError:
-            areaname = "unknown territory"
-        try:
-            if self.db.last_area != source_location.db.area:
-                self.msg("You have entered {y%s{n." % areaname)
-                self.db.last_area = source_location.db.area
-        except KeyError:
-            self.db.last_area = areaname
+            if self.db.last_area != area_name:
+                self.msg("You have entered {y%s{n." % area_name.title())
+                self.db.last_area = area_name
+        except:
+            self.db.last_area = area_name
 
         super().at_after_move(source_location)
