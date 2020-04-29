@@ -133,7 +133,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 table.add_row("Total rooms ", totalrooms)
                 if(visited):
                     table.add_row("You have visited ", str(visited) + " (" + pct + ")")
-                output += str(table)+"\n\n"
+                output += str(table)+"\n"
                 table = self.styled_table("|YArea","|YRooms",border="none", width=width)
                 for (key,value) in sorted(area_count().items(),key=lambda x: x[1], reverse=True):
                     table.add_row(key, value)
@@ -145,14 +145,14 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 table.add_row("Current uptime", utils.time_format(gametime.uptime(), 3))
                 table.add_row("First start", datetime.fromtimestamp(gametime.server_epoch()))
                 table.add_row("Total runtime", utils.time_format(gametime.runtime(), 2))
-                output += str(table)+"\n\n"
-                if privileged:
-                    table = self.styled_table("|YEvent","|YCount",border="none", width=width)
-                    for (key, value) in self.obj.db.stats.items():
-                        #if ("start" in key or "stop" in key):
-                        label = key.replace("_", " ").capitalize()
-                        table.add_row(label, value)
-                    output += str(table) + "\n\n"
+                output += str(table)+"\n"
+                #if privileged:
+                table = self.styled_table("|YEvent","|YCount",border="none", width=width)
+                for (key, value) in self.obj.db.stats.items():
+                    #if ("start" in key or "stop" in key):
+                    label = key.replace("_", " ").title()
+                    table.add_row(label, value)
+                output += str(table) + "\n\n"
 
             if item=="USERS" or item=="ALL": #########################################################################
                 output += "{x" + pad(" {YTop "+str(maxlines)+" Users:{x ", width=width, fillchar="*") + '\n'
