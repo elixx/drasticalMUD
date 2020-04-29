@@ -53,6 +53,7 @@ class AreaImporter(object):
                           key=room['name'])
             newroom.db.desc = room['desc']
             newroom.tags.add(self.areaname, category='area')
+            newroom.db.area = self.areaname
             self.translate[vnum] = newroom.id
             if(firstRoom):
                 print(str(newroom.id) + " = " + room['name'])
@@ -75,8 +76,10 @@ class AreaImporter(object):
                                             key=exitDir, location=loc, destination=dest)
                     newexit.aliases.add(DIRALIAS[exitDir])
                     newexit.tags.add(self.areaname, category='area')
+                    newexit.db.area = self.areaname
                 except:
                     print("Exit " + exitDir + " in " + str(evid) + " skipped - vloc " + str(exitData['dest']) + " not found.")
                     continue
 
-
+    def spawnItems(self):
+        pass
