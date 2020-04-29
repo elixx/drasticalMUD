@@ -5,6 +5,7 @@ from evennia.commands.cmdset import CmdSet
 from evennia import search_channel, search_object
 from evennia import ObjectDB
 from datetime import datetime
+from world.utils import area_count
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -133,6 +134,10 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 if(visited):
                     table.add_row("You have visited ", str(visited) + " (" + pct + ")")
                 output += str(table)+"\n\n"
+                table = self.styled_table("|YArea","|YRooms",border="none", width=width)
+                for (key,value) in sorted(area_count().items(),key=lambda x: x[1], reverse=True):
+                    table.add_row(key, value)
+                output += str(table)+'\n'
 
             if item == "SERVER" or item == "ALL": ###################################################################
                 output += "{x" + pad(" {yServer Stats{x ",width=width,fillchar="*") + '\n'

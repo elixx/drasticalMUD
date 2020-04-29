@@ -46,3 +46,21 @@ def sendWebHook(text):
         message = prefix + "`" + text + "`"
         mwh.send(message)
 
+def area_count():
+    from evennia.utils.search import search_object_attribute
+
+    areas = []
+    x = search_object_attribute(key="area")
+    for n in x:
+        if n.db.area not in areas:
+            areas.append(n.db.area)
+
+    counts = {}
+    for area in areas:
+        c = search_object_attribute(key="area", value=area)
+        n = 0
+        for x in c:
+            if 'room' in x.typeclass_path.lower():
+                n+=1
+        counts[area.title()] = n
+    return(counts)
