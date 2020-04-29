@@ -9,6 +9,7 @@ from evennia import default_cmds
 from django.conf import settings
 from evennia.utils import utils
 from evennia.server.sessionhandler import SESSIONS
+from world.utils import area_count
 import time
 
 
@@ -120,6 +121,25 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
             "|wAccounts:|n\n%s\n%s unique account%s logged in."
             % (table, "One" if is_one else naccounts, "" if is_one else "s")
         )
+
+
+class CmdAreas(COMMAND_DEFAULT_CLASS):
+    """
+    list of tagged areas
+
+    """
+
+    key = "areas"
+    aliases = ["where"]
+    locks = "cmd:all()"
+    priority = -60
+
+    def func(self):
+        table = self.styled_table("|YArea", "|YRooms", width=45)
+        for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
+            table.add_row(key, value)
+        output = str(table) + '\n'
+        self.caller.msg(output)
 
 
 
