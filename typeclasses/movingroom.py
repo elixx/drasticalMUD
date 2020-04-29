@@ -19,6 +19,11 @@ class MovingRoom(DefaultRoom):
         self.db.wait_at_destination = 30
         self.db.speed = 2
 
+        self.db.transit_msgs = [ "%s shakes slightly as it moves along its course.",
+                                 "You feel the floor of %s moving beneath you.",
+                                 "%s hums quietly as it moves.",
+                                 "%s hits a bump and you are jostled, momentarily." ]
+
         self.db.current_dist = 0
         self.db.route_pos = 0
         self.db.last_ticker_interval = None
@@ -107,7 +112,7 @@ class MovingRoom(DefaultRoom):
                 self.arrive()
             else:
                 if (choice([True, False, False])):
-                    self.msg_contents("%s shakes slightly as it moves along its course." % self.name)
+                    self.msg_contents(choice(self.db.transit_msgs) % self.name)
 
             route = self.db.destinations
 
