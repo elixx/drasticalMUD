@@ -78,11 +78,12 @@ class Character(ClothedCharacter):
             area_name = str(source_location.db.area)
         else:
             area_name = "unknown territory"
-        try:
+
+        if self.db.last_area:
             if self.db.last_area != area_name:
                 self.msg("You have entered {y%s{n." % area_name.title())
                 self.db.last_area = area_name
-        except:
+        else:
             self.db.last_area = area_name
 
         super().at_after_move(source_location)
