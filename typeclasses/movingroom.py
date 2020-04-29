@@ -123,7 +123,11 @@ class MovingRoom(DefaultRoom):
         else:
             self.db.route_pos += 1
         loc = search_object(self.db.route[self.db.route_pos])[0]
-        self.msg_contents("%s announces, 'Now arriving at {c%s{x.'" % (self.name, loc.name))
+        if(loc.db.area):
+            announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, loc.db.area.title())
+        else:
+            announce = "%s announces, '{xNow arriving at {c%s{x.'" % (self.name, loc.name)
+        self.msg_contents(announce)
         self.update_exits()
         self.msg_contents("%s glides to a halt and the doors open." % self.name)
         loc.msg_contents("%s pulls up and slows to a halt. The doors open." % self.name)
