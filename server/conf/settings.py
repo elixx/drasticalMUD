@@ -71,7 +71,7 @@ SESSION_COOKIE_AGE = 172800   # 86400=1d  # Default: 1209600 (2 weeks, in second
 DRASTICAL_SEND_WEBHOOK = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 CSRF_COOKIE_SAMESITE = None
-
+IRC_ENABLED = True
 
 # # Dev
 # SERVERNAME = "devsandbox"
@@ -87,7 +87,7 @@ CSRF_COOKIE_SAMESITE = None
 # IRC_ENABLED = False
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 # DRASTICAL_SEND_WEBHOOK = False
-
+# IRC_ENABLED = False
 
 WEBCLIENT_OPTIONS = {
     "gagprompt": True,  # Gags prompt from the output window and keep them
