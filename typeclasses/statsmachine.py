@@ -171,16 +171,19 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
 
             if item=="GUESTS" or item=="ALL": #########################################################################
                 if privileged:
-                    output += "{x" + pad(" {YLast " + str(maxlines) + " Guests:{x ", width=width, fillchar="*") + '\n'
-                    guestlog = self.obj.db.guestlog
                     table = self.styled_table("{yTimestamp","{yGuest","{yConnecting IP", border="none", width=width)
-                    count = 0
-                    for (time,ip,user) in guestlog:
-                        count += 1
-                        if count > maxlines:
-                            break
-                        table.add_row(datetime.fromtimestamp(time), user, ip)
-                    output += str(table) + '\n'
+                else:
+                    table = self.styled_table("{yTimestamp","{yGuest", border="none", width=width)
+                output += "{x" + pad(" {YLast " + str(maxlines) + " Guests:{x ", width=width, fillchar="*") + '\n'
+                guestlog = self.obj.db.guestlog
+                count = 0
+                for (time,ip,user) in guestlog:
+                    count += 1
+                    if count > maxlines:
+                        break
+                    if(privileged): table.add_row(datetime.fromtimestamp(time), user, ip)
+                    else: table.add_row(datetime.fromtimestamp(time), user)
+                output += str(table) + '\n'
 
             if item=="AREAS": ##########################################################################################
                 table = self.styled_table("|YArea","|YRooms",border="none", width=width)
