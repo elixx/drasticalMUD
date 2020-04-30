@@ -24,6 +24,7 @@ from commands.command import CmdWho2
 from commands.command import CmdExamine2
 from commands.command import CmdAreas
 from commands.command import CmdWhere
+from commands.command import CmdRecall
 
 from evennia.contrib.clothing import ClothedCharacterCmdSet
 from evennia.contrib import mail
@@ -51,6 +52,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(CmdLook2)
         self.add(CmdExamine2)
         self.add(CmdWhere)
+        self.add(CmdRecall)
 
         #
         # any commands you add below will overload the default ones.

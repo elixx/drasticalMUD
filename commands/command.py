@@ -7,13 +7,13 @@ Commands describe the input the account can do to the game.
 from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
 from evennia import default_cmds
 from django.conf import settings
-from evennia.utils import utils
+from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
 from world.utils import area_count
 import time
 
 
-COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
+COMMAND_DEFAULT_CLASS = utils.utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
 
@@ -157,6 +157,27 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
         else:
             areaname = "Unknown"
         self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
+
+
+
+class CmdRecall(COMMAND_DEFAULT_CLASS):
+    """
+    Return to your home.
+
+    """
+    key = "recall"
+    locks = "cmd:all()"
+
+    def func(self):
+        home = self.caller.home
+        home = utils.search.search_object(home)
+        if len(home) > 0:
+            if not self.caller.db.no_recall and not self.caller.ndb.no_recall:
+                self.caller.location.msg_contents("%s is {cswept{C away{n...", exclude=self.caller)
+                self.caller.msg("You summon your energy and are {cswept{C away{n...")
+                self.caller.move_to(home[0])
+        else:
+            self.caller.msg("Uh-oh! You are homeless!")
 
 
 
