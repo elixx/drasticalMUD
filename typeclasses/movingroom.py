@@ -165,9 +165,9 @@ class MovingRoom(DefaultRoom):
         except:
             return None
 
-        for i, (d, time) in enumerate(self.db.destinations):
+        for i,d in enumerate(self.db.route):
             if d == dest:
-                del self.db.destinations[i]
+                del self.db.route[i]
                 self.msg_contents(self.name + "announces, '{c" + loc.name + "{x has been removed from the route.'")
                 return self.db.destinations
 
