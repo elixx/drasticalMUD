@@ -1,6 +1,16 @@
 from evennia import create_object, search_object
 from area_reader import area_reader
 
+### Usage (from within Evennia):
+# !
+# from area_reader.evennia_import import AreaImporter
+# x = AreaImporter()
+# x.load("D:/mud-areas/midgaard.are")
+# x.load("D:/mud-areas/newthalos.are")
+# x.spawnRooms()
+# x.spawnObjects()
+
+
 DIRS = {0: "north",
         1: "east",
         2: "south",
