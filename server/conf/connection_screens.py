@@ -56,7 +56,6 @@ CONNECTION_SCREEN = """
 
 CONNECTION_SCREEN = """
  Welcome to...
-
 |n▓█████▄  ██▀███   ▄▄▄        ██████ ▄▄▄█████▓ ██▓ ▄████▄   ▄▄▄       ██▓    
 |x▒██▀ ██▌▓██ ▒ ██▒▒████▄    ▒██    ▒ ▓  ██▒ ▓▒▓██▒▒██▀ ▀█  ▒████▄    ▓██▒    
 |r░██   █▌|R▓|r██ ░▄|R█|r ▒|R▒|r██  ▀█▄  ░ |R▓██|r▄   ▒ ▓|R██|r░ ▒░▒|R█|r█▒▒▓█    ▄ ▒|R█|r█  ▀█▄  ▒██░    
@@ -69,7 +68,8 @@ CONNECTION_SCREEN = """
 |R ░             
 |R                                   ░                          
 {} - |g{}|n 
- If you have an existing account, connect to it by typing:
+
+|x If you have an existing account, connect to it by typing:
       |wconnect <username> <password>|x
  If you need to create an account, type (without the <>'s):
       |wcreate <username> <password>|x
