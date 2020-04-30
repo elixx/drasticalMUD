@@ -69,21 +69,23 @@ class Character(ClothedCharacter):
 
     def at_after_move(self, source_location):
         try:
-            if source_location.id not in self.db.stats['visited']:
+            if source_location and source_location.id not in self.db.stats['visited']:
                 self.db.stats['visited'].append(source_location.id)
+
         except KeyError:
             self.db.stats['visited'] = []
 
-        if source_location.db.area:
-            area_name = str(source_location.db.area)
-        else:
-            area_name = "unknown territory"
+        if source_location is not None:
+            if source_location.db.area:
+                area_name = str(source_location.db.area)
+            else:
+                area_name = "unknown territory"
 
-        if self.db.last_area:
-            if self.db.last_area != area_name:
-                self.msg("You have entered {y%s{n." % area_name.title())
+            if self.db.last_area:
+                if self.db.last_area != area_name:
+                    self.msg("You have entered {y%s{n." % area_name.title())
+                    self.db.last_area = area_name
+            else:
                 self.db.last_area = area_name
-        else:
-            self.db.last_area = area_name
 
         super().at_after_move(source_location)
