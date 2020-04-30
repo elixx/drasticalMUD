@@ -109,6 +109,8 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 selection.append("GUESTS")
             if "use" in args:
                 selection.append("USERS")
+            if "ar" in args or "wo" in args:
+                selection.append("AREAS")
 
 ########################################################################################################################
         output = "\n"
@@ -134,10 +136,6 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 if(visited):
                     table.add_row("You have visited ", str(visited) + " (" + pct + ")")
                 output += str(table)+"\n"
-                table = self.styled_table("|YArea","|YRooms",border="none", width=width)
-                for (key,value) in sorted(area_count().items(),key=lambda x: x[1], reverse=True):
-                    table.add_row(key, value)
-                output += str(table)+'\n'
 
             if item == "SERVER" or item == "ALL": ###################################################################
                 output += "{x" + pad(" {yServer Stats{x ",width=width,fillchar="*") + '\n'
@@ -152,7 +150,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     #if ("start" in key or "stop" in key):
                     label = key.replace("_", " ").title()
                     table.add_row(label, value)
-                output += str(table) + "\n\n"
+                output += str(table) + "\n"
 
             if item=="USERS" or item=="ALL": #########################################################################
                 output += "{x" + pad(" {YTop "+str(maxlines)+" Users:{x ", width=width, fillchar="*") + '\n'
@@ -168,7 +166,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     else:
                         user = k
                     table.add_row(user,v['logins'])
-                output += str(table) + '\n\n'
+                output += str(table) + '\n'
 
             if item=="GUESTS" or item=="ALL": #########################################################################
                 if privileged:
@@ -182,6 +180,12 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                             break
                         table.add_row(datetime.fromtimestamp(time), user, ip)
                     output += str(table) + '\n'
+
+            if item=="AREAS": ##########################################################################################
+                table = self.styled_table("|YArea","|YRooms",border="none", width=width)
+                for (key,value) in sorted(area_count().items(),key=lambda x: x[1], reverse=True):
+                    table.add_row(key, value)
+                output += str(table)+'\n'
 
 ########################################################################################################################
         self.msg(output)
