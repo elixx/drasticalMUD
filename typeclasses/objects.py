@@ -164,3 +164,5 @@ class Object(DefaultObject):
         if(self.db.ephemeral):
             self.delete()
 
+class LegacyObject(Object):
+    pass
