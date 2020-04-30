@@ -126,7 +126,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 if self.caller.db.stats['visited']:
                     visited = len(self.caller.db.stats['visited'])
                 else: visited=None
-                if visited: pct = str(round(visited / totalrooms,2)) + "%"
+                if visited: pct = round(visited / totalrooms,2)
 
                 output += "{x" + pad(" {yGeneral Stats{x ",width=width,fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
@@ -134,7 +134,8 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     "Current time ", datetime.fromtimestamp(gametime.gametime(absolute=True)) )
                 table.add_row("Total rooms ", totalrooms)
                 if(visited):
-                    table.add_row("You have visited ", str(visited) + " (" + pct + ")")
+                    table.add_row("You have visited ", str(visited) + " (" + str(pct) + "%)")
+                    self.caller.db.stats['explored'] = pct
                 output += str(table)+"\n"
 
             if item == "SERVER" or item == "ALL": ###################################################################
