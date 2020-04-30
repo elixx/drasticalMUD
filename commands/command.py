@@ -134,7 +134,7 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     priority = -60
 
     def func(self):
-        table = self.styled_table("|YArea", "|YRooms", width=45)
+        table = self.styled_table("|YArea", "|YRooms", width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
             table.add_row(key, value)
         output = str(table) + '\n'
