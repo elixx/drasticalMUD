@@ -66,7 +66,9 @@ class AreaImporter(object):
         self.area_file.load_sections()
         self.areaname = self.area_file.area.name
         if self.areaname == "":
-            self.areaname = self.area_file.area.original_filename
+            s = filename.split("/")[-1].lower()
+            s = s.replace(".are","")
+            self.areaname = s
         self.areaname = self.areaname.lower()
 
         self.rooms_created = False
@@ -128,7 +130,6 @@ class AreaImporter(object):
             firstRoom = True
             for vnum, room in self.rooms.items():
                 if(self.last_area != room['area']):
-                    print("*** %s ***" % room['area'])
                     self.last_area = room['area']
                     firstRoom = True
                 newroom = create_object(typeclass="typeclasses.rooms.LegacyRoom",
@@ -139,7 +140,7 @@ class AreaImporter(object):
                 self.room_translate[vnum] = newroom.id
                 if self.verbose: print("Area: %s Room: %s Vnum: %s Evid: %s" % (room['area'], room['name'], vnum, newroom.id))
                 if(firstRoom):
-                    print(str(newroom.id) + " = " + room['name'])
+                    print(room['area'] + ': ' + str(newroom.id) + " = " + room['name'])
                     firstRoom = False
             self.rooms_created = True
             self._spawnRooms_exits()
@@ -183,9 +184,8 @@ class AreaImporter(object):
                     try:
                         loc = search_object(evid)[0]
                     except Exception as e:
-                        print("location for object %s not found: %s" % (vnum, evid))
-                        print(str(e))
-                        pass
+                        print("location for object vnum %s not found: %s" % (vnum, evid))
+                        continue
 
                     try:
                         newob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
