@@ -42,30 +42,30 @@ class Character(ClothedCharacter):
         except KeyError:
             self.db.stats['logins'] = 1
 
-    def at_before_say(self, message, **kwargs):
-        """
-        Before the object says something.
-
-        This hook is by default used by the 'say' and 'whisper'
-        commands as used by this command it is called before the text
-        is said/whispered and can be used to customize the outgoing
-        text from the object. Returning `None` aborts the command.
-
-        Args:
-            message (str): The suggested say/whisper text spoken by self.
-        Kwargs:
-            whisper (bool): If True, this is a whisper rather than
-                a say. This is sent by the whisper command by default.
-                Other verbal commands could use this hook in similar
-                ways.
-            receivers (Object or iterable): If set, this is the target or targets for the say/whisper.
-
-        Returns:
-            message (str): The (possibly modified) text to be spoken.
-
-        """
-        styled_message = "|y" + message + "|n"
-        return styled_message
+    # def at_before_say(self, message, **kwargs):
+    #     """
+    #     Before the object says something.
+    #
+    #     This hook is by default used by the 'say' and 'whisper'
+    #     commands as used by this command it is called before the text
+    #     is said/whispered and can be used to customize the outgoing
+    #     text from the object. Returning `None` aborts the command.
+    #
+    #     Args:
+    #         message (str): The suggested say/whisper text spoken by self.
+    #     Kwargs:
+    #         whisper (bool): If True, this is a whisper rather than
+    #             a say. This is sent by the whisper command by default.
+    #             Other verbal commands could use this hook in similar
+    #             ways.
+    #         receivers (Object or iterable): If set, this is the target or targets for the say/whisper.
+    #
+    #     Returns:
+    #         message (str): The (possibly modified) text to be spoken.
+    #
+    #     """
+    #     styled_message = "|y" + message + "|n"
+    #     return styled_message
 
     def at_after_move(self, source_location):
         try:
