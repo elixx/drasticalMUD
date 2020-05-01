@@ -87,6 +87,6 @@ class Channel(DefaultChannel):
                 if not message.startswith(" "):
                     message = " " + message
         if pose:
-            return "{C%s{x%s" % (sender_string, message)
+            return "%s%s" % (sender_string, message)
         else:
-            return "{C%s{x: %s" % (sender_string, message)
+            return "%s: %s" % (sender_string, message)
