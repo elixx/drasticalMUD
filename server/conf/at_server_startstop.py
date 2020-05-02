@@ -15,7 +15,7 @@ at_server_cold_start()
 at_server_cold_stop()
 
 """
-from world.utils import findStatsMachine, sendWebHook
+from world.utils import findStatsMachine, sendWebHook, area_count
 
 def at_server_start():
     """
@@ -25,6 +25,9 @@ def at_server_start():
     machine = findStatsMachine()
     stats = machine.db.stats
     machine.incr('server_start')
+
+    f = area_count()
+    del f
 
     sendWebHook("Server started.")
     pass
