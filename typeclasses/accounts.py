@@ -26,7 +26,6 @@ from random import shuffle, getrandbits
 from time import time
 from evennia.accounts.accounts import DefaultAccount, DefaultGuest
 from evennia.utils import class_from_module, create, logger
-from evennia import search_object
 from evennia.accounts.models import AccountDB
 from django.conf import settings
 from world.utils import findStatsMachine, sendWebHook

@@ -4,7 +4,7 @@ from django.conf import settings
 from evennia.utils.create import create_object
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
-from evennia import search_channel, search_object
+from evennia import search_channel
 from world.utils import findStatsMachine
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)

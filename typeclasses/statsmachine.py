@@ -1,13 +1,13 @@
-from evennia.utils import logger, utils, gametime, create, search, pad
+from evennia.utils import utils, gametime, pad
 from django.conf import settings
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
-from evennia import search_channel, search_object
 from evennia import ObjectDB
 from datetime import datetime
 from world.utils import area_count
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
+
 
 
 class StatsMachine(DefaultObject):
