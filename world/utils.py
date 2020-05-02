@@ -42,7 +42,7 @@ def genPrompt(obj):
 def sendWebHook(text):
     if(settings.DRASTICAL_SEND_WEBHOOK):
         mwh = Webhook(settings.DRASTICAL_NOTIFY_URL,settings.DRASTICAL_NOTIFY_HOOK)
-        prefix = ":crossed_swords: **" + settings.SERVERNAME + "** - "
+        prefix = ":turkey: **" + settings.SERVERNAME + "** - "
         message = prefix + "`" + text + "`"
         mwh.send(message)
 
