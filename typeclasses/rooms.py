@@ -24,3 +24,8 @@ class Room(DefaultRoom):
 class LegacyRoom(Room):
 
     pass
+
+
+class ShopRoom(Room):
+
+    pass
