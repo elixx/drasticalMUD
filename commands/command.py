@@ -223,4 +223,65 @@ class CmdLook2(default_cmds.CmdLook):
 
         self.msg((caller.at_look(target), {"type": "look"}), options=None)
 
+class CmdQuit(COMMAND_DEFAULT_CLASS):
+    """
+    quit the game
 
+    Usage:
+      quit
+
+    Switch:
+      all - disconnect all connected sessions
+
+    Gracefully disconnect your current session from the
+    game. Use the /all switch to disconnect from all sessions.
+    """
+
+    key = "quit"
+    switch_options = ("all",)
+    locks = "cmd:all()"
+
+    # this is used by the parent
+    account_caller = True
+
+    logout_screen = """
+                                      
+|W88                                    88  
+|C88                                    88  
+|C88                                    88  
+|C88,dPPYba,   8b       d8   ,adPPYba,  88  
+|c88P'    "8a  `8b     d8'  a8P_____88  88  
+|c88       d8   `8b   d8'   8PP"""""""  ""  
+|b88b,   ,a8"    `8b,d8'    "8b,   ,aa  aa  
+|b8Y"Ybbd8"'       Y88'      `"Ybbd8"'  88  
+|B                 d8'                      
+|B                d8'                       
+
+    """
+
+
+    def func(self):
+        """hook function"""
+        account = self.account
+
+        if "all" in self.switches:
+            account.msg(
+                "|RQuitting|n all sessions. Hope to see you soon again.", session=self.session
+            )
+            reason = "quit/all"
+            for session in account.sessions.all():
+                account.disconnect_session_from_account(session, reason)
+        else:
+            nsess = len(account.sessions.all())
+            reason = "quit"
+            if nsess == 2:
+                account.msg("|RQuitting|n. One session is still connected.", session=self.session)
+            elif nsess > 2:
+                account.msg(
+                    "|RQuitting|n. %i sessions are still connected." % (nsess - 1),
+                    session=self.session,
+                )
+            else:
+                # we are quitting the last available session
+                account.msg("{YY'all c{yome b{Wack n{yow, y{Y'hear{n...?\n" + self.logout_screen, session=self.session)
+            account.disconnect_session_from_account(self.session, reason)
