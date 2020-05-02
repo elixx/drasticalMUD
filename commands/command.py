@@ -12,14 +12,11 @@ from evennia.server.sessionhandler import SESSIONS
 from world.utils import area_count
 import time
 
-
 COMMAND_DEFAULT_CLASS = utils.utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
-
 
 
 class CmdExamine2(default_cmds.CmdExamine):
     aliases = ["exa"]
-
 
 
 class CmdWho2(COMMAND_DEFAULT_CLASS):
@@ -140,6 +137,7 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
         output = str(table) + '\n'
         self.caller.msg(output)
 
+
 class CmdWhere(COMMAND_DEFAULT_CLASS):
     """
     Show current area
@@ -151,13 +149,12 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         roomname = self.caller.location.name
-        if(self.caller.location.db.area):
+        if (self.caller.location.db.area):
             areaname = self.caller.location.db.area
             areaname = areaname.title()
         else:
             areaname = "Unknown"
         self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
-
 
 
 class CmdRecall(COMMAND_DEFAULT_CLASS):
@@ -178,7 +175,6 @@ class CmdRecall(COMMAND_DEFAULT_CLASS):
                 self.caller.move_to(home[0])
         else:
             self.caller.msg("Uh-oh! You are homeless!")
-
 
 
 class CmdLook2(default_cmds.CmdLook):
@@ -223,6 +219,7 @@ class CmdLook2(default_cmds.CmdLook):
 
         self.msg((caller.at_look(target), {"type": "look"}), options=None)
 
+
 class CmdQuit(COMMAND_DEFAULT_CLASS):
     """
     quit the game
@@ -246,19 +243,18 @@ class CmdQuit(COMMAND_DEFAULT_CLASS):
 
     logout_screen = """
                                       
-|W88                                    88  
-|C88                                    88  
-|C88                                    88  
-|C88,dPPYba,   8b       d8   ,adPPYba,  88  
-|c88P'    "8a  `8b     d8'  a8P_____88  88  
+|W88                                    |w88  
+|C88                                    |W88  
+|C88                                    |y88  
+|C88,dPPYba,   8b       d8   ,adPPYba,  |y88  
+|c88P'    "8a  `8b     d8'  a8P_____88  |y88  
 |c88       d8   `8b   d8'   8PP"""""""  ""  
-|b88b,   ,a8"    `8b,d8'    "8b,   ,aa  aa  
-|b8Y"Ybbd8"'       Y88'      `"Ybbd8"'  88  
+|b88b,   ,a8"    `8b,d8'    "8b,   ,aa  |Yaa  
+|b8Y"Ybbd8"'       Y88'      `"Ybbd8"'  |Y88  
 |B                 d8'                      
 |B                d8'                       
 
     """
-
 
     def func(self):
         """hook function"""
