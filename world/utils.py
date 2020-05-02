@@ -58,9 +58,6 @@ def area_count():
     counts = {}
     for area in areas:
         c = search_object_attribute(key="area", value=area)
-        n = 0
-        for x in c:
-            if 'room' in x.typeclass_path.lower():
-                n+=1
-        counts[area.title()] = n
+        x = c.filter(db_typeclass_path__contains="room")
+        counts[area.title()] = len(x)
     return(counts)

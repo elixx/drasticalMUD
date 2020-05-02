@@ -26,6 +26,9 @@ def at_server_start():
     stats = machine.db.stats
     machine.incr('server_start')
 
+    f = area_count()
+    del f
+
     sendWebHook("Server started.")
     pass
 
@@ -73,8 +76,6 @@ def at_server_cold_start():
     machine = findStatsMachine()
     machine.incr("cold_start")
 
-    f = area_count()
-    del f
     pass
 
 
