@@ -9,7 +9,7 @@ from evennia import default_cmds
 from django.conf import settings
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from world.utils import area_count
+from world.utils import area_count, sendWebHook
 import time
 
 COMMAND_DEFAULT_CLASS = utils.utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -280,4 +280,5 @@ class CmdQuit(COMMAND_DEFAULT_CLASS):
             else:
                 # we are quitting the last available session
                 account.msg("{YY'all c{yome b{Wack n{yow, y{Y'hear{n...?\n" + self.logout_screen, session=self.session)
+            sendWebHook("Quit: " + self.name + " from " + session.address)
             account.disconnect_session_from_account(self.session, reason)
