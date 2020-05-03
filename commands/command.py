@@ -149,11 +149,13 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         roomname = self.caller.location.name
-        if (self.caller.location.db.area):
-            areaname = self.caller.location.db.area
-            areaname = areaname.title()
-        else:
-            areaname = "Unknown"
+        areaname = self.caller.location.tags.get(category="area")
+        if areaname == None:
+            if self.caller.location.db.area:
+                areaname = self.caller.location.db.area
+            else:
+                areaname = "Unknown"
+        areaname = areaname.title()
         self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
 
 
