@@ -25,7 +25,7 @@ class CmdNewsBoardRead(COMMAND_DEFAULT_CLASS):
         for (stamp, author, post) in self.obj.db.posts:
             table.add_row(cnt,stamp.strftime("%m-%d{r@{n%H:%M"),'{G'+author,wrap(post, width=50))
             cnt += 1
-        output = "You read %s" % self.obj.name
+        output = "You read %s.\n" % self.obj.name
         output += str(table)
         self.caller.msg(output)
         self.caller.location.msg_contents("%s reads %s." % (self.caller.name, self.obj.name), exclude=self.caller)
