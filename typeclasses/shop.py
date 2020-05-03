@@ -34,6 +34,7 @@ def start_menu(caller):
     text = \
         """
         What do you want?
+        
         """
     options = ({"desc": "some clothes", "goto": "make_clothing"},
                {"desc": "a gun", "goto": "make_gun"},
@@ -69,6 +70,8 @@ def make_clothing(caller):
     text = \
         """
         What kind of clothing are you looking for?
+        Listen, though... you'll take whatever I can find...
+        
         """
     options = ({"desc": "a shirt", "goto": "make_shirt"},
                {"desc": "some pants", "goto": "make_pants"},
