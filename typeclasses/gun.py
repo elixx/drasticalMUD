@@ -29,6 +29,7 @@ class CmdGunAim(COMMAND_DEFAULT_CLASS):
         if not target:
             self.caller.msg("You can't find it!")
         else:
+            target = target[0]
             self.caller.msg("You take aim at %s with %s." % (target.name, self.obj.name))
             self.caller.location.msg_contents("%s aims their %s at %s." % (self.caller.name, self.obj.name, target.name),
                                               exclude=self.caller)
