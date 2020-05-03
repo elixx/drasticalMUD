@@ -1,6 +1,5 @@
 from evennia import search_object
-from evennia.utils.search import search_tag_object
-from evennia.utils.search import search_object_attribute
+from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.create import create_object
 from django.conf import settings
 
@@ -57,7 +56,7 @@ def area_count():
 
     counts = {}
     for area in areas:
-        c = search_object_attribute(key="area", value=area)
+        c = search_tag(area, category="area")
         x = c.filter(db_typeclass_path__contains="room")
         counts[area.title()] = len(x)
     return(counts)

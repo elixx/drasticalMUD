@@ -76,8 +76,8 @@ class Character(ClothedCharacter):
             self.db.stats['visited'] = []
 
         if source_location is not None:
-            if source_location.db.area:
-                area_name = str(source_location.db.area)
+            if source_location.tags.get(category='area'):
+                area_name = str(source_location.tags.get(category='area'))
             else:
                 area_name = "unknown territory"
 
