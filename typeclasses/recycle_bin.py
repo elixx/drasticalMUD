@@ -17,7 +17,7 @@ class RecycleBin(DefaultObject):
         self.db.auto_purge = False
         if not self.db.stats:
             self.db.stats = {}
-        self.cmdset.add(RecycleBinCmdSet)
+        self.cmdset.add(RecycleBinCmdSet, permanent=True)
 
     def at_init(self):
         super().at_init()

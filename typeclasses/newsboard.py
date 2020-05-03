@@ -14,7 +14,7 @@ class NewsBoard(DefaultObject):
         self.locks.add("get:false()")
         if not self.db.posts:
             self.db.posts = []
-        self.cmdset.add(NewsBoardCmdSet)
+        self.cmdset.add(NewsBoardCmdSet, permanent=True)
 
 class CmdNewsBoardRead(COMMAND_DEFAULT_CLASS):
     key = "read"
