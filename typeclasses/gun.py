@@ -1,6 +1,5 @@
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
-from evennia import ObjectDB
 from django.conf import settings
 from evennia.utils import utils
 
