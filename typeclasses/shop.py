@@ -5,6 +5,7 @@ from typeclasses.rooms import Room
 from evennia.commands.cmdset import CmdSet
 from evennia.utils.create import create_object
 from typeclasses.objects import Object
+from random import choice
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -52,7 +53,7 @@ def make_sunglasses(self):
     self.msg("You get %s" % glasses.name)
 
 def make_gun(self):
-    ammo = create_object(Object,
+    ammo = create_object("typeclasses.gun.Gun",
                            key="a generic gun",
                            aliases=["gun"],
                            home=self,
