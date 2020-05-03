@@ -89,8 +89,13 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                     return
 
                 self.caller.msg("You can't find your target!")
+
             else:
                 self.caller.msg("%s is out of ammunition!" % self.obj.name)
+                self.caller.location.msg_contents("Click! %s attempts to shoot %s but nothing happens." %
+                                                  (self.caller.name, self.obj.name),
+                                                  exclude=self.caller)
+
 
 
 class CmdGunReload(COMMAND_DEFAULT_CLASS):
