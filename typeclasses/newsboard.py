@@ -24,8 +24,10 @@ class CmdNewsBoardRead(COMMAND_DEFAULT_CLASS):
         for (stamp, author, post) in self.obj.db.posts:
             table.add_row(cnt,stamp.strftime("%m-%d{r@{n%H:%M"),'{G'+author,wrap(post, width=50))
             cnt += 1
-        output = str(table)
+        output = "You read %s" % self.obj.name
+        output += str(table)
         self.caller.msg(output)
+        self.caller.location.msg_contents("%s reads %s." % (self.caller.name, self.obj.name), exclude=self.caller)
 
 class CmdNewsBoardPost(COMMAND_DEFAULT_CLASS):
     key = "post"
@@ -34,6 +36,8 @@ class CmdNewsBoardPost(COMMAND_DEFAULT_CLASS):
         stamp = datetime.now()
         post = str(self.args).strip()
         self.obj.db.posts.append((stamp, self.caller.name, post))
+        self.caller.msg("You post an update to %s" % self.obj.name)
+        self.caller.location.msg_contents("%s makes a new post on %s." % (self.caller.name, self.obj.name), exclude=self.caller)
 
 class CmdNewsBoardDel(COMMAND_DEFAULT_CLASS):
     key = "bdelete"
@@ -45,7 +49,8 @@ class CmdNewsBoardDel(COMMAND_DEFAULT_CLASS):
             p = int(self.args.strip())
             if p < len(self.obj.db.posts):
                 del self.obj.db.posts[p]
-                self.caller.msg("Remove post %s" % p)
+                self.caller.msg("You removed post %s from %s" % (p, self.obj.name))
+                self.caller.location.msg_contents("%s removes a post from %s." % (self.caller.name, self.obj.name), exclude=self.caller)
 
 class NewsBoardCmdSet(CmdSet):
     key = "NewsBoardCmdSet"
