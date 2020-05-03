@@ -29,8 +29,10 @@ class CmdGunAim(COMMAND_DEFAULT_CLASS):
             if exits:
                 for exit in exits:
                     for entry in exit.destination.contents:
-                        if entry == self.obj.ndb.target:
+                        if self.args in entry.name:
                             target = entry
+                            self.obj.ndb.aiming = True
+                            self.obj.ndb.target = target
                             self.caller.msg("You take aim at %s to the %s with %s." % (target.name, exit.name, self.obj.name))
                             self.caller.location.msg_contents(
                                 "%s aims %s %s at %s." % (self.caller.name, exit.name, self.obj.name, target.name),
