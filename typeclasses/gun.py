@@ -7,7 +7,7 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
 
-class ObjGun(DefaultObject):
+class Gun(DefaultObject):
     def at_object_creation(self):
         super().at_object_creation()
         self.db.ammo = 0
