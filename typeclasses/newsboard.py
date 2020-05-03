@@ -2,6 +2,7 @@ from evennia import utils
 from django.conf import settings
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
+from evennia import search_channel
 from datetime import datetime
 from evennia.utils import wrap
 
@@ -38,6 +39,9 @@ class CmdNewsBoardPost(COMMAND_DEFAULT_CLASS):
         self.obj.db.posts.append((stamp, self.caller.name, post))
         self.caller.msg("You post an update to %s" % self.obj.name)
         self.caller.location.msg_contents("%s makes a new post on %s." % (self.caller.name, self.obj.name), exclude=self.caller)
+        message = "%s has made a new post on %s in %s!" % (self.caller.name, self.obj.name, self.obj.location.name)
+        search_channel("public")[0].msg(message)
+
 
 class CmdNewsBoardDel(COMMAND_DEFAULT_CLASS):
     key = "bdelete"
