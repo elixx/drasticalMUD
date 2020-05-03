@@ -81,7 +81,7 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
 
 
 class CmdGunReload(COMMAND_DEFAULT_CLASS):
-    key = "relo"
+    key = "load"
     locks = "cmd:all()"
     def func(self):
         if not self.args:
