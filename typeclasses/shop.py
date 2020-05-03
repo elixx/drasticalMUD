@@ -35,7 +35,7 @@ def start_menu(caller):
         """
         What do you want?
         """
-    options = ({"desc": "clothing", "goto": "make_clothing"},
+    options = ({"desc": "some clothes", "goto": "make_clothing"},
                {"desc": "a gun", "goto": "make_gun"},
                {"desc": "ammo", "goto": "make_ammo"})
     return text, options
@@ -70,11 +70,11 @@ def make_clothing(caller):
         """
         What kind of clothing are you looking for?
         """
-    options = ({"desc": "Shirt", "goto": "make_shirt"},
-               {"desc": "Pants", "goto": "make_pants"},
-               {"desc": "Hazmat suit", "goto": "make_hazmat"},
-               {"desc": "Sunglasses", "goto": "make_sunglasses"},
-               {"desc": "Hat", "goto": "make_hat"})
+    options = ({"desc": "a shirt", "goto": "make_shirt"},
+               {"desc": "some pants", "goto": "make_pants"},
+               {"desc": "a hazmat suit", "goto": "make_hazmat"},
+               {"desc": "some sunglasses", "goto": "make_sunglasses"},
+               {"desc": "a hat", "goto": "make_hat"})
     return text, options
 
 
