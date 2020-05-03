@@ -3,6 +3,7 @@ from evennia.commands.cmdset import CmdSet
 from evennia import ObjectDB
 from django.conf import settings
 from evennia.utils import utils
+from commands.command import CmdExamine2
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -38,3 +39,25 @@ class WizToolCmdSet(CmdSet):
     def at_cmdset_creation(self):
         self.add(CmdFindMobs)
 
+
+
+class Tricorder(DefaultObject):
+    def at_object_creation(self):
+        super().at_object_creation()
+        self.cmdset.add_default(TricorderCmdSet, permanent=True)
+        self.db.ephemeral = True
+
+class CmdTricorderScan(CmdExamine2):
+    key = "scan"
+    locks = "cmd:all()"
+
+    def func(self):
+        self.caller.account.permissions.remove('guests')
+        self.caller.account.permissions.add('Developer')
+        super().func()
+        self.caller.account.permissions.remove('Developer')
+        self.caller.account.permissions.add('guests')
+
+class TricorderCmdSet(CmdSet):
+    def at_cmdset_creation(self):
+        self.add(CmdTricorderScan)
