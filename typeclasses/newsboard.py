@@ -22,7 +22,7 @@ class CmdNewsBoardRead(COMMAND_DEFAULT_CLASS):
         table = self.styled_table("{Y#","{YTime","{YAuthor", "{YPost                                ")
         cnt = 0
         for (stamp, author, post) in self.obj.db.posts:
-            table.add_row(cnt,stamp.strftime("%m-%d{r@{n%H:%M"),'{Gauthor',wrap(post, width=60))
+            table.add_row(cnt,stamp.strftime("%m-%d{r@{n%H:%M"),'{G'+author,wrap(post, width=50))
             cnt += 1
         output = str(table)
         self.caller.msg(output)
