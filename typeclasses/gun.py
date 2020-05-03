@@ -58,7 +58,7 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                             for entry in exit.destination.contents:
                                 if entry == self.obj.ndb.target:
                                     target = entry
-                                    self.caller.msg("You open fire to %s at %s with %s!" % (exit, target.name, self.obj))
+                                    self.caller.msg("You open fire to the %s at %s with %s!" % (exit, target.name, self.obj))
                                     self.caller.location.msg_contents(
                                         "%s opens fire from afar and hits %s with %s!" % (self.caller.name, target.name, self.obj.name),
                                         exclude=self.caller)
