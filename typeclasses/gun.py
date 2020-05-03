@@ -25,7 +25,17 @@ class CmdGunAim(COMMAND_DEFAULT_CLASS):
     def func(self):
         target = self.caller.search(self.args, quiet=True)
         if not target:
-            self.caller.msg("You can't find it!")
+            exits = [exi for exi in self.caller.location.exits if exi.access(self.caller, "traverse")]
+            if exits:
+                for exit in exits:
+                    for entry in exit.destination.contents:
+                        if entry == self.obj.ndb.target:
+                            target = entry
+                            self.caller.msg("You take aim at %s to the %s with %s." % (target.name, exit.name, self.obj.name))
+                            self.caller.location.msg_contents(
+                                "%s aims %s %s at %s." % (self.caller.name, exit.name, self.obj.name, target.name),
+                                exclude=self.caller)
+                            target.msg("%s takes aim at you from afar with %s!" % (self.caller.name, self.obj.name))
         else:
             target = target[0]
             self.caller.msg("You take aim at %s with %s." % (target.name, self.obj.name))
@@ -34,6 +44,9 @@ class CmdGunAim(COMMAND_DEFAULT_CLASS):
                 exclude=self.caller)
             self.obj.ndb.aiming = True
             self.obj.ndb.target = target
+
+        if not target:
+            self.caller.msg("You can't find it!")
 
 
 class CmdGunShoot(COMMAND_DEFAULT_CLASS):
