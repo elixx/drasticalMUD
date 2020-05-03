@@ -12,6 +12,8 @@ class ObjGun(DefaultObject):
     def at_object_creation(self):
         super().at_object_creation()
         self.db.ammo = 0
+        self.db.max_ammo = 8
+        self.db.ammo_type = 'generic'
         self.ndb.aiming = False
         self.ndb.target = None
         self.cmdset.add_default(GunCmdSet, permanent=True)
@@ -78,6 +80,24 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("%s is out of ammunition!" % self.obj.name)
 
 
+class CmdGunReload(COMMAND_DEFAULT_CLASS):
+    key = "relo"
+    locks = "cmd:all()"
+    def func(self):
+        if not self.args:
+            self.caller.msg("Reload with what ammo?")
+        else:
+            target = self.caller.search(self.args)
+            if not target:
+                return
+            if target.db.ammo_type == self.obj.db.ammo_type:
+                self.obj.db.ammo += target.db.capacity
+                if self.obj.db.ammo > self.obj.db.max_ammo:
+                    self.obj.db.ammo = self.obj.db.max_ammo
+                self.caller.msg("You load %s into %s." % (target.name, self.obj.name))
+                self.caller.location.msg_contents("%s loads %s with %s." % (self.caller.name, self.obj.name, target.name),
+                                                  exclude=self.caller)
+                target.delete()
 
 class GunCmdSet(CmdSet):
     key = "GunCmdSet"
@@ -85,4 +105,5 @@ class GunCmdSet(CmdSet):
     def at_cmdset_creation(self):
         self.add(CmdGunAim)
         self.add(CmdGunShoot)
+        self.add(CmdGunReload)
 
