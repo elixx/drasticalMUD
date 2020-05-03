@@ -26,7 +26,7 @@ class CmdGunAim(COMMAND_DEFAULT_CLASS):
     locks = "cmd:all()"
 
     def func(self):
-        target = self.caller.search(self.args)
+        target = self.caller.search(self.args, quiet=True)
         if not target:
             self.caller.msg("You can't find it!")
         else:
@@ -98,6 +98,8 @@ class CmdGunReload(COMMAND_DEFAULT_CLASS):
                 self.caller.location.msg_contents("%s loads %s with %s." % (self.caller.name, self.obj.name, target.name),
                                                   exclude=self.caller)
                 target.delete()
+            else:
+                self.caller.msg("It doesn't fit!")
 
 class GunCmdSet(CmdSet):
     key = "GunCmdSet"
