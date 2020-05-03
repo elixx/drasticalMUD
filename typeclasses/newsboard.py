@@ -52,9 +52,11 @@ class CmdNewsBoardDel(COMMAND_DEFAULT_CLASS):
         else:
             p = int(self.args.strip())
             if p < len(self.obj.db.posts):
-                del self.obj.db.posts[p]
-                self.caller.msg("You removed post %s from %s" % (p, self.obj.name))
-                self.caller.location.msg_contents("%s removes a post from %s." % (self.caller.name, self.obj.name), exclude=self.caller)
+                answer = yield("Delete post %s? [Yes/No]" % p)
+                if answer.strip().lower() in ['yes', 'y']:
+                    del self.obj.db.posts[p]
+                    self.caller.msg("You removed post %s from %s" % (p, self.obj.name))
+                    self.caller.location.msg_contents("%s removes a post from %s." % (self.caller.name, self.obj.name), exclude=self.caller)
 
 class NewsBoardCmdSet(CmdSet):
     key = "NewsBoardCmdSet"
