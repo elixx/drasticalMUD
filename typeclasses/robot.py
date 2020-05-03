@@ -137,7 +137,7 @@ class robot(DefaultObject):
 
         if self.db.broken:
             if chosen:
-                self.repair()
+                random.choice([self.repair(), self.drop_key()])
                 self.delayQuote()
             else:
                 chances = random.randint(0, 100)  # chance of break/fix randomly
