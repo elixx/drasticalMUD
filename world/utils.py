@@ -1,4 +1,6 @@
 from evennia import search_object
+from evennia.utils.search import search_tag_object
+from evennia.utils.search import search_object_attribute
 from evennia.utils.create import create_object
 from django.conf import settings
 
@@ -47,13 +49,11 @@ def sendWebHook(text):
         mwh.send(message)
 
 def area_count():
-    from evennia.utils.search import search_object_attribute
-
     areas = []
-    x = search_object_attribute(key="area")
+
+    x = search_tag_object(category='area')
     for n in x:
-        if n.db.area not in areas:
-            areas.append(n.db.area)
+        areas.append(n.db_key)
 
     counts = {}
     for area in areas:
