@@ -1,8 +1,9 @@
-from evennia.utils import utils, gametime, pad
+from evennia.utils import utils, gametime, pad, search
 from django.conf import settings
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
 from evennia import ObjectDB
+from evennia import search_object
 from datetime import datetime
 from world.utils import area_count
 
@@ -116,26 +117,10 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         output = "\n"
         output += "{Y" + pad("{W "+ settings.SERVERNAME.upper() + " STATS {Y",width=width,fillchar="*") + '\n'
         for item in selection:
-
             if item == "GENERAL" or item == "ALL": ##################################################################
-                totalrooms = 0
-                e = ObjectDB.objects.object_totals()
-                for k in e.keys():
-                    if "room" in k.lower():
-                        totalrooms += e[k]
-                if self.caller.db.stats['visited']:
-                    visited = len(self.caller.db.stats['visited'])
-                else: visited=None
-                if visited: pct = round(visited / totalrooms,2)
-
                 output += "{x" + pad(" {yGeneral Stats{x ",width=width,fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
-                table.add_row(
-                    "Current time ", datetime.fromtimestamp(gametime.gametime(absolute=True)) )
-                table.add_row("Total rooms ", totalrooms)
-                if(visited):
-                    table.add_row("You have visited ", str(visited) + " (" + str(pct) + "%)")
-                    self.caller.db.stats['explored'] = pct
+                table.add_row("Current time ", datetime.fromtimestamp(gametime.gametime(absolute=True)))
                 output += str(table)+"\n"
 
             if item == "SERVER" or item == "ALL": ###################################################################
@@ -152,6 +137,50 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     label = key.replace("_", " ").title()
                     table.add_row(label, value)
                 output += str(table) + "\n"
+
+            if item=="AREAS" or item=="ALL": ##########################################################################################
+                explored = {}
+                totalrooms = 0
+                e = ObjectDB.objects.object_totals()
+                for k in e.keys():
+                    if "room" in k.lower():
+                        totalrooms += e[k]
+                visited = self.caller.db.stats['visited']
+                for roomid in visited:
+                    room = search_object("#" + str(roomid))
+                    if len(room) > 0:
+                        room = room[0]
+                        area = room.tags.get(category='area')
+                    else:
+                        continue
+                    if area not in explored.keys():
+                        total = search.search_tag(area, category="area")
+                        total = len(total.filter(db_typeclass_path__contains="room"))
+                        explored[area] = {'total': total, 'count': 1 }
+                    else:
+                        explored[area]['count'] += 1
+                if self.caller.db.stats['visited']:
+                    totalvisited = len(self.caller.db.stats['visited'])
+                else: totalvisited=None
+                if totalvisited: totalpct = round(totalvisited / totalrooms * 100,2)
+
+                table = self.styled_table("|YArea                          ","|YRooms","|YVisited", "|Y%", border="none", width=width)
+                for key, value in sorted(explored.items(),key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
+                    if key is not None:
+                        pct = round(value['count'] / value['total'] * 100,2)
+                        if pct > 90: pct = "|r" + str(pct) + '|n'
+                        elif pct > 70: pct = "|y" + str(pct) + '|n'
+                        else: pct = str(pct)
+                        table.add_row( str(key).title(), value['total'], value['count'], pct+'%')
+
+                output += "{x" + pad(" {YExploration Stats{x ", width=width, fillchar="*") + '\n'
+                output += str(table)+'\n'
+                table = self.styled_table(width=width, border='none')
+                table.add_row("|YTotal rooms", totalrooms)
+                if(totalvisited):
+                    table.add_row("|YTotal Explored:", str(totalvisited) + " (|g" + str(totalpct) + "|G%|n)")
+                    self.caller.db.stats['explored'] = totalpct
+                output += str(table)+'\n'
 
             if item=="USERS" or item=="ALL": #########################################################################
                 output += "{x" + pad(" {YTop "+str(maxlines)+" Users:{x ", width=width, fillchar="*") + '\n'
@@ -185,11 +214,6 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     else: table.add_row(datetime.fromtimestamp(time), user)
                 output += str(table) + '\n'
 
-            if item=="AREAS": ##########################################################################################
-                table = self.styled_table("|YArea","|YRooms",border="none", width=width)
-                for (key,value) in sorted(area_count().items(),key=lambda x: x[1], reverse=True):
-                    table.add_row(key, value)
-                output += str(table)+'\n'
 
 ########################################################################################################################
         self.msg(output)
