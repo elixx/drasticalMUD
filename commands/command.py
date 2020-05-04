@@ -163,7 +163,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                         if c >= max: break
                     output += "{yLast %s logins:{n\n" % max
                     table = self.styled_table("Date","IP", border='none')
-                    for(stamp, ip) in logins:
+                    for(stamp, ip) in sorted(logins, reverse=True):
                         table.add_row(stamp, ip)
                     output += str(table) + '\n'
 
