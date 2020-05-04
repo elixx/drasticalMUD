@@ -96,23 +96,23 @@ class MovingRoom(DefaultRoom):
                 self.db.route_pos = 0
             else:
                 self.db.route_pos += 1
-            self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
             loc = search_object(self.db.route[self.db.route_pos-1])[0]
-            loc.msg_contents("The doors close as %s begins picking up speed and pulls off." % self.name)
             if len(self.db.route)-1 > (self.db.route_pos + 1):
                 next = search_object(self.db.route[self.db.route_pos+1])[0]
             else:
                 next = search_object(self.db.route[0])[0]
-            self.db.desc = "An electronic sign reads:\n\t{yDeparting:\t{c%s{x\n\t{yNext Stop:\t{c%s{x" % (loc.name, next.name)
             if next.tags.get(category='area') != None:
                 nextarea = next.tags.get(category='area')
                 announce = "%s announces, '{xNext stop: {c%s{x in {y%s{x.{n'" % (self.name, next.name, nextarea.title())
             else:
                 announce = "%s announces, '{xNext stop: {c%s{x.{n'" % (self.name, loc.name)
+            self.db.desc = "An electronic sign reads:\n\t{yDeparting:\t{c%s{x\n\t{yNext Stop:\t{c%s{x" % (loc.name, next.name)
             self.msg_contents(announce)
             loc.msg_contents(announce)
             next.msg_contents("You hear %s approaching in the distance." % self.name)
             self.update_exits()
+            self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
+            loc.msg_contents("The doors close as %s begins picking up speed and pulls off." % self.name)
         self._set_ticker(self.db.speed, "travel")
 
     def stop_service(self):
