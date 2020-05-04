@@ -146,6 +146,7 @@ class MovingRoom(DefaultRoom):
         else:
             next = search_object(self.db.route[0])[0]
         self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t{c%s{x" % (loc.name, next.name)
+        loc.msg_contents("%s announces, '{xWelcome to {Y%s{x! Next stop: {Y%s{n'." % (self.name, area, next.name))
         self._set_ticker(self.db.wait_at_destination, "start_service")
 
     def add_destination(self, dest, time_to_next, index=-1):
