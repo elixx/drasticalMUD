@@ -2,6 +2,7 @@ from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
 from django.conf import settings
 from evennia.utils import utils
+from random import choice
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -15,6 +16,18 @@ class Gun(DefaultObject):
         self.ndb.aiming = False
         self.ndb.target = None
         self.cmdset.add_default(GunCmdSet, permanent=True)
+
+    def on_hit_target(self, target, range=0):
+        #self.location.msg("%s shot %s - range: %s" % (self.name, target.name, range))
+        #exits = [exi for exi in target.location.exits if exi.access(target, "traverse")]
+        exits = [exi for exi in target.location.exits if exi.access(target, "traverse")]
+        if exits:
+            exit = choice(exits)
+            dest = exit.destination
+            target.move_to(dest)
+            target.msg("You are blasted to the %s!" % exit.name)
+            target.location.msg_contents("%s is blown away to the %s!" % (target.name, exit.name),
+                                         exclude=target)
 
 
 class CmdGunAim(COMMAND_DEFAULT_CLASS):
@@ -78,6 +91,7 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                                         exclude=self.caller)
                                     target.msg("%s opens fire at you from afar with %s!" % (self.caller, self.obj.name))
                                     self.obj.db.ammo -= 1
+                                    self.obj.on_hit_target(target,range=1)
                                     return
                 else:
                     target = target[0]
@@ -88,6 +102,7 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                         exclude=self.caller)
                     target.msg("%s opens fire at you with %s from point blank range!" % (self.caller, self.obj.name))
                     self.obj.db.ammo -= 1
+                    self.obj.on_hit_target(target, range=0)
                     return
 
                 self.caller.msg("You can't find your target!")
