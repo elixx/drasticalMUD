@@ -7,7 +7,7 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
 class CmdSocialNod(DefaultCmdSocial):    key = "nod"
-class CmdSocialNod(DefaultCmdSocial):    key = "sigh"
+class CmdSocialSigh(DefaultCmdSocial):    key = "sigh"
 class CmdSocialSwoon(DefaultCmdSocial):  key = "swoon"
 class CmdSocialFart(DefaultCmdSocial):   key = "fart"
 class CmdSocialGlare(DefaultCmdSocial):  key = "glare"
