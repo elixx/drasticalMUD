@@ -29,6 +29,8 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
             else:
                 area = ""
             table.add_row(n.name, n.location.name, area)
+        self.caller.msg("You use %s." % self.obj.name)
+        self.caller.location.msg_contents("%s uses %s." % (self.caller.name, self.obj.name), exclude=self.caller)
         self.caller.msg(str(table))
 
 
@@ -49,14 +51,16 @@ class Tricorder(DefaultObject):
 
 class CmdTricorderScan(CmdExamine2):
     key = "scan"
+    aliases = []
     locks = "cmd:all()"
 
     def func(self):
-        self.caller.account.permissions.remove('guests')
         self.caller.account.permissions.add('Developer')
         super().func()
         self.caller.account.permissions.remove('Developer')
-        self.caller.account.permissions.add('guests')
+        self.caller.msg("You scan %s with %s." % (self.args, self.obj.name))
+        self.caller.location.msg_contents("%s scans %s with %s." % (self.caller.name, self.args, self.obj.name), exclude=self.caller)
+
 
 class TricorderCmdSet(CmdSet):
     def at_cmdset_creation(self):
