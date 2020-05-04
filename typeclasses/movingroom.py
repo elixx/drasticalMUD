@@ -20,8 +20,8 @@ class MovingRoom(DefaultRoom):
 
         self.db.in_service = False
         self.db.in_station = True
-        self.db.route = ["#2", 6, "#14", 6]
-        self.db.wait_at_destination = 30
+        self.db.route = ["#2", 6, "#140", 6, "#1000", 10]
+        self.db.wait_at_destination = 10
         self.db.speed = 2
 
         self.db.transit_msgs = [ "%s shakes slightly as it moves along its course.",
@@ -37,6 +37,7 @@ class MovingRoom(DefaultRoom):
         self.update_exits()
 
         utils.delay(self.db.wait_at_destination, self.start_service)
+        self.db.last_hook_key = "start_service"
 
     def _set_ticker(self, interval, hook_key, stop=False):
         idstring = "moving_room"
@@ -56,32 +57,32 @@ class MovingRoom(DefaultRoom):
             )
 
     def create_exits(self):
-        exitOut = create_object("typeclasses.movingroom.MovingExit",
+        self.exitOut = create_object("typeclasses.movingroom.MovingExit",
                                 key="leave", location=self)
-        self.db.exitOut = "#" + str(exitOut.id)
+        self.db.exitOut = "#" + str(self.exitOut.id)
 
-        exitIn = create_object("typeclasses.movingroom.MovingExit",
+        self.exitIn = create_object("typeclasses.movingroom.MovingExit",
                                key="board")
-        self.db.exitIn = "#" + str(exitIn.id)
+        self.db.exitIn = "#" + str(self.exitIn.id)
 
     def update_exits(self):
         if self.db.in_station:
             newloc = search_object(self.db.route[self.db.route_pos])[0]
 
-            exitIn = search_object(self.db.exitIn)[0]
-            exitOut = search_object(self.db.exitOut)[0]
-            exitOut.location = self
-            exitOut.home = self
+            self.exitIn = search_object(self.db.exitIn)[0]
+            self.exitOut = search_object(self.db.exitOut)[0]
+            self.exitOut.location = self
+            self.exitOut.home = self
 
-            exitIn.location = newloc
-            exitIn.destination = self
-            exitOut.location = self
-            exitOut.destination = newloc
+            self.exitIn.location = newloc
+            self.exitIn.destination = self
+            self.exitOut.location = self
+            self.exitOut.destination = newloc
         else:
-            exitIn = search_object(self.db.exitIn)[0]
-            exitOut = search_object(self.db.exitOut)[0]
-            exitIn.location = None
-            exitOut.location = None
+            self.exitIn = search_object(self.db.exitIn)[0]
+            self.exitOut = search_object(self.db.exitOut)[0]
+            self.exitIn.location = None
+            self.exitOut.location = None
 
     def start_service(self):
         self.db.in_service = True
