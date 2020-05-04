@@ -146,11 +146,11 @@ class MovingRoom(DefaultRoom):
             announce = "%s announces, '{xWelcome to {Y%s{x in {y%s{x.'" % (self.name.capitalize(), loc.name, area.title())
             #announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, area.title())
         else:
-            announce = "%s announces, '{xNow arriving at {c%s{x.'" % (self.name, loc.name)
+            announce = "%s announces, '{xNow arriving at {c%s{x.'" % (self.name.capitalize(), loc.name)
         self.msg_contents(announce)
         self.update_exits()
-        self.msg_contents("%s glides to a halt and the doors open." % self.name)
-        loc.msg_contents("%s pulls up and slows to a halt. The doors open." % self.name)
+        self.msg_contents("%s glides to a halt and the doors open." % self.name.capitalize())
+        loc.msg_contents("%s pulls up and slows to a halt. The doors open." % self.name.capitalize())
         self.db.current_dist = 0
         if self.db.route_pos < len(self.db.route) - 3:
             next = search_object(self.db.route[self.db.route_pos + 2])[0]
@@ -177,7 +177,7 @@ class MovingRoom(DefaultRoom):
         self.db.route.append(dest)
         self.db.route.append(time_to_next)
 
-        self.msg_contents(self.name + " announces, '{c" + loc.name + "{x has been added to the route.'")
+        self.msg_contents(self.name.capitalize() + " announces, '{c" + loc.name + "{x has been added to the route.'")
         return self.db.routes
 
     def del_destination(self, dest=None):
@@ -190,7 +190,7 @@ class MovingRoom(DefaultRoom):
         for i,d in enumerate(self.db.route):
             if d == dest:
                 del self.db.route[i]
-                self.msg_contents(self.name + "announces, '{c" + loc.name + "{x has been removed from the route.'")
+                self.msg_contents(self.name.capitalize() + "announces, '{c" + loc.name + "{x has been removed from the route.'")
                 return self.db.destinations
 
 
