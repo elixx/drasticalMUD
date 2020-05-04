@@ -137,13 +137,15 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
             else:
                 target = target[0]
                 character = target.characters[0]
-                max = 10
+                max = 5
                 privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
                 output = "{WReporting on username: {Y%s{n\n" % target.name
                 table = self.styled_table()
                 if(character.db.stats):
                     logincount = character.db.stats['logins']
                     visited = len(character.db.stats['visited'])
+                    kills = character.db.stats['kills']
+                    deaths = character.db.stats['deaths']
                     try: pct = character.db.stats['explored']
                     except KeyError: pct = -1
                     table.add_row("Logins:", logincount)
@@ -153,6 +155,8 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                     else:
                         pct = "???"
                     table.add_row("Percent Explored:", pct)
+                    table.add_row("Kills / Deaths", str(kills) + " / " + str(deaths))
+                    table.add_row("KDR", round(kills/deaths,2))
                     output += str(table) + '\n'
                 if privileged and target is not None:
                     logins = []
