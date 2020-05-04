@@ -132,53 +132,53 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
         privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
         if not self.args:
             self.args = self.caller.name
-        else:
-            target = utils.search.search_account(self.args)
-            if len(target) < 1:
-                self.caller.msg("I don't know about %s!" % self.args)
-            else:
-                target = target[0]
-                character = target.characters[0]
-                max = 5
-                output = "{WReporting on username: {Y%s{n\n" % target.name
-                table = self.styled_table()
-                if(character.db.stats):
-                    logincount = character.db.stats['logins']
-                    visited = len(character.db.stats['visited'])
-                    kills = character.db.stats['kills']
-                    deaths = character.db.stats['deaths']
-                    lastlogin = target.db.lastsite[-1]
-                    stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
-                    try: pct = character.db.stats['explored']
-                    except KeyError: pct = -1
-                    table.add_row("{yLogins:", logincount)
-                    table.add_row("{yLast Seen:", stamp)
-                    table.add_row("{yRooms Seen:", visited)
-                    if pct > -1:
-                        pct = str(pct) + '%'
-                    else:
-                        pct = "???"
-                    table.add_row("{yPercent Explored:", pct)
-                    table.add_row("{yKills / Deaths", str(kills) + " / " + str(deaths))
-                    if deaths > 0:
-                        table.add_row("{yKDR", round(kills/deaths,2))
-                    else:
-                        table.add_row("{yKDR", "inf")
-                    output += str(table) + '\n'
-                if privileged and target is not None:
-                    logins = []
-                    for c in range(len(target.db.lastsite)):
-                        (ip, intstamp) = target.db.lastsite[-c]
-                        stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(intstamp))
-                        logins.append( (stamp, ip) )
-                        if c >= max: break
-                    output += "{yLast %s logins:{n\n" % max
-                    table = self.styled_table("Date","IP", border='none')
-                    for(stamp, ip) in sorted(logins, reverse=True):
-                        table.add_row(stamp, ip)
-                    output += str(table) + '\n'
 
-                self.caller.msg(output)
+        target = utils.search.search_account(self.args)
+        if len(target) < 1:
+            self.caller.msg("I don't know about %s!" % self.args)
+        else:
+            target = target[0]
+            character = target.characters[0]
+            max = 5
+            output = "{WReporting on username: {Y%s{n\n" % target.name
+            table = self.styled_table()
+            if(character.db.stats):
+                logincount = character.db.stats['logins']
+                visited = len(character.db.stats['visited'])
+                kills = character.db.stats['kills']
+                deaths = character.db.stats['deaths']
+                lastlogin = target.db.lastsite[-1]
+                stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
+                try: pct = character.db.stats['explored']
+                except KeyError: pct = -1
+                table.add_row("{yLogins:", logincount)
+                table.add_row("{yLast Seen:", stamp)
+                table.add_row("{yRooms Seen:", visited)
+                if pct > -1:
+                    pct = str(pct) + '%'
+                else:
+                    pct = "???"
+                table.add_row("{yPercent Explored:", pct)
+                table.add_row("{yKills / Deaths", str(kills) + " / " + str(deaths))
+                if deaths > 0:
+                    table.add_row("{yKDR", round(kills/deaths,2))
+                else:
+                    table.add_row("{yKDR", "inf")
+                output += str(table) + '\n'
+            if privileged and target is not None:
+                logins = []
+                for c in range(len(target.db.lastsite)):
+                    (ip, intstamp) = target.db.lastsite[-c]
+                    stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(intstamp))
+                    logins.append( (stamp, ip) )
+                    if c >= max: break
+                output += "{yLast %s logins:{n\n" % max
+                table = self.styled_table("Date","IP", border='none')
+                for(stamp, ip) in sorted(logins, reverse=True):
+                    table.add_row(stamp, ip)
+                output += str(table) + '\n'
+
+            self.caller.msg(output)
 
 
 class CmdAreas(COMMAND_DEFAULT_CLASS):
