@@ -129,9 +129,12 @@ class MovingRoom(DefaultRoom):
         else:
             self.db.route_pos += 1
         loc = search_object(self.db.route[self.db.route_pos])[0]
-        if(loc.db.area):
-            announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, loc.db.area.title())
+        #if(loc.db.area):
+        if loc.tags.get(category='area') != None:
+            area = loc.tags.get(category='area')
+            announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, area.title())
         else:
+            area = loc.name
             announce = "%s announces, '{xNow arriving at {c%s{x.'" % (self.name, loc.name)
         self.msg_contents(announce)
         self.update_exits()
