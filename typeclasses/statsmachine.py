@@ -170,16 +170,25 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                         pct = round(value['count'] / value['total'] * 100,2)
                         if pct > 90: pct = "|r" + str(pct) + '|n'
                         elif pct > 70: pct = "|y" + str(pct) + '|n'
-                        else: pct = str(pct)
+                        elif pct > 50: pct = "|g" + str(pct) + "|n"
+                        elif pct > 25: pct = "|w" + str(pct) + "|n"
+                        else: pct = "|x" + str(pct) + "|n"
                         table.add_row( str(key).title(), value['total'], value['count'], pct+'%')
 
                 output += "{x" + pad(" {YExploration Stats{x ", width=width, fillchar="*") + '\n'
                 output += str(table)+'\n'
                 table = self.styled_table(width=width, border='none')
-                table.add_row("|YTotal rooms", totalrooms)
+                table.add_row("|YTotal Rooms", totalrooms)
                 if(totalvisited):
-                    table.add_row("|YTotal Explored:", str(totalvisited) + " (|g" + str(totalpct) + "|G%|n)")
                     self.caller.db.stats['explored'] = totalpct
+                    if totalpct > 90: totalpct = "|r" + str(totalpct) + '|n'
+                    elif totalpct > 70: totalpct = "|y" + str(totalpct) + '|n'
+                    elif totalpct > 50: totalpct = "|g" + str(totalpct) + "|n"
+                    elif totalpct > 20: totalpct = "|w" + str(totalpct) + "|n"
+                    else:
+                        totalpct = "|x" + str(totalpct) + "|n"
+                    table.add_row("|YTotal Explored:", str(totalvisited) + " (" + totalpct + "|G%|n)")
+
                 output += str(table)+'\n'
 
             if item=="USERS" or item=="ALL": #########################################################################
