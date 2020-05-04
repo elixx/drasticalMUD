@@ -121,7 +121,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
 
 class CmdFinger(COMMAND_DEFAULT_CLASS):
     """
-    Get information about a user's last logins.
+    Get information about a user's stats
 
     """
     key = "finger"
