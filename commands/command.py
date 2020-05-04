@@ -119,6 +119,52 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
             % (table, "One" if is_one else naccounts, "" if is_one else "s")
         )
 
+class CmdFinger(COMMAND_DEFAULT_CLASS):
+    """
+    Get information about a user's last logins.
+
+    """
+    key = "finger"
+    aliases = ["last"]
+    locks = "cmd:superuser()"
+    def func(self):
+        if not self.args:
+            self.caller.msg("Finger whom?")
+        else:
+            target = utils.search.search_account(self.args)
+            if len(target) < 1:
+                self.caller.msg("I don't know about %s!" % self.args)
+            else:
+                target = target[0]
+                target = target.characters[0]
+                max = 10
+                privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
+                logincount = target.db.stats['logins']
+                visited = len(target.db.stats['visited'])
+                pct = target.db.stats['explored']
+                if privileged:
+                    logins = []
+                    for c in range(len(target.account.db.lastsite)):
+                        (ip, intstamp) = target.account.db.lastsite[-c]
+                        stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(intstamp))
+                        logins.append( (stamp, ip) )
+                        if c >= max: break
+
+                output = "{WReporting on username: {Y%s{n\n" % target.name
+                table = self.styled_table()
+                table.add_row("Logins:", logincount)
+                table.add_row("Rooms Seen:", visited)
+                table.add_row("Percent Explored:", str(pct)+'%')
+                output += str(table) + '\n'
+                if privileged:
+                    output += "{yLast %s logins:{n\n" % max
+                    table = self.styled_table("Date","IP", border='none')
+                    for(stamp, ip) in logins:
+                        table.add_row(stamp, ip)
+                    output += str(table) + '\n'
+
+                self.caller.msg(output)
+
 
 class CmdAreas(COMMAND_DEFAULT_CLASS):
     """

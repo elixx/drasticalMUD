@@ -71,7 +71,6 @@ class Character(ClothedCharacter):
         try:
             if source_location and source_location.id not in self.db.stats['visited']:
                 self.db.stats['visited'].append(source_location.id)
-
         except KeyError:
             self.db.stats['visited'] = []
 

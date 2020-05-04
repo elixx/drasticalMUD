@@ -26,6 +26,7 @@ from commands.command import CmdAreas
 from commands.command import CmdWhere
 from commands.command import CmdRecall
 from commands.command import CmdQuit
+from commands.command import CmdFinger
 
 from evennia.contrib.clothing import ClothedCharacterCmdSet
 from evennia.contrib import mail
@@ -82,6 +83,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
         self.add(CmdWho2)
         self.add(CmdAreas)
         self.add(CmdQuit)
+        self.add(CmdFinger)
 
         #
         # any commands you add below will overload the default ones.
