@@ -4,8 +4,35 @@ from typeclasses.exits import Exit
 from evennia import search_object
 from evennia.utils.create import create_object
 from evennia import DefaultRoom
+from typeclasses.objects import Object
+from evennia.utils.evtable import EvTable
+
 
 from random import choice
+
+class RoomDisplayBoard(Object):
+    def at_object_creation(self):
+        self.locks.add("get:false()")
+
+        if not self.db.source:
+            self.db.source = search_object("trolley")[0]
+        route = self.db.source.db.route
+        self.db.base_desc = "A board displaying the route for %s" % self.db.source.name
+        display = EvTable("|YStop","|YArea","|YTime")
+        stop_name = None
+        stop_time = None
+        for stop in route:
+            if isinstance(stop,str):
+                s = search_object(stop)[0]
+                stop_name = s.name
+                area_name = s.tags.get(category='area')
+            elif isinstance(stop,int):
+                stop_time = stop
+            if stop_name != None and stop_time != None:
+                display.add_row(stop_name, area_name.title(), stop_time)
+                stop_name = None
+                stop_time = None
+        self.db.desc = self.db.base_desc + "\n" + str(display)
 
 
 class MovingRoom(DefaultRoom):
