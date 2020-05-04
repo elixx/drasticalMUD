@@ -136,27 +136,31 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("I don't know about %s!" % self.args)
             else:
                 target = target[0]
-                target = target.characters[0]
+                character = target.characters[0]
                 max = 10
                 privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
-                logincount = target.db.stats['logins']
-                visited = len(target.db.stats['visited'])
-                pct = target.db.stats['explored']
-                if privileged:
+                output = "{WReporting on username: {Y%s{n\n" % target.name
+                table = self.styled_table()
+                if(character.db.stats):
+                    logincount = character.db.stats['logins']
+                    visited = len(character.db.stats['visited'])
+                    try: pct = character.db.stats['explored']
+                    except KeyError: pct = -1
+                    table.add_row("Logins:", logincount)
+                    table.add_row("Rooms Seen:", visited)
+                    if pct > -1:
+                        pct = str(pct) + '%'
+                    else:
+                        pct = "???"
+                    table.add_row("Percent Explored:", pct)
+                    output += str(table) + '\n'
+                if privileged and target is not None:
                     logins = []
-                    for c in range(len(target.account.db.lastsite)):
-                        (ip, intstamp) = target.account.db.lastsite[-c]
+                    for c in range(len(target.db.lastsite)):
+                        (ip, intstamp) = target.db.lastsite[-c]
                         stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(intstamp))
                         logins.append( (stamp, ip) )
                         if c >= max: break
-
-                output = "{WReporting on username: {Y%s{n\n" % target.name
-                table = self.styled_table()
-                table.add_row("Logins:", logincount)
-                table.add_row("Rooms Seen:", visited)
-                table.add_row("Percent Explored:", str(pct)+'%')
-                output += str(table) + '\n'
-                if privileged:
                     output += "{yLast %s logins:{n\n" % max
                     table = self.styled_table("Date","IP", border='none')
                     for(stamp, ip) in logins:
