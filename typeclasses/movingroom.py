@@ -11,7 +11,12 @@ from random import choice
 class MovingRoom(DefaultRoom):
     def at_object_creation(self):
         super().at_object_creation()
-        self.create_exits()
+
+        if (self.db.exitIn) and (self.db.exitOut):
+            self.exitIn = search_object(self.db.exitIn)[0]
+            self.exitOut = search_object(self.db.exitOut)[0]
+        else:
+            self.create_exits()
 
         self.db.in_service = False
         self.db.in_station = True
