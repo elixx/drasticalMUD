@@ -55,7 +55,9 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(CmdExamine2)
         self.add(CmdWhere)
         self.add(CmdRecall)
-
+        self.add(CmdWho2)
+        self.add(CmdAreas)
+        self.add(CmdQuit)
         #
         # any commands you add below will overload the default ones.
         #
@@ -80,11 +82,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
         super().at_cmdset_creation()
 
         self.add(mail.CmdMail())
-        self.add(CmdWho2)
-        self.add(CmdAreas)
-        self.add(CmdQuit)
         self.add(CmdFinger)
-
         #
         # any commands you add below will overload the default ones.
         #

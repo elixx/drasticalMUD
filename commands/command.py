@@ -125,11 +125,13 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
 
     """
     key = "finger"
-    aliases = ["last"]
-    locks = "cmd:superuser()"
+    aliases = ["last", "score"]
+    locks = "cmd:all()"
+
     def func(self):
+        privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
         if not self.args:
-            self.caller.msg("Finger whom?")
+            self.args = self.caller.name
         else:
             target = utils.search.search_account(self.args)
             if len(target) < 1:
@@ -138,7 +140,6 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                 target = target[0]
                 character = target.characters[0]
                 max = 5
-                privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
                 output = "{WReporting on username: {Y%s{n\n" % target.name
                 table = self.styled_table()
                 if(character.db.stats):
@@ -146,20 +147,23 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                     visited = len(character.db.stats['visited'])
                     kills = character.db.stats['kills']
                     deaths = character.db.stats['deaths']
+                    lastlogin = target.db.lastsite[-1]
+                    stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
                     try: pct = character.db.stats['explored']
                     except KeyError: pct = -1
-                    table.add_row("Logins:", logincount)
-                    table.add_row("Rooms Seen:", visited)
+                    table.add_row("{yLogins:", logincount)
+                    table.add_row("{yLast Seen:", stamp)
+                    table.add_row("{yRooms Seen:", visited)
                     if pct > -1:
                         pct = str(pct) + '%'
                     else:
                         pct = "???"
-                    table.add_row("Percent Explored:", pct)
-                    table.add_row("Kills / Deaths", str(kills) + " / " + str(deaths))
+                    table.add_row("{yPercent Explored:", pct)
+                    table.add_row("{yKills / Deaths", str(kills) + " / " + str(deaths))
                     if deaths > 0:
-                        table.add_row("KDR", round(kills/deaths,2))
+                        table.add_row("{yKDR", round(kills/deaths,2))
                     else:
-                        table.add_row("KDR", "inf")
+                        table.add_row("{yKDR", "inf")
                     output += str(table) + '\n'
                 if privileged and target is not None:
                     logins = []
