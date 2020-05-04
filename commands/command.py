@@ -156,7 +156,10 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                         pct = "???"
                     table.add_row("Percent Explored:", pct)
                     table.add_row("Kills / Deaths", str(kills) + " / " + str(deaths))
-                    table.add_row("KDR", round(kills/deaths,2))
+                    if deaths > 0:
+                        table.add_row("KDR", round(kills/deaths,2))
+                    else:
+                        table.add_row("KDR", "inf")
                     output += str(table) + '\n'
                 if privileged and target is not None:
                     logins = []
