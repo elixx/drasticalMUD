@@ -110,6 +110,7 @@ class MovingRoom(DefaultRoom):
             else:
                 announce = "%s announces, '{xNext stop: {c%s{x.{n'" % (self.name, loc.name)
             self.msg_contents(announce)
+            loc.msg_contents(announce)
             next.msg_contents("You hear %s approaching in the distance." % self.name)
             self.update_exits()
         self._set_ticker(self.db.speed, "travel")
@@ -142,7 +143,7 @@ class MovingRoom(DefaultRoom):
         loc = search_object(self.db.route[self.db.route_pos])[0]
         if loc.tags.get(category='area') != None:
             area = loc.tags.get(category='area')
-            announce = "%s announces, '{xWelcome to {Y%s{x." % (self.name.capitalize(), area.title())
+            announce = "%s announces, '{xWelcome to {Y%s{x in {y%s{x.'" % (self.name.capitalize(), loc.name, area.title())
             #announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, area.title())
         else:
             announce = "%s announces, '{xNow arriving at {c%s{x.'" % (self.name, loc.name)
