@@ -16,12 +16,15 @@ class RoomDisplayBoard(Object):
 
         if not self.db.source:
             self.db.source = search_object("trolley")[0]
-        route = self.db.source.db.route
+        self.route = self.db.source.db.route
         self.db.base_desc = "A board displaying the route for %s" % self.db.source.name
+        self.db.desc = self._update_desc()
+
+    def _update_desc(self):
         display = EvTable("|YStop","|YArea","|YTime")
         stop_name = None
         stop_time = None
-        for stop in route:
+        for stop in self.route:
             if isinstance(stop,str):
                 s = search_object(stop)[0]
                 stop_name = s.name
@@ -29,10 +32,12 @@ class RoomDisplayBoard(Object):
             elif isinstance(stop,int):
                 stop_time = stop
             if stop_name != None and stop_time != None:
+
                 display.add_row(stop_name, area_name.title(), stop_time)
                 stop_name = None
                 stop_time = None
-        self.db.desc = self.db.base_desc + "\n" + str(display)
+        output = self.db.base_desc + "\n" + str(display)
+        return(output)
 
 
 class MovingRoom(DefaultRoom):
