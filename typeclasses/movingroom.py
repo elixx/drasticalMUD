@@ -18,21 +18,25 @@ class MovingRoom(DefaultRoom):
         else:
             self.create_exits()
 
+        if not self.db.route:
+            self.db.route = ["#2", 6, "#140", 6, "#1000", 10]
+            self.db.wait_at_destination = 10
+            self.db.speed = 2
+
         self.db.in_service = False
         self.db.in_station = True
-        self.db.route = ["#2", 6, "#140", 6, "#1000", 10]
-        self.db.wait_at_destination = 10
-        self.db.speed = 2
+        self.db.current_dist = 0
+        self.db.route_pos = 0
+        self.db.last_ticker_interval = None
+        self.db.last_hook_key = None
+
 
         self.db.transit_msgs = [ "%s shakes slightly as it moves along its course.",
                                  "You feel the floor of %s moving beneath you.",
                                  "%s hums quietly as it moves.",
                                  "%s hits a bump and you are jostled, momentarily." ]
 
-        self.db.current_dist = 0
-        self.db.route_pos = 0
-        self.db.last_ticker_interval = None
-        self.db.last_hook_key = None
+
 
         self.update_exits()
 
@@ -100,6 +104,13 @@ class MovingRoom(DefaultRoom):
             else:
                 next = search_object(self.db.route[0])[0]
             self.db.desc = "An electronic sign reads:\n\t{yDeparting:\t{c%s{x\n\t{yNext Stop:\t{c%s{x" % (loc.name, next.name)
+            if next.tags.get(category='area') != None:
+                nextarea = next.tags.get(category='area')
+                announce = "%s announces, '{xNext stop: {c%s{x in {y%s{x.{n'" % (self.name, next.name, nextarea.title())
+            else:
+                announce = "%s announces, '{xNext stop: {c%s{x.{n'" % (self.name, loc.name)
+            self.msg_contents(announce)
+            next.msg_contents("You hear %s approaching in the distance." % self.name)
             self.update_exits()
         self._set_ticker(self.db.speed, "travel")
 
@@ -129,12 +140,11 @@ class MovingRoom(DefaultRoom):
         else:
             self.db.route_pos += 1
         loc = search_object(self.db.route[self.db.route_pos])[0]
-        #if(loc.db.area):
         if loc.tags.get(category='area') != None:
             area = loc.tags.get(category='area')
-            announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, area.title())
+            announce = "%s announces, '{xWelcome to {Y%s{x." % (self.name.capitalize(), area.title())
+            #announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, area.title())
         else:
-            area = loc.name
             announce = "%s announces, '{xNow arriving at {c%s{x.'" % (self.name, loc.name)
         self.msg_contents(announce)
         self.update_exits()
@@ -145,11 +155,11 @@ class MovingRoom(DefaultRoom):
             next = search_object(self.db.route[self.db.route_pos + 2])[0]
         else:
             next = search_object(self.db.route[0])[0]
-        self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t{c%s{x" % (loc.name, next.name)
-        loc.msg_contents("%s announces, '{xWelcome to {Y%s{x! Next stop: {Y%s{n'." % (self.name, area, next.name))
+        self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t\t{c%s{x" % (loc.name, next.name)
+        loc.msg_contents(announce)
         self._set_ticker(self.db.wait_at_destination, "start_service")
 
-    def add_destination(self, dest, time_to_next, index=-1):
+    def add_destination(self, dest, time_to_next=10, index=-1):
         try:
             loc = search_object(dest)[0]
         except:
@@ -169,7 +179,8 @@ class MovingRoom(DefaultRoom):
         self.msg_contents(self.name + " announces, '{c" + loc.name + "{x has been added to the route.'")
         return self.db.routes
 
-    def del_destination(self, dest):
+    def del_destination(self, dest=None):
+        if dest == None: dest = self.db.route[self.db.route_pos]
         try:
             loc = search_object(dest)[0]
         except:
