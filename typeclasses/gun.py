@@ -92,7 +92,7 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                                     self.caller.location.msg_contents(
                                         "%s opens fire from afar and hits %s with %s!" % (
                                         self.caller.name, target.name, self.obj.name),
-                                        exclude=self.caller)
+                                        exclude=[self.caller,target])
                                     target.msg("%s opens fire at you from afar with %s!" % (self.caller, self.obj.name))
                                     self.obj.db.ammo -= 1
                                     self.obj.on_hit_target(target,self.caller,range=1)
@@ -103,7 +103,7 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                     self.caller.location.msg_contents(
                         "%s opens fire at %s with %s from point blank range!" % (
                         self.caller.name, target.name, self.obj.name),
-                        exclude=self.caller)
+                        exclude=[self.caller, target])
                     target.msg("%s opens fire at you with %s from point blank range!" % (self.caller, self.obj.name))
                     self.obj.db.ammo -= 1
                     self.obj.on_hit_target(target, self.caller, range=0)
