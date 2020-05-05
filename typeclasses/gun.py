@@ -25,11 +25,15 @@ class Gun(DefaultObject):
             target.move_to(dest)
             target.msg("You are blasted to the %s!" % exit.name)
             if target.db.stats:
-                if 'deaths' in target.db.stats.keys(): target.db.stats['deaths'] += 1
-                else: target.db.stats['deaths'] = 1
+                if 'deaths' in target.db.stats.keys():
+                    target.db.stats['deaths'] += 1
+                else:
+                    target.db.stats['deaths'] = 1
             if shooter.db.stats:
-                if 'kills' in shooter.db.stats.keys(): shooter.db.stats['kills'] += 1
-                else: target.db.stats['kills'] = 1
+                if 'kills' in shooter.db.stats.keys():
+                    shooter.db.stats['kills'] += 1
+                else:
+                    target.db.stats['kills'] = 1
             target.location.msg_contents("%s is blown away to the %s!" % (target.name, exit.name),
                                          exclude=target)
 
@@ -50,7 +54,8 @@ class CmdGunAim(COMMAND_DEFAULT_CLASS):
                             target = entry
                             self.obj.ndb.aiming = True
                             self.obj.ndb.target = target
-                            self.caller.msg("You take aim at %s to the %s with %s." % (target.name, exit.name, self.obj.name))
+                            self.caller.msg(
+                                "You take aim at %s to the %s with %s." % (target.name, exit.name, self.obj.name))
                             self.caller.location.msg_contents(
                                 "%s aims %s %s at %s." % (self.caller.name, exit.name, self.obj.name, target.name),
                                 exclude=self.caller)
@@ -91,18 +96,18 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                                         "You open fire to the %s at %s with %s!" % (exit, target.name, self.obj))
                                     self.caller.location.msg_contents(
                                         "%s opens fire from afar and hits %s with %s!" % (
-                                        self.caller.name, target.name, self.obj.name),
-                                        exclude=[self.caller,target])
+                                            self.caller.name, target.name, self.obj.name),
+                                        exclude=[self.caller, target])
                                     target.msg("%s opens fire at you from afar with %s!" % (self.caller, self.obj.name))
                                     self.obj.db.ammo -= 1
-                                    self.obj.on_hit_target(target,self.caller,range=1)
+                                    self.obj.on_hit_target(target, self.caller, range=1)
                                     return
                 else:
                     target = target[0]
                     self.caller.msg("You open fire at %s with %s at point blank range!" % (target.name, self.obj))
                     self.caller.location.msg_contents(
                         "%s opens fire at %s with %s from point blank range!" % (
-                        self.caller.name, target.name, self.obj.name),
+                            self.caller.name, target.name, self.obj.name),
                         exclude=[self.caller, target])
                     target.msg("%s opens fire at you with %s from point blank range!" % (self.caller, self.obj.name))
                     self.obj.db.ammo -= 1
@@ -116,7 +121,6 @@ class CmdGunShoot(COMMAND_DEFAULT_CLASS):
                 self.caller.location.msg_contents("Click! %s attempts to shoot %s but nothing happens." %
                                                   (self.caller.name, self.obj.name),
                                                   exclude=self.caller)
-
 
 
 class CmdGunReload(COMMAND_DEFAULT_CLASS):
