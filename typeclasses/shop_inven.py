@@ -29,7 +29,20 @@ class ShopInvRoom(Room):
                                      'aliases':     ['pack'],
                                      'attributes':  [('desc','a package of rocket ammunition.'),
                                                      ('capacity',5),
-                                                     ('ammo_type','rocket')]}}
+                                                     ('ammo_type','rocket')]},
+                "gun":              {'key':         "a generic gun",
+                                     'typeclass':    'typeclasses.gun.Gun',
+                                     'aliases':      ['gun'],
+                                     'attributes':   [('desc', "A gun. You know, for shooting things."),
+                                                      ('max_ammo', "16"),
+                                                      ('ammo', '8'),
+                                                      ('ammo_type', 'generic')]},
+                "ammo":             {"key":         "a generic clip",
+                                     'typeclass':   'typeclasses.objects.Object',
+                                     'aliases':     ['pack'],
+                                     'attributes':  [('desc','a generic clip of gun ammunition'),
+                                                     ('capacity',8),
+                                                     ('ammo_type','generic')]}}
 
     def at_object_creation(self):
         super().at_object_creation()
@@ -51,7 +64,8 @@ class ShopInvRoomCmdSet(CmdSet):
 def start_menu(caller, **kwargs):
     text = \
         """
-        What the hell do you want?
+        The shopkeeper peers at you suspiciously.
+          "{YWhat the hell do you want?{n"
         """
 
     options = ()
