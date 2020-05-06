@@ -17,25 +17,29 @@ class Gun(DefaultObject):
         self.ndb.target = None
         self.cmdset.add_default(GunCmdSet, permanent=True)
 
-    def on_hit_target(self, target, shooter, range=0):
+    def on_hit_target(self, target, shooter, range=0, first=True):
         exits = [exi for exi in target.location.exits if exi.access(target, "traverse")]
         if exits:
             exit = choice(exits)
             dest = exit.destination
-            target.move_to(dest)
+
+            if self.db.ammo_type == "rocket" and first:
+                utils.delay(1,self.on_hit_target(target,shooter,range,first=False))
             target.msg("You are blasted to the %s!" % exit.name)
+            target.location.msg_contents("%s is blown away to the %s!" % (target.name, exit.name),
+                                         exclude=target)
+
+            target.move_to(dest)
+
+            target.location.msg_contents("%s comes flying in, propelled by an explosion from somewhere!" % (target.name),
+                                         exclude=target)
             if target.db.stats:
                 if 'deaths' in target.db.stats.keys():
                     target.db.stats['deaths'] += 1
-                else:
-                    target.db.stats['deaths'] = 1
             if shooter.db.stats:
                 if 'kills' in shooter.db.stats.keys():
                     shooter.db.stats['kills'] += 1
-                else:
-                    target.db.stats['kills'] = 1
-            target.location.msg_contents("%s is blown away to the %s!" % (target.name, exit.name),
-                                         exclude=target)
+
 
 
 class CmdGunAim(COMMAND_DEFAULT_CLASS):

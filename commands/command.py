@@ -142,7 +142,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
             max = 5
             output = "{WReporting on username: {Y%s{n\n" % target.name
             table = self.styled_table()
-            if(character.db.stats):
+            if character.db.stats:
                 logincount = character.db.stats['logins']
                 visited = len(character.db.stats['visited'])
                 kills = character.db.stats['kills']
