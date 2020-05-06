@@ -105,6 +105,8 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 account = session.get_account()
                 puppet = session.get_puppet()
                 location = puppet.location if puppet and puppet.location else "None"
+                if location == None:
+                    continue
                 location = location.tags.get(category='area').title() or "None"
                 table.add_row(
                     utils.crop(account.get_display_name(account), width=20),
