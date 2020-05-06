@@ -143,10 +143,14 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
             self.caller.msg("I don't know about %s!" % self.args)
         else:
             target = target[0]
-            character = target.characters[0]
+            if len(target.characters) > 0:
+                character = target.characters[0]
+                if character.db.title: title = character.db.title
+                else: title = ""
+            else:
+                return
+
             max = 5
-            if character.db.title: title = character.db.title
-            else: title = ""
             name = title + " " + target.name
             output = "{WReporting on User: {Y%s{n\n" % name
             table = self.styled_table()
