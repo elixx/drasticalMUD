@@ -91,7 +91,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 )
         else:
             # unprivileged
-            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YRoom", "|YCmds", "|YProtocol",
+            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YArea", "|YCmds", "|YProtocol",
                                       pretty_corners=True,
                                       border="table",
                                       border_char="-",
@@ -104,7 +104,8 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 delta_conn = time.time() - session.conn_time
                 account = session.get_account()
                 puppet = session.get_puppet()
-                location = puppet.location.key if puppet and puppet.location else "None"
+                location = puppet.location if puppet and puppet.location else "None"
+                location = location.tags.get(category='area') or "None"
                 table.add_row(
                     utils.crop(account.get_display_name(account), width=20),
                     utils.time_format(delta_conn, 0),
