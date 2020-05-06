@@ -70,7 +70,7 @@ class CmdGunAim(COMMAND_DEFAULT_CLASS):
             self.caller.location.msg_contents(
                 "%s aims %s at %s." % (self.caller.name, self.obj.name, target.name),
                 exclude=[self.caller,target])
-            target.msg("%s aims %s at you!" % self.caller.name)
+            target.msg("%s aims %s at you!" % (self.caller.name, self.obj.name))
             self.obj.ndb.aiming = True
             self.obj.ndb.target = target
 
