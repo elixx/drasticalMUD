@@ -8,7 +8,6 @@ from commands.command import CmdExamine2
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
-
 class WizTool(DefaultObject):
     def at_object_creation(self):
         super().at_object_creation()
@@ -17,12 +16,12 @@ class WizTool(DefaultObject):
 
 class CmdFindMobs(COMMAND_DEFAULT_CLASS):
     key = "findmobs"
-    #locks = "cmd:superuser()"
+    # locks = "cmd:superuser()"
     locks = "cmd:all()"
 
     def func(self):
         x = ObjectDB.objects.get_objs_with_attr("patrolling")
-        table = self.styled_table("|Y#","|YMob", "|YLocation","|YArea", border="none")
+        table = self.styled_table("|Y#", "|YMob", "|YLocation", "|YArea", border="none")
         for n in x:
             if n.location.db.area:
                 area = n.location.db.area
@@ -34,7 +33,6 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         self.caller.msg(str(table))
 
 
-
 class WizToolCmdSet(CmdSet):
     key = "WizToolCmdSet"
 
@@ -42,12 +40,12 @@ class WizToolCmdSet(CmdSet):
         self.add(CmdFindMobs)
 
 
-
 class Tricorder(DefaultObject):
     def at_object_creation(self):
         super().at_object_creation()
         self.cmdset.add_default(TricorderCmdSet, permanent=True)
         self.db.ephemeral = True
+
 
 class CmdTricorderScan(CmdExamine2):
     key = "scan"
@@ -59,7 +57,8 @@ class CmdTricorderScan(CmdExamine2):
         super().func()
         self.caller.account.permissions.remove('Developer')
         self.caller.msg("You scan %s with %s." % (self.args, self.obj.name))
-        self.caller.location.msg_contents("%s scans %s with %s." % (self.caller.name, self.args, self.obj.name), exclude=self.caller)
+        self.caller.location.msg_contents("%s scans %s with %s." % (self.caller.name, self.args, self.obj.name),
+                                          exclude=self.caller)
 
 
 class TricorderCmdSet(CmdSet):
