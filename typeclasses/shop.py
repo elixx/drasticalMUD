@@ -82,41 +82,43 @@ def make_clothing(caller):
 
 
 def make_shirt(caller):
-    shirts = [("a hawaiian shirt", "a loud hawaiian shirt"),
-              ("a button-up shirt", "a plain, white button-up shirt"),
-              ("a extra-large white tee", "an XXL white tee"),
-              ("a leather shirt", "It looks like something from the Village People."),
-              ("a plain blue shirt", "It's blue. It's a shirt."),
-              ("a shiny knit shirt", "It's made out of some kind of shimmery fabric.")]
-    name, desc = choice(shirts)
+    shirts = [("a hawaiian shirt", "a loud hawaiian shirt","looking like a tourist"),
+              ("a button-up shirt", "a plain, white button-up shirt", "looking clean and proper"),
+              ("a extra-large white tee", "an XXL white tee", "hangs down"),
+              ("a leather shirt", "It looks like something from the Village People.","shows off Sharpie chest-hair"),
+              ("a plain blue shirt", "It's blue. It's a shirt.", ""),
+              ("a shiny knit shirt", "It's made out of some kind of shimmery fabric.", "that catches your attention")]
+    name, desc, worn = choice(shirts)
     shirt = create_object("evennia.contrib.clothing.Clothing",
                           key=name,
                           aliases=["shirt"],
                           home=caller,
                           location=caller,
                           attributes=[("clothing_type", "top"),
-                                      ("desc", desc)])
+                                      ("desc", desc),
+                                      ("worn", worn)])
     caller.msg("You get %s" % shirt.name)
 
 
 def make_pants(caller):
     pants = [("a pair of black sweats", "Plain, black sweatpants with an elastic waistband and drawstring.",
-              ["sweats", "pants"]),
+              ["sweats", "pants"],""),
              ("a pair of faded jeans", "These jeans have been bean the hell up. THey are very faded and worn.",
-              ["jeans", "pants"]),
-             ("a pair of camo pants", "Standard-issue military wear.", ["pants", "camo"]),
-             ("a pair of cotton shorts", "A plain pair of gym shorts.", ["shorts", "cotton"]),
+              ["jeans", "pants"]),"",
+             ("a pair of camo pants", "Standard-issue military wear.", ["pants", "camo"],"ready for war"),
+             ("a pair of cotton shorts", "A plain pair of gym shorts.", ["shorts", "cotton"], "that are a little too short"),
              ("a pair of black fatigues", "Military-style tactical wear, but less obvious.", ["fatigues", "pants"]),
-             ("a pair of pants", "They're pants. What more could you ask for?", ["pants"])]
+             ("a pair of pants", "They're pants. What more could you ask for?", ["pants"],"looking nondescript")]
 
-    name, desc, aliases = choice(pants)
+    name, desc, aliases, worn = choice(pants)
     shirt = create_object("evennia.contrib.clothing.Clothing",
                           key=name,
                           aliases=aliases,
                           home=caller,
                           location=caller,
                           attributes=[("clothing_type", "bottom"),
-                                      ("desc", desc)])
+                                      ("desc", desc),
+                                      ("worn", worn)])
     caller.msg("You get %s" % shirt.name)
 
 
@@ -129,7 +131,8 @@ def make_hazmat(caller):
                          home=caller,
                          location=caller,
                          attributes=[("clothing_type", "fullbody"),
-                                     ("desc", desc)])
+                                     ("desc", desc),
+                                     ("worn","to protect from {yhazardous{g chemicals{n")])
     caller.msg("You get %s" % suit.name)
 
 
@@ -140,23 +143,25 @@ def make_sunglasses(caller):
                             home=caller,
                             location=caller,
                             attributes=[("clothing_type", "jewelry"),
-                                        ("desc", "A pair of {xdark sunglasses{n.")])
+                                        ("desc", "A pair of {xdark sunglasses{n."),
+                                        ("worn", "that let them see the world as it {yreally{n is")])
     caller.msg("You get %s" % glasses.name)
 
 
 def make_hat(caller):
-    hats = [("a viking helmet", "A horned, metal viking helmet", ["viking", "helmet"]),
-            ("a woolen beanie", "A knit ski cap", ["beanie", "hat"]),
-            ("a baseball cap", "A plain, brimmed baseball cap", ["cap", "hat"]),
-            ("a pith helmet", "You'll look just like an African explorer in this!", ["helmet"]),
-            ("a fez", "A red velvet fez, complete with tassle.", ["fez"]),
-            ("a graduation cap", "You feel smart just looking at this!", ["cap", "graduation"])]
-    name, desc, aliases = choice(hats)
+    hats = [("a viking helmet", "A horned, metal viking helmet", ["viking", "helmet"],"just like Flava Flav"),
+            ("a woolen beanie", "A knit ski cap", ["beanie", "hat"], ""),
+            ("a baseball cap", "A plain, brimmed baseball cap", ["cap", "hat"], "pulled down low"),
+            ("a pith helmet", "You'll look just like an African explorer in this!", ["helmet"], "like an African explorer"),
+            ("a fez", "A red velvet fez, complete with tassle.", ["fez"],"with a fuzzy tassle"),
+            ("a graduation cap", "You feel smart just looking at this!", ["cap", "graduation"], "that makes them look smart")]
+    name, desc, aliases, worn = choice(hats)
     hat = create_object("evennia.contrib.clothing.Clothing",
                         key=name,
                         aliases=aliases,
                         home=caller,
                         location=caller,
                         attributes=[("clothing_type", "hat"),
-                                    ("desc", desc)])
+                                    ("desc", desc),
+                                    ("worn", worn)])
     caller.msg("You get %s" % hat.name)
