@@ -147,7 +147,8 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
             max = 5
             if character.db.title: title = character.db.title
             else: title = ""
-            output = "{WReporting on User: {Y%s{n\n" % title + " " + target.name
+            name = title + " " + target.name
+            output = "{WReporting on User: {Y%s{n\n" % name
             table = self.styled_table()
             if character.db.stats:
                 logincount = character.db.stats['logins']
