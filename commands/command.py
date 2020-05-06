@@ -91,7 +91,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 )
         else:
             # unprivileged
-            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YArea", "|YCmds", "|YVia",
+            table = self.styled_table("|YName", "|YOn for", "|YIdle", "|YArea", "|YVia",
                                       pretty_corners=True,
                                       border="table",
                                       border_char="-",
@@ -113,7 +113,6 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
                     utils.crop(location, width=25),
-                    session.cmd_total,
                     session.protocol_key,
                 )
         is_one = naccounts == 1
