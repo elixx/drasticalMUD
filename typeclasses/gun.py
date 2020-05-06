@@ -62,14 +62,15 @@ class CmdGunAim(COMMAND_DEFAULT_CLASS):
                                 "You take aim at %s to the %s with %s." % (target.name, exit.name, self.obj.name))
                             self.caller.location.msg_contents(
                                 "%s aims %s %s at %s." % (self.caller.name, exit.name, self.obj.name, target.name),
-                                exclude=self.caller)
+                                exclude=[self.caller, target])
                             target.msg("%s takes aim at you from afar with %s!" % (self.caller.name, self.obj.name))
         else:
             target = target[0]
             self.caller.msg("You take aim at %s with %s." % (target.name, self.obj.name))
             self.caller.location.msg_contents(
-                "%s aims their %s at %s." % (self.caller.name, self.obj.name, target.name),
-                exclude=self.caller)
+                "%s aims %s at %s." % (self.caller.name, self.obj.name, target.name),
+                exclude=[self.caller,target])
+            target.msg("%s aims %s at you!" % self.caller.name)
             self.obj.ndb.aiming = True
             self.obj.ndb.target = target
 
