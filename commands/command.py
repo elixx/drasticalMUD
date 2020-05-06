@@ -65,7 +65,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 #    "|YPuppeting",
                 "|YRoom",
                 "|YCmds",
-                "|YProtocol",
+                "|YVia",
                 "|YHost",
                 pretty_corners=False,
                 border="table",
@@ -91,7 +91,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 )
         else:
             # unprivileged
-            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YArea", "|YCmds", "|YProtocol",
+            table = self.styled_table("|YAccount name", "|YOn for", "|YIdle", "|YArea", "|YCmds", "|YVia",
                                       pretty_corners=True,
                                       border="table",
                                       border_char="-",
@@ -105,7 +105,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 account = session.get_account()
                 puppet = session.get_puppet()
                 location = puppet.location if puppet and puppet.location else "None"
-                location = location.tags.get(category='area') or "None"
+                location = location.tags.get(category='area').title() or "None"
                 table.add_row(
                     utils.crop(account.get_display_name(account), width=20),
                     utils.time_format(delta_conn, 0),
