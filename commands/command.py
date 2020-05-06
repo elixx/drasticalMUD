@@ -107,7 +107,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 location = puppet.location if puppet and puppet.location else "None"
                 if location == None:
                     continue
-                location = location.tags.get(category='area').title() or "None"
+                location = location.tags.get(category='area').title() if location.tags and location else "None"
                 table.add_row(
                     utils.crop(account.get_display_name(account), width=20),
                     utils.time_format(delta_conn, 0),
