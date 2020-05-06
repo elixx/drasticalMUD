@@ -59,7 +59,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
         if show_session_data:
             # privileged info
             table = self.styled_table(
-                "|YAccount Name",
+                "|YName",
                 "|YOn for",
                 "|YIdle",
                 #    "|YPuppeting",
@@ -80,8 +80,9 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 account = session.get_account()
                 puppet = session.get_puppet()
                 location = puppet.location.key if puppet and puppet.location else "None"
+                title = puppet.db.title if puppet and puppet.db.title else ""
                 table.add_row(
-                    utils.crop(account.get_display_name(account), width=20),
+                    utils.crop(title + " " + account.get_display_name(account), width=25),
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
                     utils.crop(location, width=25),
@@ -108,8 +109,10 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     continue
                 location = puppet.location if puppet and puppet.location else "None"
                 location = location.tags.get(category='area').title() if location.tags and location else "None"
+                if puppet.db.title: title = puppet.db.title
+                else: title = ""
                 table.add_row(
-                    utils.crop(account.get_display_name(account), width=20),
+                    utils.crop(title + " " + account.get_display_name(account), width=25),
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
                     utils.crop(location, width=25),
@@ -142,7 +145,9 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
             target = target[0]
             character = target.characters[0]
             max = 5
-            output = "{WReporting on username: {Y%s{n\n" % target.name
+            if character.db.title: title = character.db.title
+            else: title = ""
+            output = "{WReporting on User: {Y%s{n\n" % title + " " + target.name
             table = self.styled_table()
             if character.db.stats:
                 logincount = character.db.stats['logins']
