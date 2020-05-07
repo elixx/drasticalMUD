@@ -1,6 +1,5 @@
 from evennia import utils
 from django.conf import settings
-#from typeclasses.characters import Character
 from typeclasses.objects import Object
 from evennia.commands.cmdset import CmdSet
 from evennia import TICKER_HANDLER
