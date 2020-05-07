@@ -23,11 +23,17 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         x = ObjectDB.objects.get_objs_with_attr("patrolling")
         table = self.styled_table("|Y#", "|YMob", "|YLocation", "|YArea", border="none")
         for n in x:
-            if n.location.db.area:
-                area = n.location.db.area
+            if n.location != None:
+                area = n.location.tags.get(category='area')
+                locationname = n.location.name
             else:
-                area = ""
-            table.add_row(n.id, n.name, n.location.name, area)
+                locationname = "None"
+                area = 'None'
+            if n.name:
+                name = n.name
+            else:
+                name = 'None'
+            table.add_row(n.id, name, locationname, area)
         self.caller.msg("You use %s." % self.obj.name)
         self.caller.location.msg_contents("%s uses %s." % (self.caller.name, self.obj.name), exclude=self.caller)
         self.caller.msg(str(table))
