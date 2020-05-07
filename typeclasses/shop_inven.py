@@ -10,49 +10,49 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
 class ShopInvRoom(Room):
-    inventory = {"hunter":          {'key':         "a mob hunter",
-                                     'typeclass':     "typeclasses.wiztools.WizTool",
-                                     'aliases':       ['hunter'],
-                                     'attributes':    [('desc',"This tool lets you {Yfindmobs{n to help with the hunt.")]},
-                 "tricorder":       {'key':         "a tricorder",
-                                     'typeclass':     "typeclasses.wiztools.Tricorder",
-                                     'attributes':    [("desc", "This tool lets you {Yscan{n stuff... seems dangerous.")]},
-                 "launcher":        {'key':         "a rocket launcher",
-                                     'typeclass':    'typeclasses.gun.Gun',
-                                     'aliases':      ['launcher'],
-                                     'attributes':   [('desc', "A rocket launcher. Blow em up good."),
-                                                      ('max_ammo', 25),
-                                                      ('ammo', 5),
-                                                      ('ammo_type', 'rocket')]},
-                "rockets":          {"key":         "a rocket pack",
-                                     'typeclass':   'typeclasses.objects.Object',
-                                     'aliases':     ['pack'],
-                                     'attributes':  [('desc','a package of rocket ammunition.'),
-                                                     ('capacity',5),
-                                                     ('ammo_type','rocket')]},
-                "gun":              {'key':         "a generic gun",
-                                     'typeclass':    'typeclasses.gun.Gun',
-                                     'aliases':      ['gun'],
-                                     'attributes':   [('desc', "A gun. You know, for shooting things."),
-                                                      ('max_ammo', 16),
-                                                      ('ammo', 8),
-                                                      ('ammo_type', 'generic')]},
-                "ammo":             {"key":         "a generic clip",
-                                     'typeclass':   'typeclasses.objects.Object',
-                                     'aliases':     ['pack'],
-                                     'attributes':  [('desc','a generic clip of gun ammunition'),
-                                                     ('capacity',8),
-                                                     ('ammo_type','generic')]}}
-
     def at_object_creation(self):
         super().at_object_creation()
+        if not self.db.inventory:
+            self.db.inventory = {"hunter": {'key': "a mob hunter",
+                                                     'typeclass':     "typeclasses.wiztools.WizTool",
+                                                     'aliases':       ['hunter'],
+                                                     'attributes':    [('desc',"This tool lets you {Yfindmobs{n to help with the hunt.")]},
+                                 "tricorder": {'key': "a tricorder",
+                                                     'typeclass':     "typeclasses.wiztools.Tricorder",
+                                                     'attributes':    [("desc", "This tool lets you {Yscan{n stuff... seems dangerous.")]},
+                                 "launcher": {'key':  "a rocket launcher",
+                                                     'typeclass':    'typeclasses.gun.Gun',
+                                                     'aliases':      ['launcher'],
+                                                     'attributes':   [('desc', "A rocket launcher. Blow em up good."),
+                                                                      ('max_ammo', 25),
+                                                                      ('ammo', 5),
+                                                                      ('ammo_type', 'rocket')]},
+                                "rockets": {"key": "a rocket pack",
+                                                     'typeclass':   'typeclasses.objects.Object',
+                                                     'aliases':     ['pack'],
+                                                     'attributes':  [('desc','a package of rocket ammunition.'),
+                                                                     ('capacity',5),
+                                                                     ('ammo_type','rocket')]},
+                                "gun": {'key': "a generic gun",
+                                                     'typeclass':    'typeclasses.gun.Gun',
+                                                     'aliases':      ['gun'],
+                                                     'attributes':   [('desc', "A gun. You know, for shooting things."),
+                                                                      ('max_ammo', 16),
+                                                                      ('ammo', 8),
+                                                                      ('ammo_type', 'generic')]},
+                                "ammo": {"key": "a generic clip",
+                                                     'typeclass':   'typeclasses.objects.Object',
+                                                     'aliases':     ['pack'],
+                                                     'attributes':  [('desc','a generic clip of gun ammunition'),
+                                                                     ('capacity',8),
+                                                                     ('ammo_type','generic')]}}
         self.cmdset.add_default(ShopInvRoomCmdSet, permanent=True)
 
 class CmdShopInvRoomShop(COMMAND_DEFAULT_CLASS):
     key = "shop"
 
     def func(self):
-        self.caller.ndb._shopInventory = self.obj.inventory
+        self.caller.ndb._shopInventory = self.obj.db.inventory
         EvMenu(self.caller, "typeclasses.shop_inven", "start_menu")
 
 class ShopInvRoomCmdSet(CmdSet):
