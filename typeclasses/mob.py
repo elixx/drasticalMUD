@@ -70,7 +70,9 @@ class LegacyMob(Object):
         We set up the base properties and flags here.
         """
         self.cmdset.add(MobCmdSet, permanent=True)
-        self.db.patrolling = True
+        if self.db.patrolling == None:
+            self.db.patrolling = True
+
         self.db.immortal = False
         self.db.is_dead = False
 
