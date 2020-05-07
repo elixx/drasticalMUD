@@ -2,7 +2,6 @@ from typeclasses.mob import LegacyMob
 from evennia import TICKER_HANDLER
 import random
 
-
 class ChattyMob(LegacyMob):
     def _chat_ticker(self, interval, hook_key, stop=False):
         idstring = "TalkerMob"
@@ -26,24 +25,19 @@ class ChattyMob(LegacyMob):
             self.db.chatty = True
         if self.db.chatty == None:
             self.db.chatty = True
+        if self.db.chat_frequency == None:
             self.db.chat_frequency = 5
 
     def do_chat(self):
         quote = random.choice(self.db.random_quotes)
         self.location.msg_contents("%s says, '%s'." % (self.name, quote))
-        self._chat_ticker(self.db.chat_frequency, "do_chat")
 
     def at_init(self):
         super().at_init()
         self._init_chatdb()
-        if self.db.chatty:
-            self._chat_ticker(self.db.chat_frequency, "do_chat")
+
 
     def at_object_creation(self):
-        """
-        Called the first time the object is created.
-        We set up the base properties and flags here.
-        """
         super().at_object_creation()
         self._init_chatdb()
         if self.db.chatty:
