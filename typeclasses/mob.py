@@ -122,20 +122,19 @@ class LegacyMob(Object):
         self.db.is_dead = False
         self.db.desc = self.db.desc_alive
         self.ndb.is_immortal = self.db.immortal
-        self.ndb.is_patrolling = self.db.patrolling
+        self.ndb.is_patrolling = True
+        self.db.patrolling = True
         if not self.location:
             self.move_to(self.home)
-        if self.db.patrolling:
-            self.start_patrolling()
+        self.start_patrolling()
 
     def set_dead(self):
-        self.db.is_dead = True
-        self.location = None
+        self.db.patrolling = False
         self.ndb.is_patrolling = False
         self.ndb.is_hunting = False
         self.ndb.is_immortal = True
         # we shall return after some time
-        self._set_ticker(self.db.death_pace, "set_alive")
+        self.start_idle()
 
     def start_idle(self):
         self._set_ticker(None, None, stop=True)

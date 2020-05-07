@@ -21,11 +21,12 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         x = ObjectDB.objects.get_objs_with_attr("patrolling")
-        table = self.styled_table("|Y#", "|YMob", "|YLocation", "|YArea", border="none")
+        table = self.styled_table("|Y#", "|YMob", "|YLocation", "|YArea", "|YMobile", border="none")
         for n in x:
             if n.location != None:
                 area = n.location.tags.get(category='area')
-                locationname = n.location.name
+                area = area.title()
+                locationname = utils.crop(n.location.name,25)
             else:
                 locationname = "None"
                 area = 'None'
@@ -33,7 +34,8 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
                 name = n.name
             else:
                 name = 'None'
-            table.add_row(n.id, name, locationname, area)
+            patrolling = "Y" if n.db.patrolling else "N"
+            table.add_row(n.id, name, locationname, area, patrolling)
         self.caller.msg("You use %s." % self.obj.name)
         self.caller.location.msg_contents("%s uses %s." % (self.caller.name, self.obj.name), exclude=self.caller)
         self.caller.msg(str(table))
