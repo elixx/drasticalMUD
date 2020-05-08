@@ -19,6 +19,7 @@ class ShopInvRoom(Room):
                                                      'attributes':    [('desc',"This tool lets you {Yfindmobs{n to help with the hunt.")]},
                                  "tricorder": {'key': "a tricorder",
                                                      'typeclass':     "typeclasses.wiztools.Tricorder",
+                                                     'aliases':       ['scanner','tricorder'],
                                                      'attributes':    [("desc", "This tool lets you {Yscan{n stuff... seems dangerous.")]},
                                  "launcher": {'key':  "a rocket launcher",
                                                      'typeclass':    'typeclasses.gun.Gun',
