@@ -102,12 +102,13 @@ def make_shirt(caller):
 
 def make_pants(caller):
     pants = [("a pair of black sweats", "Plain, black sweatpants with an elastic waistband and drawstring.",
-              ["sweats", "pants"],""),
+              ["sweats", "pants"], ""),
              ("a pair of faded jeans", "These jeans have been bean the hell up. THey are very faded and worn.",
-              ["jeans", "pants"]),"",
+              ["jeans", "pants"], ""),
              ("a pair of camo pants", "Standard-issue military wear.", ["pants", "camo"],"ready for war"),
-             ("a pair of cotton shorts", "A plain pair of gym shorts.", ["shorts", "cotton"], "that are a little too short"),
-             ("a pair of black fatigues", "Military-style tactical wear, but less obvious.", ["fatigues", "pants"]),
+             ("a pair of cotton shorts", "A plain pair of gym shorts.", ["shorts", "cotton"], "that are a little too "
+                                                                                              "short"),
+             ("a pair of black fatigues", "Military-style tactical wear, but less obvious.", ["fatigues", "pants"],"looking prepared"),
              ("a pair of pants", "They're pants. What more could you ask for?", ["pants"],"looking nondescript")]
 
     name, desc, aliases, worn = choice(pants)

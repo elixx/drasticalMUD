@@ -91,7 +91,7 @@ class LegacyMob(Object):
         self.db.death_msg = "After the last hit %s evaporates." % self.key
         self.db.irregular_msgs = ["the enemy looks about.", "the enemy changes stance."]
 
-        if(self.db.patrolling):
+        if self.db.patrolling:
             self.start_patrolling()
 
         super().at_object_creation()
