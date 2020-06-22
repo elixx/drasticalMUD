@@ -27,7 +27,7 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
                 area = n.location.tags.get(category='area')
                 if area != None: area = area.title()
                 else: area = "None"
-                locationname = utils.crop(n.location.name,25)
+                locationname = utils.crop(str(n.location.id) + ':' + n.location.name,30)
             else:
                 locationname = "None"
                 area = 'None'
