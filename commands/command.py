@@ -160,7 +160,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                 kills = character.db.stats['kills']
                 deaths = character.db.stats['deaths']
                 lastlogin = target.db.lastsite[-1]
-                stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
+                stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[-1]))
                 try: pct = character.db.stats['explored']
                 except KeyError: pct = -1
                 table.add_row("{yLogins:", logincount)
