@@ -1,4 +1,4 @@
-from evennia import search_object
+from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.create import create_object
 from django.conf import settings
