@@ -3,7 +3,7 @@ from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.create import create_object
 from django.conf import settings
 
-#from matterhook import Webhook
+from matterhook import Webhook
 
 
 def findStatsMachine():
@@ -42,10 +42,10 @@ def genPrompt(obj):
 
 def sendWebHook(text):
     if(settings.DRASTICAL_SEND_WEBHOOK):
-        # mwh = Webhook(settings.DRASTICAL_NOTIFY_URL,settings.DRASTICAL_NOTIFY_HOOK)
-        # prefix = ":turkey: **" + settings.SERVERNAME + "** - "
-        # message = prefix + "`" + text + "`"
-        # mwh.send(message)
+        mwh = Webhook(settings.DRASTICAL_NOTIFY_URL,settings.DRASTICAL_NOTIFY_HOOK)
+        prefix = ":turkey: **" + settings.SERVERNAME + "** - "
+        message = prefix + "`" + text + "`"
+        mwh.send(message)
         pass
 
 def area_count():
