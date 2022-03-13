@@ -32,9 +32,9 @@ evennia.db3
 server/conf/secret_settings.py
 server/conf/settings.py
 
-server/logs/*.log.*
-web/static/*
-web/media/*
+server/logs/*.log*
+web/static/**
+web/media/**
 
 # No logs
 server/logs/*
