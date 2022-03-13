@@ -63,3 +63,7 @@ nosetests.xml
 .idea
 *.run
 *.run.xml
+
+# compiled web
+web/static/*
+web/media/*
