@@ -13,6 +13,7 @@ inheritance.
 
 from evennia.objects.objects import DefaultObject
 
+
 class Object(DefaultObject):
     """
     This is the root typeclass object, implementing an in-game Evennia
@@ -158,11 +159,13 @@ class Object(DefaultObject):
                                  object speaks
 
      """
+
     def at_server_reload(self):
         super().at_server_reload()
 
-        if(self.db.ephemeral):
+        if (self.db.ephemeral):
             self.delete()
+
 
 class LegacyObject(Object):
     pass

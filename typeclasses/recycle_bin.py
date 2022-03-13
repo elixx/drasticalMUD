@@ -10,6 +10,7 @@ import re
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 _RE_ARGSPLIT = re.compile(r"\s(with|on|to|in|at)\s", re.I + re.U)
 
+
 class RecycleBin(DefaultObject):
     def at_object_creation(self):
         super().at_object_creation()
@@ -32,6 +33,7 @@ class RecycleBin(DefaultObject):
             else:
                 self.db.stats['recycled'] += 1
             ob.delete()
+
 
 class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
     key = "put"
@@ -67,6 +69,7 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
                 self.caller.location.msg_contents("%s whirrs to live and devours %s." % (self.obj.name, self.obj1.name))
                 self.obj1.location = self.obj
 
+
 class CmdRecycleBinEmpty(COMMAND_DEFAULT_CLASS):
     key = "empty"
     locks = "cmd:superuser()"
@@ -79,6 +82,7 @@ class CmdRecycleBinEmpty(COMMAND_DEFAULT_CLASS):
 
 class RecycleBinCmdSet(CmdSet):
     key = "RecycleBinCmdSet"
+
     def at_cmdset_creation(self):
         self.add(CmdRecycleBinPut)
         self.add(CmdRecycleBinEmpty)

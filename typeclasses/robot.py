@@ -9,6 +9,7 @@ from world.utils import findStatsMachine
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
+
 class robot(DefaultObject):
     def at_object_creation(self):
         """
@@ -194,7 +195,7 @@ class CmdRobotPoke(COMMAND_DEFAULT_CLASS):
                             "{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
                         self.caller.location.msg_contents(
                             "{xSparks fly and you hear a frizzing noise. It looks like {Y%s{x just {rbroke{x %s." % (
-                            self.caller, obj.name),
+                                self.caller, obj.name),
                             exclude=self.caller)
                         yield 1
                         obj.malfunction()
@@ -319,7 +320,7 @@ class CmdRobotFix(COMMAND_DEFAULT_CLASS):
                                     search_channel("public")[0].msg(message % (self.caller))
                                 yield 1
                                 search_channel("public")[0].msg("{xThe {Y%s{x has been fixed {Y%i{x times." % (
-                                obj.name, machine.db.stats['robot_fixed']))
+                                    obj.name, machine.db.stats['robot_fixed']))
                                 obj.repair()
                                 yield 1
                                 obj.drop_key()
@@ -336,7 +337,7 @@ class CmdRobotFix(COMMAND_DEFAULT_CLASS):
                             "You try to fix %s, but it beeps angrily and gives you an electric shock." % obj.name)
                         self.caller.location.msg_contents(
                             "%s screws around with the %s, but it gets pissed off and shocks them!" % (
-                            self.caller, obj.name),
+                                self.caller, obj.name),
                             exclude=self.caller)
                 else:
                     self.caller.msg("You try to fix the" + obj.name + ", but can't seem to figure them out.")

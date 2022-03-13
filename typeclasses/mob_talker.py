@@ -2,6 +2,7 @@ from typeclasses.mob import LegacyMob
 from evennia import TICKER_HANDLER
 import random
 
+
 class ChattyMob(LegacyMob):
     def _chat_ticker(self, interval, hook_key, stop=False):
         idstring = "TalkerMob"
@@ -36,10 +37,8 @@ class ChattyMob(LegacyMob):
         super().at_init()
         self._init_chatdb()
 
-
     def at_object_creation(self):
         super().at_object_creation()
         self._init_chatdb()
         if self.db.chatty:
             self._chat_ticker(self.db.chat_frequency, "do_chat")
-
