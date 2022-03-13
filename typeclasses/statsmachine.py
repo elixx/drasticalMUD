@@ -10,7 +10,6 @@ from world.utils import area_count
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
-
 class StatsMachine(DefaultObject):
     def at_object_creation(self):
         """
@@ -36,7 +35,6 @@ class StatsMachine(DefaultObject):
         self.locks.add("get:false()")
         self.cmdset.add_default(StatsMachineCmdSet, permanent=True)
 
-
     def at_init(self):
         """
         Called when object is loaded into memory"
@@ -47,21 +45,21 @@ class StatsMachine(DefaultObject):
         else:
             self.db.stats['loaded'] += 1
 
-    def incr(self,statname):
+    def incr(self, statname):
         if not statname in self.db.stats.keys():
             self.db.stats[statname] = 1
         else:
             self.db.stats[statname] += 1
 
     def incr_kv(self, stat, key, db="stats"):
-        if(db=="stats"):
+        if (db == "stats"):
             if not stat in self.db.stats.keys():
-                self.db.stats[stat] = { key: 1 }
+                self.db.stats[stat] = {key: 1}
             if not key in self.db.stats[stat].keys():
                 self.db.stats[stat][key] = 1
             else:
                 self.db.stats[stat][key] += 1
-        elif(db=="userstats"):
+        elif (db == "userstats"):
             if not stat in self.db.userstats.keys():
                 self.db.userstats[stat] = {}
             if not key in self.db.userstats[stat].keys():
@@ -69,19 +67,18 @@ class StatsMachine(DefaultObject):
             else:
                 self.db.userstats[stat][key] += 1
 
-    def set(self,statname, value):
+    def set(self, statname, value):
         self.db.stats[statname] = value
 
     def set_kv(self, stat, key, value, db="stats"):
-        if(db=="stats"):
+        if (db == "stats"):
             if not stat in self.db.stats.keys():
-                self.db.stats[stat] = { key: {} }
+                self.db.stats[stat] = {key: {}}
             self.db.stats[stat][key] = value
-        elif(db=="userstats"):
+        elif (db == "userstats"):
             if not stat in self.db.userstats.keys():
-                self.db.userstats[stat] = { key: {} }
+                self.db.userstats[stat] = {key: {}}
             self.db.userstats[stat][key] = value
-
 
 
 class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
@@ -96,7 +93,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         maxlines = 5
         width = 60
 
-        privileged=self.caller.locks.check(self.caller,"cmd:perm_above(Helper)")
+        privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
 
         if not self.args:
             selection = ["ALL"]
@@ -116,32 +113,32 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
             if "ar" in args or "wo" in args:
                 selection.append("AREAS")
 
-########################################################################################################################
+        ########################################################################################################################
         output = "\n"
-        output += "{Y" + pad("{W "+ settings.SERVERNAME.upper() + " STATS {Y",width=width,fillchar="*") + '\n'
+        output += "{Y" + pad("{W " + settings.SERVERNAME.upper() + " STATS {Y", width=width, fillchar="*") + '\n'
         for item in selection:
-            if item == "GENERAL" or item == "ALL": #####################################################################
-                output += "{x" + pad(" {yGeneral Stats{x ",width=width,fillchar="*") + '\n'
+            if item == "GENERAL" or item == "ALL":  #####################################################################
+                output += "{x" + pad(" {yGeneral Stats{x ", width=width, fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
                 table.add_row("Current time ", datetime.fromtimestamp(gametime.gametime(absolute=True)))
-                output += str(table)+"\n"
+                output += str(table) + "\n"
 
-            if item == "SERVER" or item == "ALL": ######################################################################
-                output += "{x" + pad(" {yServer Stats{x ",width=width,fillchar="*") + '\n'
+            if item == "SERVER" or item == "ALL":  ######################################################################
+                output += "{x" + pad(" {yServer Stats{x ", width=width, fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
                 table.add_row("Current uptime", utils.time_format(gametime.uptime(), 3))
                 table.add_row("First start", datetime.fromtimestamp(gametime.server_epoch()))
                 table.add_row("Total runtime", utils.time_format(gametime.runtime(), 2))
-                output += str(table)+"\n"
-                #if privileged:
-                table = self.styled_table("|YEvent","|YCount",border="none", width=width)
+                output += str(table) + "\n"
+                # if privileged:
+                table = self.styled_table("|YEvent", "|YCount", border="none", width=width)
                 for (key, value) in self.obj.db.stats.items():
-                    #if ("start" in key or "stop" in key):
+                    # if ("start" in key or "stop" in key):
                     label = key.replace("_", " ").title()
                     table.add_row(label, value)
                 output += str(table) + "\n"
 
-            if item=="AREAS" or item=="ALL": ###########################################################################
+            if item == "AREAS" or item == "ALL":  ###########################################################################
                 explored = {}
                 totalrooms = 0
                 e = ObjectDB.objects.object_totals()
@@ -159,45 +156,56 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     if area not in explored.keys():
                         total = search.search_tag(area, category="area")
                         total = len(total.filter(db_typeclass_path__contains="room"))
-                        explored[area] = {'total': total, 'count': 1 }
+                        explored[area] = {'total': total, 'count': 1}
                     else:
                         explored[area]['count'] += 1
                 if self.caller.db.stats['visited']:
                     totalvisited = len(self.caller.db.stats['visited'])
-                else: totalvisited=None
-                if totalvisited: totalpct = round(totalvisited / totalrooms * 100,2)
+                else:
+                    totalvisited = None
+                if totalvisited: totalpct = round(totalvisited / totalrooms * 100, 2)
 
-                table = self.styled_table("|YArea                          ","|YRooms","|YVisited", "|Y%", border="none", width=width)
-                for key, value in sorted(explored.items(),key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
+                table = self.styled_table("|YArea                          ", "|YRooms", "|YVisited", "|Y%",
+                                          border="none", width=width)
+                for key, value in sorted(explored.items(), key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
                     if key is not None:
-                        pct = round(value['count'] / value['total'] * 100,2)
-                        if pct > 90: pct = "|r" + str(pct) + '|n'
-                        elif pct > 70: pct = "|y" + str(pct) + '|n'
-                        elif pct > 50: pct = "|g" + str(pct) + "|n"
-                        elif pct > 25: pct = "|w" + str(pct) + "|n"
-                        else: pct = "|x" + str(pct) + "|n"
-                        table.add_row( str(key).title(), value['total'], value['count'], pct+'%')
+                        pct = round(value['count'] / value['total'] * 100, 2)
+                        if pct > 90:
+                            pct = "|r" + str(pct) + '|n'
+                        elif pct > 70:
+                            pct = "|y" + str(pct) + '|n'
+                        elif pct > 50:
+                            pct = "|g" + str(pct) + "|n"
+                        elif pct > 25:
+                            pct = "|w" + str(pct) + "|n"
+                        else:
+                            pct = "|x" + str(pct) + "|n"
+                        table.add_row(str(key).title(), value['total'], value['count'], pct + '%')
 
                 output += "{x" + pad(" {YExploration Stats{x ", width=width, fillchar="*") + '\n'
-                output += str(table)+'\n'
+                output += str(table) + '\n'
                 table = self.styled_table(width=width, border='none')
                 table.add_row("|YTotal Rooms", totalrooms)
                 if totalvisited:
                     self.caller.db.stats['explored'] = totalpct
-                    if totalpct > 90: totalpct = "|r" + str(totalpct) + '|n'
-                    elif totalpct > 70: totalpct = "|y" + str(totalpct) + '|n'
-                    elif totalpct > 50: totalpct = "|g" + str(totalpct) + "|n"
-                    elif totalpct > 20: totalpct = "|w" + str(totalpct) + "|n"
+                    if totalpct > 90:
+                        totalpct = "|r" + str(totalpct) + '|n'
+                    elif totalpct > 70:
+                        totalpct = "|y" + str(totalpct) + '|n'
+                    elif totalpct > 50:
+                        totalpct = "|g" + str(totalpct) + "|n"
+                    elif totalpct > 20:
+                        totalpct = "|w" + str(totalpct) + "|n"
                     else:
                         totalpct = "|x" + str(totalpct) + "|n"
                     table.add_row("|YTotal Explored:", str(totalvisited) + " (" + totalpct + "|G%|n)")
 
-                output += str(table)+'\n'
+                output += str(table) + '\n'
 
-            if item=="USERS" or item=="ALL": ###########################################################################
-                output += "{x" + pad(" {YTop "+str(maxlines)+" Users:{x ", width=width, fillchar="*") + '\n'
+            if item == "USERS" or item == "ALL":  ###########################################################################
+                output += "{x" + pad(" {YTop " + str(maxlines) + " Users:{x ", width=width, fillchar="*") + '\n'
                 userlog = self.obj.db.userstats
-                table = self.styled_table("|YUser","|YLogins", border=None, width=width)
+                table = self.styled_table("|YUser", "|YLogins", border=None, width=width)
                 count = 0
                 for k, v in sorted(userlog.items(), key=lambda v: v[1]['logins'], reverse=True):
                     count += 1
@@ -207,28 +215,30 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                         user = k[:k.find("(")]
                     else:
                         user = k
-                    table.add_row(user,v['logins'])
+                    table.add_row(user, v['logins'])
                 output += str(table) + '\n'
 
-            if item=="GUESTS" or item=="ALL": ##########################################################################
+            if item == "GUESTS" or item == "ALL":  ##########################################################################
                 if privileged:
-                    table = self.styled_table("{yTimestamp","{yGuest","{yConnecting IP", border="none", width=width)
+                    table = self.styled_table("{yTimestamp", "{yGuest", "{yConnecting IP", border="none", width=width)
                 else:
-                    table = self.styled_table("{yTimestamp","{yGuest", border="none", width=width)
+                    table = self.styled_table("{yTimestamp", "{yGuest", border="none", width=width)
                 output += "{x" + pad(" {YLast " + str(maxlines) + " Guests:{x ", width=width, fillchar="*") + '\n'
                 guestlog = self.obj.db.guestlog
                 count = 0
-                for (time,ip,user) in guestlog:
+                for (time, ip, user) in guestlog:
                     count += 1
                     if count > maxlines:
                         break
-                    if(privileged): table.add_row(datetime.fromtimestamp(time), user, ip)
-                    else: table.add_row(datetime.fromtimestamp(time), user)
+                    if (privileged):
+                        table.add_row(datetime.fromtimestamp(time), user, ip)
+                    else:
+                        table.add_row(datetime.fromtimestamp(time), user)
                 output += str(table) + '\n'
 
-
-########################################################################################################################
+        ########################################################################################################################
         self.msg(output)
+
 
 class StatsMachineCmdSet(CmdSet):
     """
@@ -240,6 +250,3 @@ class StatsMachineCmdSet(CmdSet):
 
     def at_cmdset_creation(self):
         self.add(CmdStatsMachineStats())
-
-
-

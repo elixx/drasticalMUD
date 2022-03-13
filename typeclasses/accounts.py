@@ -30,6 +30,7 @@ from evennia.accounts.models import AccountDB
 from django.conf import settings
 from world.utils import findStatsMachine, sendWebHook
 
+
 class Account(DefaultAccount):
     """
     This class describes the actual OOC account (i.e. the user connecting
@@ -102,14 +103,14 @@ class Account(DefaultAccount):
         do_not_exceed = 24  # Keep the last two dozen entries
         session = self.sessions.all()[-1]  # Most recent session
         if not self.db.lastsite:
-           self.db.lastsite = []
+            self.db.lastsite = []
         self.db.lastsite.insert(0, (session.address, int(time())))
         if len(self.db.lastsite) > do_not_exceed:
             self.db.lastsite.pop()
 
         machine = findStatsMachine()
         if "guest" not in str(session.account).lower():
-            machine.incr_kv(str(session.account),"logins",db="userstats")
+            machine.incr_kv(str(session.account), "logins", db="userstats")
 
         sendWebHook("New logon: " + self.name + " from " + session.address)
 
