@@ -31,16 +31,17 @@ evennia.db3
 ## ... and keep all of this -- elixx 04122020
 server/conf/secret_settings.py
 server/conf/settings.py
-#server/logs/*.log.*
-#web/static/*
-#web/media/*
+
+server/logs/*.log.*
+web/static/*
+web/media/*
 
 # No logs
 server/logs/*
 
 # Installation-specific.
 # For group efforts, comment out some or all of these.
-
+*.bak
 
 
 # Installer logs
@@ -63,7 +64,3 @@ nosetests.xml
 .idea
 *.run
 *.run.xml
-
-# compiled web
-web/static/*
-web/media/*
