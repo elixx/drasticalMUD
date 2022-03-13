@@ -61,3 +61,5 @@ nosetests.xml
 
 # PyCharm config
 .idea
+*.run
+*.run.xml
