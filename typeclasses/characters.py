@@ -88,3 +88,17 @@ class Character(ClothedCharacter):
                 self.db.last_area = area_name
 
         super().at_after_move(source_location)
+
+    def at_look(self, target=None, session=None, **kwargs):
+        if target is not None:
+            if target.typeclass_path == "typeclasses.rooms.LegacyRoom":
+                target.update_description()
+            if not target.access(self, "view"):
+                try:
+                    return "Could not view '%s'." % target.get_display_name(self, **kwargs)
+                except AttributeError:
+                    return "Could not view '%s'." % target.key
+        description = target.return_appearance(self, **kwargs)
+        target.at_desc(looker=self, **kwargs)
+
+        return description
