@@ -46,6 +46,11 @@ TIME_FACTOR = 1.0
 TIME_GAME_EPOCH = None
 TIME_IGNORE_DOWNTIMES = True
 
+MONTHS_PER_YEAR = 12
+SEASONAL_BOUNDARIES = (3 / 12.0, 6 / 12.0, 9 / 12.0)
+HOURS_PER_DAY = 24
+DAY_BOUNDARIES = (0, 6 / 24.0, 12 / 24.0, 18 / 24.0)
+
 ADMINS = ('elixx', 'elixx@drastical.net')
 
 BASE_GUEST_TYPECLASS = "typeclasses.accounts.Guest"
