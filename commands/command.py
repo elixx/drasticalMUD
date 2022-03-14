@@ -124,6 +124,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
             % (table, "One" if is_one else naccounts, "" if is_one else "s")
         )
 
+
 class CmdFinger(COMMAND_DEFAULT_CLASS):
     """
     Get information about a user's stats
