@@ -1,0 +1,67 @@
+amazon: Exit east in EVid #249 skipped 12201 not found.12201
+amazon: Exit east in EVid #250 skipped 14700 not found.14700
+amazon: Exit west in EVid #266 skipped 17171 not found.17171
+amazon: Exit north in EVid #267 skipped 14900 not found.14900
+amazon: Exit north in EVid #268 skipped 25100 not found.25100
+anonopolis: Exit east in EVid #417 skipped 22136 not found.22136
+astral plane: Exit south in EVid #585 skipped -1 not found.-1
+astral plane: Exit east in EVid #586 skipped -1 not found.-1
+astral plane: Exit up in EVid #587 skipped -1 not found.-1
+astral plane: Exit west in EVid #588 skipped -1 not found.-1
+astral plane: Exit up in EVid #589 skipped -1 not found.-1
+astral plane: Exit down in EVid #589 skipped -1 not found.-1
+astral plane: Exit east in EVid #608 skipped -1 not found.-1
+arena: Exit up in EVid #824 skipped 3384 not found.3384
+shaolin temple: Exit south in EVid #972 skipped 9777 not found.9777
+camelot1: Exit north in EVid #1264 skipped 16805 not found.16805
+chessbrd: Exit west in EVid #1734 skipped 9268 not found.9268
+the dungeon: Exit up in EVid #2313 skipped -1 not found.-1
+erealms: Exit south in EVid #2948 skipped 15008 not found.15008
+firetop mountain: Exit down in EVid #3027 skipped 13400 not found.13400
+ghost town: Exit down in EVid #3623 skipped -1 not found.-1
+heaven: Exit north in EVid #3865 skipped 17799 not found.17799
+high tower: Exit north in EVid #4033 skipped -1 not found.-1
+high tower: Exit south in EVid #4033 skipped -1 not found.-1
+high tower: Exit west in EVid #4033 skipped -1 not found.-1
+high tower: Exit down in EVid #4098 skipped -1 not found.-1
+king's castle: Exit down in EVid #4346 skipped -1 not found.-1
+king's castle: Exit north in EVid #4371 skipped -1 not found.-1
+king's castle: Exit east in EVid #4371 skipped -1 not found.-1
+king's castle: Exit south in EVid #4371 skipped -1 not found.-1
+king's castle: Exit west in EVid #4371 skipped -1 not found.-1
+marsh: Exit south in EVid #4589 skipped -1 not found.-1
+miden'nir: Exit east in EVid #4635 skipped -1 not found.-1
+miden'nir: Exit west in EVid #4636 skipped -1 not found.-1
+miden'nir: Exit south in EVid #4642 skipped 1501 not found.1501
+mirkwood: Exit down in EVid #4853 skipped 14000 not found.14000
+new thalos: Exit south in EVid #5446 skipped -1 not found.-1
+the plains of blood: Exit down in EVid #5510 skipped 30338 not found.30338
+the plains of blood: Exit down in EVid #5518 skipped 3801 not found.3801
+the plains of blood: Exit north in EVid #5530 skipped 28398 not found.28398
+new thalos: Exit east in EVid #5602 skipped -1 not found.-1
+new thalos: Exit west in EVid #5602 skipped -1 not found.-1
+pawmist: Exit north in EVid #6113 skipped -1 not found.-1
+pawmist: Exit north in EVid #6115 skipped -1 not found.-1
+pawmist: Exit south in EVid #6117 skipped -1 not found.-1
+pawmist: Exit west in EVid #6119 skipped -1 not found.-1
+river of despair: Exit east in EVid #6302 skipped -1 not found.-1
+river of despair: Exit up in EVid #6323 skipped -1 not found.-1
+river of despair: Exit up in EVid #6324 skipped -1 not found.-1
+river of despair: Exit north in EVid #6333 skipped -1 not found.-1
+river of despair: Exit south in EVid #6333 skipped -1 not found.-1
+river of despair: Exit west in EVid #6335 skipped -1 not found.-1
+sewers: Exit down in EVid #6570 skipped -1 not found.-1
+sewers: Exit east in EVid #6587 skipped -1 not found.-1
+sewers: Exit north in EVid #6633 skipped -1 not found.-1
+sewers: Exit up in EVid #6633 skipped -1 not found.-1
+sewers: Exit down in EVid #6669 skipped -1 not found.-1
+the shielding: Exit west in EVid #6783 skipped -1 not found.-1
+the shielding: Exit east in EVid #6787 skipped 13404 not found.13404
+steab: Exit east in EVid #6949 skipped 9733 not found.9733
+talonvle: Exit south in EVid #7070 skipped 1169 not found.1169
+the walls of the city of anon: Exit up in EVid #7071 skipped 21202 not found.21202
+the walls of the city of anon: Exit up in EVid #7072 skipped 21207 not found.21207
+the walls of the city of anon: Exit up in EVid #7083 skipped 21214 not found.21214
+the walls of the city of anon: Exit up in EVid #7084 skipped 21215 not found.21215
+the walls of the city of anon: Exit south in EVid #7149 skipped 17454 not found.17454
+tisland: Exit south in EVid #7322 skipped 13310 not found.13310

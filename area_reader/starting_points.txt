@@ -1,0 +1,144 @@
+edearth, 4, {YThe DearthWood{x
+gilligan's island, 104, The beach
+the abyss, 105, The Mountain Path
+in the air, 194, In the air ...
+amazon, 234, Entrance to the Rain Forest
+animaland, 285, The Path leading to Animaland
+anonopolis, 385, Outside the MedCenter
+arachnos, 484, On the spider web
+astral plane, 540, The Bottom of the Rainbow
+ghost town, 620, A Dusty Trail
+avalonch, 671, Lake
+the bazaar, 771, Entrance to the Bazaar
+arena, 824, Caves of the Arena
+blade dancers inn, 845, Bar
+calinth, 871, {YThe Yawning Portal{x
+shaolin temple, 972, Mountain Stairs
+calinth, 1009, {YCommon Room{x
+camelot1, 1203, A Marble Road
+elemental canyon, 1265, A Mountain Path
+newtown, 1320, {YRachel's Pawn Shop{x
+catacombs, 1335, Mess hall
+caverns through time, 1389, A Tunnel
+zoology, 1465, Entrance to the Museum
+chaos-rift, 1479, The burned Hills
+chapel, 1535, Inside the Chapel
+chessboard of midgaard, 1602, The Great Chessboard Of Midgaard
+chessbrd, 1669, A White Square
+the circus, 1735, The Path to the Circus
+darathorn's pit, 1784, The entrance hall
+dark continent, 1863, Land Ho!!
+darkness, 1962, Darkness
+dawn, 1990, Entrance to the City of Dawn
+day care, 2044, The Dwarven Drop Off
+mob factory, 2063, Entrance to the Mob Factory
+divided souls, 2066, Intersection on a Pebbled Path
+dock, 2207, {YWharf District{x
+sands of sorrow, 2208, A long tunnel
+dock, 2240, {YLazyBack Inn{x
+sands of sorrow, 2263, A nomad camp
+dock, 2278, {Tenemant District{x
+the dungeon, 2297, Inside the Gates
+dragon tower, 2367, The Tower Gates
+machine dreams, 2411, The Void
+drmscp, 2447, A dimly lit room
+drow city, 2481, City Entrance
+dwarven kingdom, 2532, Path to Dwarven Village
+dylan's area, 2583, A fluffy white cloud.
+east, 2671, {YOutside The East Gate{x
+enchice, 2696, A Snowy Mountain Slope
+pawmist, 2796, On a Dirt Road
+erealms, 2856, Entrance to Elven Forest
+under2, 2951, Chamber of Silence
+erealms, 3011, An Elven Guard Sleeping Quarters
+under2, 3012, Sunset
+firetop mountain, 3024, Path to Firetop Mountain
+fragrant harbour, 3124, On the Star Ferry
+fun house, 3294, A Path To Somewhere
+mob factory, 3318, Foreman's Office
+great town of gerighelm, 3340, Entrance to the park
+gilligan's island, 3513, The beach
+holy grove, 3563, The holy grove
+gstrong, 3585, The Entry Hall to the Goblin Stronghold
+ghost town, 3612, A Room in the Mayor's Manse
+haon dor, 3661, The edge of the forest
+island, 3732, Keep foyer
+little haven, 3764, The Snow-filled Land
+haven lake, 3765, Entrance to the Valley of Dawn
+heaven, 3865, Chance's Heavenly Retreat
+high tower, 3916, Entrance to the Shadow Grove
+gangland, 4099, A Dark Alleyway
+valhalla, 4169, The Chat Room
+island, 4191, 
+wyvern's tower, 4192, Main Eastern Road
+island, 4209, Beach
+wyvern's tower, 4211, Eastern Path in Dark Forest
+island, 4212, Beach
+olympus, 4244, Mountain
+old thalos, 4294, The Grand Gate of Thalos
+king's castle, 4318, The King's Road
+tournament ground, 4372, A Well-Worn Path
+leprach, 4401, A Small Trail
+tournament ground, 4420, Heavy fog.
+leprach, 4425, blah
+limbo, 4470, The Void
+mahn-tor, 4472, The dark woods
+marsh, 4572, Muddy Path
+mega city one, 4590, Entrance to Mega-City One
+miden'nir, 4618, The Plains
+midgaard, 4670, The Temple Of Mota
+mirkwood, 4813, Entrance to Mirkwood
+old thalos, 4883, Under the watchtower
+mirror realm, 4945, Beginning of the Path
+moria, 5115, West trail around Midgaard
+mud school, 5236, Entrance to Mud School
+goblin nation, 5295, Inside the wall
+newbie2.are, 5394, The Entrance To The Newbie Zone
+new thalos, 5435, The Entrance to the Dancing Daemon Inn
+the plains of blood, 5485, The Plains of Blood
+new thalos, 5521, Ishtar River
+the plains of blood, 5522, The Path Across the Plains
+new thalos, 5531, Ice's Room
+newtown, 5692, {YCenter Of The New District{x
+nirvana, 5793, Entrance to the Plane of Nirvana
+north, 5853, {YOutside The North Gate{x
+wyvern's tower, 5854, Rough East-West Path
+north, 5864, {YNorthern Road{x
+wyvern's tower, 5873, Western Moat
+ofcol, 5887, Village street
+new ofcol, 5895, Granny's Still Room
+partbody, 5995, The questlords room
+troll den, 5996, Wastedump
+partbody, 6001, Crus Dextra
+path, 6038, {YA Hidden Trail{x
+pawmist, 6053, On a Dirt Road
+plains, 6150, Path in the plains
+pyramid, 6194, The Great Eastern Desert
+quifael's, 6254, Quifael's monster pen
+river, 6260, Durgas River
+river of despair, 6293, Path
+sdearth, 6342, {YThe DearthWood{x
+sesame street, 6443, Bus Stop
+sewers, 6504, The muddy sewer
+shadval45, 6681, {DEntrance to the Valley of Shadows{x
+the shielding, 6781, On a white marble staircase
+shire, 6795, A dimly lit path
+steab, 6853, The Purple Elf Bar and Inn - Bar Area
+takshrin, 6953, Center Chambers
+talonvle, 6999, Grand Hall of Caraway
+the walls of the city of anon, 7071, Inside the Guard Tower
+thalos, 7191, The Grand Gate of Thalos
+tisland, 7272, Edge of Jungle
+valley of the titans, 7323, A Dark Path Through The Forest
+hell, 7448, Stone Archway
+tree.are, 7589, The Entrance to Yggdrasil
+under2, 7613, Thieve's Council Chamber
+valley of the elves, 8031, A Path from the Plains
+warzone, 8115, A Blackened Doorway
+water, 8166, Lake
+wdearth, 8187, {YThe DearthWood{x
+weaverei, 8287, The Arches to Aenel's Realm
+cannabis, 8341, Welcome to Cannabis
+white lotus, 8371, Gateway to Temple
+wyvern's tower, 8544, A Large Murky Cellar
+zoo of midgaard, 8563, Outside the Midgaard Zoo
