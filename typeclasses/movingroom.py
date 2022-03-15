@@ -13,9 +13,9 @@ from random import choice
 class RoomDisplayBoard(Object):
     def at_object_creation(self):
         self.locks.add("get:false()")
-        self.db.location = None
+        self.location = None
         if not self.db.source:
-            self.db.source = search_object("trolley")[0]
+            self.db.source = search_object("a", typeclass="typeclasses.movingroom.MovingRoom", exact=False)[0]
         self.route = self.db.source.db.route
         self.db.base_desc = "A board displaying the route for %s" % self.db.source.name
         self.db.desc = self._update_desc()
