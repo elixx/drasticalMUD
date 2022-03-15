@@ -3,6 +3,7 @@ from django.conf import settings
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.create import create_object
+from evennia.utils.logger import log_err as log
 from django.conf import settings
 
 from matterhook import Webhook
@@ -88,6 +89,10 @@ def get_time_and_season():
         curr_timeslot = "evening"
 
     return curr_season, curr_timeslot
+
+
+def global_ticker():
+    log("-- TICK --")
 
 
 def area_count():
