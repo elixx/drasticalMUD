@@ -36,10 +36,11 @@ class Room(DefaultRoom):
 
 class LegacyRoom(Room):
     """
-    Rooms imported by area_importer
+    Rooms imported by area_importer. This is becoming the new base class.
     """
 
     def at_object_creation(self):
+        #@py from typeclasses.objects import Heavy; [obj.at_object_creation() for obj in Heavy.objects.all()]
         super().at_object_creation()
         self.db.owner = -1
         self.db.last_owner = -1
