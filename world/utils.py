@@ -3,7 +3,7 @@ from django.conf import settings
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.create import create_object
-from evennia.utils.logger import log_err as log
+from evennia.utils.logger import log_info as log
 from django.conf import settings
 
 from matterhook import Webhook
@@ -90,9 +90,35 @@ def get_time_and_season():
 
     return curr_season, curr_timeslot
 
+def color_percent(pct):
+    if pct == 100:
+        pct = "|WCOMPLETE|n"
+    elif pct > 95:
+        pct = "|r" + str(pct) + '|n'
+    elif pct > 80:
+        pct = "|R" + str(pct) + '|n'
+    elif pct > 50:
+        pct = "|y" + str(pct) + "|n"
+    elif pct > 30:
+        pct = "|Y" + str(pct) + "|n"
+    elif pct > 10:
+        pct = "|g" + str(pct) + "|n"
+    elif pct > 5:
+        pct = "|b" + str(pct) + "|n"
+    else:
+        pct = "|x" + str(pct) + "|n"
+
+    return pct
 
 def global_ticker():
-    log("-- TICK --")
+    #log("-- start global_tick --")
+    growable = search_tag("growable")
+    for obj in growable:
+        if not obj.db.age:
+            obj.db.age = 1
+        else:
+            obj.db.age += 1
+    log("-- finish global_tick --")
 
 
 def area_count():

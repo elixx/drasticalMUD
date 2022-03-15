@@ -5,6 +5,8 @@ from evennia.commands.cmdset import CmdSet
 from evennia import ObjectDB
 from evennia import search_object
 from datetime import datetime
+from world.utils import color_percent
+from evennia import TICKER_HANDLER as tickerhandler
 from world.utils import area_count
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -91,7 +93,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
     def func(self):
         selection = []
         maxlines = 5
-        width = 60
+        width = 70
 
         privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
 
@@ -140,6 +142,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
 
             if item == "AREAS" or item == "ALL":  ###########################################################################
                 explored = {}
+                owned = {}
                 totalrooms = 0
                 e = ObjectDB.objects.object_totals()
                 for k in e.keys():
@@ -151,6 +154,11 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     if len(room) > 0:
                         room = room[0]
                         area = room.tags.get(category='area')
+                        if room.db.owner == self.caller.id:
+                            if area not in owned.keys():
+                                owned[area] = 1
+                            else:
+                                owned[area] +=1
                     else:
                         continue
                     if area not in explored.keys():
@@ -159,28 +167,21 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                         explored[area] = {'total': total, 'count': 1}
                     else:
                         explored[area]['count'] += 1
-                if self.caller.db.stats['visited']:
-                    totalvisited = len(self.caller.db.stats['visited'])
-                else:
-                    totalvisited = None
-                if totalvisited: totalpct = round(totalvisited / totalrooms * 100, 2)
+                totalvisited = len(visited)
+                totalpct = round(totalvisited / totalrooms * 100, 2)
 
-                table = self.styled_table("|YArea                          ", "|YRooms", "|YVisited", "|Y%",
+                table = self.styled_table("|YArea                          ", "|YRooms", "|YVisited", "|Y%Seen", "|Y%Owned",
                                           border="none", width=width)
                 for key, value in sorted(explored.items(), key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
                     if key is not None:
-                        pct = round(value['count'] / value['total'] * 100, 2)
-                        if pct > 90:
-                            pct = "|r" + str(pct) + '|n'
-                        elif pct > 70:
-                            pct = "|y" + str(pct) + '|n'
-                        elif pct > 50:
-                            pct = "|g" + str(pct) + "|n"
-                        elif pct > 25:
-                            pct = "|w" + str(pct) + "|n"
+                        pct = round(value['count'] / value['total'] * 100, 1)
+                        if key in owned.keys():
+                            opct = round(owned[key] / value['total'] * 100, 1)
                         else:
-                            pct = "|x" + str(pct) + "|n"
-                        table.add_row(str(key).title(), value['total'], value['count'], pct + '%')
+                            opct = 0
+                        pct = color_percent(pct)
+                        opct = color_percent(opct)
+                        table.add_row(utils.crop(str(key).title(),width=18), value['total'], value['count'], pct + '%', opct + '%')
 
                 output += "{x" + pad(" {YExploration Stats{x ", width=width, fillchar="*") + '\n'
                 output += str(table) + '\n'
@@ -188,16 +189,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 table.add_row("|YTotal Rooms", totalrooms)
                 if totalvisited:
                     self.caller.db.stats['explored'] = totalpct
-                    if totalpct > 90:
-                        totalpct = "|r" + str(totalpct) + '|n'
-                    elif totalpct > 70:
-                        totalpct = "|y" + str(totalpct) + '|n'
-                    elif totalpct > 50:
-                        totalpct = "|g" + str(totalpct) + "|n"
-                    elif totalpct > 20:
-                        totalpct = "|w" + str(totalpct) + "|n"
-                    else:
-                        totalpct = "|x" + str(totalpct) + "|n"
+                    totalpct = color_percent(totalpct)
                     table.add_row("|YTotal Explored:", str(totalvisited) + " (" + totalpct + "|G%|n)")
 
                 output += str(table) + '\n'
