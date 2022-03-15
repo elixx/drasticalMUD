@@ -13,7 +13,7 @@ from random import choice
 class RoomDisplayBoard(Object):
     def at_object_creation(self):
         self.locks.add("get:false()")
-
+        self.db.location = None
         if not self.db.source:
             self.db.source = search_object("trolley")[0]
         self.route = self.db.source.db.route
