@@ -151,15 +151,25 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
             else:
                 return
 
-            max = 5
+            max = 3
             name = title + " " + target.name
             output = "{WReporting on User: {Y%s{n\n" % name
             table = self.styled_table()
             if character.db.stats:
                 logincount = character.db.stats['logins']
                 visited = len(character.db.stats['visited'])
-                kills = character.db.stats['kills']
-                deaths = character.db.stats['deaths']
+                try:
+                    kills = character.db.stats['kills']
+                except KeyError:
+                    kills = -1
+                try:
+                    deaths = character.db.stats['deaths']
+                except KeyError:
+                    deaths = -1
+                try:
+                    gold = character.db.stats['gold']
+                except KeyError:
+                    gold = -1
                 lastlogin = target.db.lastsite[0]
                 stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
                 try: pct = character.db.stats['explored']
@@ -173,11 +183,9 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                     pct = "???"
                 table.add_row("{yPercent Explored:", pct)
                 table.add_row("{yKills / Deaths", str(kills) + " / " + str(deaths))
-                if deaths > 0:
-                    table.add_row("{yKDR", round(kills/deaths,2))
-                else:
-                    table.add_row("{yKDR", "inf")
+                table.add_row("{yGold:", gold)
                 output += str(table) + '\n'
+                output += "Stats are updated by visiting the Stats Machine."
             if privileged and target is not None:
                 logins = []
                 for c in range(len(target.db.lastsite)):

@@ -92,7 +92,7 @@ def get_time_and_season():
 
 def color_percent(pct):
     if pct == 100:
-        pct = "|WCOMPLETE|n"
+        pct = "|wCOMPLETE|n"
     elif pct > 95:
         pct = "|r" + str(pct) + '|n'
     elif pct > 80:
@@ -112,13 +112,19 @@ def color_percent(pct):
 
 def global_ticker():
     #log("-- start global_tick --")
+
+    # Increment growth room age
     growable = search_tag("growable")
     for obj in growable:
         if not obj.db.age:
             obj.db.age = 1
         else:
             obj.db.age += 1
-    log("-- finish global_tick --")
+
+    # Gather earnings
+    #owned = search_object()
+
+    #log("-- finish global_tick --")
 
 
 def area_count():

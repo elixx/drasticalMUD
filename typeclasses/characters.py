@@ -92,7 +92,10 @@ class Character(ClothedCharacter):
     def at_look(self, target=None, session=None, **kwargs):
         if target is not None:
             if target.typeclass_path == "typeclasses.rooms.LegacyRoom":
-                target.update_description()
+                try:
+                    target.update_description()
+                except:
+                    pass
             if not target.access(self, "view"):
                 try:
                     return "Could not view '%s'." % target.get_display_name(self, **kwargs)

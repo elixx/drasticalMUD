@@ -85,7 +85,9 @@ class StatsMachine(DefaultObject):
 
 class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
     """
-    verb
+    The stats machine keeps track of score and all kinds of other stats.
+    You can :get stats [thing]" where thing is
+    general, game, areas, users, or server
     """
     key = "get stats"
     locks = "cmd:all()"
@@ -98,21 +100,22 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
 
         if not self.args:
-            selection = ["ALL"]
+            self.msg("You can {yget stats{n for any of: {ygeneral{n, {yserver{n, {ygame{n, {yareas{n, {yusers{n, or {yguests{n.")
+            selection = ["GENERAL","GAME"]
         else:
             args = self.args.strip()
             args = args.lower().split(" ")
-            if "gen" in args:
+            if "general" in args:
                 selection.append("GENERAL")
-            if "ser" in args:
+            if "server" in args:
                 selection.append("SERVER")
-            if "ga" in args:
+            if "game" in args:
                 selection.append("GAME")
-            if "gu" in args:
+            if "guests" in args:
                 selection.append("GUESTS")
-            if "use" in args:
+            if "users" in args:
                 selection.append("USERS")
-            if "ar" in args or "wo" in args:
+            if "areas" in args or "wo" in args:
                 selection.append("AREAS")
 
         ########################################################################################################################
