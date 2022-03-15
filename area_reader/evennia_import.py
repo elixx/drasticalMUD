@@ -58,7 +58,7 @@ class AreaImporter(object):
         self.area_file.load_sections()
         self.areaname = self.area_file.area.name
         if self.areaname == "":
-            s = filename.split("/")[-1].lower()
+            s = filename.split("\\")[-1].lower()
             s = s.replace(".are", "")
             s = s.replace("/", "")
             s = s.replace(".", "")
