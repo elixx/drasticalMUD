@@ -27,6 +27,7 @@ from commands.command import CmdWhere
 from commands.command import CmdRecall
 from commands.command import CmdQuit
 from commands.command import CmdFinger
+from commands.command import CmdScore
 
 from evennia.contrib.clothing import ClothedCharacterCmdSet
 from evennia.contrib import mail
@@ -124,6 +125,7 @@ class SessionCmdSet(default_cmds.SessionCmdSet):
         """
 
         self.add(CmdLook2)
+        self.add(CmdScore)
 
         super().at_cmdset_creation()
 
