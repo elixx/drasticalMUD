@@ -135,14 +135,18 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
 
     """
     key = "finger"
-    aliases = ["last", "score"]
+    aliases = ["last"]
     locks = "cmd:all()"
 
     def func(self):
+        # for access to ip addresses:
         privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
+
+        # if no args then the target is the players self
         if not self.args:
             self.args = self.caller.name
 
+        # find user
         target = utils.search.search_account(self.args)
         if len(target) < 1:
             self.caller.msg("I don't know about %s!" % self.args)
@@ -171,8 +175,8 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                 stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
                 try: pct = character.db.stats['explored']
                 except KeyError: pct = -1
-                table.add_row("{yLogins:", logincount)
-                table.add_row("{yLast Seen:", stamp)
+                table.add_row("{yTimes Connected:", logincount)
+                table.add_row("{yLast Login:", stamp)
                 table.add_row("{yRooms Seen:", visited)
                 if pct > -1:
                     pct = str(pct) + '%'
@@ -181,7 +185,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                 table.add_row("{yPercent Explored:", pct)
                 table.add_row("{yGold:", gold)
                 output += str(table) + '\n'
-                output += "Stats are updated by visiting the Stats Machine."
+                output += "Stats are updated by visiting the Stats Machine.\n"
             if privileged and target is not None:
                 logins = []
                 for c in range(len(target.db.lastsite)):
@@ -190,7 +194,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                     logins.append( (stamp, ip) )
                     if c >= max: break
                 output += "{yLast %s logins:{n\n" % max
-                table = self.styled_table("Date","IP", border='none')
+                table = self.styled_table("Date","IP")
                 for(stamp, ip) in sorted(logins, reverse=True):
                     table.add_row(stamp, ip)
                 output += str(table) + '\n'
