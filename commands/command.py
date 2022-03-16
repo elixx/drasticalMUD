@@ -159,17 +159,10 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                 logincount = character.db.stats['logins']
                 visited = len(character.db.stats['visited'])
                 try:
-                    kills = character.db.stats['kills']
-                except KeyError:
-                    kills = -1
-                try:
-                    deaths = character.db.stats['deaths']
-                except KeyError:
-                    deaths = -1
-                try:
                     gold = character.db.stats['gold']
                 except KeyError:
-                    gold = -1
+                    gold = 0
+                    character.db.stats['gold'] = gold
                 lastlogin = target.db.lastsite[0]
                 stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
                 try: pct = character.db.stats['explored']
@@ -182,7 +175,6 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                 else:
                     pct = "???"
                 table.add_row("{yPercent Explored:", pct)
-                table.add_row("{yKills / Deaths", str(kills) + " / " + str(deaths))
                 table.add_row("{yGold:", gold)
                 output += str(table) + '\n'
                 output += "Stats are updated by visiting the Stats Machine."
