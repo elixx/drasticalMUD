@@ -4,12 +4,16 @@ Commands
 Commands describe the input the account can do to the game.
 
 """
-from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
+#from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
+from evennia import ObjectDB
 from evennia import default_cmds
 from django.conf import settings
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from world.utils import area_count, sendWebHook
+from world.utils import area_count, sendWebHook, color_percent
+from evennia.utils.search import object_search as search_object
+from evennia.utils.search import search_tag_object, search_tag
+# from evennia.utils.create import create_object
 import time
 
 COMMAND_DEFAULT_CLASS = utils.utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
