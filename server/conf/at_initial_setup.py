@@ -25,7 +25,7 @@ does what you expect it to.
 
 def at_initial_setup():
 
-    limbo = search_object("#2")[0]
+    limbo = search_object("#2")[0] # 6=void, =u/d->7
     limbo.tags.add("drastical", category='area')
     limbo.db.desc = "The center of the [partial] universe!"
 
@@ -39,6 +39,8 @@ def at_initial_setup():
                   )
 
     train.tags.add("drastical", category='area')
+
+    train.db.route = ['#2', 6, "#8", 4, "#320",4,"#490",4,'#1633',4,'#2668',2,'#3563',6,'#5691',2]
 
     log_err("Train ID is %s" % train.id)
 

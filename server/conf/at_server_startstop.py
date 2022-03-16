@@ -25,10 +25,7 @@ def at_server_start():
     how it was shut down.
     """
     machine = findStatsMachine()
-    stats = machine.db.stats
     machine.incr('server_start')
-
-
     sendWebHook("Server started.")
 
     tickerhandler.add(60, global_tick)
@@ -42,9 +39,7 @@ def at_server_stop():
     of it is for a reload, reset or shutdown.
     """
     machine = findStatsMachine()
-    stats = machine.db.stats
     machine.incr('server_stop')
-
     sendWebHook("Server stopped.")
     pass
 
@@ -54,9 +49,7 @@ def at_server_reload_start():
     This is called only when server starts back up after a reload.
     """
     machine = findStatsMachine()
-    stats = machine.db.stats
     machine.incr('reload_start')
-
     sendWebHook("Server reloaded.")
     pass
 
@@ -78,7 +71,6 @@ def at_server_cold_start():
     """
     machine = findStatsMachine()
     machine.incr("cold_start")
-
     pass
 
 
