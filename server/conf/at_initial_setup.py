@@ -1,5 +1,6 @@
 from django.conf import settings
 from evennia.utils.logger import log_info
+from evennia import create_object
 from glob import glob
 
 
@@ -34,4 +35,23 @@ def at_initial_setup():
     log_info("Creating objects...")
     importer.spawnObjects()
     log_info("Import complete.")
+
+    train = create_object("typeclasses.movingroom.MovingRoom",
+                  key="a cosmic train",
+                  home=None,
+                  location=None,
+                  aliases=["train"],
+                  attributes=[("desc", "A curious train wiggles through spacetime.")]
+                  )
+    for d in ['#3', # edearth
+        '#971', #shaolin temple
+        '#770', #bazaar
+        '#1464', #zooology
+        '#2262', #sands of sorrow
+        '#5792', #nirvana
+        '#5520', #new thalos
+        ]:
+        train.add_destination(d)
+
+    log_info("Train ID is %s" % train.id)
     pass
