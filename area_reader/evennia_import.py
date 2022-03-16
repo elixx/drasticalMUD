@@ -56,15 +56,17 @@ class AreaImporter(object):
     def load(self, filename):
         self.area_file = area_reader.RomAreaFile(filename)
         self.area_file.load_sections()
-        self.areaname = self.area_file.area.name
-        if self.areaname == "":
-            s = filename.split("\\")[-1].lower()
+        self.areaname = self.area_file.area.name.lower()
+        if self.areaname == "" or (".are" in self.areaname):
+            if "\\" in filename:
+                s = filename.split("\\")[-1].lower()
+            else:
+                s = filename.split("/")[-1].lower()
             s = s.replace(".are", "")
             s = s.replace("/", "")
+            s = s.replace("\\", "")
             s = s.replace(".", "")
             self.areaname = s
-        self.areaname = self.areaname.lower()
-        self.areaname = self.areaname.replace("mud-areas\\", '')
 
         self.rooms_created = False
         self.rooms_enumerated = False
@@ -132,6 +134,7 @@ class AreaImporter(object):
                                         key=room['name'])
                 newroom.db.desc = room['desc']
                 newroom.tags.add(room['area'], category='area')
+
                 newroom.db.area = room['area']
                 self.room_translate[vnum] = newroom.id
                 # log_info(
