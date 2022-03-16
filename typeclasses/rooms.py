@@ -13,7 +13,7 @@ from evennia import search_channel
 from evennia.commands.cmdset import CmdSet
 from evennia.utils import utils
 from evennia.utils.logger import log_err
-from world.utils import get_time_and_season
+from world.gametime import get_time_and_season
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

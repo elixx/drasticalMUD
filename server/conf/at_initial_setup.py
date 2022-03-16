@@ -1,6 +1,8 @@
 from django.conf import settings
-from evennia.utils.logger import log_info
+from area_reader.evennia_import import AreaImporter
+from evennia.utils.logger import log_info, log_err
 from evennia import create_object
+from evennia import search_object
 from glob import glob
 
 
@@ -22,7 +24,26 @@ does what you expect it to.
 
 
 def at_initial_setup():
-    from area_reader.evennia_import import AreaImporter
+
+    limbo = search_object("#2")[0]
+    limbo.tags.add("drastical", category='area')
+    limbo.db.desc = "The center of the [partial] universe!"
+
+    # Set up first transportation room
+    train = create_object("typeclasses.movingroom.MovingRoom",
+                  key="a cosmic train",
+                  home=None,
+                  location=None,
+                  aliases=["train"],
+                  attributes=[("desc", "A curious train wiggles through spacetime.")]
+                  )
+
+    train.tags.add("drastical", category='area')
+
+    log_err("Train ID is %s" % train.id)
+
+    print("FOOOOOOOOOOOOOOOOO")
+
     importer = AreaImporter()
     imports = glob(settings.AREA_IMPORT_PATH)
     for areafile in imports:
@@ -36,22 +57,3 @@ def at_initial_setup():
     importer.spawnObjects()
     log_info("Import complete.")
 
-    train = create_object("typeclasses.movingroom.MovingRoom",
-                  key="a cosmic train",
-                  home=None,
-                  location=None,
-                  aliases=["train"],
-                  attributes=[("desc", "A curious train wiggles through spacetime.")]
-                  )
-    for d in ['#3', # edearth
-        '#971', #shaolin temple
-        '#770', #bazaar
-        '#1464', #zooology
-        '#2262', #sands of sorrow
-        '#5792', #nirvana
-        '#5520', #new thalos
-        ]:
-        train.add_destination(d)
-
-    log_info("Train ID is %s" % train.id)
-    pass

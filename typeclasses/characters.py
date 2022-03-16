@@ -91,7 +91,7 @@ class Character(ClothedCharacter):
 
     def at_look(self, target=None, session=None, **kwargs):
         if target is not None:
-            if target.typeclass_path == "typeclasses.rooms.LegacyRoom":
+            if target.typeclass_path == "typeclasses.rooms.ImportedRoom":
                 try:
                     target.update_description()
                 except:

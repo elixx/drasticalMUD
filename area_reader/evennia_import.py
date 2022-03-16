@@ -130,15 +130,17 @@ class AreaImporter(object):
         else:
             firstRoom = True
             count = 0
-            for vnum, room in self.rooms.items():
+            for vnum in sorted(self.rooms):
+                room = self.rooms[vnum]
                 if (self.last_area != room['area']):
                     self.last_area = room['area']
                     firstRoom = True
-                newroom = create_object(typeclass="typeclasses.rooms.LegacyRoom",
-                                        key=room['name'])
+                newroom = create_object(typeclass="typeclasses.rooms.ImportedRoom",
+                                        key=room['name'],locks="puppet:false()")
                 newroom.db.desc = room['desc']
                 newroom.tags.add(room['area'], category='area')
-
+                newroom.tags.add(room['area'], category='room')
+                newroom.tags.add('imported', category='room')
                 newroom.db.area = room['area']
                 self.room_translate[vnum] = newroom.id
                 # log_info(
@@ -171,6 +173,7 @@ class AreaImporter(object):
                                                 key=exitDir, location=loc, destination=dest)
                         newexit.aliases.add(DIRALIAS[exitDir])
                         newexit.tags.add(room['area'], category='area')
+                        newexit.tags.add('imported', category='exit')
                         newexit.db.area = room['area']
                     except Exception as e:
                         log_err('! deadend: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
@@ -203,6 +206,7 @@ class AreaImporter(object):
                                                           ('ext_desc', ob['ext']),
                                                           ('type', ob['type']),
                                                           ('area', ob['area'])])
+                        newob.tags.add('imported', category='object')
                         #log_info("%s created in %s - #%s" % (ob['name'], loc.name, newob.id))
                     except Exception as e:
                         log_err("! Error creating object %s, vnum: %s location: %s -- " + str(e) % (ob['name'], vnum, loc.id))
