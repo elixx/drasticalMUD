@@ -35,18 +35,18 @@ class Room(DefaultRoom):
         super().at_init()
 
 
-class LegacyRoom(Room):
+class ImportedRoom(Room):
     """
-    Rooms imported by area_importer. This is becoming the new base class.
+    Rooms imported by area_importer.
     """
 
     def at_object_creation(self):
-        #@py from typeclasses.rooms import LegacyRoom; [obj.at_object_creation() for obj in LegacyRoom.objects.all()]
+        #@py from typeclasses.rooms import ImportedRoom; [obj.at_object_creation() for obj in ImportedRoom.objects.all()]
         super().at_object_creation()
         self.locks.add("ownable:true()")
-        self.tags.add('growable',category='room')
-        self.tags.add('random_spawn',category='room')
-        self.cmdset.add_default(LegacyRoomCmdSet, permanent=True)
+        self.tags.add('growable',category='room')       # default to able to grow stuff
+        self.tags.add('random_spawn',category='room')   # default to possible random loot gen
+        self.cmdset.add_default(ImportedRoomCmdSet, permanent=True)
 
     def at_init(self):
         super().at_init()
@@ -103,8 +103,8 @@ class LegacyRoom(Room):
 
             self.db.desc += "{xIt is %s %s. This room is claimed by %s.{n" % (season, daytime, owner)
 
-class LegacyRoomCmdSet(CmdSet):
-    key = "LegacyRoomCmdSet"
+class ImportedRoomCmdSet(CmdSet):
+    key = "ImportedRoomCmdSet"
     def at_cmdset_creation(self):
         self.add(CmdClaimRoom)
 
