@@ -1,4 +1,3 @@
-import datetime
 from django.conf import settings
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
