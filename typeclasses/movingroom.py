@@ -58,8 +58,8 @@ class MovingRoom(DefaultRoom):
         self.db.in_station = True
         self.db.current_dist = 0
         self.db.route_pos = 0
-        self.db.last_ticker_interval = None
-        self.db.last_hook_key = None
+        # self.db.last_ticker_interval = None
+        # self.db.last_hook_key = None
 
         self.db.transit_msgs = ["%s shakes slightly as it moves along its course.",
                                 "You feel the floor of %s moving beneath you.",
@@ -117,7 +117,10 @@ class MovingRoom(DefaultRoom):
             self.exitOut.location = None
 
     def start_service(self):
+        del self.db.last_hook_key
+        del self.db.last_ticker_interval
         self.db.in_service = True
+
         if self.db.in_station:
             self.db.in_station = False
             if self.db.route_pos + 1 > len(self.db.route) - 1:
