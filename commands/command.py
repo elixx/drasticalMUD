@@ -231,6 +231,83 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
                 areaname = "Unknown"
         areaname = areaname.title()
         self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
+        if self.caller.location.db.owner:
+            ownerid = self.caller.location.db.owner
+            if ownerid == self.caller.id:
+                self.caller.msg("This property is currently claimed by you.")
+            else:
+                owner_name = search_object("#"+str(ownerid))[0].name
+                self.caller.msg("It is currently owned by {y%s{n." % owner_name)
+
+
+class CmdScore(COMMAND_DEFAULT_CLASS):
+    """
+    Show progress stats.
+
+    """
+
+    key = "score"
+    locks = "cmd:all()"
+
+    def func(self):
+
+
+        #self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
+        explored = {}
+        owned = {}
+        totalrooms = 0
+        output=""
+        areas = search_tag_object(category='area')
+        e = ObjectDB.objects.object_totals()
+        for k in e.keys():
+            if "room" in k.lower():
+                totalrooms += e[k]
+        visited = self.caller.db.stats['visited']
+        for roomid in visited:
+            room = search_object("#" + str(roomid))
+            if len(room) > 0:
+                room = room[0]
+                area = room.tags.get(category='area')
+                if room.db.owner == self.caller.id:
+                    if area not in owned.keys():
+                        owned[area] = 1
+                    else:
+                        owned[area] += 1
+            else:
+                continue
+            if area not in explored.keys():
+                total = search_tag(area, category="area")
+                total = len(total.filter(db_typeclass_path__contains="room"))
+                explored[area] = {'total': total, 'count': 1}
+            else:
+                explored[area]['count'] += 1
+        totalvisited = len(visited)
+        totalpct = round(totalvisited / totalrooms * 100, 2)
+        table = self.styled_table("|YArea", "|YRooms", "|YVisited", "|Y%Seen", "|Y%Owned",
+                                  border="none", width=60)
+        for key, value in sorted(explored.items(), key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
+            if key is not None:
+                pct = round(value['count'] / value['total'] * 100, 1)
+                if key in owned.keys():
+                    opct = round(owned[key] / value['total'] * 100, 1)
+                else:
+                    opct = 0
+                pct = color_percent(pct)
+                opct = color_percent(opct)
+                table.add_row(utils.crop(str(key).title(), width=18), value['total'], value['count'], pct + '%', opct + '%')
+        output += "{x" + utils.utils.pad(" {YExploration Stats{x ", width=60, fillchar="*") + '\n'
+        output += str(table) + '\n'
+        table = self.styled_table(width=60, border='none')
+        table.add_row("|YTotal Rooms", totalrooms)
+        if totalvisited:
+            self.caller.db.stats['explored'] = totalpct
+            totalpct = color_percent(totalpct)
+            table.add_row("|YTotal Explored:", str(totalvisited) + " (" + totalpct + "|G%|n)")
+        output += str(table) + '\n'
+
+
+
+        self.caller.msg(output)
 
 
 class CmdRecall(COMMAND_DEFAULT_CLASS):
