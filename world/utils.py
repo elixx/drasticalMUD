@@ -3,8 +3,6 @@ from django.conf import settings
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.create import create_object
-from evennia.utils.logger import log_info as log
-from django.conf import settings
 
 from matterhook import Webhook
 
@@ -109,22 +107,6 @@ def color_percent(pct):
         pct = "|x" + str(pct) + "|n"
 
     return pct
-
-def global_ticker():
-    #log("-- start global_tick --")
-
-    # Increment growth room age
-    growable = search_tag("growable")
-    for obj in growable:
-        if not obj.db.age:
-            obj.db.age = 1
-        else:
-            obj.db.age += 1
-
-    # Gather earnings
-    #owned = search_object()
-
-    #log("-- finish global_tick --")
 
 
 def area_count():
