@@ -90,17 +90,9 @@ def qual(obj):
 
 
 def area_count():
-    areas = []
-
-    areas = search_tag_object(category='area')
-    # for n in x:
-    #     areas.append(n.db_key)
-
     counts = {}
+    areas = search_tag_object(category='area')
     for area in areas:
-        #c = search_tag(area.db_key, category="area", db_typeclass_path="typeclasses.rooms.ImportedRoom")
-        # .filter(db_tags__db_key="imported",db_tags__db_category="room")
-        c = search_tag(area.db_key, category="room")
-        counts[area.db_key.title()] = len(c)
+        counts[area.db_key.title()] = len(search_tag(area.db_key, category="room"))
     return (counts)
 
