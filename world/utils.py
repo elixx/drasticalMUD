@@ -1,17 +1,9 @@
-import datetime
 from django.conf import settings
 from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object, search_tag
+from evennia.utils.search import search_tag_object
 from evennia.utils.create import create_object
-from evennia.utils.logger import log_info as log
-from django.conf import settings
 
 from matterhook import Webhook
-
-MONTHS_PER_YEAR = settings.MONTHS_PER_YEAR
-SEASONAL_BOUNDARIES = settings.SEASONAL_BOUNDARIES
-HOURS_PER_DAY = settings.HOURS_PER_DAY
-DAY_BOUNDARIES = settings.DAY_BOUNDARIES
 
 def findStatsMachine():
     results = search_object("a stats machine")
@@ -56,43 +48,10 @@ def sendWebHook(text):
         pass
 
 
-def get_time_and_season():
-    from evennia import gametime
-    """
-    Calculate the current time and season ids.
-    """
-    # get the current time as parts of year and parts of day.
-    # we assume a standard calendar here and use 24h format.
-    timestamp = gametime.gametime(absolute=True)
-    # note that fromtimestamp includes the effects of server time zone!
-    datestamp = datetime.datetime.fromtimestamp(timestamp)
-    season = float(datestamp.month) / MONTHS_PER_YEAR
-    timeslot = float(datestamp.hour) / HOURS_PER_DAY
-
-    # figure out which slots these represent
-    if SEASONAL_BOUNDARIES[0] <= season < SEASONAL_BOUNDARIES[1]:
-        curr_season = "spring"
-    elif SEASONAL_BOUNDARIES[1] <= season < SEASONAL_BOUNDARIES[2]:
-        curr_season = "summer"
-    elif SEASONAL_BOUNDARIES[2] <= season < 1.0 + SEASONAL_BOUNDARIES[0]:
-        curr_season = "autumn"
-    else:
-        curr_season = "winter"
-
-    if DAY_BOUNDARIES[0] <= timeslot < DAY_BOUNDARIES[1]:
-        curr_timeslot = "night"
-    elif DAY_BOUNDARIES[1] <= timeslot < DAY_BOUNDARIES[2]:
-        curr_timeslot = "morning"
-    elif DAY_BOUNDARIES[2] <= timeslot < DAY_BOUNDARIES[3]:
-        curr_timeslot = "afternoon"
-    else:
-        curr_timeslot = "evening"
-
-    return curr_season, curr_timeslot
 
 def color_percent(pct):
     if pct == 100:
-        pct = "|WCOMPLETE|n"
+        pct = "|wCOMPLETE|n"
     elif pct > 95:
         pct = "|r" + str(pct) + '|n'
     elif pct > 80:
@@ -110,27 +69,54 @@ def color_percent(pct):
 
     return pct
 
-def global_ticker():
-    #log("-- start global_tick --")
-    growable = search_tag("growable")
-    for obj in growable:
-        if not obj.db.age:
-            obj.db.age = 1
-        else:
-            obj.db.age += 1
-    log("-- finish global_tick --")
+def color_time(arg):
+    if arg == "spring":
+        color = "G"
+    elif arg == "autumn":
+        color = "y"
+    elif arg == "summer":
+        color = "Y"
+    elif arg == "winter":
+        color = "C"
+
+    elif arg == "morning":
+        color = "Y"
+    elif arg == "afternoon":
+        color = "y"
+    elif arg == "night":
+        color = "b"
+    else:
+        color = "w"
+    return color
+
+
+
+
+
+
+def qual(obj):
+    if obj.db.quality:
+        quality = self.db.quality
+        if quality > 95:
+            return "legendary"
+        elif quality > 75:
+            return "exceptional"
+        elif quality > 50:
+            return "good"
+        elif quality > 20:
+            return "average"
+        elif quality > 0:
+            return "poor"
+        elif quality == 0:
+            return "trash"
+    else:
+        return "standard"
 
 
 def area_count():
-    areas = []
-
-    x = search_tag_object(category='area')
-    for n in x:
-        areas.append(n.db_key)
-
     counts = {}
+    areas = search_tag_object(category='area')
     for area in areas:
-        c = search_tag(area, category="area")
-        x = c.filter(db_typeclass_path__contains="room")
-        counts[area.title()] = len(x)
+        counts[area.db_key.title()] = area.objectdb_set.count()
     return (counts)
+

@@ -10,35 +10,6 @@ from evennia.utils.evtable import EvTable
 from random import choice
 
 
-class RoomDisplayBoard(Object):
-    def at_object_creation(self):
-        self.locks.add("get:false()")
-
-        if not self.db.source:
-            self.db.source = search_object("trolley")[0]
-        self.route = self.db.source.db.route
-        self.db.base_desc = "A board displaying the route for %s" % self.db.source.name
-        self.db.desc = self._update_desc()
-
-    def _update_desc(self):
-        display = EvTable("|YStop", "|YArea", "|YTime")
-        stop_name = None
-        stop_time = None
-        for stop in self.route:
-            if isinstance(stop, str):
-                s = search_object(stop)[0]
-                stop_name = s.name
-                area_name = s.tags.get(category='area')
-            elif isinstance(stop, int):
-                stop_time = stop
-            if stop_name != None and stop_time != None:
-                display.add_row(stop_name, area_name.title(), stop_time)
-                stop_name = None
-                stop_time = None
-        output = self.db.base_desc + "\n" + str(display)
-        return (output)
-
-
 class MovingRoom(DefaultRoom):
     def at_object_creation(self):
         super().at_object_creation()
@@ -58,8 +29,6 @@ class MovingRoom(DefaultRoom):
         self.db.in_station = True
         self.db.current_dist = 0
         self.db.route_pos = 0
-        self.db.last_ticker_interval = None
-        self.db.last_hook_key = None
 
         self.db.transit_msgs = ["%s shakes slightly as it moves along its course.",
                                 "You feel the floor of %s moving beneath you.",
@@ -117,7 +86,10 @@ class MovingRoom(DefaultRoom):
             self.exitOut.location = None
 
     def start_service(self):
+        del self.db.last_hook_key
+        del self.db.last_ticker_interval
         self.db.in_service = True
+
         if self.db.in_station:
             self.db.in_station = False
             if self.db.route_pos + 1 > len(self.db.route) - 1:
@@ -254,3 +226,34 @@ class MovingExit(Exit):
     """
 
     pass
+
+
+
+class RoomDisplayBoard(Object):
+    def at_object_creation(self):
+        self.locks.add("get:false()")
+        self.location = None
+        if not self.db.source:
+            self.db.source = search_object("a", typeclass="typeclasses.movingroom.MovingRoom", exact=False)[0]
+        self.route = self.db.source.db.route
+        self.db.base_desc = "A board displaying the route for %s" % self.db.source.name
+        self.db.desc = self._update_desc()
+
+    def _update_desc(self):
+        display = EvTable("|YStop", "|YArea", "|YTime")
+        stop_name = None
+        stop_time = None
+        for stop in self.route:
+            if isinstance(stop, str):
+                s = search_object(stop)[0]
+                stop_name = s.name
+                area_name = s.tags.get(category='area')
+            elif isinstance(stop, int):
+                stop_time = stop
+            if stop_name != None and stop_time != None:
+                display.add_row(stop_name, area_name.title(), stop_time)
+                stop_name = None
+                stop_time = None
+        output = self.db.base_desc + "\n" + str(display)
+        return (output)
+

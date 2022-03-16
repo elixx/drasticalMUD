@@ -1,3 +1,6 @@
+from random import randint
+from world.utils import qual
+
 """
 Object
 
@@ -168,4 +171,12 @@ class Object(DefaultObject):
 
 
 class LegacyObject(Object):
+    def at_object_creation(self):
+        super().at_object_creation()
+        self.tags.add('loot')
+        self.db.quality=randint(1,100)
     pass
+
+    def at_desc(self, looker=None, **kwargs):
+        super().at_desc(looker, **kwargs)
+        looker.msg("It is of %s quality." % qual(self))

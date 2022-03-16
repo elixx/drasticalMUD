@@ -1,3 +1,11 @@
+from django.conf import settings
+from area_reader.evennia_import import AreaImporter
+from evennia.utils.logger import log_info, log_err
+from evennia import create_object
+from evennia import search_object
+from glob import glob
+
+
 """
 At_initial_setup module template
 
@@ -16,4 +24,38 @@ does what you expect it to.
 
 
 def at_initial_setup():
-    pass
+
+    limbo = search_object("#2")[0] # 6=void, =u/d->7
+    limbo.tags.add("drastical", category='area')
+    limbo.db.desc = "The center of the [partial] universe!"
+
+    # Set up first transportation room
+    train = create_object("typeclasses.movingroom.MovingRoom",
+                  key="a cosmic train",
+                  home=None,
+                  location=None,
+                  aliases=["train"],
+                  attributes=[("desc", "A curious train wiggles through spacetime.")]
+                  )
+
+    train.tags.add("drastical", category='area')
+
+    train.db.route = ['#2', 6, "#8", 4, "#320",4,"#490",4,'#1633',4,'#2668',2,'#3563',6,'#5691',2]
+
+    log_err("Train ID is %s" % train.id)
+
+    print("FOOOOOOOOOOOOOOOOO")
+
+    importer = AreaImporter()
+    imports = glob(settings.AREA_IMPORT_PATH)
+    for areafile in imports:
+        log_info("Loading %s" % areafile)
+        importer.load(areafile)
+    log_info("Creating rooms...")
+    importer.spawnRooms()
+    log_info("Enumerating objects...")
+    importer.enumerateObjectLocations()
+    log_info("Creating objects...")
+    importer.spawnObjects()
+    log_info("Import complete.")
+

@@ -1,7 +1,6 @@
 from evennia import create_object, search_object
-from area_reader import area_reader
-
-
+from evennia.utils.logger import log_info, log_err, log_warn
+from . import area_reader
 
 DIRS = {0: "north",
         1: "east",
@@ -54,17 +53,20 @@ class AreaImporter(object):
         if (filename):
             self.load(filename)
 
-        self.verbose = False
-
     def load(self, filename):
         self.area_file = area_reader.RomAreaFile(filename)
         self.area_file.load_sections()
-        self.areaname = self.area_file.area.name
-        if self.areaname == "":
-            s = filename.split("/")[-1].lower()
+        self.areaname = self.area_file.area.name.lower()
+        if self.areaname == "" or (".are" in self.areaname):
+            if "\\" in filename:
+                s = filename.split("\\")[-1].lower()
+            else:
+                s = filename.split("/")[-1].lower()
             s = s.replace(".are", "")
+            s = s.replace("/", "")
+            s = s.replace("\\", "")
+            s = s.replace(".", "")
             self.areaname = s
-        self.areaname = self.areaname.lower()
 
         self.rooms_created = False
         self.rooms_enumerated = False
@@ -80,6 +82,7 @@ class AreaImporter(object):
 
     def enumerateRooms(self):
         areaname = self.areaname
+        count = 0
         for i, v in self.area_file.area.rooms.items():
             name = v.name
             desc = v.description
@@ -92,6 +95,8 @@ class AreaImporter(object):
                                   'desc': desc,
                                   'exits': exits,
                                   'area': areaname}
+            count += 1
+        log_info("enumerateRooms(): %s rooms" % count)
         self.rooms_enumerated = True
 
     def enumerateObjects(self):
@@ -116,36 +121,44 @@ class AreaImporter(object):
                     room = r.arg3
                     self.object_location[object] = room
                 except Exception as e:
-                    print("enumerateObjectLocations: " + str(e) + "\n\targ1=" + str(r.arg1) + " arg3=" + str(r.arg3))
+                    log_err(
+                        "! enumerateObjectLocations(): " + str(e) + "\n\targ1=" + str(r.arg1) + " arg3=" + str(r.arg3))
 
     def spawnRooms(self):
         if self.rooms_created:
-            print("Rooms already created!")
+            log_err("! Rooms already created!")
         else:
             firstRoom = True
-            for vnum, room in self.rooms.items():
+            count = 0
+            for vnum in sorted(self.rooms):
+                room = self.rooms[vnum]
                 if (self.last_area != room['area']):
                     self.last_area = room['area']
                     firstRoom = True
-                newroom = create_object(typeclass="typeclasses.rooms.LegacyRoom",
-                                        key=room['name'])
+                newroom = create_object(typeclass="typeclasses.rooms.ImportedRoom",
+                                        key=room['name'],locks="puppet:false()")
                 newroom.db.desc = room['desc']
                 newroom.tags.add(room['area'], category='area')
+                newroom.tags.add(room['area'], category='room')
+                newroom.tags.add('imported', category='room')
                 newroom.db.area = room['area']
                 self.room_translate[vnum] = newroom.id
-                if self.verbose: print(
-                    "Area: %s Room: %s Vnum: %s Evid: %s" % (room['area'], room['name'], vnum, newroom.id))
+                # log_info(
+                #     "spawnRooms(): Area:%s Room:'%s' Vnum:%s Evid:%s" % (room['area'], room['name'], vnum, newroom.id))
                 if (firstRoom):
-                    print(room['area'] + ': ' + str(newroom.id) + " = " + room['name'])
+                    log_warn("* Entry to "+ room['area'] + ' - #' + str(newroom.id) + " = " + room['name'])
                     firstRoom = False
+                count += 1
             self.rooms_created = True
+            log_info("%s rooms created." % count)
             self._spawnRooms_exits()
 
     def _spawnRooms_exits(self):
         if self.exits_created:
-            print("Exits already created!")
+            log_err("Exits already created!")
         else:
-            for vnum, room in self.rooms.items():
+            for vnum in sorted(self.rooms):
+                room = self.rooms[vnum]
                 for exitDir, exitData in room['exits'].items():
                     evid = "#" + str(self.room_translate[vnum])
                     try:
@@ -160,28 +173,30 @@ class AreaImporter(object):
                                                 key=exitDir, location=loc, destination=dest)
                         newexit.aliases.add(DIRALIAS[exitDir])
                         newexit.tags.add(room['area'], category='area')
+                        newexit.tags.add('imported', category='exit')
                         newexit.db.area = room['area']
-                    except:
-                        print(room['area'] + ": Exit " + exitDir + " in " + str(evid) + " skipped - vloc " + str(
-                            exitData['dest']) + " not found.")
+                    except Exception as e:
+                        log_err('! deadend: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
+                            evid) + " skipped " + str(exitData['dest']) + " not found.")
                         continue
             self.exits_created = True
 
     def spawnObjects(self):
         if self.objects_created:
-            print("Objects already created!")
+            log_err("Objects already created!")
         else:
-            print("spawning items")
-            for vnum, ob in self.objects.items():
+            log_info("spawning items")
+            for vnum in sorted(self.objects):
+                ob = self.objects[vnum]
                 if vnum not in self.object_location.keys():
-                    # if self.verbose: print("Object vnum not found in object_location table: %s" % vnum)
+                    #log_err("! %s - vnum not found in object_location table: %s" % (ob.name, vnum))
                     continue
                 else:
                     evid = "#" + str(self.room_translate[self.object_location[vnum]])
                     try:
                         loc = search_object(evid)[0]
                     except Exception as e:
-                        print("location for object vnum %s not found: %s" % (vnum, evid))
+                        log_err("! spawnObjects(): vnum %s - location %s not found - %s" % (vnum, evid, e))
                         continue
 
                     try:
@@ -191,7 +206,7 @@ class AreaImporter(object):
                                                           ('ext_desc', ob['ext']),
                                                           ('type', ob['type']),
                                                           ('area', ob['area'])])
-                        print("%s created in %s - #%s" % (ob['name'], loc.name, newob.id))
+                        newob.tags.add('imported', category='object')
+                        #log_info("%s created in %s - #%s" % (ob['name'], loc.name, newob.id))
                     except Exception as e:
-                        print("Error creating %s, vnum: %s location: %s" % (ob['name'], vnum, loc.id))
-                        print(str(e))
+                        log_err("! Error creating object %s, vnum: %s location: %s -- " + str(e) % (ob['name'], vnum, loc.id))

@@ -4,12 +4,16 @@ Commands
 Commands describe the input the account can do to the game.
 
 """
-from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
+#from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
+from evennia import ObjectDB
 from evennia import default_cmds
 from django.conf import settings
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from world.utils import area_count, sendWebHook
+from world.utils import area_count, sendWebHook, color_percent
+from evennia.utils.search import object_search as search_object
+from evennia.utils.search import search_tag_object, search_tag
+# from evennia.utils.create import create_object
 import time
 
 COMMAND_DEFAULT_CLASS = utils.utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -131,14 +135,18 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
 
     """
     key = "finger"
-    aliases = ["last", "score"]
+    aliases = ["last"]
     locks = "cmd:all()"
 
     def func(self):
+        # for access to ip addresses:
         privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
+
+        # if no args then the target is the players self
         if not self.args:
             self.args = self.caller.name
 
+        # find user
         target = utils.search.search_account(self.args)
         if len(target) < 1:
             self.caller.msg("I don't know about %s!" % self.args)
@@ -151,33 +159,33 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
             else:
                 return
 
-            max = 5
+            max = 3
             name = title + " " + target.name
             output = "{WReporting on User: {Y%s{n\n" % name
             table = self.styled_table()
             if character.db.stats:
                 logincount = character.db.stats['logins']
                 visited = len(character.db.stats['visited'])
-                kills = character.db.stats['kills']
-                deaths = character.db.stats['deaths']
+                try:
+                    gold = character.db.stats['gold']
+                except KeyError:
+                    gold = 0
+                    character.db.stats['gold'] = gold
                 lastlogin = target.db.lastsite[0]
                 stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
                 try: pct = character.db.stats['explored']
                 except KeyError: pct = -1
-                table.add_row("{yLogins:", logincount)
-                table.add_row("{yLast Seen:", stamp)
+                table.add_row("{yTimes Connected:", logincount)
+                table.add_row("{yLast Login:", stamp)
                 table.add_row("{yRooms Seen:", visited)
                 if pct > -1:
                     pct = str(pct) + '%'
                 else:
                     pct = "???"
                 table.add_row("{yPercent Explored:", pct)
-                table.add_row("{yKills / Deaths", str(kills) + " / " + str(deaths))
-                if deaths > 0:
-                    table.add_row("{yKDR", round(kills/deaths,2))
-                else:
-                    table.add_row("{yKDR", "inf")
+                table.add_row("{yGold:", gold)
                 output += str(table) + '\n'
+                output += "Stats are updated by visiting the Stats Machine.\n"
             if privileged and target is not None:
                 logins = []
                 for c in range(len(target.db.lastsite)):
@@ -186,7 +194,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                     logins.append( (stamp, ip) )
                     if c >= max: break
                 output += "{yLast %s logins:{n\n" % max
-                table = self.styled_table("Date","IP", border='none')
+                table = self.styled_table("Date","IP")
                 for(stamp, ip) in sorted(logins, reverse=True):
                     table.add_row(stamp, ip)
                 output += str(table) + '\n'
@@ -231,6 +239,83 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
                 areaname = "Unknown"
         areaname = areaname.title()
         self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
+        if self.caller.location.db.owner:
+            ownerid = self.caller.location.db.owner
+            if ownerid == self.caller.id:
+                self.caller.msg("This property is currently claimed by you.")
+            else:
+                owner_name = search_object("#"+str(ownerid))[0].name
+                self.caller.msg("It is currently owned by {y%s{n." % owner_name)
+
+
+class CmdScore(COMMAND_DEFAULT_CLASS):
+    """
+    Show progress stats.
+
+    """
+
+    key = "score"
+    locks = "cmd:all()"
+
+    def func(self):
+
+
+        #self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
+        explored = {}
+        owned = {}
+        totalrooms = 0
+        output=""
+        areas = search_tag_object(category='area')
+        e = ObjectDB.objects.object_totals()
+        for k in e.keys():
+            if "room" in k.lower():
+                totalrooms += e[k]
+        visited = self.caller.db.stats['visited']
+        for roomid in visited:
+            room = search_object("#" + str(roomid))
+            if len(room) > 0:
+                room = room[0]
+                area = room.tags.get(category='area')
+                if room.db.owner == self.caller.id:
+                    if area not in owned.keys():
+                        owned[area] = 1
+                    else:
+                        owned[area] += 1
+            else:
+                continue
+            if area not in explored.keys():
+                total = search_tag(area, category="area")
+                total = len(total.filter(db_typeclass_path__contains="room"))
+                explored[area] = {'total': total, 'count': 1}
+            else:
+                explored[area]['count'] += 1
+        totalvisited = len(visited)
+        totalpct = round(totalvisited / totalrooms * 100, 2)
+        table = self.styled_table("|YArea", "|YRooms", "|YVisited", "|Y%Seen", "|Y%Owned",
+                                  border="none", width=60)
+        for key, value in sorted(explored.items(), key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
+            if key is not None:
+                pct = round(value['count'] / value['total'] * 100, 1)
+                if key in owned.keys():
+                    opct = round(owned[key] / value['total'] * 100, 1)
+                else:
+                    opct = 0
+                pct = color_percent(pct)
+                opct = color_percent(opct)
+                table.add_row(utils.crop(str(key).title(), width=18), value['total'], value['count'], pct + '%', opct + '%')
+        output += "{x" + utils.utils.pad(" {YExploration Stats{x ", width=60, fillchar="*") + '\n'
+        output += str(table) + '\n'
+        table = self.styled_table(width=60, border='none')
+        table.add_row("|YTotal Rooms", totalrooms)
+        if totalvisited:
+            self.caller.db.stats['explored'] = totalpct
+            totalpct = color_percent(totalpct)
+            table.add_row("|YTotal Explored:", str(totalvisited) + " (" + totalpct + "|G%|n)")
+        output += str(table) + '\n'
+
+
+
+        self.caller.msg(output)
 
 
 class CmdRecall(COMMAND_DEFAULT_CLASS):
