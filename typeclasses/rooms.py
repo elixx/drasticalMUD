@@ -43,9 +43,9 @@ class LegacyRoom(Room):
     def at_object_creation(self):
         #@py from typeclasses.rooms import LegacyRoom; [obj.at_object_creation() for obj in LegacyRoom.objects.all()]
         super().at_object_creation()
-        del self.db.owner
-        del self.db.last_owner
         self.locks.add("ownable:true()")
+        self.tags.add('growable',category='room')
+        self.tags.add('random_spawn',category='room')
         self.cmdset.add_default(LegacyRoomCmdSet, permanent=True)
 
     def at_init(self):
@@ -157,8 +157,8 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
                     #         pub_message = "{y%s{w has reclaimed{G %s{w from {Y%s{w!{x" % (caller.name, location.name, owner.name)
                     #         claim=True
                     #     else:
-                #         caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                #         pub_message = "%s has taken over {y%s{n from {W%s{n!" % (caller.name, location.name, curr_owner.name)
+                    #         caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
+                    #         pub_message = "%s has taken over {y%s{n from {W%s{n!" % (caller.name, location.name, curr_owner.name)
         else:
             # This should never happen
             log_err("No owner: typeclasses/rooms.py:132 Caller: %s Location: %s" % (caller.id, location.id))
@@ -173,3 +173,4 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
             except:
                 pass
         self.caller.msg(caller_message)
+
