@@ -1,3 +1,8 @@
+from django.conf import settings
+from evennia.utils.logger import log_info
+from glob import glob
+
+
 """
 At_initial_setup module template
 
@@ -16,4 +21,17 @@ does what you expect it to.
 
 
 def at_initial_setup():
+    from area_reader.evennia_import import AreaImporter
+    importer = AreaImporter()
+    imports = glob(settings.AREA_IMPORT_PATH)
+    for areafile in imports:
+        log_info("Loading %s" % areafile)
+        importer.load(areafile)
+    log_info("Creating rooms...")
+    importer.spawnRooms()
+    log_info("Enumerating objects...")
+    importer.enumerateObjectLocations()
+    log_info("Creating objects...")
+    importer.spawnObjects()
+    log_info("Import complete.")
     pass
