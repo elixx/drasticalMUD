@@ -93,6 +93,6 @@ def area_count():
     counts = {}
     areas = search_tag_object(category='area')
     for area in areas:
-        counts[area.db_key.title()] = len(search_tag(area.db_key, category="room"))
+        counts[area.db_key.title()] = area.objectdb_set.count()
     return (counts)
 
