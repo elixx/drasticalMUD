@@ -122,3 +122,22 @@ def area_count():
         x = c.filter(db_typeclass_path__contains="room")
         counts[area.title()] = len(x)
     return (counts)
+
+
+def qual(obj):
+    if obj.db.quality:
+        quality = self.db.quality
+        if quality > 95:
+            return "legendary"
+        elif quality > 75:
+            return "exceptional"
+        elif quality > 50:
+            return "good"
+        elif quality > 20:
+            return "average"
+        elif quality > 0:
+            return "poor"
+        elif quality == 0:
+            return "trash"
+    else:
+        return "standard"
