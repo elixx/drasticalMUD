@@ -14,6 +14,7 @@ from evennia.commands.cmdset import CmdSet
 from evennia.utils import utils
 from evennia.utils.logger import log_err
 from world.gametime import get_time_and_season
+from world.utils import color_time as cc
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -66,27 +67,9 @@ class ImportedRoom(Room):
             update=True
 
         if self.db.desc and update==True:
-            if season == "spring":
-                color = "G"
-            elif season == "autumn":
-                color = "y"
-            elif season == "summer":
-                color = "Y"
-            elif season == "winter":
-                color = "C"
-            else:
-                color = "w"
-            season = "{" + color + season + "{x"
+            season = "{" + cc(season) + season + "{x"
 
-            if daytime == "morning":
-                color = "Y"
-            elif daytime == "afternoon":
-                color = "y"
-            elif daytime == "night":
-                color = "b"
-            else:
-                color = "w"
-            daytime = "{" + color + daytime + "{x"
+            daytime = "{" + cc(daytime) + daytime + "{x"
 
             if not self.db.owner:
                 owner = "{Wnobody{x"

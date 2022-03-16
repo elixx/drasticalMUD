@@ -1,6 +1,6 @@
 from django.conf import settings
 from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object, search_tag
+from evennia.utils.search import search_tag_object
 from evennia.utils.create import create_object
 
 from matterhook import Webhook
@@ -68,6 +68,30 @@ def color_percent(pct):
         pct = "|x" + str(pct) + "|n"
 
     return pct
+
+def color_time(arg):
+    if arg == "spring":
+        color = "G"
+    elif arg == "autumn":
+        color = "y"
+    elif arg == "summer":
+        color = "Y"
+    elif arg == "winter":
+        color = "C"
+
+    elif arg == "morning":
+        color = "Y"
+    elif arg == "afternoon":
+        color = "y"
+    elif arg == "night":
+        color = "b"
+    else:
+        color = "w"
+    return color
+
+
+
+
 
 
 def qual(obj):
