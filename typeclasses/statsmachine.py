@@ -100,7 +100,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
 
         if not self.args:
-            self.msg("You can {yget stats{n for any of: {ygeneral{n, {yserver{n, {ygame{n, {yareas{n, {yusers{n, or {yguests{n.")
+            self.msg("You can {yget stats{n for any of: {yserver{n, {ygame{n, {yareas{n, {yusers{n, or {yguests{n.")
             selection = ["GENERAL","GAME"]
         else:
             args = self.args.strip()
@@ -122,15 +122,10 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         output = "\n"
         output += "{Y" + pad("{W " + settings.SERVERNAME.upper() + " STATS {Y", width=width, fillchar="*") + '\n'
         for item in selection:
-            if item == "GENERAL" or item == "ALL":  #####################################################################
-                output += "{x" + pad(" {yGeneral Stats{x ", width=width, fillchar="*") + '\n'
-                table = self.styled_table(border="none", width=width)
-                table.add_row("Current time ", datetime.fromtimestamp(gametime.gametime(absolute=True)))
-                output += str(table) + "\n"
-
-            if item == "SERVER" or item == "ALL":  ######################################################################
+            if item == "SERVER":
                 output += "{x" + pad(" {yServer Stats{x ", width=width, fillchar="*") + '\n'
                 table = self.styled_table(border="none", width=width)
+                table.add_row("Current time ", datetime.fromtimestamp(gametime.gametime(absolute=True)))
                 table.add_row("Current uptime", utils.time_format(gametime.uptime(), 3))
                 table.add_row("First start", datetime.fromtimestamp(gametime.server_epoch()))
                 table.add_row("Total runtime", utils.time_format(gametime.runtime(), 2))
@@ -138,15 +133,15 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 # if privileged:
                 table = self.styled_table("|YEvent", "|YCount", border="none", width=width)
                 for (key, value) in self.obj.db.stats.items():
-                    # if ("start" in key or "stop" in key):
                     label = key.replace("_", " ").title()
                     table.add_row(label, value)
                 output += str(table) + "\n"
 
-            if item == "AREAS" or item == "ALL":  ###########################################################################
+            if item == "AREAS":
                 explored = {}
                 owned = {}
                 totalrooms = 0
+                areas = search.search_tag_object(category='area')
                 e = ObjectDB.objects.object_totals()
                 for k in e.keys():
                     if "room" in k.lower():
@@ -172,8 +167,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                         explored[area]['count'] += 1
                 totalvisited = len(visited)
                 totalpct = round(totalvisited / totalrooms * 100, 2)
-
-                table = self.styled_table("|YArea                          ", "|YRooms", "|YVisited", "|Y%Seen", "|Y%Owned",
+                table = self.styled_table("|YArea", "|YRooms", "|YVisited", "|Y%Seen", "|Y%Owned",
                                           border="none", width=width)
                 for key, value in sorted(explored.items(), key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
                     if key is not None:
@@ -185,7 +179,6 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                         pct = color_percent(pct)
                         opct = color_percent(opct)
                         table.add_row(utils.crop(str(key).title(),width=18), value['total'], value['count'], pct + '%', opct + '%')
-
                 output += "{x" + pad(" {YExploration Stats{x ", width=width, fillchar="*") + '\n'
                 output += str(table) + '\n'
                 table = self.styled_table(width=width, border='none')
@@ -194,10 +187,9 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     self.caller.db.stats['explored'] = totalpct
                     totalpct = color_percent(totalpct)
                     table.add_row("|YTotal Explored:", str(totalvisited) + " (" + totalpct + "|G%|n)")
-
                 output += str(table) + '\n'
 
-            if item == "USERS" or item == "ALL":  ###########################################################################
+            if item == "USERS":
                 output += "{x" + pad(" {YTop " + str(maxlines) + " Users:{x ", width=width, fillchar="*") + '\n'
                 userlog = self.obj.db.userstats
                 table = self.styled_table("|YUser", "|YLogins", border=None, width=width)
@@ -212,8 +204,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                         user = k
                     table.add_row(user, v['logins'])
                 output += str(table) + '\n'
-
-            if item == "GUESTS" or item == "ALL":  ##########################################################################
+            if item == "GUESTS":
                 if privileged:
                     table = self.styled_table("{yTimestamp", "{yGuest", "{yConnecting IP", border="none", width=width)
                 else:
