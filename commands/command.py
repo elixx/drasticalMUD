@@ -84,8 +84,17 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 delta_conn = time.time() - session.conn_time
                 account = session.get_account()
                 puppet = session.get_puppet()
-                location = puppet.location.key if puppet and puppet.location else "None"
-                area = puppet.location.tags.get(category='area').title() if puppet.location.tags else "None"
+                if puppet.location:
+                    location = puppet.location
+                    if location.tags:
+                        area = puppet.location.tags.get(category='area').title()
+                    else:
+                        area = "None"
+                    location = location.key
+                else:
+                    location = "None"
+                    area = "None"
+
                 title = puppet.db.title if puppet and puppet.db.title else ""
                 table.add_row(
                     utils.crop(title + " " + account.get_display_name(account), width=25),
