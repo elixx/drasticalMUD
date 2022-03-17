@@ -126,11 +126,14 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
                 elif curr_owner.permissions.get('guests'):
                     claim=True
                     caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                    pub_message = "%s has taken over {y%s{n from {W%s{n!" % (caller.name, location.name, curr_owner.name)
+                    pub_message = "{w%s{n has removed {W%s{n's temporary control of {y%s{n!" % (caller.name, curr_owner.name, location.name)
                 else:
-                    caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
-                    claim=False
+                    claim=True
+                    caller_message = "You have taken over %s from %s!" % (location.name, curr_owner.name)
+                    pub_message = "{W%s{n has taken over {y%s{n from {w%s{n!" % (caller.name, location.name, curr_owner.name)
                     ## TODO: Conflict resolution to result in claim=True
+                    # caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
+                    # claim=False
                     # if location.db.last_owner and location.db.last_owner != -1:
                     #     last_owner = search_object('#' + str(location.db.last_owner))
                     #     if len(last_owner) > 0:
@@ -149,11 +152,15 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
         if location.access(caller, "ownable") and claim==True:
             location.db.last_owner = location.db.owner
             location.db.owner = caller.id
+            if 'claims' in caller.db.stats.keys():
+                caller.db.stats['claims'] += 1
+            else:
+                caller.db.stats['claims'] = 1
             if pub_message is not None:
                 search_channel("public")[0].msg(pub_message)
             try:
                 self.caller.location.update_description()
-            except:
-                pass
+            except Exception as e:
+                log_err(str(e))
         self.caller.msg(caller_message)
 

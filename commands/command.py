@@ -68,6 +68,7 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 "|YIdle",
                 #    "|YPuppeting",
                 "|YRoom",
+                "|YArea",
                 "|YCmds",
                 "|YVia",
                 "|YHost",
@@ -84,12 +85,14 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                 account = session.get_account()
                 puppet = session.get_puppet()
                 location = puppet.location.key if puppet and puppet.location else "None"
+                area = puppet.location.tags.get(category='area').title() if puppet.location.tags else "None"
                 title = puppet.db.title if puppet and puppet.db.title else ""
                 table.add_row(
                     utils.crop(title + " " + account.get_display_name(account), width=25),
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
                     utils.crop(location, width=25),
+                    utils.crop(area, width=25),
                     session.cmd_total,
                     utils.crop(session.protocol_key, 6, suffix='..'),
                     utils.crop(isinstance(session.address, tuple) and session.address[0] or session.address, width=18),
@@ -173,9 +176,14 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                     character.db.stats['gold'] = gold
                 lastlogin = target.db.lastsite[0]
                 stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
+                totaltime = character.db.stats['conn_time']
+                m, s = divmod(totaltime.seconds, 60)
+                h, m = divmod(m, 60)
+                totaltime = "%dh %02dm %02ds" % (h, m, s)
                 try: pct = character.db.stats['explored']
                 except KeyError: pct = -1
                 table.add_row("{yTimes Connected:", logincount)
+                table.add_row("{yTime Online:", totaltime)
                 table.add_row("{yLast Login:", stamp)
                 table.add_row("{yRooms Seen:", visited)
                 if pct > -1:
@@ -185,7 +193,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
                 table.add_row("{yPercent Explored:", pct)
                 table.add_row("{yGold:", gold)
                 output += str(table) + '\n'
-                output += "Stats are updated by visiting the Stats Machine.\n"
+                output += "Exploration stats are updated by visiting the Stats Machine.\n"
             if privileged and target is not None:
                 logins = []
                 for c in range(len(target.db.lastsite)):
@@ -259,12 +267,42 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
 
     def func(self):
 
+        character = self.caller
+        if character.db.title:
+            title = character.db.title
+        else:
+            title = ""
+        name = title + " " + character.name
+        table = self.styled_table()
+        logincount = character.db.stats['logins']
+        try:
+            gold = character.db.stats['gold']
+        except KeyError:
+            gold = 0
+            character.db.stats['gold'] = gold
+        totaltime = character.db.stats['conn_time']
+        m, s = divmod(totaltime.seconds, 60)
+        h, m = divmod(m, 60)
+        totaltime = "%dh %02dm %02ds" % (h, m, s)
+        try:
+            pct = character.db.stats['explored']
+        except KeyError:
+            pct = -1
+        table.add_row("{yName:", name)
+        table.add_row("{yTimes Connected:", logincount)
+        table.add_row("{yTime Online:", totaltime)
+        if pct > -1:
+            pct = str(pct) + '%'
+        else:
+            pct = "???"
+        table.add_row("{yPercent Explored:", pct)
+        table.add_row("{yGold:", gold)
+        output = str(table) + '\n'
 
         #self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
         explored = {}
         owned = {}
         totalrooms = 0
-        output=""
         areas = [x.db_key for x in search_tag_object(category='area')]
         e = ObjectDB.objects.object_totals()
         for k in e.keys():
