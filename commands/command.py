@@ -265,7 +265,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         owned = {}
         totalrooms = 0
         output=""
-        areas = search_tag_object(category='area')
+        areas = [x.db_key for x in search_tag_object(category='area')]
         e = ObjectDB.objects.object_totals()
         for k in e.keys():
             if "room" in k.lower():
@@ -292,7 +292,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         totalvisited = len(visited)
         totalpct = round(totalvisited / totalrooms * 100, 2)
         table = self.styled_table("|YArea", "|YRooms", "|YVisited", "|Y%Seen", "|Y%Owned",
-                                  border="none", width=60)
+                                  border="none", width=79)
         for key, value in sorted(explored.items(), key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
             if key is not None:
                 pct = round(value['count'] / value['total'] * 100, 1)
@@ -302,10 +302,19 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                     opct = 0
                 pct = color_percent(pct)
                 opct = color_percent(opct)
-                table.add_row(utils.crop(str(key).title(), width=18), value['total'], value['count'], pct + '%', opct + '%')
-        output += "{x" + utils.utils.pad(" {YExploration Stats{x ", width=60, fillchar="*") + '\n'
+                table.add_row(utils.crop(str(key).title(), width=30), value['total'], value['count'], pct + '%', opct + '%')
+        output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'
         output += str(table) + '\n'
-        table = self.styled_table(width=60, border='none')
+        output += "{x" + utils.utils.pad(" Area Summary ", width=79, fillchar="-") + '\n'
+        unseen = []
+        for area in areas:
+            if area not in explored.keys():
+                unseen.append(area)
+        table = self.styled_table(width=79, border='none')
+        table.add_row("Visited Areas:", len(explored.keys()))
+        table.add_row("Unseen Areas:", len(unseen))
+        output += str(table) + '\n'
+        table = self.styled_table(width=79, border='none')
         table.add_row("|YTotal Rooms", totalrooms)
         if totalvisited:
             self.caller.db.stats['explored'] = totalpct

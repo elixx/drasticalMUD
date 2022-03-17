@@ -90,10 +90,6 @@ def color_time(arg):
     return color
 
 
-
-
-
-
 def qual(obj):
     if obj.db.quality:
         quality = self.db.quality
