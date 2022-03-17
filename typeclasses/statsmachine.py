@@ -204,6 +204,9 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                         user = k
                     table.add_row(user, v['logins'])
                 output += str(table) + '\n'
+
+            # global claim toplist
+
             if item == "GUESTS":
                 if privileged:
                     table = self.styled_table("{yTimestamp", "{yGuest", "{yConnecting IP", border="none", width=width)

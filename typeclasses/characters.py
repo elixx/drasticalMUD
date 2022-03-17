@@ -8,7 +8,7 @@ creation commands.
 
 """
 from evennia.contrib.clothing import ClothedCharacter
-
+from evennia import gametime
 
 class Character(ClothedCharacter):
     """
@@ -33,7 +33,7 @@ class Character(ClothedCharacter):
     def at_object_creation(self):
         super().at_object_creation()
         if self.db.stats == None:
-            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0, 'visited': []}
+            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0, 'visited': [], 'claims': 0}
 
     def at_post_puppet(self):
         super().at_post_puppet()
@@ -41,6 +41,15 @@ class Character(ClothedCharacter):
             self.db.stats['logins'] += 1
         except KeyError:
             self.db.stats['logins'] = 1
+
+    def at_post_unpuppet(self, account, session=None, **kwargs):
+        if session is not None:
+            start_time = gametime.datetime.fromtimestamp(session.conn_time)
+            delta = gametime.datetime.now() - start_time
+            try:
+                self.db.stats['conn_time'] += delta
+            except:
+                self.db.stats['conn_time'] = delta
 
     def at_before_say(self, message, **kwargs):
         """
