@@ -7,12 +7,12 @@ Rooms are simple containers that has no location of their own.
 
 import re
 from django.conf import settings
-from evennia import DefaultRoom
 from evennia import search_object
 from evennia import search_channel
 from evennia.commands.cmdset import CmdSet
 from evennia.utils import utils
 from evennia.utils.logger import log_err
+from evennia.contrib.extended_room import ExtendedRoom
 from world.gametime import get_time_and_season
 from world.utils import color_time as cc
 
@@ -20,7 +20,8 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 RE_FOOTER = re.compile(r"\{xIt is .*?claimed by .*?\.\{n", re.IGNORECASE)
 
-class Room(DefaultRoom):
+
+class Room(ExtendedRoom):
     """
     Rooms are like any Object, except their location is None
     (which is default). They also use basetype_setup() to
@@ -42,11 +43,11 @@ class ImportedRoom(Room):
     """
 
     def at_object_creation(self):
-        #@py from typeclasses.rooms import ImportedRoom; [obj.at_object_creation() for obj in ImportedRoom.objects.all()]
+        # @py from typeclasses.rooms import ImportedRoom; [obj.at_object_creation() for obj in ImportedRoom.objects.all()]
         super().at_object_creation()
         self.locks.add("ownable:true()")
-        self.tags.add('growable',category='room')       # default to able to grow stuff
-        self.tags.add('random_spawn',category='room')   # default to possible random loot gen
+        self.tags.add('growable', category='room')  # default to able to grow stuff
+        self.tags.add('random_spawn', category='room')  # default to possible random loot gen
         self.cmdset.add_default(ImportedRoomCmdSet, permanent=True)
 
     def at_init(self):
@@ -54,19 +55,19 @@ class ImportedRoom(Room):
         self.update_description()
 
     def update_description(self):
-        update=False
+        update = False
         (season, daytime) = get_time_and_season()
         if season != self.ndb.last_season:
             self.ndb.last_season = season
-            update=True
+            update = True
         if daytime != self.ndb.last_timeslot:
             self.ndb.last_timeslot = daytime
-            update=True
+            update = True
         if self.ndb.last_owner != self.db.owner:
             self.ndb.last_owner = self.db.owner
-            update=True
+            update = True
 
-        if self.db.desc and update==True:
+        if self.db.desc and update == True:
             season = "{" + cc(season) + season + "{x"
 
             daytime = "{" + cc(daytime) + daytime + "{x"
@@ -86,10 +87,13 @@ class ImportedRoom(Room):
 
             self.db.desc += "{xIt is %s %s. This room is claimed by %s.{n" % (season, daytime, owner)
 
+
 class ImportedRoomCmdSet(CmdSet):
     key = "ImportedRoomCmdSet"
+
     def at_cmdset_creation(self):
         self.add(CmdClaimRoom)
+
 
 class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
     """
@@ -99,38 +103,42 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
     """
     key = "claim"
     locks = "cmd:all()"
+
     def func(self):
         caller = self.caller
         location = self.caller.location
-        claim=False
+        claim = False
 
         # Room is unclaimed
         if not location.db.owner:
             pub_message = "{Y%s{w is now the owner of {G%s{n!" % (caller.name, location.name)
             caller_message = "You are now the owner of {G%s{n!" % location.name
-            claim=True
+            claim = True
         # Room is already claimed by caller
         elif location.db.owner == caller.id:
-                caller_message = "You already own  %s." % location.name
-                pub_message = None
-                claim=False
+            caller_message = "You already own  %s." % location.name
+            pub_message = None
+            claim = False
         # Room is already claimed by other
         elif location.db.owner:
             curr_owner = search_object('#' + str(location.db.owner))
             if len(curr_owner) > 0:
                 curr_owner = curr_owner[0]
                 if caller.permissions.get('guests'):
-                    claim=False
-                    caller_message = "%s is already claimed by %s. Guests can only claim unclaimed rooms." % (location.name, curr_owner.name)
+                    claim = False
+                    caller_message = "%s is already claimed by %s. Guests can only claim unclaimed rooms." % (
+                    location.name, curr_owner.name)
                 # Allow reclaiming property from guests
                 elif curr_owner.permissions.get('guests'):
-                    claim=True
+                    claim = True
                     caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                    pub_message = "{w%s{n has removed {W%s{n's temporary control of {y%s{n!" % (caller.name, curr_owner.name, location.name)
+                    pub_message = "{w%s{n has removed {W%s{n's temporary control of {y%s{n!" % (
+                    caller.name, curr_owner.name, location.name)
                 else:
-                    claim=True
+                    claim = True
                     caller_message = "You have taken over %s from %s!" % (location.name, curr_owner.name)
-                    pub_message = "{W%s{n has taken over {y%s{n from {w%s{n!" % (caller.name, location.name, curr_owner.name)
+                    pub_message = "{W%s{n has taken over {y%s{n from {w%s{n!" % (
+                    caller.name, location.name, curr_owner.name)
                     ## TODO: Conflict resolution to result in claim=True
                     # caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
                     # claim=False
@@ -149,7 +157,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
             # This should never happen
             log_err("No owner: typeclasses/rooms.py:132 Caller: %s Location: %s" % (caller.id, location.id))
 
-        if location.access(caller, "ownable") and claim==True:
+        if location.access(caller, "ownable") and claim == True:
             location.db.last_owner = location.db.owner
             location.db.owner = caller.id
             if 'claims' in caller.db.stats.keys():
@@ -163,4 +171,3 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
             except Exception as e:
                 log_err(str(e))
         self.caller.msg(caller_message)
-
