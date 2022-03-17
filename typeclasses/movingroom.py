@@ -145,7 +145,7 @@ class MovingRoom(DefaultRoom):
         loc = search_object(self.db.route[self.db.route_pos])[0]
         if loc.tags.get(category='area') != None:
             area = loc.tags.get(category='area')
-            announce = "%s announces, '{xWelcome to {Y%s{x in {y%s{x.'" % (
+            announce = "%s announces, '{wWelcome to {y%s{w in {c%s{x.'" % (
             self.name.capitalize(), loc.name, area.title())
             # announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, area.title())
         else:
