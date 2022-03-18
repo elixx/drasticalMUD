@@ -281,6 +281,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
         total = search_tag(area, category="area")
         total = len(total.filter(db_typeclass_path__contains="room"))
         count = 0
+        owned = 0
         visited = self.caller.db.stats['visited']
         for roomid in visited:
             room = search_object("#" + str(roomid))
@@ -288,11 +289,15 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
                 temp = room[0].tags.get(category='area')
                 if temp == area:
                     count += 1
+                    if room[0].db.owner == self.caller.id:
+                        owned += 1
             else:
                 continue
         pct = color_percent(round(count / total * 100, 2))
+        opct = color_percent(round(owned / total * 100, 2))
         count = color_percent(count)
         self.caller.msg("You have visited %s out of {w%s{n (%s%%) rooms in {Y%s{n." % (count, total, pct, areaname))
+        self.caller.msg("You own %s%% of %s." % (opct, areaname))
 
 class CmdScore(COMMAND_DEFAULT_CLASS):
     """
@@ -340,9 +345,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         table.add_row("{yGold:", gold)
         output = str(table) + '\n'
 
-        #self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
         explored = {}
-        owned = {}
         totalrooms = 0
         areas = [x.db_key for x in search_tag_object(category='area')]
         e = ObjectDB.objects.object_totals()
@@ -356,32 +359,50 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                 room = room[0]
                 area = room.tags.get(category='area')
                 if room.db.owner == self.caller.id:
-                    if area not in owned.keys():
-                        owned[area] = 1
-                    else:
-                        owned[area] += 1
+                    owner = True
+                else:
+                    owner = False
             else:
                 continue
             if area not in explored.keys():
-                total = search_tag(area, category="area")
-                total = len(total.filter(db_typeclass_path__contains="room"))
-                explored[area] = {'total': total, 'count': 1}
+                total = search_tag(area, category="room").count()
+                if owner:
+                    explored[area] = {'total': total, 'seen': 1, 'owned': 1}
+                else:
+                    explored[area] = {'total': total, 'seen': 1, 'owned': 0}
             else:
-                explored[area]['count'] += 1
+                explored[area]['seen'] += 1
+                if owner:
+                    explored[area]['owned'] += 1
         totalvisited = len(visited)
         totalpct = round(totalvisited / totalrooms * 100, 2)
-        table = self.styled_table("|YArea", "|YRooms", "|YVisited", "|Y%Seen", "|Y%Owned",
-                                  border="none", width=79)
-        for key, value in sorted(explored.items(), key=lambda x: x[1]['count'] / x[1]['total'], reverse=True):
+        table = self.styled_table("|YArea"+" "*35, "|YRooms", "|YSeen", "|Y%Seen", "|Y%Owned",
+                                  border="none", width=80)
+        for key, value in sorted(explored.items(), key=lambda x: x[1]['seen'], reverse=True):
             if key is not None:
-                pct = round(value['count'] / value['total'] * 100, 1)
-                if key in owned.keys():
-                    opct = round(owned[key] / value['total'] * 100, 1)
+                if value['total'] > value['seen']:
+                    pct = round(value['seen'] / value['total'] * 100, 1)
+                else:
+                    pct = 0
+
+                if value['total'] > value['owned']:
+                    opct = round(value['owned'] / value['total'] * 100, 1)
                 else:
                     opct = 0
-                pct = color_percent(pct)
-                opct = color_percent(opct)
-                table.add_row(utils.crop(str(key).title(), width=30), value['total'], value['count'], pct + '%', opct + '%')
+
+                if opct == 100:
+                    opct = "{wCOMPLETE{n"
+                else:
+                    opct = color_percent(opct)
+
+                if pct == 100:
+                    pct = "{wCOMPLETE{n"
+                else:
+                    pct = color_percent(pct)
+
+                table.add_row(utils.crop(str(key).title(), width=40), value['total'], value['seen'], pct + '%', opct + '%')
+
+
         output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'
         output += str(table) + '\n'
         output += "{x" + utils.utils.pad(" Area Summary ", width=79, fillchar="-") + '\n'
@@ -398,7 +419,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         if totalvisited:
             self.caller.db.stats['explored'] = totalpct
             totalpct = color_percent(totalpct)
-            table.add_row("|YTotal Explored:", str(totalvisited) + " (" + totalpct + "|G%|n)")
+            table.add_row("|YRooms visited:", str(totalvisited) + " (" + totalpct + "|G%|n)")
         output += str(table) + '\n'
 
 

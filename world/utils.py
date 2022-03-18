@@ -48,10 +48,9 @@ def sendWebHook(text):
         pass
 
 
-
 def color_percent(pct):
     if pct == 100:
-        pct = "|wCOMPLETE|n"
+        pct = "|w100|n"
     elif pct > 95:
         pct = "|r" + str(pct) + '|n'
     elif pct > 80:
@@ -62,11 +61,12 @@ def color_percent(pct):
         pct = "|Y" + str(pct) + "|n"
     elif pct > 10:
         pct = "|g" + str(pct) + "|n"
-    elif pct > 5:
+    elif pct > 1:
         pct = "|b" + str(pct) + "|n"
     else:
-        pct = "|x" + str(pct) + "|n"
+        pct = "|W" + str(pct) + "|n"
     return pct
+
 
 def color_time(arg):
     if arg == "spring":
