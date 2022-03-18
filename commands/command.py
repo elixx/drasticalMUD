@@ -263,13 +263,13 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         roomname = self.caller.location.name
-        areaname = self.caller.location.tags.get(category="area")
-        if areaname == None:
+        area = self.caller.location.tags.get(category="area")
+        if area is None:
             if self.caller.location.db.area:
-                areaname = self.caller.location.db.area
+                area = self.caller.location.db.area
             else:
-                areaname = "Unknown"
-        areaname = areaname.title()
+                area = "unknown"
+        areaname = area.title()
         self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
         if self.caller.location.db.owner:
             ownerid = self.caller.location.db.owner
@@ -278,7 +278,21 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
             else:
                 owner_name = search_object("#"+str(ownerid))[0].name
                 self.caller.msg("It is currently owned by {y%s{n." % owner_name)
-
+        total = search_tag(area, category="area")
+        total = len(total.filter(db_typeclass_path__contains="room"))
+        count = 0
+        visited = self.caller.db.stats['visited']
+        for roomid in visited:
+            room = search_object("#" + str(roomid))
+            if len(room) > 0:
+                temp = room[0].tags.get(category='area')
+                if temp == area:
+                    count += 1
+            else:
+                continue
+        pct = color_percent(round(count / total * 100, 2))
+        count = color_percent(count)
+        self.caller.msg("You have visited %s out of {w%s{n (%s%%) rooms in {Y%s{n." % (count, total, pct, areaname))
 
 class CmdScore(COMMAND_DEFAULT_CLASS):
     """
