@@ -188,6 +188,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     totalpct = color_percent(totalpct)
                     table.add_row("|YTotal Explored:", str(totalvisited) + " (" + totalpct + "|G%|n)")
                 output += str(table) + '\n'
+                output += "{wUse the {yareas{n command to see all areas in the world.\n"
 
             if item == "USERS":
                 output += "{x" + pad(" {YTop " + str(maxlines) + " Users:{x ", width=width, fillchar="*") + '\n'
