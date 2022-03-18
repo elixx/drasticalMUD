@@ -9,7 +9,7 @@ SYMBOLS = {None: ' . ',  # for rooms without a sector_type attr
 
 class Map(object):
 
-    def __init__(self, caller, max_width=9, max_length=9):
+    def __init__(self, caller, max_width=5, max_length=5):
         self.caller = caller
         self.max_width = max_width
         self.max_length = max_length

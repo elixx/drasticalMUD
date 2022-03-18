@@ -94,7 +94,7 @@ class ImportedRoom(Room):
         string = "%s\n" % Map(looker).show_map()
         # Add all the normal stuff like room description,
         # contents, exits etc.
-        string += "\n" + super().return_appearance(looker)
+        string += super().return_appearance(looker)
         return string
 
 
