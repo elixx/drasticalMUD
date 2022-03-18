@@ -102,12 +102,13 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 else:
                     location = "None"
                     area = "None"
-
-                if puppet.db.title is not None:
-                    try:
-                        title = puppet.db.title
-                    except:
-                        title = "None"
+                title = ""
+                if puppet.db:
+                    if puppet.db.title is not None:
+                        try:
+                            title = puppet.db.title
+                        except:
+                            title = ""
                 else:
                     title = ""
                 #title = puppet.db.title if puppet and puppet.db.title else ""
@@ -140,7 +141,9 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                     continue
                 location = puppet.location if puppet and puppet.location else "None"
                 location = location.tags.get(category='area').title() if location.tags and location else "None"
-                if puppet.db.title: title = puppet.db.title
+                if puppet.db:
+                    if puppet.db.title: title = puppet.db.title
+                    else: title = ""
                 else: title = ""
                 table.add_row(
                     utils.crop(title + " " + account.get_display_name(account), width=25),
