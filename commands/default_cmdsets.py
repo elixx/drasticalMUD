@@ -19,9 +19,9 @@ from evennia import default_cmds
 import commands.social
 from commands.social import *
 
-from commands.command import CmdLook2
-from commands.command import CmdWho2
-from commands.command import CmdExamine2
+from commands.command import CmdLook
+from commands.command import CmdWho
+from commands.command import CmdExamine
 from commands.command import CmdAreas
 from commands.command import CmdWhere
 from commands.command import CmdRecall
@@ -30,6 +30,7 @@ from commands.command import CmdFinger
 from commands.command import CmdScore
 
 from evennia.contrib.clothing import ClothedCharacterCmdSet
+from evennia.contrib import extended_room
 from evennia.contrib import mail
 
 
@@ -52,13 +53,17 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
 
         self.add(ClothedCharacterCmdSet)
         self.add(SocialCmdSet)
-        self.add(CmdLook2)
-        self.add(CmdExamine2)
+        self.add(CmdExamine)
         self.add(CmdWhere)
         self.add(CmdRecall)
-        self.add(CmdWho2)
+        self.add(CmdWho)
         self.add(CmdAreas)
         self.add(CmdQuit)
+        self.add(CmdLook)
+        self.add(extended_room.CmdExtendedRoomDesc)
+        self.add(extended_room.CmdExtendedRoomDetail)
+        self.add(extended_room.CmdExtendedRoomGameTime)
+
         #
         # any commands you add below will overload the default ones.
         #
@@ -124,7 +129,7 @@ class SessionCmdSet(default_cmds.SessionCmdSet):
         It prints some info.
         """
 
-        self.add(CmdLook2)
+        self.add(CmdLook)
         self.add(CmdScore)
 
         super().at_cmdset_creation()

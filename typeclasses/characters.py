@@ -46,9 +46,9 @@ class Character(ClothedCharacter):
         if session is not None:
             start_time = gametime.datetime.fromtimestamp(session.conn_time)
             delta = gametime.datetime.now() - start_time
-            try:
+            if 'conn_time' in self.db.stats.keys():
                 self.db.stats['conn_time'] += delta
-            except:
+            else:
                 self.db.stats['conn_time'] = delta
 
     def at_before_say(self, message, **kwargs):

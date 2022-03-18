@@ -13,17 +13,18 @@ from evennia.server.sessionhandler import SESSIONS
 from world.utils import area_count, sendWebHook, color_percent
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
-# from evennia.utils.create import create_object
+from evennia.contrib.extended_room import CmdExtendedRoomLook
+
 import time
 
 COMMAND_DEFAULT_CLASS = utils.utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
-class CmdExamine2(default_cmds.CmdExamine):
+class CmdExamine(default_cmds.CmdExamine):
     aliases = ["exa"]
 
 
-class CmdWho2(COMMAND_DEFAULT_CLASS):
+class CmdWho(COMMAND_DEFAULT_CLASS):
     """
     list who is currently online
 
@@ -88,7 +89,10 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     if puppet.location is not None:
                         location = puppet.location
                         if location.tags:
-                            area = puppet.location.tags.get(category='area').title()
+                            try:
+                                area = puppet.location.tags.get(category='area').title()
+                            except:
+                                area = "None"
                         else:
                             area = "None"
                         location = location.key
@@ -99,7 +103,14 @@ class CmdWho2(COMMAND_DEFAULT_CLASS):
                     location = "None"
                     area = "None"
 
-                title = puppet.db.title if puppet and puppet.db.title else ""
+                if puppet.db.title is not None:
+                    try:
+                        title = puppet.db.title
+                    except:
+                        title = "None"
+                else:
+                    title = ""
+                #title = puppet.db.title if puppet and puppet.db.title else ""
                 table.add_row(
                     utils.crop(title + " " + account.get_display_name(account), width=25),
                     utils.time_format(delta_conn, 0),
@@ -252,13 +263,13 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         roomname = self.caller.location.name
-        areaname = self.caller.location.tags.get(category="area")
-        if areaname == None:
+        area = self.caller.location.tags.get(category="area")
+        if area is None:
             if self.caller.location.db.area:
-                areaname = self.caller.location.db.area
+                area = self.caller.location.db.area
             else:
-                areaname = "Unknown"
-        areaname = areaname.title()
+                area = "unknown"
+        areaname = area.title()
         self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
         if self.caller.location.db.owner:
             ownerid = self.caller.location.db.owner
@@ -267,7 +278,21 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
             else:
                 owner_name = search_object("#"+str(ownerid))[0].name
                 self.caller.msg("It is currently owned by {y%s{n." % owner_name)
-
+        total = search_tag(area, category="area")
+        total = len(total.filter(db_typeclass_path__contains="room"))
+        count = 0
+        visited = self.caller.db.stats['visited']
+        for roomid in visited:
+            room = search_object("#" + str(roomid))
+            if len(room) > 0:
+                temp = room[0].tags.get(category='area')
+                if temp == area:
+                    count += 1
+            else:
+                continue
+        pct = color_percent(round(count / total * 100, 2))
+        count = color_percent(count)
+        self.caller.msg("You have visited %s out of {w%s{n (%s%%) rooms in {Y%s{n." % (count, total, pct, areaname))
 
 class CmdScore(COMMAND_DEFAULT_CLASS):
     """
@@ -293,13 +318,16 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         except KeyError:
             gold = 0
             character.db.stats['gold'] = gold
-        totaltime = character.db.stats['conn_time']
-        m, s = divmod(totaltime.seconds, 60)
-        h, m = divmod(m, 60)
-        totaltime = "%dh %02dm %02ds" % (h, m, s)
-        try:
+        if 'conn_time' in character.db.stats.keys():
+            totaltime = character.db.stats['conn_time']
+            m, s = divmod(totaltime.seconds, 60)
+            h, m = divmod(m, 60)
+            totaltime = "%dh %02dm %02ds" % (h, m, s)
+        else:
+            totaltime = '-'
+        if 'explored' in character.db.stats.keys():
             pct = character.db.stats['explored']
-        except KeyError:
+        else:
             pct = -1
         table.add_row("{yName:", name)
         table.add_row("{yTimes Connected:", logincount)
@@ -398,7 +426,7 @@ class CmdRecall(COMMAND_DEFAULT_CLASS):
             self.caller.msg("Uh-oh! You are homeless!")
 
 
-class CmdLook2(default_cmds.CmdLook):
+class CmdLook(CmdExtendedRoomLook):
     """
     look at location or object
 

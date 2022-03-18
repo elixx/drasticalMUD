@@ -66,7 +66,6 @@ def color_percent(pct):
         pct = "|b" + str(pct) + "|n"
     else:
         pct = "|x" + str(pct) + "|n"
-
     return pct
 
 def color_time(arg):
@@ -92,7 +91,7 @@ def color_time(arg):
 
 def qual(obj):
     if obj.db.quality:
-        quality = self.db.quality
+        quality = obj.db.quality
         if quality > 95:
             return "legendary"
         elif quality > 75:

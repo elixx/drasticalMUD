@@ -101,7 +101,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
 
         if not self.args:
             self.msg("You can {yget stats{n for any of: {yserver{n, {ygame{n, {yareas{n, {yusers{n, or {yguests{n.")
-            selection = ["GENERAL","GAME"]
+            selection = ["SERVER","AREA"]
         else:
             args = self.args.strip()
             args = args.lower().split(" ")
