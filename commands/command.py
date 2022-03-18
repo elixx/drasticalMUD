@@ -81,6 +81,8 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
             for session in session_list:
                 if not session.logged_in:
                     continue
+                if session.puppet is None:
+                    continue
                 delta_cmd = time.time() - session.cmd_last_visible
                 delta_conn = time.time() - session.conn_time
                 account = session.get_account()
