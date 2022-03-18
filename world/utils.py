@@ -200,3 +200,10 @@ def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=N
             rev_exit_obj = create_exit(reverse, exit_obj.destination, exit_obj.location, exit_aliases=rev_alias, typeclass=typeclass)
 
         return([exit_obj, rev_exit_obj])
+
+def rename_tag(old_tag_name, old_category, new_name, new_category=None):
+    from evennia.utils.search import search_tag
+    objs = search_tag(old_tag_name, category=old_category)
+    for obj in objs:
+        obj.tags.add(new_name, category=new_category)
+        obj.tags.remove(old_tag_name, category=old_category)
