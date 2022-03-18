@@ -5,6 +5,22 @@ from evennia.utils.create import create_object
 
 from matterhook import Webhook
 
+EXITS_REV = {"up": "down",
+             "down": "up",
+             "east": "west",
+             "west": "east",
+             "north": "south",
+             "south": "north",
+             "in": "out",
+             "out": "in"}
+
+EXIT_ALIAS = {"up": "u",
+              "down": "d",
+              "east": "e",
+              "west": "w",
+              "north": "n",
+              "south": "s"}
+
 def findStatsMachine():
     results = search_object("a stats machine")
     if (len(results) == 0):
@@ -115,3 +131,72 @@ def area_count():
         counts[area.db_key.title()] = area.objectdb_set.count()
     return (counts)
 
+def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=None, bidirectional=False):
+    """
+    Helper function to avoid code duplication.
+    At this point we know destination is a valid location
+
+    """
+
+    location = search_object(location)
+    if location is not None:
+        location = location[0]
+    else:
+        return None
+    destination = search_object(destination)
+    if destination is not None:
+        destination = destination[0]
+    else:
+        return None
+
+    print("create_exit: %s: %s - %s" % (exit_name, location, destination))
+
+    exit_obj = location.search(exit_name, quiet=True, exact=True)
+    if len(exit_obj) > 1:
+        return None
+    elif exit_obj:
+        return None
+    else:
+        ## exit does not exist before. Create a new one.
+        # lockstring = self.new_obj_lockstring.format(id=.id)
+        if exit_aliases is None:
+            exit_aliases = [EXITS_REV[exit_name]]
+        if not typeclass:
+            typeclass = settings.BASE_EXIT_TYPECLASS
+        exit_obj = create_object(
+            typeclass,
+            key=exit_name,
+            location=location,
+            aliases=exit_aliases,
+            #locks=lockstring,
+            #report_to=caller,
+        )
+        if exit_obj:
+            # storing a destination is what makes it an exit!
+            exit_obj.destination = destination
+            string = (
+                ""
+                if not exit_aliases
+                else " (aliases: %s)" % (", ".join([str(e) for e in exit_aliases]))
+            )
+            string = "Created new Exit '%s' from %s to %s%s." % (
+                exit_name,
+                location.name,
+                destination.name,
+                string,
+            )
+        else:
+            return None
+
+    if not bidirectional:
+        return exit_obj
+
+    if exit_obj and bidirectional:
+        if exit_name not in EXITS_REV:
+            rev_exit_obj = None
+        else:
+            reverse = EXITS_REV[exit_name]
+            rev_alias = EXIT_ALIAS[reverse]
+            rev_exit_obj = create_exit(reverse, destination, location, exit_aliases=rev_alias, typeclass=typeclass)
+
+        return([exit_obj, rev_exit_obj])
