@@ -161,24 +161,23 @@ class AreaImporter(object):
                 room = self.rooms[vnum]
                 for exitDir, exitData in room['exits'].items():
                     evid = "#" + str(self.room_translate[vnum])
-                    try:
-                        loc = search_object(evid)[0]
-                    except:
+                    loc = search_object(evid)[0]
+                    if loc is None:
                         loc = search_object(room['name'])[0]
-
-                    try:
-                        evdestid = "#" + str(self.room_translate[exitData['dest']])
-                        dest = search_object(evdestid)[0]
-                        newexit = create_object(typeclass="typeclasses.exits.LegacyExit",
-                                                key=exitDir, location=loc, destination=dest)
-                        newexit.aliases.add(DIRALIAS[exitDir])
-                        newexit.tags.add(room['area'], category='area')
-                        newexit.tags.add('imported', category='exit')
-                        newexit.db.area = room['area']
-                    except Exception as e:
-                        log_err('! deadend: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
-                            evid) + " skipped " + str(exitData['dest']) + " not found.")
+                        if loc is None:
+                            log_err('! missing source: ' + str(loc))
+                            continue
+                    evdestid = "#" + str(self.room_translate[exitData['dest']])
+                    dest = search_object(evdestid)[0]
+                    if dest is None:
+                        log_err('! deadend: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(evid) + " skipped " + str(exitData['dest']) + " not found.")
                         continue
+                    newexit = create_object(typeclass="typeclasses.exits.LegacyExit",
+                                            key=exitDir, location=loc, destination=dest)
+                    newexit.aliases.add(DIRALIAS[exitDir])
+                    newexit.tags.add(room['area'], category='area')
+                    newexit.tags.add('imported', category='exit')
+                    newexit.db.area = room['area']
             self.exits_created = True
 
     def spawnObjects(self):
