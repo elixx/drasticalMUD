@@ -92,7 +92,7 @@ def color_time(arg):
 
 def qual(obj):
     if obj.db.quality:
-        quality = self.db.quality
+        quality = obj.db.quality
         if quality > 95:
             return "legendary"
         elif quality > 75:
