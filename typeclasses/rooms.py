@@ -15,6 +15,7 @@ from evennia.utils.logger import log_err
 from evennia.contrib.extended_room import ExtendedRoom
 from world.gametime import get_time_and_season
 from world.utils import color_time as cc
+from world.map import Map
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -86,6 +87,15 @@ class ImportedRoom(Room):
                 self.db.desc = RE_FOOTER.sub('', self.db.desc)
 
             self.db.desc += "{xIt is %s %s. This room is claimed by %s.{n" % (season, daytime, owner)
+
+    def return_appearance(self, looker):
+        self.update_description()
+
+        string = "%s\n" % Map(looker).show_map()
+        # Add all the normal stuff like room description,
+        # contents, exits etc.
+        string += "\n" + super().return_appearance(looker)
+        return string
 
 
 class ImportedRoomCmdSet(CmdSet):
