@@ -197,6 +197,6 @@ def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=N
         else:
             reverse = EXITS_REV[exit_name]
             rev_alias = EXIT_ALIAS[reverse]
-            rev_exit_obj = create_exit(reverse, destination, location, exit_aliases=rev_alias, typeclass=typeclass)
+            rev_exit_obj = create_exit(reverse, exit_obj.destination, exit_obj.location, exit_aliases=rev_alias, typeclass=typeclass)
 
         return([exit_obj, rev_exit_obj])
