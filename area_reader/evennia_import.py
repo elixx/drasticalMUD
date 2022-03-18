@@ -173,6 +173,9 @@ class AreaImporter(object):
                         if loc is None:
                             log_err('! missing source: ' + str(loc))
                             continue
+                    if exitData['dest'] not in self.room_translate.keys():
+                        log_err('! deadend: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(evid) + " skipped " + str(exitData['dest']) + " not found.")
+                        continue
                     evdestid = "#" + str(self.room_translate[exitData['dest']])
                     dest = search_object(evdestid)[0]
                     if dest is None:
