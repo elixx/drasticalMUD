@@ -85,18 +85,24 @@ class Character(ClothedCharacter):
 
         if source_location is not None:
             if source_location.tags.get(category='area'):
-                area_name = str(source_location.tags.get(category='area'))
+                area_name = source_location.tags.get(category='area')
             else:
                 area_name = "unknown territory"
 
+            if  self.location.tags.get(category='area'):
+                cur_area = self.location.tags.get(category='area')
+            else:
+                cur_area = "unknown territory"
+
             if self.db.last_area:
-                if self.db.last_area != area_name:
-                    self.msg("You have entered {y%s{n." % area_name.title())
-                    self.db.last_area = area_name
+                if cur_area != area_name:
+                    self.msg("You have entered {y%s{n." % cur_area.title())
+                    self.db.last_area = cur_area
             else:
                 self.db.last_area = area_name
 
         super().at_after_move(source_location)
+
 
     def at_look(self, target=None, session=None, **kwargs):
         if target is not None:
