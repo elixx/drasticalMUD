@@ -66,7 +66,6 @@ def color_percent(pct):
         pct = "|b" + str(pct) + "|n"
     else:
         pct = "|x" + str(pct) + "|n"
-
     return pct
 
 def color_time(arg):
