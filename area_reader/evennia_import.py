@@ -1,7 +1,35 @@
-from django.conf import settings
 from evennia import create_object, search_object
 from evennia.utils.logger import log_info, log_err, log_warn
 from . import area_reader
+
+AREA_TRANSLATIONS = {"pawmist": "twilight city of pawmist",
+                 "erealms": "elven realms",
+                 "shadval150": "kandahar shadow valley",
+                 "sdearth": "south dearthwood",
+                 "edearth": "east dearthwood",
+                 "avalonch": "avalon",
+                 "talonvle": "gilda and the dragon",
+                 "takshrin": "shrine of tahkien",
+                 "dawn": "city of dawn",
+                 "tisland": "treasure island",
+                 "amazon": "the amazon jungle",
+                 "partbody": "body parts castle",
+                 "north": "northern road",
+                 'river': 'durgas river',
+                 'island': 'island of illusion',
+                 'east': 'eastern road',
+                 'demise': 'death room',
+                 'path': 'the hidden path',
+                 'gstrong': 'goblin stronghold',
+                 'plains': 'plains of the north',
+                 'pyramid': 'the great pyramid',
+                 'weaverei': 'the dreamweaver\'s path',
+                 'marsh': 'generic old marsh',
+                 'tree': 'yggdrasil',
+                 'zoology': 'mudschool fieldtrip',
+                 'dock': 'calinth docks',
+                 'water': 'blizzard water nymphs',
+                 'chessbrd': 'chessboard'}
 
 DIRS = {0: "north",
         1: "east",
@@ -69,7 +97,8 @@ class AreaImporter(object):
             s = s.replace(".", "")
             self.areaname = s
 
-        self.areaname = settings.AREA_TRANSLATIONS[self.areaname]
+        if self.areaname in AREA_TRANSLATIONS.keys():
+            self.areaname = AREA_TRANSLATIONS[self.areaname]
 
         self.rooms_created = False
         self.rooms_enumerated = False
