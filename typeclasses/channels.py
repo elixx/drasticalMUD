@@ -91,11 +91,57 @@ class Channel(DefaultChannel):
         else:
             return "%s: %s" % (sender_string, message)
 
-    def format_external(self, msgobj, senders, emit=False, **kwargs):
-        # [..] grapewinebot-gvtest-testing->[gvtest]: elixx@Grapevine: test
-        msgobj = msgobj.split("->")[1]
-        return msgobj
 
     def format_message(self, msgobj, emit=False, **kwargs):
-        # [..] elixx->[Public]: test
-        return msgobj
+        """
+        Hook method. Formats a message body for display.
+
+        Args:
+            msgobj (Msg or TempMsg): The message object to send.
+            emit (bool, optional): The message is agnostic of senders.
+            **kwargs (dict): Arbitrary, optional arguments for users
+                overriding the call (unused by default).
+
+        Returns:
+            transformed (str): The formatted message.
+
+        """
+        # We don't want to count things like external sources as senders for
+        # the purpose of constructing the message string.
+        senders = [sender for sender in msgobj.senders if hasattr(sender, "key")]
+        if not senders:
+            emit = True
+        if emit:
+            return msgobj.message
+        else:
+            senders = [sender.key for sender in msgobj.senders]
+            senders = ", ".join(senders)
+            senders = "{c" + senders + "{n"
+            msgobj.message = "{y" + msgobj.message + "{n"
+            return self.pose_transform(msgobj, senders)
+
+
+    def format_external(self, msgobj, senders, emit=False, **kwargs):
+        """
+        Hook method. Used for formatting external messages. This is
+        needed as a separate operation because the senders of external
+        messages may not be in-game objects/accounts, and so cannot
+        have things like custom user preferences.
+
+        Args:
+            msgobj (Msg or TempMsg): The message to send.
+            senders (list): Strings, one per sender.
+            emit (bool, optional): A sender-agnostic message or not.
+            **kwargs (dict): Arbitrary, optional arguments for users
+                overriding the call (unused by default).
+
+        Returns:
+            transformed (str): A formatted string.
+
+        """
+        if emit or not senders:
+            return msgobj.message
+
+        senders = ", ".join(senders)
+
+        return self.pose_transform(msgobj, senders)
