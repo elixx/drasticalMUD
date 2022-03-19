@@ -16,9 +16,11 @@ class CmdSocialGlare(DefaultCmdSocial):  key = "glare"
 class CmdSocialLeer(DefaultCmdSocial):   key = "leer"
 class CmdSocialWink(DefaultCmdSocial):   key = "wink"
 class CmdSocialWave(DefaultCmdSocial):   key = "wave"
+class CmdSocialPoke(DefaultCmdSocial):   key = "poke"
 class CmdSocialBarf(DefaultCmdSocial):   key = "barf"
 class CmdSocialShrug(DefaultCmdSocial):  key = "shrug"
 class CmdSocialSlap(DefaultCmdSocial):   key = "slap"
+class CmdSocialSmack(DefaultCmdSocial):   key = "smack"
 class CmdSocialBog(DefaultCmdSocial):
     key = "boggle"
     aliases = ["bog"]
