@@ -15,7 +15,7 @@ class WizTool(DefaultObject):
 
 
 class CmdFindMobs(COMMAND_DEFAULT_CLASS):
-    key = "findmobs"
+    key = "hunt"
     # locks = "cmd:superuser()"
     locks = "cmd:all()"
 
