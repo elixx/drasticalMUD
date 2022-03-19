@@ -22,7 +22,7 @@ class ExplorerMob(ChattyMob):
             self.ndb.seen[area] = [ self.location.id ]
         else:
             self.ndb.seen[area].append( self.location.id )
-            self.ndb.seen[area] = set(self.ndb.seen[area])
+            self.ndb.seen[area] = list(set(self.ndb.seen[area]))
 
         super().at_after_move(source_location)
 
