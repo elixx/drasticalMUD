@@ -3,7 +3,7 @@ from evennia.commands.cmdset import CmdSet
 from evennia import ObjectDB
 from django.conf import settings
 from evennia.utils import utils
-from commands.command import CmdExamine2
+from commands.command import CmdExamine
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -58,7 +58,7 @@ class Tricorder(DefaultObject):
         self.db.ephemeral = True
 
 
-class CmdTricorderScan(CmdExamine2):
+class CmdTricorderScan(CmdExamine):
     key = "scan"
     aliases = []
     locks = "cmd:all()"
