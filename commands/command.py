@@ -383,7 +383,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         totalpct = round(totalvisited / totalrooms * 100, 2)
         table = self.styled_table("|YArea"+" "*35, "|YRooms", "|YSeen", "|Y%Seen", "|Y%Owned",
                                   border="none", width=80)
-        for key, value in sorted(explored.items(), key=lambda x: x[1]['seen'], reverse=True):
+        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
             if key is not None:
                 if value['total'] > value['seen']:
                     pct = round(value['seen'] / value['total'] * 100, 1)
@@ -410,21 +410,19 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
 
         output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'
         output += str(table) + '\n'
-        output += "{x" + utils.utils.pad(" Area Summary ", width=79, fillchar="-") + '\n'
+        output += "{x" + utils.utils.pad(" Summary ", width=79, fillchar="-") + '\n'
         unseen = []
         for area in areas:
             if area not in explored.keys():
                 unseen.append(area)
-        table = self.styled_table(width=79, border='none')
-        table.add_row("Visited Areas:", len(explored.keys()))
-        table.add_row("Unseen Areas:", len(unseen))
-        output += str(table) + '\n'
-        table = self.styled_table(width=79, border='none')
-        table.add_row("|YTotal Rooms", totalrooms)
+        areapct = color_percent(round(len(explored) / len(areas), 2))
+        areastats = "{y%s{n of {Y%s (%s%%){n" %  ( len(explored.keys()), len(unseen), areapct )
+        table = self.styled_table(width=50, border='none')
+        table.add_row("|YVisited Areas:", areastats)
         if totalvisited:
             self.caller.db.stats['explored'] = totalpct
             totalpct = color_percent(totalpct)
-            table.add_row("|YRooms visited:", str(totalvisited) + " (" + totalpct + "|G%|n)")
+            table.add_row("|YVisited Rooms:", "{y"+str(totalvisited)+"{n of {Y" +  str(totalrooms) + "{n (" + totalpct + "|n%|n)")
         output += str(table) + '\n'
 
 
