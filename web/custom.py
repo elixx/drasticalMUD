@@ -65,7 +65,7 @@ def _area_stats():
     ac = area_count()
     room_counts = []
 
-    for key in ac.keys():
+    for key in sorted(ac, key=lambda x: x[1]):
         room_counts.append((key + " - ", ac[key]))
 
 
