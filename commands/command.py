@@ -415,7 +415,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         for area in areas:
             if area not in explored.keys():
                 unseen.append(area)
-        areapct = color_percent(round(len(explored) / len(areas), 2))
+        areapct = color_percent(round(len(explored) / len(areas) * 100, 2))
         areastats = "{y%s{n of {Y%s (%s%%){n" %  ( len(explored.keys()), len(unseen), areapct )
         table = self.styled_table(width=50, border='none')
         table.add_row("|YVisited Areas:", areastats)
@@ -424,8 +424,6 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             totalpct = color_percent(totalpct)
             table.add_row("|YVisited Rooms:", "{y"+str(totalvisited)+"{n of {Y" +  str(totalrooms) + "{n (" + totalpct + "|n%|n)")
         output += str(table) + '\n'
-
-
 
         self.caller.msg(output)
 
