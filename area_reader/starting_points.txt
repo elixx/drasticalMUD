@@ -106,9 +106,15 @@
     'gstrong': [7906],
     'water': [7933],
     'sdearth': [7954],
-    'cannabis': [8055],
+    'cannabis': [8055],                         # -- connected to death room via #3705
     'caverns through time': [8085],
     'wdearth': [8161],
     'the walls of the city of anon': [8261],
     'edearth': [8381],
     "gilligan's island": [8481]}
+
+---
+islands:
+#7205 - calinth - MOB Storage room
+#7622 - dreamweaver - immortal's mob waiting lounge
+ho
