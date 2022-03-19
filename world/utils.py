@@ -45,6 +45,10 @@ def startTransit():
     for train in MovingRoom.objects.all():
         train.start_service()
 
+def restartExplorers():
+    from typeclasses.mob_explorer import ExplorerMob
+    for mob in ExplorerMob.objects.all():
+        mob.at_object_creation()
 
 def genPrompt(obj):
     if ('caller' in dir(obj)):
