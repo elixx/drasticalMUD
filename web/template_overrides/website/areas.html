@@ -1,0 +1,19 @@
+{% extends "website/base.html" %}
+
+{% block titleblock %}Areas{% endblock %}
+
+
+{% block header_ext %}
+{% endblock %}
+
+{% block content %}
+
+We have {{ number_of_areas }} areas:
+
+<UL>
+{% for a in room_counts %}
+    <LI>{% for b in a %} {{ b }} {% endfor %} rooms</LI>
+{% endfor %}
+</UL>
+
+{% endblock %}}
