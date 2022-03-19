@@ -59,15 +59,14 @@ def warpArea(caller, area=None):
     else:
         area = choice(list(start_rooms.keys()))
         dest = choice(list(start_rooms[area]))
-    dest = search_object("#"+str(dest))
+    dest = search_object("#" + str(dest))
     if len(dest) != 1:
-        caller.msg("beep boop " + "brrzap"*len(dest))
+        caller.msg("beep boop " + "brrzap" * len(dest))
         log_err("warpArea(): " + str(dest))
     else:
         caller.msg("You are warped to {y%s{n." % area.title())
         caller.location.msg_contents("{y%s{n is warped to somewhere in {g%s{n." % (caller.name, area.title()))
         caller.location = dest[0]
-
 
 
 def genPrompt(obj):
