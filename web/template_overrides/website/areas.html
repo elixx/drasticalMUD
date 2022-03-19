@@ -8,12 +8,23 @@
 
 {% block content %}
 
-We have {{ number_of_areas }} areas:
-
-<UL>
-{% for a in room_counts %}
-    <LI>{% for b in a %} {{ b }} {% endfor %} rooms</LI>
-{% endfor %}
-</UL>
-
+<div class="container">
+    <div class="row">
+        <div class="col-xs-3 align-center card card-tertiary">
+            <div class="card card-header"><h6>We have {{ number_of_areas }} areas:</h6></div>
+            <div class="card card-body">
+                <table>
+                    <thead>
+                        <th scope="col">area name</th><th scope="col">rooms</th>
+                    </thead>
+                    {% for area in areas %}
+                        <tr>
+                            <td>{{ area.area }}</td><td>{{ area.rooms }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}}

@@ -63,14 +63,15 @@ class areaView(TemplateView):
 
 def _area_stats():
     ac = area_count()
-    room_counts = []
+    ac = sorted(ac.items(), key=lambda x: x[1], reverse=True)
 
-    for key in sorted(ac, key=lambda x: x[1]):
-        room_counts.append((key + " - ", ac[key]))
+    areas = []
 
+    for area in ac:
+        areas.append( { 'area': area[0], 'rooms': area[1] } )
 
     pagevars = {
-        "room_counts": room_counts,
+        "areas": areas,
         "number_of_areas": len(ac),
     }
     return pagevars
