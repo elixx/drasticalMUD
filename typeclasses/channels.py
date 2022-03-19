@@ -92,9 +92,9 @@ class Channel(DefaultChannel):
             return "%s: %s" % (sender_string, message)
 
     def format_external(self, msgobj, senders, emit=False, **kwargs):
-        log_info(senders)
-        log_info(msgobj)
+        # [..] grapewinebot-gvtest-testing->[gvtest]: elixx@Grapevine: test
 
+        msgobj = msgobj.split("->")[1]
         return msgobj
 
     def format_message(self, msgobj, emit=False, **kwargs):
