@@ -24,8 +24,6 @@ class ChattyMob(LegacyMob):
             self.db.random_quotes = ["Blah blah blah", "foo bar baz"]
         if self.db.chatty == None:
             self.db.chatty = True
-        if self.db.chatty == None:
-            self.db.chatty = True
         if self.db.chat_frequency == None:
             self.db.chat_frequency = 5
 

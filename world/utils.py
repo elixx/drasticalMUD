@@ -23,6 +23,7 @@ EXIT_ALIAS = {"up": "u",
               "north": "n",
               "south": "s"}
 
+
 def findStatsMachine():
     results = search_object("a stats machine")
     if (len(results) == 0):
@@ -38,10 +39,12 @@ def findStatsMachine():
                 return (obj)
     return
 
+
 def startTransit():
     from typeclasses.movingroom import MovingRoom
     for train in MovingRoom.objects.all():
         train.start_service()
+
 
 def genPrompt(obj):
     if ('caller' in dir(obj)):
@@ -137,11 +140,12 @@ def area_count():
         counts[area.db_key.title()] = area.objectdb_set.count()
     return (counts)
 
+
 def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=None, bidirectional=False):
     """
     Helper function to avoid code duplication.
     At this point we know destination is a valid location
-
+    TODO: Bidirectional doesn't work yet
     """
 
     location = search_object(location)
@@ -174,8 +178,8 @@ def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=N
             key=exit_name,
             location=location,
             aliases=exit_aliases,
-            #locks=lockstring,
-            #report_to=caller,
+            # locks=lockstring,
+            # report_to=caller,
         )
         if exit_obj:
             # storing a destination is what makes it an exit!
@@ -203,9 +207,11 @@ def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=N
         else:
             reverse = EXITS_REV[exit_name]
             rev_alias = EXIT_ALIAS[reverse]
-            rev_exit_obj = create_exit(reverse, exit_obj.destination, exit_obj.location, exit_aliases=rev_alias, typeclass=typeclass)
+            rev_exit_obj = create_exit(reverse, exit_obj.destination, exit_obj.location, exit_aliases=rev_alias,
+                                       typeclass=typeclass)
 
-        return([exit_obj, rev_exit_obj])
+        return ([exit_obj, rev_exit_obj])
+
 
 def rename_tag(old_tag_name, old_category, new_name, new_category=None):
     from evennia.utils.search import search_tag
@@ -214,38 +220,10 @@ def rename_tag(old_tag_name, old_category, new_name, new_category=None):
         obj.tags.add(new_name, category=new_category)
         obj.tags.remove(old_tag_name, category=old_category)
 
-def fixtags():
-    areas = { "pawmist": "twilight city of pawmist",
-              "erealms": "elven realms",
-              "shadval150": "kandahar shadow valley",
-              "sdearth": "south dearthwood",
-              "edearth": "east dearthwood",
-             "avalonch": "avalon",
-             "talonvle": "gilda and the dragon",
-             "takshrin": "shrine of tahkien",
-            "dawn": "city of dawn",
-             "tisland": "treasure island",
-            "amazon":"the amazon jungle",
-            "partbody": "body parts castle",
-            "north": "northern road",
-            'river': 'durgas river',
-            'island': 'island of illusion',
-            'east': 'eastern road',
-            'demise': 'death room',
-            'path': 'the hidden path',
-            'gstrong': 'goblin stronghold',
-            'plains': 'plains of the north',
-            'pyramid': 'the great pyramid',
-              'weaverei': 'the dreamweaver\'s path',
-            'marsh': 'generic old marsh',
-            'tree': 'yggdrasil',
-            'zoology': 'mudschool fieldtrip',
-            'dock': 'calinth docks',
-            'water': 'blizzard water nymphs',
-            'chessbrd': 'chessboard'}
 
-    for area in areas.keys():
-        for a in ['area','room']:
+def fixtags():
+    for area in settings.AREA_TRANSLATIONS.keys():
+        for a in ['area', 'room']:
             rename_tag(area, a, areas[area], a)
 
 
@@ -273,18 +251,18 @@ def claimRoom(owner, location):
             if caller.permissions.get('guests'):
                 claim = False
                 caller_message = "%s is already claimed by %s. Guests can only claim unclaimed rooms." % (
-                location.name, curr_owner.name)
+                    location.name, curr_owner.name)
             # Allow reclaiming property from guests
             elif curr_owner.permissions.get('guests'):
                 claim = True
                 caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
                 pub_message = "{w%s{n has removed {W%s{n's temporary control of {y%s{n in {G%s{n!" % (
-                caller.name, curr_owner.name, location.name, area)
+                    caller.name, curr_owner.name, location.name, area)
             else:
                 claim = True
                 caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
                 pub_message = "{W%s{n has taken over {y%s{n in {G%s{n from {w%s{n!" % (
-                caller.name, location.name, area, curr_owner.name)
+                    caller.name, location.name, area, curr_owner.name)
                 ## TODO: Conflict resolution to result in claim=True
                 # caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
                 # claim=False
@@ -317,4 +295,3 @@ def claimRoom(owner, location):
         except Exception as e:
             log_err(str(e))
     caller.msg(caller_message)
-

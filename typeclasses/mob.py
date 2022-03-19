@@ -78,7 +78,7 @@ class LegacyMob(Object):
 
         self.db.patrolling_pace = 6
         self.db.hunting_pace = 1
-        self.db.death_pace = 100  # stay dead for 100 seconds
+        self.db.death_pace = 300  # stay dead for 100 seconds
 
         self.db.last_ticker_interval = None
 
