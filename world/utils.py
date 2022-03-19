@@ -2,6 +2,8 @@ from django.conf import settings
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object
 from evennia.utils.create import create_object
+from evennia.utils.logger import log_err
+from evennia import search_channel
 
 from matterhook import Webhook
 
@@ -36,6 +38,10 @@ def findStatsMachine():
                 return (obj)
     return
 
+def startTransit():
+    from typeclasses.movingroom import MovingRoom
+    for train in MovingRoom.objects.all():
+        train.start_service()
 
 def genPrompt(obj):
     if ('caller' in dir(obj)):
@@ -241,3 +247,74 @@ def fixtags():
     for area in areas.keys():
         for a in ['area','room']:
             rename_tag(area, a, areas[area], a)
+
+
+def claimRoom(owner, location):
+    caller = owner
+    area = location.tags.get(category='area')
+    area = area.title()
+    claim = False
+
+    # Room is unclaimed
+    if not location.db.owner:
+        pub_message = "{y%s{w is now the owner of {y%s{n in {G%s{n!" % (caller.name, location.name, area)
+        caller_message = "You are now the owner of {y%s{n!" % location.name
+        claim = True
+    # Room is already claimed by caller
+    elif location.db.owner == caller.id:
+        caller_message = "You already own  %s." % location.name
+        pub_message = None
+        claim = False
+    # Room is already claimed by other
+    elif location.db.owner:
+        curr_owner = search_object('#' + str(location.db.owner))
+        if len(curr_owner) > 0:
+            curr_owner = curr_owner[0]
+            if caller.permissions.get('guests'):
+                claim = False
+                caller_message = "%s is already claimed by %s. Guests can only claim unclaimed rooms." % (
+                location.name, curr_owner.name)
+            # Allow reclaiming property from guests
+            elif curr_owner.permissions.get('guests'):
+                claim = True
+                caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
+                pub_message = "{w%s{n has removed {W%s{n's temporary control of {y%s{n in {G%s{n!" % (
+                caller.name, curr_owner.name, location.name, area)
+            else:
+                claim = True
+                caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
+                pub_message = "{W%s{n has taken over {y%s{n in {G%s{n from {w%s{n!" % (
+                caller.name, location.name, area, curr_owner.name)
+                ## TODO: Conflict resolution to result in claim=True
+                # caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
+                # claim=False
+                # if location.db.last_owner and location.db.last_owner != -1:
+                #     last_owner = search_object('#' + str(location.db.last_owner))
+                #     if len(last_owner) > 0:
+                #         last_owner = last_owner[0]
+                #     if caller.id == location.db.last_owner:
+                #         caller_message = "You have reclaimed {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
+                #         pub_message = "{y%s{w has reclaimed{G %s{w from {Y%s{w!{x" % (caller.name, location.name, owner.name)
+                #         claim=True
+                #     else:
+                #         caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
+                #         pub_message = "%s has taken over {y%s{n from {W%s{n!" % (caller.name, location.name, curr_owner.name)
+    else:
+        # This should never happen
+        log_err("No owner: typeclasses/rooms.py:132 Caller: %s Location: %s" % (caller.id, location.id))
+
+    if location.access(caller, "ownable") and claim == True:
+        location.db.last_owner = location.db.owner
+        location.db.owner = caller.id
+        if 'claims' in caller.db.stats.keys():
+            caller.db.stats['claims'] += 1
+        else:
+            caller.db.stats['claims'] = 1
+        if pub_message is not None:
+            search_channel("public")[0].msg(pub_message)
+        try:
+            caller.location.update_description()
+        except Exception as e:
+            log_err(str(e))
+    caller.msg(caller_message)
+
