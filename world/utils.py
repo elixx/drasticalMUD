@@ -36,6 +36,10 @@ def findStatsMachine():
                 return (obj)
     return
 
+def startTransit():
+    from typeclasses.movingroom import MovingRoom
+    for train in MovingRoom.objects.all():
+        train.start_service()
 
 def genPrompt(obj):
     if ('caller' in dir(obj)):

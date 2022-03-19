@@ -16,7 +16,7 @@ at_server_cold_stop()
 
 """
 from evennia import TICKER_HANDLER as tickerhandler
-from world.utils import findStatsMachine, sendWebHook
+from world.utils import findStatsMachine, sendWebHook, startTransit
 from world.ticker import global_tick
 
 def at_server_start():
@@ -29,6 +29,8 @@ def at_server_start():
     sendWebHook("Server started.")
 
     tickerhandler.add(60, global_tick)
+
+    startTransit()
 
     pass
 
