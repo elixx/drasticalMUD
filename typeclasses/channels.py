@@ -119,6 +119,7 @@ class Channel(DefaultChannel):
             if 'grapewinebot-gv' in senders:
                 if ": " in msgobj.message:
                     senders = msgobj.message.split(":")[0]
+                    senders = "{c" + senders + "{n"
                     msgobj.message = msgobj.message.split(":")[1][1:]
             else:
                 senders = "{c" + senders + "{n"
