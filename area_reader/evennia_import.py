@@ -1,3 +1,4 @@
+from django.conf import settings
 from evennia import create_object, search_object
 from evennia.utils.logger import log_info, log_err, log_warn
 from . import area_reader
@@ -67,6 +68,8 @@ class AreaImporter(object):
             s = s.replace("\\", "")
             s = s.replace(".", "")
             self.areaname = s
+
+        self.areaname = settings.AREA_TRANSLATIONS[self.areaname]
 
         self.rooms_created = False
         self.rooms_enumerated = False
