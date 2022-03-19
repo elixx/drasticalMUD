@@ -13,7 +13,7 @@ to be modified.
 """
 
 from evennia import DefaultChannel
-
+from evennia.utils.logger import log_info
 
 class Channel(DefaultChannel):
     """
@@ -90,3 +90,15 @@ class Channel(DefaultChannel):
             return "%s%s" % (sender_string, message)
         else:
             return "%s: %s" % (sender_string, message)
+
+    def format_external(self, msgobj, senders, emit=False, **kwargs):
+        log_info(senders)
+        log_info(msgobj)
+
+        return msgobj
+
+    def format_message(self, msgobj, emit=False, **kwargs):
+        log_info(msgobj)
+        log_info(emit)
+
+        return msgobj

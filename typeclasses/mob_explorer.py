@@ -2,13 +2,15 @@ from typeclasses.mob_talker import ChattyMob, LegacyMob
 from evennia import TICKER_HANDLER
 
 class ExplorerMob(ChattyMob):
+
     def at_init(self):
-        self.ndb.seen = {}
         super(LegacyMob).at_init()
+        self.ndb.seen = {}
 
     def at_object_creation(self):
         super().at_object_creation()
         self.db.chatty = False
+        self.ndb.seen = {}
 
     def at_after_move(self, source_location, **kwargs):
         area = self.location.tags.get(category='area')
@@ -21,9 +23,11 @@ class ExplorerMob(ChattyMob):
         else:
             self.ndb.seen[area].append( self.location.id )
             self.ndb.seen[area] = set(self.ndb.seen[area])
+
         super().at_after_move(source_location)
 
     def do_chat(self):
+
         room_count = 0
         areas = []
         for key, value in self.ndb.seen.items():

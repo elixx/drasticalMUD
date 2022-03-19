@@ -1,9 +1,9 @@
 from django.conf import settings
 from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object
+from evennia.utils.search import search_tag_object, search_channel
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err
-from evennia import search_channel
+
 
 from matterhook import Webhook
 
@@ -289,7 +289,7 @@ def claimRoom(owner, location):
         else:
             caller.db.stats['claims'] = 1
         if pub_message is not None:
-            search_channel("public")[0].msg(pub_message)
+            channel = search_channel("public")[0].msg(pub_message)
         try:
             caller.location.update_description()
         except Exception as e:
