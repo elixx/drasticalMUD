@@ -62,7 +62,6 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(CmdLook)
         self.add(extended_room.CmdExtendedRoomDesc)
         self.add(extended_room.CmdExtendedRoomDetail)
-        self.add(extended_room.CmdExtendedRoomGameTime)
 
         #
         # any commands you add below will overload the default ones.
