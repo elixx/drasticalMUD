@@ -116,6 +116,8 @@ class Channel(DefaultChannel):
         else:
             senders = [sender.key for sender in msgobj.senders]
             senders = ", ".join(senders)
+            if 'bot-' in senders:
+                log_info(senders)
             senders = "{c" + senders + "{n"
             msgobj.message = "{y" + msgobj.message + "{n"
             return self.pose_transform(msgobj, senders)
