@@ -3,6 +3,8 @@ from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_channel
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err
+from world.bookmarks import starts as start_rooms
+from random import choice
 
 from matterhook import Webhook
 
@@ -49,6 +51,23 @@ def restartExplorers():
     from typeclasses.mob_explorer import ExplorerMob
     for mob in ExplorerMob.objects.all():
         mob.at_object_creation()
+
+
+def warpArea(caller, area=None):
+    if area != None:
+        dest = choice(start_rooms[area])
+    else:
+        area = choice(list(start_rooms.keys()))
+        dest = choice(list(start_rooms[area]))
+    dest = search_object("#"+str(dest))
+    if len(dest) != 1:
+        caller.msg("beep boop " + "brrzap"*len(dest))
+        log_err("warpArea(): " + str(dest))
+    else:
+        caller.msg("You are warped to {y%s{n." % area.title())
+        caller.location.msg_contents("{y%s{n is warped to somewhere in {g%s{n." % (caller.name, area.title()))
+        caller.location = dest[0]
+
 
 
 def genPrompt(obj):
