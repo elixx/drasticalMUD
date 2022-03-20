@@ -26,8 +26,8 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         x = ObjectDB.objects.get_objs_with_attr("patrolling")
         table = self.styled_table("|Y#", "|YMob", "|YLocation", "|YArea", "|YMobile", "|YAreas", "|YRooms", border="none")
 
-        total_areas_seen = 0
-        total_rooms_seen = 0
+        areas = []
+        seenrooms = []
 
         for n in x:
             areas_seen = 0
@@ -36,6 +36,7 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
                 area = n.location.tags.get(category='area')
                 if area != None:
                     area = area.title()
+                    areas.append(area)
                 else:
                     area = "None"
                 locationname = utils.crop(str(n.location.id) + ':' + n.location.name, 30)
@@ -50,13 +51,15 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
                 areas_seen = len(n.ndb.seen)
                 for rooms in n.ndb.seen.values():
                     rooms_seen += len(rooms)
+                    seenrooms += rooms
             patrolling = "Y" if n.db.patrolling else "N"
             table.add_row(n.id, name, locationname, area, patrolling, areas_seen, rooms_seen)
-            total_areas_seen += areas_seen
-            total_rooms_seen += rooms_seen
+        areas = list(set(areas))
+        rooms = list(set(seenrooms))
         self.caller.msg(str(table))
-        self.caller.msg("Total areas: %s " % total_areas_seen)
-        self.caller.msg("Total rooms: %s " % total_rooms_seen)
+        self.caller.msg("Total areas: %s " % len(areas))
+        self.caller.msg("Total rooms: %s " % len(seenrooms))
+        self.caller.msg("Area list: %s" % ( ', '.join(areas)))
 
 class WizToolCmdSet(CmdSet):
     key = "WizToolCmdSet"
