@@ -171,6 +171,7 @@ class AreaImporter(object):
                 newroom = create_object(typeclass="typeclasses.rooms.ImportedRoom",
                                         key=room['name'],locks="puppet:false()")
                 newroom.db.desc = room['desc']
+                newroom.db.vnum = vnum
                 newroom.tags.add(room['area'], category='area')
                 newroom.tags.add(room['area'], category='room')
                 newroom.tags.add('imported', category='room')
@@ -219,6 +220,7 @@ class AreaImporter(object):
                     newexit.tags.add(room['area'], category='area')
                     newexit.tags.add('imported', category='exit')
                     newexit.db.area = room['area']
+                    newexit.db.vnum = vnum
             self.exits_created = True
 
     def spawnObjects(self):
@@ -247,6 +249,10 @@ class AreaImporter(object):
                                                           ('type', ob['type']),
                                                           ('area', ob['area'])])
                         newob.tags.add('imported', category='object')
+                        newob.tags.add(self.areaname, category='area')
+                        newob.tags.add(self.areaname, category='item')
+                        newob.db.vnum = vnum
+
                         #log_info("%s created in %s - #%s" % (ob['name'], loc.name, newob.id))
                     except Exception as e:
                         log_err("! Error creating object %s, vnum: %s location: %s -- " + str(e) % (ob['name'], vnum, loc.id))
