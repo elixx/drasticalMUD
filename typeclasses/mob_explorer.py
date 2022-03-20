@@ -66,8 +66,9 @@ class ContinentExplorer(ExplorerMob):
             targetName = target.key
             self.key = combineNames(self.key, targetName)
             self.ndb.seen.update(target.ndb.seen)
+            self.db.seen = self.ndb.seen
             log_warn("\t #%s seen: [%s]" % (self.id, ','.join(list(self.ndb.seen.keys()))))
-            del target
+            target.delete()
         super().do_patrol(*args, **kwargs)
 
         # exits = [exi for exi in self.location.exits if exi.access(self, "traverse")]
