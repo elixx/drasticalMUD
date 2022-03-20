@@ -4,6 +4,7 @@ from evennia.utils.search import search_tag_object, search_tag, search_channel
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err
 from world.bookmarks import starts as start_rooms
+from area_reader.evennia_import import AREA_TRANSLATIONS
 from random import choice
 
 from matterhook import Webhook
@@ -252,9 +253,9 @@ def rename_tag(old_tag_name, old_category, new_name, new_category=None):
 
 
 def fixtags():
-    for area in settings.AREA_TRANSLATIONS.keys():
+    for area in AREA_TRANSLATIONS.keys():
         for a in ['area', 'room']:
-            rename_tag(area, a, areas[area], a)
+            rename_tag(area, a, AREA_TRANSLATIONS[area], a)
 
 
 def claimRoom(owner, location):
@@ -325,3 +326,15 @@ def claimRoom(owner, location):
         except Exception as e:
             log_err(str(e))
     caller.msg(caller_message)
+
+
+def combineNames(name1, name2):
+    newname = name1[:round(len(name1) / 2)] + name2[1 - len(name2):]
+    return newname.strip()
+
+
+def startContExplorers():
+    for area in start_rooms.keys():
+        startLocation = '#' + str(choice(list(start_rooms[area])))
+        continentExplorer = create_object("typeclasses.mob_explorer.ContinentExplorer", key=area,
+                                          location=startLocation, home=startLocation)
