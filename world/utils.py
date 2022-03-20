@@ -47,9 +47,11 @@ def startTransit():
         train.start_service()
 
 
-def restartExplorers():
+def restartExplorers(location=None):
     from typeclasses.mob_explorer import ExplorerMob
     for mob in ExplorerMob.objects.all():
+        if location is not None:
+            mob.location = location
         mob.at_object_creation()
 
 
