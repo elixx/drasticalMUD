@@ -51,6 +51,10 @@ class ExplorerMob(ChattyMob):
             self.move_to(self.home)
 
 class ContinentExplorer(ExplorerMob):
+    def at_init(self):
+        self.ndb.seen = self.db.seen
+        super().at_init()
+
     def _find_target(self, location):
         targets = [
             obj
