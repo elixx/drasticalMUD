@@ -24,13 +24,15 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         self.caller.location.msg_contents("%s uses %s." % (self.caller.name, self.obj.name), exclude=self.caller)
 
         x = ObjectDB.objects.get_objs_with_attr("patrolling")
-        table = self.styled_table("|Y#", "|YMob Name", "|YLocation", "|YArea     ", '|YExp', "|YPat", "|YAreas", "|YRooms",
+        table = self.styled_table("|Y#", "|YType", "|YLocation", "|YArea", '|YExp', "|YPat", "|YAreas", "|YRooms",
                                   border="none")
 
         total_areas = []
         total_rooms = 0
-
+        count = 0
+        cexcount = 0
         for bot in x:
+            count += 1
             if bot.name:
                 name = bot.name
             else:
@@ -60,16 +62,27 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
 
             patrolling = "Y" if bot.db.patrolling else "N"
             explorer = "Y" if bot.ndb.seen else "N"
-
+            if "Continent" in bot.typeclass_path:
+                cexcount += 1
             # Append table row
-            table.add_row(bot.id, name, location, area, explorer, patrolling, len(areas_seen), rooms_seen)
+            table.add_row(utils.crop(':'.join([str(bot.id), bot.key]),width=35),
+                          str(bot.db_typeclass_path).split('.')[-1],
+                          utils.crop(location,width=15),
+                          utils.crop(area,width=16),
+                          explorer,
+                          patrolling,
+                          len(areas_seen),
+                          rooms_seen)
 
         areas = list(set(total_areas))
         rooms = total_rooms
         self.caller.msg(str(table))
         self.caller.msg("Total areas: %s " % len(areas))
         self.caller.msg("Total rooms: %s " % rooms)
-        self.caller.msg("Area list: %s" % (', '.join(areas)))
+        self.caller.msg("Total bots: %s " % count)
+        self.caller.msg("Continent Explorers: %s " % cexcount)
+
+        #self.caller.msg("Area list: %s" % (', '.join(areas)))
 
 
 class WizToolCmdSet(CmdSet):
