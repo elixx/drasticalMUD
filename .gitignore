@@ -64,3 +64,5 @@ nosetests.xml
 .idea
 *.run
 *.run.xml
+
+*.rnd

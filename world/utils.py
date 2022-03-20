@@ -1,6 +1,6 @@
 from django.conf import settings
 from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object, search_channel
+from evennia.utils.search import search_tag_object, search_tag, search_channel
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err
 from world.bookmarks import starts as start_rooms
@@ -47,9 +47,11 @@ def startTransit():
         train.start_service()
 
 
-def restartExplorers():
+def restartExplorers(location=None):
     from typeclasses.mob_explorer import ExplorerMob
     for mob in ExplorerMob.objects.all():
+        if location is not None:
+            mob.location = location
         mob.at_object_creation()
 
 
@@ -157,10 +159,15 @@ def qual(obj):
 
 
 def area_count():
+    from typeclasses.rooms import ImportedRoom
     counts = {}
+
     areas = search_tag_object(category='area')
+    allrooms = ImportedRoom.objects.all()
+
     for area in areas:
-        counts[area.db_key.title()] = area.objectdb_set.count()
+        rooms = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room")
+        counts[area.db_key.title()] = rooms.count()
     return (counts)
 
 

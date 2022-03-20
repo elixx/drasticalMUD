@@ -24,39 +24,53 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         self.caller.location.msg_contents("%s uses %s." % (self.caller.name, self.obj.name), exclude=self.caller)
 
         x = ObjectDB.objects.get_objs_with_attr("patrolling")
-        table = self.styled_table("|Y#", "|YMob", "|YLocation", "|YArea", "|YMobile", "|YAreas", "|YRooms", border="none")
+        table = self.styled_table("|Y#", "|YMob Name", "|YLocation", "|YArea     ", '|YExp', "|YPat", "|YAreas", "|YRooms",
+                                  border="none")
 
-        total_areas_seen = 0
-        total_rooms_seen = 0
+        total_areas = []
+        total_rooms = 0
 
-        for n in x:
-            areas_seen = 0
-            rooms_seen = 0
-            if n.location != None:
-                area = n.location.tags.get(category='area')
+        for bot in x:
+            if bot.name:
+                name = bot.name
+            else:
+                name = None
+
+            # Get current area and location
+            if bot.location != None:
+                area = bot.location.tags.get(category='area')
                 if area != None:
                     area = area.title()
-                else:
-                    area = "None"
-                locationname = utils.crop(str(n.location.id) + ':' + n.location.name, 30)
+                location = utils.crop(str(bot.location.id) + ':' + bot.location.name, 30)
             else:
-                locationname = "None"
-                area = 'None'
-            if n.name:
-                name = n.name
-            else:
-                name = 'None'
-            if n.ndb.seen:
-                areas_seen = len(n.ndb.seen)
-                for rooms in n.ndb.seen.values():
-                    rooms_seen += len(rooms)
-            patrolling = "Y" if n.db.patrolling else "N"
-            table.add_row(n.id, name, locationname, area, patrolling, areas_seen, rooms_seen)
-            total_areas_seen += areas_seen
-            total_rooms_seen += rooms_seen
+                location = None
+                area = None
+
+            # Get seen stats
+            areas_seen = []
+            rooms_seen = 0
+            if bot.ndb.seen:
+                for area in bot.ndb.seen.keys():
+                    if area is not None:
+                        areas_seen.append(area)
+                        rooms_seen += len(bot.ndb.seen[area])
+                areas_seen = list(set(areas_seen))
+                total_areas += areas_seen
+                total_rooms += rooms_seen
+
+            patrolling = "Y" if bot.db.patrolling else "N"
+            explorer = "Y" if bot.ndb.seen else "N"
+
+            # Append table row
+            table.add_row(bot.id, name, location, area, explorer, patrolling, len(areas_seen), rooms_seen)
+
+        areas = list(set(total_areas))
+        rooms = total_rooms
         self.caller.msg(str(table))
-        self.caller.msg("Total areas: %s " % total_areas_seen)
-        self.caller.msg("Total rooms: %s " % total_rooms_seen)
+        self.caller.msg("Total areas: %s " % len(areas))
+        self.caller.msg("Total rooms: %s " % rooms)
+        self.caller.msg("Area list: %s" % (', '.join(areas)))
+
 
 class WizToolCmdSet(CmdSet):
     key = "WizToolCmdSet"

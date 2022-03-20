@@ -79,6 +79,3 @@ def at_initial_setup():
         dest = entries[area][0]
         train.add_destination(dest, randint(3,10))
         log_info("Train stop added for %s" % area)
-
-
-
