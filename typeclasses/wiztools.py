@@ -76,12 +76,34 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
 
         areas = list(set(total_areas))
         rooms = total_rooms
-        self.caller.msg(str(table))
-        self.caller.msg("Total areas: %s " % len(areas))
-        self.caller.msg("Total rooms: %s " % rooms)
-        self.caller.msg("Total bots: %s " % count)
-        self.caller.msg("Continent Explorers: %s " % cexcount)
 
+        if self.caller.db.wiztool_last_len_areas:
+            wiztool_last_len_areas = self.caller.db.wiztool_last_len_areas
+        else:
+            self.caller.db.wiztool_last_len_areas = 0
+            wiztool_last_len_areas = 0
+
+        if self.caller.db.wiztool_last_len_rooms:
+            wiztool_last_len_rooms = self.caller.db.wiztool_last_len_rooms
+        else:
+            self.caller.db.wiztool_last_len_rooms = 0
+            wiztool_last_len_rooms = 0
+
+        if self.caller.db.wiztool_last_cex:
+            wiztool_last_cex = self.caller.db.wiztool_last_cex
+        else:
+            self.caller.db.wiztool_last_cex = 0
+            wiztool_last_cex = 0
+
+        self.caller.msg(str(table))
+        self.caller.msg("Total areas: %s (%s)" % (len(areas), len(areas) - wiztool_last_len_areas))
+        self.caller.msg("Total rooms: %s (%s)" % (rooms, rooms - wiztool_last_len_rooms))
+        self.caller.msg("Total bots: %s " % count)
+        self.caller.msg("ContinentExplorers: %s (%s)" % (cexcount, cexcount - wiztool_last_cex))
+
+        self.caller.db.wiztool_last_len_areas = len(areas)
+        self.caller.db.wiztool_last_len_rooms = rooms
+        self.caller.db.wiztool_last_cex = cexcount
         #self.caller.msg("Area list: %s" % (', '.join(areas)))
 
 
