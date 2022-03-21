@@ -8,8 +8,8 @@ import random
 class ExplorerMob(ChattyMob):
 
     def at_init(self):
-        self.ndb.seen = {}
-        self.start_patrolling()
+        if self.db.patrolling:
+            self.start_patrolling()
 
     def at_object_creation(self):
         super().at_object_creation()
