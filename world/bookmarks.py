@@ -102,7 +102,7 @@ starts = {   'limbo':               [7],
              'river of despair': [7623],
              'sesame street': [7672],
              'the abyss': [7733],
-             'river': [7822],3
+             'river': [7822],
              'amazon': [7855],
              'gstrong': [7906],
              'water': [7933],
