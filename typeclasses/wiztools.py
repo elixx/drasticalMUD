@@ -51,7 +51,7 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
             # Get seen stats
             areas_seen = []
             rooms_seen = 0
-            if bot.ndb.seen:
+            if bot.ndb.seen is not None:
                 for area in bot.ndb.seen.keys():
                     if area is not None:
                         areas_seen.append(area)
