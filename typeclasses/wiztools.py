@@ -67,8 +67,8 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
             # Append table row
             table.add_row(utils.crop(':'.join([str(bot.id), bot.key]),width=28, suffix=".."),
                           utils.crop(str(bot.db_typeclass_path).split('.')[-1], width=8,suffix="~"),
-                          utils.crop(location,width=25, suffix=".."),
-                          utils.crop(area,width=19, suffix=".."),
+                          utils.crop(location,width=18, suffix=".."),
+                          utils.crop(area.title(),width=19, suffix=".."),
                           explorer,
                           patrolling,
                           len(areas_seen),
