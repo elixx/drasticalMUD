@@ -83,3 +83,6 @@ class ContinentExplorer(ExplorerMob):
         # else:
         #     self.move_to(self.home)
 
+    def at_msg_receive(self, text=None, from_obj=None, **kwargs):
+        if "pokes you" in text:
+            self.at_object_creation()

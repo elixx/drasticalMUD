@@ -113,3 +113,7 @@ starts = {   'limbo':               [7],
              'the walls of the city of anon': [8261],
              'edearth': [8381],
              "gilligan's island": [8481]}
+
+# 1477 - Dreamscape -  A dimly lit room with bed candlestick, etc
+# 1478 - Beginning of Dreamscape?
+#

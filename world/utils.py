@@ -55,6 +55,15 @@ def restartExplorers(location=None):
             mob.location = location
         mob.at_object_creation()
 
+def fixContinentExplorers():
+    from typeclasses.mob_explorer import ContinentExplorer
+    for bot in ContinentExplorer.objects.all():
+        if bot.db.seen == None:
+            bot.at_object_creation()
+        if not bot.db.patrolling:
+            bot.db.patrolling = True
+            bot.at_init()
+
 
 def warpArea(caller, area=None):
     if area != None:
