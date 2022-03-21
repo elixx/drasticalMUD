@@ -127,14 +127,14 @@ class MovingRoom(DefaultRoom):
     def travel(self):
         if self.db.in_service:
             self.db.current_dist += self.db.speed
-            if self.db.current_dist >= self.db.route[self.db.route_pos]:
-                self._set_ticker(None, None, stop=True)
-                self.arrive()
-            else:
-                if (choice([True, False, False])):
-                    self.msg_contents(choice(self.db.transit_msgs) % self.name.capitalize())
+            if isinstance(self.db.route[self.db.route_pos],int):
+                if self.db.current_dist >= int(self.db.route[self.db.route_pos]):
+                    self._set_ticker(None, None, stop=True)
+                    self.arrive()
+                else:
+                    if (choice([True, False, False])):
+                        self.msg_contents(choice(self.db.transit_msgs) % self.name.capitalize())
 
-            route = self.db.destinations
 
     def arrive(self):
         self.db.in_station = True
