@@ -7,6 +7,7 @@ import random
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
+
 class CmdMobOnOff(COMMAND_DEFAULT_CLASS):
     """
     Activates/deactivates Mob
@@ -46,9 +47,12 @@ class MobCmdSet(CmdSet):
     """
     Holds the admin command controlling the mob
     """
+
     def at_cmdset_creation(self):
         self.add(CmdMobOnOff())
 
+
+# TODO: Copied from contrib, needs attack stuff cleaned up:
 class LegacyMob(Object):
     def at_before_say(self, message, **kwargs):
         """
@@ -115,7 +119,7 @@ class LegacyMob(Object):
         targets = [
             obj
             for obj in location.contents_get(exclude=self)
-            if obj.has_account #and not obj.is_superuser
+            if obj.has_account  # and not obj.is_superuser
         ]
         return targets[0] if targets else None
 
@@ -160,10 +164,10 @@ class LegacyMob(Object):
         if not self.db.aggressive:
             self.start_hunting()
             return
-        #self._set_ticker(self.db.aggressive_pace, "do_attack")
+        # self._set_ticker(self.db.aggressive_pace, "do_attack")
         self.ndb.is_patrolling = False
         self.ndb.is_hunting = False
-        #self.ndb.is_attacking = True
+        # self.ndb.is_attacking = True
 
     def do_patrol(self, *args, **kwargs):
         if random.random() < 0.01 and self.db.irregular_msgs:
@@ -206,12 +210,10 @@ class LegacyMob(Object):
         if not target:
             self.start_hunting()
             return
-        #attack_cmd = random.choice(("thrust", "pierce", "stab", "slash", "chop"))
-        attack_cmd = random.choice(("burp","fart","smile","narf"))
+        # attack_cmd = random.choice(("thrust", "pierce", "stab", "slash", "chop"))
+        attack_cmd = random.choice(("burp", "fart", "smile", "narf"))
         self.execute_cmd("%s %s" % (attack_cmd, target))
 
     def at_new_arrival(self, new_character):
         if self.db.aggressive and not self.ndb.is_hunting:
             self.start_hunting()
-
-
