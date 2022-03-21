@@ -102,7 +102,7 @@ starts = {   'limbo':               [7],
              'river of despair': [7623],
              'sesame street': [7672],
              'the abyss': [7733],
-             'river': [7822],
+             'river': [7822],3
              'amazon': [7855],
              'gstrong': [7906],
              'water': [7933],
@@ -113,3 +113,7 @@ starts = {   'limbo':               [7],
              'the walls of the city of anon': [8261],
              'edearth': [8381],
              "gilligan's island": [8481]}
+
+# 1477 - Dreamscape -  A dimly lit room with bed candlestick, etc
+# 1478 - Beginning of Dreamscape?
+#
