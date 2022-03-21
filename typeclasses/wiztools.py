@@ -65,9 +65,9 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
             if "Continent" in bot.typeclass_path:
                 cexcount += 1
             # Append table row
-            table.add_row(utils.crop(':'.join([str(bot.id), bot.key]),width=30, suffix=".."),
+            table.add_row(utils.crop(':'.join([str(bot.id), bot.key]),width=28, suffix=".."),
                           utils.crop(str(bot.db_typeclass_path).split('.')[-1], width=8,suffix="~"),
-                          utils.crop(location,width=17, suffix=".."),
+                          utils.crop(location,width=25, suffix=".."),
                           utils.crop(area,width=19, suffix=".."),
                           explorer,
                           patrolling,
