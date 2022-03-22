@@ -28,7 +28,7 @@ def at_server_start():
     machine.incr('server_start')
     sendWebHook("Server started.")
 
-    tickerhandler.add(60, global_tick)
+    # tickerhandler.add(60, global_tick)
 
     startTransit()
     restartExplorers()
