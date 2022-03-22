@@ -2,10 +2,12 @@ from django.conf import settings
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag, search_channel
 from evennia.utils.create import create_object
+from evennia.utils import run_async
 from evennia.utils.logger import log_err
 from world.bookmarks import starts as start_rooms
 from area_reader.evennia_import import AREA_TRANSLATIONS
 from random import choice
+from time import sleep
 
 from matterhook import Webhook
 
@@ -63,6 +65,8 @@ def fixContinentExplorers():
         if not bot.db.patrolling:
             bot.db.patrolling = True
             bot.at_init()
+        if bot.db.is_dead:
+            bot.db.is_dead = False
 
 
 def warpArea(caller, area=None):
@@ -343,7 +347,12 @@ def combineNames(name1, name2):
 
 
 def startContExplorers():
+    async def work(area, loc):
+        yield create_object("typeclasses.mob_explorer.ContinentExplorer", key=area,
+                        location=loc, home=loc,
+                        attributes=[('patrolling_pace', 1)])
+
     for area in start_rooms.keys():
         startLocation = '#' + str(choice(list(start_rooms[area])))
-        continentExplorer = create_object("typeclasses.mob_explorer.ContinentExplorer", key=area,
-                                          location=startLocation, home=startLocation)
+        work(area, startLocation)
+
