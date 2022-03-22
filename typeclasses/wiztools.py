@@ -33,15 +33,10 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         cexcount = 0
         for bot in x:
             count += 1
-            if bot.name:
-                name = bot.name
-            else:
-                name = None
-
             # Get current area and location
             if bot.location != None:
                 area = bot.location.tags.get(category='area')
-                if area != None:
+                if area is not None:
                     area = area.title()
                 location = utils.crop(str(bot.location.id) + ':' + bot.location.name, 30)
             else:
@@ -65,10 +60,14 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
             if "Continent" in bot.typeclass_path:
                 cexcount += 1
             # Append table row
+            if area is not None:
+                area = area
+            else:
+                area = "None"
             table.add_row(utils.crop(':'.join([str(bot.id), bot.key]),width=28, suffix=".."),
                           utils.crop(str(bot.db_typeclass_path).split('.')[-1], width=8,suffix="~"),
                           utils.crop(location,width=18, suffix=".."),
-                          utils.crop(area.title(),width=19, suffix=".."),
+                          utils.crop(area, width=12),
                           explorer,
                           patrolling,
                           len(areas_seen),

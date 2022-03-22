@@ -1,9 +1,9 @@
-from typeclasses.mob_talker import ChattyMob, LegacyMob
+from typeclasses.mob_talker import ChattyMob
 from typeclasses.rooms import CmdClaimRoom
-from world.bookmarks import starts as start_rooms
 from world.utils import combineNames
 from evennia.utils.logger import log_warn
 import random
+import time
 
 class ExplorerMob(ChattyMob):
 
@@ -14,7 +14,6 @@ class ExplorerMob(ChattyMob):
 
     def at_object_creation(self):
         super().at_object_creation()
-        self.db.chatty = False
         self.ndb.seen = {}
 
     def at_after_move(self, source_location, **kwargs):
@@ -54,6 +53,8 @@ class ExplorerMob(ChattyMob):
 class ContinentExplorer(ExplorerMob):
     def at_init(self):
         self.ndb.seen = self.db.seen
+        if self.db.patrolling is None:
+            self.db.patrolling = True
         super().at_init()
 
     def _find_target(self, location):
@@ -67,13 +68,12 @@ class ContinentExplorer(ExplorerMob):
     def do_patrol(self, *args, **kwargs):
         target = self._find_target(self.location)
         if target:
-            log_warn("%s %s - convergence detected: %s %s" % (self.id, self.key, target.id, target.key))
             targetName = target.key
             self.key = combineNames(self.key, targetName)
             self.ndb.seen.update(target.ndb.seen)
             self.db.seen = self.ndb.seen
-            log_warn("\t #%s seen: [%s]" % (self.id, ','.join(list(self.ndb.seen.keys()))))
             target.delete()
+            log_warn("%s-%s (convergence) %s+%s=%s" % (self.key, target.key, self.id, target.id, newname))
         super().do_patrol(*args, **kwargs)
 
         # exits = [exi for exi in self.location.exits if exi.access(self, "traverse")]
@@ -84,5 +84,5 @@ class ContinentExplorer(ExplorerMob):
         #     self.move_to(self.home)
 
     def at_msg_receive(self, text=None, from_obj=None, **kwargs):
-        if "pokes you" in text:
+        if "pokes at you" in text:
             self.at_object_creation()
