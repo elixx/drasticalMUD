@@ -1,4 +1,4 @@
-from evennia import search_object
+from evennia.utils.search import search_object
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_info, log_err, log_warn
 
@@ -33,7 +33,8 @@ AREA_TRANSLATIONS = {"pawmist": "twilight city of pawmist",
                      'dock': 'calinth docks',
                      'water': 'blizzard water nymphs',
                      'drmscp': 'dreamscape',
-                     'chessbrd': 'chessboard'}
+                     'chessbrd': 'chessboard',
+                     'under2': 'underdark'}
 
 DIRS = {0: "north",
         1: "east",
