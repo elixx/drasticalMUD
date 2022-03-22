@@ -81,23 +81,17 @@ class ContinentExplorer(ExplorerMob):
             log_warn("%s-%s (convergence) %s+%s=%s" % (self.key, target.key, self.id, target.id, newname))
         super().do_patrol(*args, **kwargs)
 
-        # exits = [exi for exi in self.location.exits if exi.access(self, "traverse")]
-        # if exits:
-        #     exit = random.choice(exits)
-        #     self.move_to(exit.destination)
-        # else:
-        #     self.move_to(self.home)
-
     def at_msg_receive(self, text=None, from_obj=None, **kwargs):
         if "pokes at you" in text:
             self.at_object_creation()
 
 
-def restartExplorers(location=None):
-    for mob in ExplorerMob.objects.all():
-        if location is not None:
-            mob.location = location
-        mob.at_object_creation()
+def restartExplorers():
+    for mob in ContinentExplorer.objects.all():
+        mob.location = mob.home
+        mob.db.patrolling = True
+        mob.db.is_dead = False
+    mob.at_object_creation()
 
 
 def fixContinentExplorers():
@@ -109,3 +103,4 @@ def fixContinentExplorers():
             bot.at_init()
         if bot.db.is_dead:
             bot.db.is_dead = False
+        bot.db.patrolling = True
