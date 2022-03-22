@@ -115,7 +115,7 @@ class MovingRoom(DefaultRoom):
             self.update_exits()
             self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
             loc.msg_contents("The doors close as %s begins picking up speed and pulls off." % self.name)
-        self._set_ticker(self.db.speed, "travel")
+        self._set_ticker(self.db.speed, self.travel)
 
     def stop_service(self):
         if self.db.in_service:
@@ -163,7 +163,7 @@ class MovingRoom(DefaultRoom):
         self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t\t{c%s{x" % (
         loc.name, next.name)
         loc.msg_contents(announce)
-        self._set_ticker(self.db.wait_at_destination, "start_service")
+        self._set_ticker(self.db.wait_at_destination, self.start_service)
 
     def add_destination(self, dest, time_to_next=10, index=-1):
         try:
