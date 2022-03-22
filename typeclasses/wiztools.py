@@ -24,7 +24,7 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         self.caller.location.msg_contents("%s uses %s." % (self.caller.name, self.obj.name), exclude=self.caller)
 
         x = ObjectDB.objects.get_objs_with_attr("patrolling")
-        table = self.styled_table("|Y#", "|YType", "|YLocation", "|YArea", '|YExp', "|YPat", "|YAreas", "|YRooms",
+        table = self.styled_table("|Y#", "|YType", "|YLocation", "|YArea", '|YDB', "|YPtl", "|YAreas", "|YRooms",
                                   border="none")
 
         total_areas = []
@@ -64,10 +64,10 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
                 area = area
             else:
                 area = "None"
-            table.add_row(utils.crop(':'.join([str(bot.id), bot.key]),width=28, suffix=".."),
-                          utils.crop(str(bot.db_typeclass_path).split('.')[-1], width=8,suffix="~"),
-                          utils.crop(location,width=18, suffix=".."),
-                          utils.crop(area, width=12),
+            table.add_row(utils.crop(':'.join([str(bot.id), bot.key]),width=30, suffix=".."),
+                          str(bot.db_typeclass_path).split('.')[-1][0],
+                          utils.crop(location,width=30, suffix=".."),
+                          utils.crop(area, width=15),
                           explorer,
                           patrolling,
                           len(areas_seen),
