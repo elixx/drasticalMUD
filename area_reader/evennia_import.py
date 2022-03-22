@@ -1,4 +1,4 @@
-from evennia import search_object
+from evennia.utils.search import search_object
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_info, log_err, log_warn
 
@@ -32,7 +32,9 @@ AREA_TRANSLATIONS = {"pawmist": "twilight city of pawmist",
                      'zoology': 'mudschool fieldtrip',
                      'dock': 'calinth docks',
                      'water': 'blizzard water nymphs',
-                     'chessbrd': 'chessboard'}
+                     'drmscp': 'dreamscape',
+                     'chessbrd': 'chessboard',
+                     'under2': 'underdark'}
 
 DIRS = {0: "north",
         1: "east",
@@ -173,16 +175,16 @@ class AreaImporter(object):
                     firstRoom = True
                 try:
                     newroom = create_object(typeclass="typeclasses.rooms.ImportedRoom",
-                                            key=room['name'], locks="puppet:false()")
+                                            key=room['name'],
+                                            tags=[(room['area'], 'area'),
+                                                  (room['area'], 'room')],
+                                            attributes=[('desc', room['desc']),
+                                                        ('vnum',vnum),
+                                                        ('area', room['area'])])
                 except:
                     print(room['name'])
                     raise
-                newroom.db.desc = room['desc']
-                newroom.db.vnum = vnum
-                newroom.tags.add(room['area'], category='area')
-                newroom.tags.add(room['area'], category='room')
-                newroom.tags.add('imported', category='room')
-                newroom.db.area = room['area']
+
                 self.room_translate[vnum] = newroom.id
                 # log_info(
                 #     "spawnRooms(): Area:%s Room:'%s' Vnum:%s Evid:%s" % (room['area'], room['name'], vnum, newroom.id))
@@ -224,12 +226,11 @@ class AreaImporter(object):
                             evid) + " skipped " + str(exitData['dest']) + " not found.")
                         continue
                     newexit = create_object(typeclass="typeclasses.exits.LegacyExit",
-                                            key=exitDir, location=loc, destination=dest)
-                    newexit.aliases.add(DIRALIAS[exitDir])
-                    newexit.tags.add(room['area'], category='area')
-                    newexit.tags.add('imported', category='exit')
-                    newexit.db.area = room['area']
-                    newexit.db.vnum = vnum
+                                            key=exitDir, location=loc, destination=dest,
+                                            aliases=[DIRALIAS[exitDir]],
+                                            tags=[(room['area'],'exit')],
+                                            attributes=[('area',room['area']),
+                                                        ('vnum',vnum)])
             self.exits_created = True
 
     def spawnObjects(self):
@@ -256,11 +257,11 @@ class AreaImporter(object):
                                               attributes=[('desc', ob['desc']),
                                                           ('ext_desc', ob['ext']),
                                                           ('type', ob['type']),
-                                                          ('area', ob['area'])])
-                        newob.tags.add('imported', category='object')
-                        newob.tags.add(self.areaname, category='area')
-                        newob.tags.add(self.areaname, category='item')
-                        newob.db.vnum = vnum
+                                                          ('area', ob['area']),
+                                                          ('vnum', vnum)],
+                                              tags=[("imported","object"),
+                                                    (self.areaname, 'area'),
+                                                    (self.areaname, 'item')])
 
                         # log_info("%s created in %s - #%s" % (ob['name'], loc.name, newob.id))
                     except Exception as e:

@@ -35,8 +35,8 @@ class ChattyMob(LegacyMob):
         super().at_init()
         self._init_chatdb()
 
-    def at_object_creation(self):
-        super().at_object_creation()
-        self._init_chatdb()
-        if self.db.chatty:
-            self._chat_ticker(self.db.chat_frequency, "do_chat")
+    # def at_object_creation(self):
+    #     super().at_object_creation()
+    #     self._init_chatdb()
+    #     if self.db.chatty:
+    #         self._chat_ticker(self.db.chat_frequency, "do_chat")
