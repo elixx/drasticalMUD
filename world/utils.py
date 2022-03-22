@@ -50,25 +50,6 @@ def startTransit():
         train.start_service()
 
 
-def restartExplorers(location=None):
-    from typeclasses.mob_explorer import ExplorerMob
-    for mob in ExplorerMob.objects.all():
-        if location is not None:
-            mob.location = location
-        mob.at_object_creation()
-
-def fixContinentExplorers():
-    from typeclasses.mob_explorer import ContinentExplorer
-    for bot in ContinentExplorer.objects.all():
-        if bot.db.seen == None:
-            bot.at_object_creation()
-        if not bot.db.patrolling:
-            bot.db.patrolling = True
-            bot.at_init()
-        if bot.db.is_dead:
-            bot.db.is_dead = False
-
-
 def warpArea(caller, area=None):
     if area != None:
         dest = choice(start_rooms[area])
@@ -356,3 +337,20 @@ def startContExplorers():
         startLocation = '#' + str(choice(list(start_rooms[area])))
         work(area, startLocation)
 
+def restartExplorers(location=None):
+    from typeclasses.mob_explorer import ExplorerMob
+    for mob in ExplorerMob.objects.all():
+        if location is not None:
+            mob.location = location
+        mob.at_object_creation()
+
+def fixContinentExplorers():
+    from typeclasses.mob_explorer import ContinentExplorer
+    for bot in ContinentExplorer.objects.all():
+        if bot.db.seen == None:
+            bot.at_object_creation()
+        if not bot.db.patrolling:
+            bot.db.patrolling = True
+            bot.at_init()
+        if bot.db.is_dead:
+            bot.db.is_dead = False

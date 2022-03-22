@@ -114,8 +114,4 @@ starts = {   'limbo':               [7],
              'edearth': [8381],
              "gilligan's island": [8481]}
 
-# 1477 - Dreamscape -  A dimly lit room with bed candlestick, etc
-# 1478 - Beginning of Dreamscape
 
-# 6316 - Chance's Heavenly Retreat - Heaven
-#

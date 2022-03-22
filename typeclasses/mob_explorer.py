@@ -5,6 +5,7 @@ from evennia.utils.logger import log_warn
 import random
 import time
 
+
 class ExplorerMob(ChattyMob):
 
     def at_init(self):
@@ -22,9 +23,9 @@ class ExplorerMob(ChattyMob):
             self.ndb.seen = {}
 
         if area not in self.ndb.seen.keys():
-            self.ndb.seen[area] = [ self.location.id ]
+            self.ndb.seen[area] = [self.location.id]
         else:
-            self.ndb.seen[area].append( self.location.id )
+            self.ndb.seen[area].append(self.location.id)
             self.ndb.seen[area] = list(set(self.ndb.seen[area]))
         super().at_after_move(source_location)
 
@@ -50,9 +51,13 @@ class ExplorerMob(ChattyMob):
         else:
             self.move_to(self.home)
 
+
 class ContinentExplorer(ExplorerMob):
     def at_init(self):
-        self.ndb.seen = self.db.seen
+        if not self.ndb.seen:
+            self.ndb.seen = {}
+        if self.db.seen:
+            self.ndb.seen = self.db.seen
         if self.db.patrolling is None:
             self.db.patrolling = True
         super().at_init()
@@ -76,13 +81,26 @@ class ContinentExplorer(ExplorerMob):
             log_warn("%s-%s (convergence) %s+%s=%s" % (self.key, target.key, self.id, target.id, newname))
         super().do_patrol(*args, **kwargs)
 
-        # exits = [exi for exi in self.location.exits if exi.access(self, "traverse")]
-        # if exits:
-        #     exit = random.choice(exits)
-        #     self.move_to(exit.destination)
-        # else:
-        #     self.move_to(self.home)
-
     def at_msg_receive(self, text=None, from_obj=None, **kwargs):
         if "pokes at you" in text:
             self.at_object_creation()
+
+
+def restartExplorers():
+    for mob in ContinentExplorer.objects.all():
+        mob.location = mob.home
+        mob.db.patrolling = True
+        mob.db.is_dead = False
+    mob.at_object_creation()
+
+
+def fixContinentExplorers():
+    for bot in ContinentExplorer.objects.all():
+        if bot.db.seen == None:
+            bot.at_object_creation()
+        if not bot.db.patrolling:
+            bot.db.patrolling = True
+            bot.at_init()
+        if bot.db.is_dead:
+            bot.db.is_dead = False
+        bot.db.patrolling = True

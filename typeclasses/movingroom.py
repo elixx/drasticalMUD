@@ -86,8 +86,8 @@ class MovingRoom(DefaultRoom):
             self.exitOut.location = None
 
     def start_service(self):
-        del self.db.last_hook_key
-        del self.db.last_ticker_interval
+        # del self.db.last_hook_key
+        # del self.db.last_ticker_interval
         self.db.in_service = True
 
         if self.db.in_station:
@@ -122,7 +122,8 @@ class MovingRoom(DefaultRoom):
             self.msg_contents("%s slows to a halt." % self.name.capitalize())
             self.db.in_service = False
             self.db.desc = "An electronic sign reads:\n\t{rTemporarily out of service.{x"
-            self._set_ticker(None, None, stop=True)
+        self._set_ticker(None, None, stop=True)
+        self.db.in_service = False
 
     def travel(self):
         if self.db.in_service:
