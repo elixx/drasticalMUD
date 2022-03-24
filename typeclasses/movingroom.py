@@ -131,11 +131,11 @@ class MovingRoom(DefaultRoom):
                 next = search_object(self.db.route[0])[0]
             if next.tags.get(category='area') != None:
                 nextarea = next.tags.get(category='area')
-                announce = "%s announces, '{xNext stop: {c%s{x in {y%s{x.{n'" % (
+                announce = "%s announces, '|xNext stop: |c%s|x in |y%s|x.|n'" % (
                 self.name.capitalize(), next.name, nextarea.title())
             else:
-                announce = "%s announces, '{xNext stop: {c%s{x.{n'" % (self.name.capitalize(), loc.name)
-            self.db.desc = "An electronic sign reads:\n\t{yDeparting:\t{c%s{x\n\t{yNext Stop:\t{c%s{x" % (
+                announce = "%s announces, '|xNext stop: |c%s|x.|n'" % (self.name.capitalize(), loc.name)
+            self.db.desc = "An electronic sign reads:\n\t|yDeparting:\t|c%s|x\n\t|yNext Stop:\t|c%s|x" % (
             loc.name, next.name)
             self.msg_contents(announce)
             loc.msg_contents(announce)
@@ -149,7 +149,7 @@ class MovingRoom(DefaultRoom):
         if self.db.in_service:
             self.msg_contents("%s slows to a halt." % self.name.capitalize())
             self.db.in_service = False
-            self.db.desc = "An electronic sign reads:\n\t{rTemporarily out of service.{x"
+            self.db.desc = "An electronic sign reads:\n\t|rTemporarily out of service.|x"
             self._set_ticker(None, None, stop=True)
 
     def travel(self):
@@ -173,11 +173,11 @@ class MovingRoom(DefaultRoom):
         loc = search_object(self.db.route[self.db.route_pos])[0]
         if loc.tags.get(category='area') != None:
             area = loc.tags.get(category='area')
-            announce = "%s announces, '{xWelcome to {Y%s{x in {y%s{x.'" % (
+            announce = "%s announces, '|xWelcome to |Y%s|x in |y%s|x.'" % (
             self.name.capitalize(), loc.name, area.title())
-            # announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, area.title())
+            # announce = "%s announces, '|xNow arriving at |c%s|x in |y%s|x.'" % (self.name, loc.name, area.title())
         else:
-            announce = "%s announces, '{xNow arriving at {c%s{x.'" % (self.name.capitalize(), loc.name)
+            announce = "%s announces, '|xNow arriving at |c%s|x.'" % (self.name.capitalize(), loc.name)
         self.msg_contents(announce)
         self.update_exits()
         self.msg_contents("%s glides to a halt and the doors open." % self.name.capitalize())
@@ -187,7 +187,7 @@ class MovingRoom(DefaultRoom):
             next = search_object(self.db.route[self.db.route_pos + 2])[0]
         else:
             next = search_object(self.db.route[0])[0]
-        self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t\t{c%s{x" % (
+        self.db.desc = "An electronic sign reads:\n\t|yCurrent Stop:\t|c%s|x\n\t|yNext:\t\t|c%s|x" % (
         loc.name, next.name)
         loc.msg_contents(announce)
         self._set_ticker(self.db.wait_at_destination, "start_service")
@@ -209,7 +209,7 @@ class MovingRoom(DefaultRoom):
         self.db.route.append(dest)
         self.db.route.append(time_to_next)
 
-        self.msg_contents(self.name.capitalize() + " announces, '{c" + loc.name + "{x has been added to the route.'")
+        self.msg_contents(self.name.capitalize() + " announces, '|c" + loc.name + "|x has been added to the route.'")
         return self.db.routes
 
     def del_destination(self, dest=None):
@@ -223,7 +223,7 @@ class MovingRoom(DefaultRoom):
             if d == dest:
                 del self.db.route[i]
                 self.msg_contents(
-                    self.name.capitalize() + "announces, '{c" + loc.name + "{x has been removed from the route.'")
+                    self.name.capitalize() + "announces, '|c" + loc.name + "|x has been removed from the route.'")
                 return self.db.destinations
 
 
