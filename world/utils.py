@@ -2,9 +2,9 @@ from django.conf import settings
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_channel
 from evennia.utils.create import create_object
-from evennia.utils.logger import log_err
+from evennia.utils.logger import log_err, log_info
 from world.bookmarks import starts as start_rooms
-from random import choice
+from random import choice, randint
 
 
 def findStatsMachine():
@@ -26,7 +26,7 @@ def findStatsMachine():
 def startTransit():
     from typeclasses.movingroom import MovingRoom
     for train in MovingRoom.objects.all():
-        train.start_service()
+        train.at_object_creation()
 
 
 def warpArea(caller, area=None):
@@ -116,8 +116,8 @@ def claimRoom(owner, location):
 
 
 def startContExplorers():
-    async def work(area, loc):
-        yield create_object("typeclasses.mob_explorer.ContinentExplorer", key=area,
+    def work(area, loc):
+        create_object("typeclasses.mob_explorer.ContinentExplorer", key=area,
                             location=loc, home=loc,
                             attributes=[('patrolling_pace', 1)])
 
