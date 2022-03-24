@@ -164,8 +164,9 @@ def qual(obj):
     else:
         return "standard"
 
-
+import time
 def area_count():
+    start = time.time()
     from typeclasses.rooms import ImportedRoom
     counts = {}
     areas = search_tag_object(category='area')
@@ -173,4 +174,7 @@ def area_count():
     for area in areas:
         rooms = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room")
         counts[area.db_key.title()] = rooms.count()
+    end = time.time()
+    print("area_count() took", end-start, "s")
     return (counts)
+

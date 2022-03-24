@@ -139,9 +139,10 @@ class MovingRoom(DefaultRoom):
                 announce = "%s announces, '|xNext stop: |c%s|x in |y%s|x.|n'" % (
                 self.name.capitalize(), next.name, nextarea.title())
             else:
-                announce = "%s announces, '|xNext stop: |c%s|x.|n'" % (self.name.capitalize(), loc.name)
+                announce = "%s announces, '|xNext stop: |c%s|x.|n'" % (self.name.capitalize(), loc.name.replace("{",""))
             self.db.desc = "An electronic sign reads:\n\t|yDeparting:\t|c%s|x\n\t|yNext Stop:\t|c%s|x" % (
             loc.name, next.name)
+            announce = announce.replace("{","|")  # TODO: remove hax
             self.msg_contents(announce)
             loc.msg_contents(announce)
             next.msg_contents("You hear %s approaching in the distance." % self.name)
@@ -178,9 +179,9 @@ class MovingRoom(DefaultRoom):
         if loc.tags.get(category='area') != None:
             area = loc.tags.get(category='area')
             # announce = "%s announces, '|xWelcome to |Y%s|x in |y%s|x.'" % (self.name.capitalize(), loc.name, area.title())
-            announce = "%s announces, '|xNow arriving at |c%s|x in |y%s|x.'" % (self.name, loc.name, area.title())
+            announce = "%s announces, '|xNow arriving at |c%s|x in |y%s|x.'" % (self.name, loc.name.replace("{",""), area.title())
         else:
-            announce = "%s announces, '|xNow arriving at |c%s|x.'" % (self.name.capitalize(), loc.name)
+            announce = "%s announces, '|xNow arriving at |c%s|x.'" % (self.name.capitalize(), loc.name.replace("{",""))
         self.msg_contents(announce)
         self.update_exits()
         self.msg_contents("%s glides to a halt and the doors open." % self.name.capitalize())
@@ -213,7 +214,7 @@ class MovingRoom(DefaultRoom):
             self.db.route.append(time_to_next)
 
             self.msg_contents("%s announces, '|c%s%s has been added to the route.'" % (self.name.capitalize(),
-                                                                                       loc.name, area))
+                                                                                       loc.name.replace("{",""), area))
             return self.db.route
 
     def del_destination(self, dest=None):
@@ -230,7 +231,7 @@ class MovingRoom(DefaultRoom):
                     del self.db.route[i+1]
                 del self.db.route[i]
                 self.msg_contents(
-                    self.name.capitalize() + "announces, '|c" + loc.name + "%s has been removed from the route.'" % area)
+                    self.name.capitalize() + "announces, '|c" + loc.name.replace("{","") + "%s has been removed from the route.'" % area)
                 return self.db.destinations
 
 
