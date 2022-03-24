@@ -29,9 +29,9 @@ from commands.command import CmdQuit
 from commands.command import CmdFinger
 from commands.command import CmdScore
 
-from evennia.contrib.clothing import ClothedCharacterCmdSet
-from evennia.contrib import extended_room
-from evennia.contrib import mail
+from core.clothing import ClothedCharacterCmdSet
+from core import extended_room
+from core import mail
 
 
 
