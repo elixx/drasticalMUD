@@ -10,10 +10,12 @@ from evennia import default_cmds
 from django.conf import settings
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from world.utils import area_count, sendWebHook, color_percent
+from core.utils import color_percent
+from world.utils import area_count
+from core import sendWebHook
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
-from evennia.contrib.extended_room import CmdExtendedRoomLook
+from core.extended_room import CmdExtendedRoomLook
 
 import time
 

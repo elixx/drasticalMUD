@@ -10,6 +10,35 @@ from evennia.utils.evtable import EvTable
 from random import choice
 
 
+class RoomDisplayBoard(Object):
+    def at_object_creation(self):
+        self.locks.add("get:false()")
+        self.location = None
+        if not self.db.source:
+            self.db.source = search_object("a", typeclass="typeclasses.movingroom.MovingRoom", exact=False)[0]
+        self.route = self.db.source.db.route
+        self.db.base_desc = "A board displaying the route for %s" % self.db.source.name
+        self.db.desc = self._update_desc()
+
+    def _update_desc(self):
+        display = EvTable("|YStop", "|YArea", "|YTime")
+        stop_name = None
+        stop_time = None
+        for stop in self.route:
+            if isinstance(stop, str):
+                s = search_object(stop)[0]
+                stop_name = s.name
+                area_name = s.tags.get(category='area')
+            elif isinstance(stop, int):
+                stop_time = stop
+            if stop_name != None and stop_time != None:
+                display.add_row(stop_name, area_name.title(), stop_time)
+                stop_name = None
+                stop_time = None
+        output = self.db.base_desc + "\n" + str(display)
+        return (output)
+
+
 class MovingRoom(DefaultRoom):
     def at_object_creation(self):
         super().at_object_creation()
@@ -29,6 +58,8 @@ class MovingRoom(DefaultRoom):
         self.db.in_station = True
         self.db.current_dist = 0
         self.db.route_pos = 0
+        self.db.last_ticker_interval = None
+        self.db.last_hook_key = None
 
         self.db.transit_msgs = ["%s shakes slightly as it moves along its course.",
                                 "You feel the floor of %s moving beneath you.",
@@ -86,10 +117,7 @@ class MovingRoom(DefaultRoom):
             self.exitOut.location = None
 
     def start_service(self):
-        # del self.db.last_hook_key
-        # del self.db.last_ticker_interval
         self.db.in_service = True
-
         if self.db.in_station:
             self.db.in_station = False
             if self.db.route_pos + 1 > len(self.db.route) - 1:
@@ -115,27 +143,26 @@ class MovingRoom(DefaultRoom):
             self.update_exits()
             self.msg_contents("The doors close as %s rumbles to life and begins to move." % self.name)
             loc.msg_contents("The doors close as %s begins picking up speed and pulls off." % self.name)
-        self._set_ticker(self.db.speed, self.travel)
+        self._set_ticker(self.db.speed, "travel")
 
     def stop_service(self):
         if self.db.in_service:
             self.msg_contents("%s slows to a halt." % self.name.capitalize())
             self.db.in_service = False
             self.db.desc = "An electronic sign reads:\n\t{rTemporarily out of service.{x"
-        self._set_ticker(None, None, stop=True)
-        self.db.in_service = False
+            self._set_ticker(None, None, stop=True)
 
     def travel(self):
         if self.db.in_service:
             self.db.current_dist += self.db.speed
-            if isinstance(self.db.route[self.db.route_pos],int):
-                if self.db.current_dist >= int(self.db.route[self.db.route_pos]):
-                    self._set_ticker(None, None, stop=True)
-                    self.arrive()
-                else:
-                    if (choice([True, False, False])):
-                        self.msg_contents(choice(self.db.transit_msgs) % self.name.capitalize())
+            if self.db.current_dist >= self.db.route[self.db.route_pos]:
+                self._set_ticker(None, None, stop=True)
+                self.arrive()
+            else:
+                if (choice([True, False, False])):
+                    self.msg_contents(choice(self.db.transit_msgs) % self.name.capitalize())
 
+            route = self.db.destinations
 
     def arrive(self):
         self.db.in_station = True
@@ -146,7 +173,7 @@ class MovingRoom(DefaultRoom):
         loc = search_object(self.db.route[self.db.route_pos])[0]
         if loc.tags.get(category='area') != None:
             area = loc.tags.get(category='area')
-            announce = "%s announces, '{wWelcome to {y%s{w in {c%s{x.'" % (
+            announce = "%s announces, '{xWelcome to {Y%s{x in {y%s{x.'" % (
             self.name.capitalize(), loc.name, area.title())
             # announce = "%s announces, '{xNow arriving at {c%s{x in {y%s{x.'" % (self.name, loc.name, area.title())
         else:
@@ -163,7 +190,7 @@ class MovingRoom(DefaultRoom):
         self.db.desc = "An electronic sign reads:\n\t{yCurrent Stop:\t{c%s{x\n\t{yNext:\t\t{c%s{x" % (
         loc.name, next.name)
         loc.msg_contents(announce)
-        self._set_ticker(self.db.wait_at_destination, self.start_service)
+        self._set_ticker(self.db.wait_at_destination, "start_service")
 
     def add_destination(self, dest, time_to_next=10, index=-1):
         try:
@@ -227,34 +254,3 @@ class MovingExit(Exit):
     """
 
     pass
-
-
-
-class RoomDisplayBoard(Object):
-    def at_object_creation(self):
-        self.locks.add("get:false()")
-        self.location = None
-        if not self.db.source:
-            self.db.source = search_object("a", typeclass="typeclasses.movingroom.MovingRoom", exact=False)[0]
-        self.route = self.db.source.db.route
-        self.db.base_desc = "A board displaying the route for %s" % self.db.source.name
-        self.db.desc = self._update_desc()
-
-    def _update_desc(self):
-        display = EvTable("|YStop", "|YArea", "|YTime")
-        stop_name = None
-        stop_time = None
-        for stop in self.route:
-            if isinstance(stop, str):
-                s = search_object(stop)[0]
-                stop_name = s.name
-                area_name = s.tags.get(category='area')
-            elif isinstance(stop, int):
-                stop_time = stop
-            if stop_name != None and stop_time != None:
-                display.add_row(stop_name, area_name.title(), stop_time)
-                stop_name = None
-                stop_time = None
-        output = self.db.base_desc + "\n" + str(display)
-        return (output)
-

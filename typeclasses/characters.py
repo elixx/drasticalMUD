@@ -7,7 +7,7 @@ is setup to be the "default" character type created by the default
 creation commands.
 
 """
-from evennia.contrib.clothing import ClothedCharacter
+from core.clothing import ClothedCharacter
 from evennia import gametime
 
 class Character(ClothedCharacter):

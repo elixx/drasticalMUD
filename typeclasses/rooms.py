@@ -10,9 +10,10 @@ from django.conf import settings
 from evennia import search_object
 from evennia.commands.cmdset import CmdSet
 from evennia.utils import utils
-from evennia.contrib.extended_room import ExtendedRoom
+from core.extended_room import ExtendedRoom
 from world.gametime import get_time_and_season
-from world.utils import color_time as cc, claimRoom
+from core.utils import color_time as cc
+from world.utils import claimRoom
 from world.map import Map
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -47,7 +48,7 @@ class ImportedRoom(Room):
         self.locks.add("ownable:true()")
         self.tags.add('growable', category='room')  # default to able to grow stuff
         self.tags.add('random_spawn', category='room')  # default to possible random loot gen
-        self.cmdset.add_default(ImportedRoomCmdSet, permanent=True)
+        self.cmdset.add_default(ImportedRoomCmdSet, persistent=True)
 
     def at_init(self):
         super().at_init()

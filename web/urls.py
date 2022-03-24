@@ -4,7 +4,7 @@ views. Search the Django documentation for "URL dispatcher" for more
 help.
 
 """
-from django.conf.urls import url, include
+from django.urls import path, include
 
 # default evennia patterns
 from evennia.web.urls import urlpatterns
@@ -14,7 +14,7 @@ import web.custom
 # eventual custom patterns
 custom_patterns = [
     # url(r'/desired/url/', view, name='example'),
-    url(r'areas/', web.custom.areaView.as_view(), name='areas')
+    path(r'areas/', web.custom.areaView.as_view(), name='areas')
 ]
 
 # this is required by Django.

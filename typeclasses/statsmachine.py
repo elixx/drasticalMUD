@@ -5,7 +5,7 @@ from evennia.commands.cmdset import CmdSet
 from evennia import ObjectDB
 from evennia import search_object
 from datetime import datetime
-from world.utils import color_percent
+from core.utils import color_percent
 from evennia import TICKER_HANDLER as tickerhandler
 from world.utils import area_count
 
@@ -17,8 +17,6 @@ class StatsMachine(DefaultObject):
         """
         Called whenever a new object is created
         """
-        super().at_object_creation()
-
         self.key = "a stats machine"
         self.db.desc = "{xA statistics keeping machine. You can {Yget stats{x for stuff.{n"
         if not self.db.stats:
@@ -33,19 +31,21 @@ class StatsMachine(DefaultObject):
             self.db.userstats = {}
         if not self.db.guestlog:
             self.db.guestlog = []
-
         self.locks.add("get:false()")
-        self.cmdset.add_default(StatsMachineCmdSet, permanent=True)
+        self.cmdset.add_default(StatsMachineCmdSet, persistent=True)
+        super().at_object_creation()
 
     def at_init(self):
         """
         Called when object is loaded into memory"
         """
-        super().at_init()
-        if not self.db.stats['loaded']:
+        if self.db.stats is None:
+            self.db.stats = {}
+        elif 'loaded' not in self.db.stats.keys():
             self.db.stats['loaded'] = 1
         else:
             self.db.stats['loaded'] += 1
+        super().at_init()
 
     def incr(self, statname):
         if not statname in self.db.stats.keys():
@@ -81,6 +81,7 @@ class StatsMachine(DefaultObject):
             if not stat in self.db.userstats.keys():
                 self.db.userstats[stat] = {key: {}}
             self.db.userstats[stat][key] = value
+
 
 
 class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
