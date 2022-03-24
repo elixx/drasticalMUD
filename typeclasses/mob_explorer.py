@@ -1,7 +1,9 @@
 from typeclasses.mob_talker import ChattyMob
 from typeclasses.rooms import CmdClaimRoom
-from world.utils import combineNames
+from core.utils import combineNames
+from evennia import ObjectDB
 from evennia.utils.logger import log_warn
+from evennia.utils.utils import crop
 import random
 import time
 
@@ -78,7 +80,7 @@ class ContinentExplorer(ExplorerMob):
             self.ndb.seen.update(target.ndb.seen)
             self.db.seen = self.ndb.seen
             target.delete()
-            log_warn("%s-%s (convergence) %s+%s=%s" % (self.key, target.key, self.id, target.id, newname))
+            log_warn("%s-%s (convergence) %s+%s=%s" % (self.key, target.key, self.id, target.id, self.key))
         super().do_patrol(*args, **kwargs)
 
     def at_msg_receive(self, text=None, from_obj=None, **kwargs):
@@ -104,3 +106,61 @@ def fixContinentExplorers():
         if bot.db.is_dead:
             bot.db.is_dead = False
         bot.db.patrolling = True
+
+
+# def explorerReport(typeclass=None):
+#
+#     if typeclass is None:
+#         x = ObjectDB.objects.get_objs_with_attr("patrolling")
+#     else:
+#
+#
+#
+#     table = self.styled_table("|Y#", "|YType", "|YLocation", "|YArea", '|YDB', "|YPtl", "|YAreas", "|YRooms",
+#                               border="none")
+#
+#     total_areas = []
+#     total_rooms = 0
+#     count = 0
+#     cexcount = 0
+#     for bot in x:
+#         count += 1
+#         # Get current area and location
+#         if bot.location != None:
+#             area = bot.location.tags.get(category='area')
+#             if area is not None:
+#                 area = area.title()
+#             location = crop(str(bot.location.id) + ':' + bot.location.name, 30)
+#         else:
+#             location = None
+#             area = None
+#
+#         # Get seen stats
+#         areas_seen = []
+#         rooms_seen = 0
+#         if bot.ndb.seen is not None:
+#             for area in bot.ndb.seen.keys():
+#                 if area is not None:
+#                     areas_seen.append(area)
+#                     rooms_seen += len(bot.ndb.seen[area])
+#             areas_seen = list(set(areas_seen))
+#             total_areas += areas_seen
+#             total_rooms += rooms_seen
+#
+#         patrolling = "Y" if bot.db.patrolling else "N"
+#         explorer = "Y" if bot.ndb.seen else "N"
+#         if "Continent" in bot.typeclass_path:
+#             cexcount += 1
+#         # Append table row
+#         if area is not None:
+#             area = area
+#         else:
+#             area = "None"
+#         table.add_row(utils.crop(':'.join([str(bot.id), bot.key]), width=30, suffix=".."),
+#                       str(bot.db_typeclass_path).split('.')[-1][0],
+#                       utils.crop(location, width=30, suffix=".."),
+#                       utils.crop(area, width=15),
+#                       explorer,
+#                       patrolling,
+#                       len(areas_seen),
+#                       rooms_seen)

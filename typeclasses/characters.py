@@ -7,10 +7,11 @@ is setup to be the "default" character type created by the default
 creation commands.
 
 """
-from core.clothing import ClothedCharacter
+from core.clothing.clothing import ClothedCharacter
+from evennia import DefaultCharacter
 from evennia import gametime
 
-class Character(ClothedCharacter):
+class Character(DefaultCharacter):
     """
     The Character defaults to reimplementing some of base Object's hook methods with the
     following functionality:
@@ -51,7 +52,7 @@ class Character(ClothedCharacter):
             else:
                 self.db.stats['conn_time'] = delta
 
-    def at_before_say(self, message, **kwargs):
+    def at_pre_say(self, message, **kwargs):
         """
         Before the object says something.
 
@@ -76,7 +77,7 @@ class Character(ClothedCharacter):
         styled_message = "|y" + message + "|n"
         return styled_message
 
-    def at_after_move(self, source_location):
+    def at_post_move(self, source_location):
         try:
             if source_location and source_location.id not in self.db.stats['visited']:
                 self.db.stats['visited'].append(source_location.id)
