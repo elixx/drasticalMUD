@@ -252,11 +252,15 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     priority = -60
 
     def func(self):
+        start = time.time()  ##DEBUG
         table = self.styled_table("|YArea", "|YRooms", width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
             table.add_row(key, value)
         output = str(table) + '\n'
         self.caller.msg(output)
+        end = time.time()  ##DEBUG
+        utils.logger.log_err("CmdAreas.func() took %ss" % (end-start)) ##DEBUG
+
 
 
 class CmdWhere(COMMAND_DEFAULT_CLASS):
@@ -316,7 +320,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
     locks = "cmd:all()"
 
     def func(self):
-
+        start = time.time()  ##DEBUG
         character = self.caller
         if character.db.title:
             title = character.db.title
@@ -428,6 +432,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         output += str(table) + '\n'
 
         self.caller.msg(output)
+        end = time.time()  ##DEBUG
+        utils.logger.log_err("CmdScore.func() took %ss" % (end-start)) ##DEBUG
 
 
 class CmdRecall(COMMAND_DEFAULT_CLASS):
