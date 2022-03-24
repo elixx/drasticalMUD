@@ -24,11 +24,8 @@ __pycache__
 *.pid
 *.restart
 
-## Keep the database -- elixx 04122020
-## Not anymore! -- elixx 04162020
 server/*.db3*
 evennia.db3
-## ... and keep all of this -- elixx 04122020
 server/conf/secret_settings.py
 server/conf/settings.py
 server/logs/*.log*
@@ -61,3 +58,5 @@ nosetests.xml
 .idea
 *.run
 *.run.xml
+
+web/**/vendor
