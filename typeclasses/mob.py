@@ -73,7 +73,7 @@ class LegacyMob(Object):
         Called the first time the object is created.
         We set up the base properties and flags here.
         """
-        self.cmdset.add(MobCmdSet, permanent=True)
+        self.cmdset.add(MobCmdSet, persistent=True)
         if self.db.patrolling == None:
             self.db.patrolling = True
 
