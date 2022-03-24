@@ -1,10 +1,9 @@
-from django.conf import settings
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_channel
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err, log_info
 from world.bookmarks import starts as start_rooms
-from random import choice, randint
+from random import choice
 
 
 def findStatsMachine():
@@ -166,7 +165,7 @@ def qual(obj):
 
 import time
 def area_count():
-    start = time.time()
+    start = time.time() ##DEBUG
     from typeclasses.rooms import ImportedRoom
     counts = {}
     areas = search_tag_object(category='area')
@@ -174,7 +173,7 @@ def area_count():
     for area in areas:
         rooms = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room")
         counts[area.db_key.title()] = rooms.count()
-    end = time.time()
-    print("area_count() took", end-start, "s")
+    end = time.time()  ##DEBUG
+    log_err("area_count() took %ss" % (end-start)) ##DEBUG
     return (counts)
 
