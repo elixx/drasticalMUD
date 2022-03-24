@@ -35,7 +35,7 @@ def genPrompt(obj):
     if ('name') in dir(targ):
         name = targ.name[:4].upper()
     elif ('account') in dir(targ):
-        name = str(targ.account)[:4].upper()
+        name = str(targ.account)[:4].upper().replace('I','i')
     else:
         name = "XXXX"
 

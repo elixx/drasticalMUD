@@ -3,6 +3,7 @@ from evennia.utils.create import create_object
 from evennia.utils.search import search_object
 from core import EXITS_REV, EXIT_ALIAS
 from area_reader.evennia_import import AREA_TRANSLATIONS
+from random import choice
 
 create = create_object
 search = search_object
@@ -150,12 +151,4 @@ def createTrain(key="a cosmic train", aliases=['train']):
                           tags=[('drastical','area'),
                                 ('drastical', 'room')]
                   )
-#
-# def TrainTempStops():
-#     # Choose 20 random areas and create transit stops
-#     for n in range(0,19):
-#         area = choice(list(entries.keys()))
-#         dest = entries[area][0]
-#         train.add_destination(dest, randint(3,10))
-#         log_info("Train stop added for %s" % area)
-#     log_err("Train ID is %s" % train.id)
+

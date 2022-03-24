@@ -4,7 +4,7 @@ from evennia.utils.logger import log_info, log_err
 from evennia.utils.create import create_object
 from evennia.utils.search import search_object
 from core.utils import create_exit
-from random import choice, randint
+from typeclasses.movingroom import createTrainStops
 from glob import glob
 
 
@@ -26,9 +26,12 @@ does what you expect it to.
 
 
 def at_initial_setup():
+    user = search_object("#2")[0] # 6=void, =u/d->7
+    user.permissions.add("admin")
 
     limbo = search_object("#2")[0] # 6=void, =u/d->7
     limbo.tags.add("drastical", category='area')
+    limbo.tags.add("drastical", category="room")
     limbo.db.desc = "The center of the [partial] universe!"
 
     board = create_object("typeclasses.newsboard.NewsBoard",
@@ -58,9 +61,7 @@ def at_initial_setup():
     for areafile in imports:
         importer.load(areafile)
     log_info("Creating rooms...")
-    importer.spawnRooms()
-    # log_info("Spawning mobs...")
-    # importer.spawnMobs()
+    starts = importer.spawnRooms()
     log_info("Creating objects...")
     importer.spawnObjects()
     log_info("Import complete.")
@@ -68,5 +69,8 @@ def at_initial_setup():
     create_exit("up", "#2", "#8", exit_aliases="u")
     create_exit("down", "#8", "#2", exit_aliases="d")
 
+
     log_info("Train ID is #%s." % train.id)
     log_info("Bulletin board is #%s." % board.id)
+
+    createTrainStops(entries=starts)
