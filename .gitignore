@@ -38,6 +38,8 @@ server/logs/*
 *.bak
 
 
+.static
+
 # Installer logs
 pip-log.txt
 
@@ -59,4 +61,3 @@ nosetests.xml
 *.run
 *.run.xml
 
-web/**/vendor
