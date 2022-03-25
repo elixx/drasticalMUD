@@ -6,6 +6,7 @@ from world.bookmarks import starts as start_rooms
 from random import choice
 import time
 
+
 def findStatsMachine():
     results = search_object("a stats machine")
     if (len(results) == 0):
@@ -117,8 +118,8 @@ def claimRoom(owner, location):
 def startContExplorers():
     def work(area, loc):
         create_object("typeclasses.mob_explorer.ContinentExplorer", key=area,
-                            location=loc, home=loc,
-                            attributes=[('patrolling_pace', 1)])
+                      location=loc, home=loc,
+                      attributes=[('patrolling_pace', 1)])
 
     for area in start_rooms.keys():
         startLocation = '#' + str(choice(list(start_rooms[area])))
@@ -165,7 +166,7 @@ def qual(obj):
 
 
 def area_count():
-    start = time.time() ##DEBUG
+    start = time.time()  ##DEBUG
     from typeclasses.rooms import ImportedRoom
     counts = {}
     areas = search_tag_object(category='area')
@@ -174,19 +175,19 @@ def area_count():
         rooms = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room")
         counts[area.db_key.title()] = rooms.count()
     end = time.time()  ##DEBUG
-    log_err("area_count() took %ss" % (end-start)) ##DEBUG
+    log_err("area_count() took %ss" % (end - start))  ##DEBUG
     return (counts)
 
 
 def rooms_in_area(area):
-    results = search_tag(area,category="room")
-    return(results.count())
+    results = search_tag(area, category="room")
+    return (results.count())
 
 
 def claimed_in_area(area, owner):
     results = search_tag(area, category='room')
     results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=owner)
-    return(results)
+    return (results)
 
 
 def visited_in_area(area, owner):
@@ -195,11 +196,11 @@ def visited_in_area(area, owner):
         owner = "#" + str(owner)
     o = search_object(owner)
     if o is not None:
-        o=o.first()
+        o = o.first()
         if o.db.stats['visited']:
             if area in o.db.stats['visited'].keys():
                 matches = o.db.stats['visited'][area]
-    return(matches)
+    return (matches)
 
 
 def exploreReport(user):

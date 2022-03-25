@@ -4,7 +4,7 @@ Commands
 Commands describe the input the account can do to the game.
 
 """
-#from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
+# from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
 from evennia import ObjectDB
 from evennia import default_cmds
 from django.conf import settings
@@ -116,7 +116,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                             title = ""
                 else:
                     title = ""
-                #title = puppet.db.title if puppet and puppet.db.title else ""
+                # title = puppet.db.title if puppet and puppet.db.title else ""
                 table.add_row(
                     utils.crop(title + " " + account.get_display_name(account), width=25),
                     utils.time_format(delta_conn, 0),
@@ -147,9 +147,12 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 location = puppet.location if puppet and puppet.location else "None"
                 location = location.tags.get(category='area').title() if location.tags and location else "None"
                 if puppet.db:
-                    if puppet.db.title: title = puppet.db.title
-                    else: title = ""
-                else: title = ""
+                    if puppet.db.title:
+                        title = puppet.db.title
+                    else:
+                        title = ""
+                else:
+                    title = ""
                 table.add_row(
                     utils.crop(title + " " + account.get_display_name(account), width=25),
                     utils.time_format(delta_conn, 0),
@@ -203,8 +206,7 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
         output = str(table) + '\n'
         self.caller.msg(output)
         end = time.time()  ##DEBUG
-        utils.logger.log_err("CmdAreas.func() took %ss" % (end-start)) ##DEBUG
-
+        utils.logger.log_err("CmdAreas.func() took %ss" % (end - start))  ##DEBUG
 
 
 class CmdWhere(COMMAND_DEFAULT_CLASS):
@@ -232,7 +234,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
             if ownerid == self.caller.id:
                 self.caller.msg("This property is currently claimed by you.")
             else:
-                owner_name = search_object("#"+str(ownerid))[0].name
+                owner_name = search_object("#" + str(ownerid))[0].name
                 self.caller.msg("It is currently owned by {y%s{n." % owner_name)
         total = search_tag(area, category="area")
         total = len(total.filter(db_typeclass_path__contains="room"))
@@ -255,7 +257,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
         self.caller.msg("You have visited %s out of {w%s{n (%s%%) rooms in {Y%s{n." % (count, total, pct, areaname))
         self.caller.msg("You own %s%% of %s." % (opct, areaname))
         end = time.time()  ##DEBUG
-        utils.logger.log_err("CmdWhere.func() took %ss" % (end-start)) ##DEBUG
+        utils.logger.log_err("CmdWhere.func() took %ss" % (end - start))  ##DEBUG
 
 
 class CmdScore(COMMAND_DEFAULT_CLASS):
@@ -302,7 +304,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                     explored[area]['owned'] += 1
         totalvisited = len(visited)
         totalpct = round(totalvisited / totalrooms * 100, 2)
-        table = self.styled_table("|YArea"+" "*35, "|YRooms", "|YSeen", "|Y%Seen", "|Y%Owned",
+        table = self.styled_table("|YArea" + " " * 35, "|YRooms", "|YSeen", "|Y%Seen", "|Y%Owned",
                                   border="none", width=80)
         for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
             if key is not None:
@@ -326,8 +328,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                 else:
                     pct = color_percent(pct)
 
-                table.add_row(utils.crop(str(key).title(), width=40), value['total'], value['seen'], pct + '%', opct + '%')
-
+                table.add_row(utils.crop(str(key).title(), width=40), value['total'], value['seen'], pct + '%',
+                              opct + '%')
 
         output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'
         output += str(table) + '\n'
@@ -337,18 +339,19 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             if area not in explored.keys():
                 unseen.append(area)
         areapct = color_percent(round(len(explored) / len(areas) * 100, 2))
-        areastats = "{y%s{n of {Y%s (%s%%){n" %  ( len(explored.keys()), len(unseen), areapct )
+        areastats = "{y%s{n of {Y%s (%s%%){n" % (len(explored.keys()), len(unseen), areapct)
         table = self.styled_table(width=50, border='none')
         table.add_row("|YVisited Areas:", areastats)
         if totalvisited:
             self.caller.db.stats['explored'] = totalpct
             totalpct = color_percent(totalpct)
-            table.add_row("|YVisited Rooms:", "{y"+str(totalvisited)+"{n of {Y" +  str(totalrooms) + "{n (" + totalpct + "|n%|n)")
+            table.add_row("|YVisited Rooms:",
+                          "{y" + str(totalvisited) + "{n of {Y" + str(totalrooms) + "{n (" + totalpct + "|n%|n)")
         output += str(table) + '\n'
 
         self.caller.msg(output)
         end = time.time()  ##DEBUG
-        utils.logger.log_err("CmdScore.func() took %ss" % (end-start)) ##DEBUG
+        utils.logger.log_err("CmdScore.func() took %ss" % (end - start))  ##DEBUG
 
 
 class CmdRecall(COMMAND_DEFAULT_CLASS):

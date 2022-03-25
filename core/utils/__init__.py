@@ -8,7 +8,6 @@ import time
 from evennia.utils.evtable import EvTable as styled_table
 from evennia.utils.logger import log_err, log_info
 
-
 create = create_object
 search = search_object
 
