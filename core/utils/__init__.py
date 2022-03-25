@@ -4,6 +4,10 @@ from evennia.utils.search import search_object
 from core import EXITS_REV, EXIT_ALIAS
 from area_reader.evennia_import import AREA_TRANSLATIONS
 from random import choice
+import time
+from evennia.utils.evtable import EvTable as styled_table
+from evennia.utils.logger import log_err, log_info
+
 
 create = create_object
 search = search_object
@@ -143,24 +147,29 @@ def fixtags():
 
 def createTrain(key="a cosmic train", aliases=['train']):
     train = create_object("typeclasses.movingroom.MovingRoom",
-                  key=key,
-                  home=None,
-                  location=None,
-                  aliases=aliases,
-                  attributes=[("desc", "A curious train wiggles through spacetime.")],
-                          tags=[('drastical','area'),
+                          key=key,
+                          home=None,
+                          location=None,
+                          aliases=aliases,
+                          attributes=[("desc", "A curious train wiggles through spacetime.")],
+                          tags=[('drastical', 'area'),
                                 ('drastical', 'room')]
-                  )
+                          )
+
 
 def fingerPlayer(character):
     start = time.time()  ##DEBUG
-    character = self.caller
+    character = search_object(character)
+    if len(character) > 0:
+        character = character.first()
+    else:
+        return
     if character.db.title:
         title = character.db.title
     else:
         title = ""
     name = title + " " + character.name
-    table = self.styled_table()
+    table = styled_table()
     logincount = character.db.stats['logins']
     try:
         gold = character.db.stats['gold']
@@ -189,5 +198,5 @@ def fingerPlayer(character):
     table.add_row("{yGold:", gold)
     output = str(table) + '\n'
     end = time.time()  ##DEBUG
-    utils.logger.log_err("CmdScore.func() took %ss" % (end - start))  ##DEBUG
-    return(output)
+    log_err("CmdScore.func() took %ss" % (end - start))  ##DEBUG
+    return (output)

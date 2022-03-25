@@ -13,6 +13,7 @@ from evennia.server.sessionhandler import SESSIONS
 from core.utils import color_percent
 from world.utils import area_count
 from core import sendWebHook
+from core.utils import fingerPlayer
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from core.extended_room import CmdExtendedRoomLook
@@ -180,65 +181,8 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
         if not self.args:
             self.args = self.caller.name
 
-        # find user
-        target = utils.search.search_account(self.args)
-        if len(target) < 1:
-            self.caller.msg("I don't know about %s!" % self.args)
-        else:
-            target = target[0]
-            if len(target.characters) > 0:
-                character = target.characters[0]
-                if character.db.title: title = character.db.title
-                else: title = ""
-            else:
-                return
-
-            max = 3
-            name = title + " " + target.name
-            output = "{WReporting on User: {Y%s{n\n" % name
-            table = self.styled_table()
-            if character.db.stats:
-                logincount = character.db.stats['logins']
-                visited = len(character.db.stats['visited'])
-                try:
-                    gold = character.db.stats['gold']
-                except KeyError:
-                    gold = 0
-                    character.db.stats['gold'] = gold
-                lastlogin = target.db.lastsite[0]
-                stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(lastlogin[1]))
-                totaltime = character.db.stats['conn_time']
-                m, s = divmod(totaltime.seconds, 60)
-                h, m = divmod(m, 60)
-                totaltime = "%dh %02dm %02ds" % (h, m, s)
-                try: pct = character.db.stats['explored']
-                except KeyError: pct = -1
-                table.add_row("{yTimes Connected:", logincount)
-                table.add_row("{yTime Online:", totaltime)
-                table.add_row("{yLast Login:", stamp)
-                table.add_row("{yRooms Seen:", visited)
-                if pct > -1:
-                    pct = str(pct) + '%'
-                else:
-                    pct = "???"
-                table.add_row("{yPercent Explored:", pct)
-                table.add_row("{yGold:", gold)
-                output += str(table) + '\n'
-                output += "Exploration stats are updated by visiting the Stats Machine.\n"
-            if privileged and target is not None:
-                logins = []
-                for c in range(len(target.db.lastsite)):
-                    (ip, intstamp) = target.db.lastsite[-c]
-                    stamp = time.strftime("%m/%d/%Y %H:%M:%S", time.gmtime(intstamp))
-                    logins.append( (stamp, ip) )
-                    if c >= max: break
-                output += "{yLast %s logins:{n\n" % max
-                table = self.styled_table("Date","IP")
-                for(stamp, ip) in sorted(logins, reverse=True):
-                    table.add_row(stamp, ip)
-                output += str(table) + '\n'
-
-            self.caller.msg(output)
+        output = fingerPlayer(self.args)
+        self.caller.msg(output)
 
 
 class CmdAreas(COMMAND_DEFAULT_CLASS):
@@ -326,40 +270,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
     def func(self):
         start = time.time()  ##DEBUG
         character = self.caller
-        if character.db.title:
-            title = character.db.title
-        else:
-            title = ""
-        name = title + " " + character.name
-        table = self.styled_table()
-        logincount = character.db.stats['logins']
-        try:
-            gold = character.db.stats['gold']
-        except KeyError:
-            gold = 0
-            character.db.stats['gold'] = gold
-        if 'conn_time' in character.db.stats.keys():
-            totaltime = character.db.stats['conn_time']
-            m, s = divmod(totaltime.seconds, 60)
-            h, m = divmod(m, 60)
-            totaltime = "%dh %02dm %02ds" % (h, m, s)
-        else:
-            totaltime = '-'
-        if 'explored' in character.db.stats.keys():
-            pct = character.db.stats['explored']
-        else:
-            pct = -1
-        table.add_row("{yName:", name)
-        table.add_row("{yTimes Connected:", logincount)
-        table.add_row("{yTime Online:", totaltime)
-        if pct > -1:
-            pct = str(pct) + '%'
-        else:
-            pct = "???"
-        table.add_row("{yPercent Explored:", pct)
-        table.add_row("{yGold:", gold)
-        output = str(table) + '\n'
-
+        output = fingerPlayer(character)
         explored = {}
         totalrooms = 0
         areas = [x.db_key for x in search_tag_object(category='area')]
