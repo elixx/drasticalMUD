@@ -37,6 +37,8 @@ server/logs/*
 # For group efforts, comment out some or all of these.
 *.bak
 
+# web cache
+server/.static/*
 
 # Installer logs
 pip-log.txt
@@ -59,4 +61,3 @@ nosetests.xml
 *.run
 *.run.xml
 
-web/**/vendor

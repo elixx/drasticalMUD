@@ -152,3 +152,42 @@ def createTrain(key="a cosmic train", aliases=['train']):
                                 ('drastical', 'room')]
                   )
 
+def fingerPlayer(character):
+    start = time.time()  ##DEBUG
+    character = self.caller
+    if character.db.title:
+        title = character.db.title
+    else:
+        title = ""
+    name = title + " " + character.name
+    table = self.styled_table()
+    logincount = character.db.stats['logins']
+    try:
+        gold = character.db.stats['gold']
+    except KeyError:
+        gold = 0
+        character.db.stats['gold'] = gold
+    if 'conn_time' in character.db.stats.keys():
+        totaltime = character.db.stats['conn_time']
+        m, s = divmod(totaltime.seconds, 60)
+        h, m = divmod(m, 60)
+        totaltime = "%dh %02dm %02ds" % (h, m, s)
+    else:
+        totaltime = '-'
+    if 'explored' in character.db.stats.keys():
+        pct = character.db.stats['explored']
+    else:
+        pct = -1
+    table.add_row("{yName:", name)
+    table.add_row("{yTimes Connected:", logincount)
+    table.add_row("{yTime Online:", totaltime)
+    if pct > -1:
+        pct = str(pct) + '%'
+    else:
+        pct = "???"
+    table.add_row("{yPercent Explored:", pct)
+    table.add_row("{yGold:", gold)
+    output = str(table) + '\n'
+    end = time.time()  ##DEBUG
+    utils.logger.log_err("CmdScore.func() took %ss" % (end - start))  ##DEBUG
+    return(output)

@@ -273,6 +273,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
     locks = "cmd:all()"
 
     def func(self):
+        start = time.time()  ##DEBUG
         roomname = self.caller.location.name
         area = self.caller.location.tags.get(category="area")
         if area is None:
@@ -309,6 +310,9 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
         count = color_percent(count)
         self.caller.msg("You have visited %s out of {w%s{n (%s%%) rooms in {Y%s{n." % (count, total, pct, areaname))
         self.caller.msg("You own %s%% of %s." % (opct, areaname))
+        end = time.time()  ##DEBUG
+        utils.logger.log_err("CmdWhere.func() took %ss" % (end-start)) ##DEBUG
+
 
 class CmdScore(COMMAND_DEFAULT_CLASS):
     """
