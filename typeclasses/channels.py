@@ -117,7 +117,7 @@ class Channel(DefaultChannel):
             senders = [sender.key for sender in msgobj.senders]
             senders = ", ".join(senders)
             if 'grapewinebot-gv' in senders:
-                if ": " in msgobj.message:
+                if ":" in msgobj.message:
                     senders = msgobj.message.split(":")[0]
                     senders = "{C" + senders + "{n"
                     msgobj.message = msgobj.message.split(":")[1][1:]
@@ -148,7 +148,5 @@ class Channel(DefaultChannel):
             return msgobj.message
 
         senders = ", ".join(senders)
-        if 'inebot-' in senders:
-            senders = msgobj.message.split(':')[0]
-            msgobj.message = msgobj.message.split(':')[1:]
+
         return self.pose_transform(msgobj, senders)
