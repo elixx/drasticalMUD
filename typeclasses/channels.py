@@ -148,5 +148,7 @@ class Channel(DefaultChannel):
             return msgobj.message
 
         senders = ", ".join(senders)
-
+        if 'inebot-' in senders:
+            senders = msgobj.message.split(':')[0]
+            msgobj.message = msgobj.message.split(':')[1:]
         return self.pose_transform(msgobj, senders)
