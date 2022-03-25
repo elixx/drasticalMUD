@@ -1,10 +1,10 @@
 from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object, search_channel
+from evennia.utils.search import search_tag_object, search_channel, search_tag
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err, log_info
 from world.bookmarks import starts as start_rooms
 from random import choice
-
+import time
 
 def findStatsMachine():
     results = search_object("a stats machine")
@@ -163,7 +163,7 @@ def qual(obj):
     else:
         return "standard"
 
-import time
+
 def area_count():
     start = time.time() ##DEBUG
     from typeclasses.rooms import ImportedRoom
@@ -177,3 +177,41 @@ def area_count():
     log_err("area_count() took %ss" % (end-start)) ##DEBUG
     return (counts)
 
+
+def rooms_in_area(area):
+    results = search_tag(area,category="room")
+    return(results.count())
+
+
+def claimed_in_area(area, owner):
+    results = search_tag(area, category='room')
+    results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=owner)
+    return(results)
+
+
+def visited_in_area(area, owner):
+    matches = []
+    if isinstance(owner, int):
+        owner = "#" + str(owner)
+    o = search_object(owner)
+    if o is not None:
+        o=o.first()
+        if o.db.stats['visited']:
+            if area in o.db.stats['visited'].keys():
+                matches = o.db.stats['visited'][area]
+    return(matches)
+
+
+def exploreReport(user):
+    summary = {}
+    o = search_object(user)
+    if o is not None:
+        o = o.first()
+        asset isinstance(o.db.stats['visited'], dict)
+        seen = o.db.stats['visited']
+        for area in seen.keys():
+            total = rooms_in_area(area)
+            claimed = claimed_in_area(area, o)
+            visited = visited_in_area(area, o)
+            summary[area] = {'total': total, 'visited': visited, 'claimed': claimed}
+    return summary
