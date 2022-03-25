@@ -207,11 +207,11 @@ def exploreReport(user):
     o = search_object(user)
     if o is not None:
         o = o.first()
-        asset isinstance(o.db.stats['visited'], dict)
-        seen = o.db.stats['visited']
+        stats = o.db.stats
+        seen = stats['visited']
         for area in seen.keys():
             total = rooms_in_area(area)
-            claimed = claimed_in_area(area, o)
-            visited = visited_in_area(area, o)
+            claimed = len(claimed_in_area(area, o))
+            visited = len(visited_in_area(area, o))
             summary[area] = {'total': total, 'visited': visited, 'claimed': claimed}
     return summary
