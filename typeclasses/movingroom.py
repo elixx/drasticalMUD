@@ -264,23 +264,25 @@ class MovingExit(Exit):
     pass
 
 
-def createTrainStops(arg="#4", entries=None,numstops=20):
+def createTrainStops(arg="#4", entries=None,numstops=20, wipe=False):
     train = search_object(arg)
-    stops = start_rooms
-    if len(train) == 1:
-        train = train[0]
-        # Choose 20 random areas and create transit stops
-        for n in range(0,numstops-1):
-            if entries is not None and isinstance(entries,dict):
-                stops = entries
-            else:
-                stops = start_rooms
-            area = choice(list(stops.keys()))
-            o = stops[area]
-            dest = "#%s" % choice(o)
-            try:
-                train.add_destination(dest, randint(3,10))
-                log_info("Train stop added for %s" % area)
-            except:
-                print(train)
-                raise
+    if train is not None:
+        train = train.first()
+        if wipe:
+            train.db.route = train.db.route[2:]
+        if train is not None:
+            # Choose 20 random areas and create transit stops
+            for n in range(0,numstops-1):
+                if entries is not None and isinstance(entries,dict):
+                    stops = entries
+                else:
+                    stops = start_rooms
+                area = choice(list(stops.keys()))
+                o = stops[area]
+                dest = "#%s" % choice(o)
+                try:
+                    train.add_destination(dest, randint(3,10))
+                    log_info("Train stop added for %s" % area)
+                except:
+                    print(train)
+                    raise
