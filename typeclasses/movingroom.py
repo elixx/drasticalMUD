@@ -227,11 +227,11 @@ class MovingRoom(DefaultRoom):
 
         for i, d in enumerate(self.db.route):
             if d == dest:
-                if len(self.db.route()) > i:
+                if len(self.db.route) > i:
                     del self.db.route[i+1]
                 del self.db.route[i]
                 self.msg_contents(
-                    self.name.capitalize() + "announces, '|c" + loc.name.replace("{","") + "%s has been removed from the route.'" % area)
+                    self.name.capitalize() + " announces, '|c" + loc.name.replace("{","") + "%s has been removed from the route.'" % area)
                 return self.db.destinations
 
 
