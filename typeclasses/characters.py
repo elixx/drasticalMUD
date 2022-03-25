@@ -34,7 +34,7 @@ class Character(DefaultCharacter):
     def at_object_creation(self):
         super().at_object_creation()
         if self.db.stats == None:
-            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0, 'visited': [], 'claims': 0}
+            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0, 'visited': {}, 'claims': 0}
 
     def at_post_puppet(self):
         super().at_post_puppet()
@@ -78,12 +78,6 @@ class Character(DefaultCharacter):
         return styled_message
 
     def at_post_move(self, source_location):
-        try:
-            if source_location and source_location.id not in self.db.stats['visited']:
-                self.db.stats['visited'].append(source_location.id)
-        except KeyError:
-            self.db.stats['visited'] = []
-
         if source_location is not None:
             if source_location.tags.get(category='area'):
                 area_name = source_location.tags.get(category='area')
@@ -101,6 +95,13 @@ class Character(DefaultCharacter):
                     self.db.last_area = cur_area
             else:
                 self.db.last_area = area_name
+            try:
+                if source_location and source_location.id not in self.db.stats['visited'][cur_area]:
+                    self.db.stats['visited'][cur_area].append(source_location.id)
+            except:
+                self.db.stats['visited'][cur_area] = []
+                self.db.stats['visited'][cur_area].append(source_location.id)
+
 
         super().at_after_move(source_location)
 
