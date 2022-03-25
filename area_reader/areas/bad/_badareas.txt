@@ -1,0 +1,149 @@
+aarak.are line 139 col 18 in section mobiles: Error reading section 'mobiles'
+alice.are line 23 col 3 in section area: Expected # got $
+aliens2.are line 9 col 1 in section area: Expected # got A
+asgard.are line 16 col 8 in section economy: Error reading section 'economy'
+AsylumGrounds.are line 1 col -1 in section N/A: Expected # got A
+AsylumInside.are line 5 col 1 in section area: Expected # got N
+AsylumLower.are line 5 col 1 in section area: Expected # got N
+bangzui.are line 5 col 1 in section area: Expected # got {
+beatles.are line 15 col 3 in section area: Expected # got $
+cage.are line 35 col 3 in section area: Expected # got $
+camp.are line 23 col 7 in section mobiles: Error reading section 'mobiles'
+chess.are line 8 col 1 in section area: Expected # got A
+ciquala2.are line 1105 col 12 in section objects: Error reading section 'objects'
+CityGiganthia.are line 5 col 1 in section area: Expected # got N
+cloudymt.are line 7 col 1 in section area: Expected # got A
+council.are line 9 col 1 in section area: Expected # got T
+court.are line 6 col 1 in section area: Expected # got A
+CrimsonCastle.are line 5 col 1 in section area: Expected # got N
+CrimsonMist.are line 5 col 1 in section area: Expected # got N
+crusher.are line 8 col 1 in section area: Expected # got A
+crypt4.are line 7 col 1 in section area: Expected # got T
+cursenec.are line 16 col 8 in section economy: Error reading section 'economy'
+deathdun.are line 15 col 3 in section area: Expected # got $
+deimos.are line 9 col 1 in section area: Expected # got T
+deli.are - string index out of range
+demonweb.are line 16 col 8 in section economy: Error reading section 'economy'
+dethkeep.are line 1 col -1 in section N/A: Expected # got /
+earthves.are line 470 col 18 in section mobiles: Error reading section 'mobiles'
+EccentricWoodland.are line 5 col 1 in section area: Expected # got N
+elvandar.are line 45 col 9 in section mobiles: Error reading section 'mobiles'
+ephradle.are line 125 col 28 in section mobiles: Error reading section 'mobiles'
+ErinsBurrow.are line 5 col 1 in section area: Expected # got N
+EtherealPlane.are line 5 col 1 in section area: Expected # got N
+Evermeet.are line 5 col 1 in section area: Expected # got N
+florin.are line 28 col 7 in section mobiles: Error reading section 'mobiles'
+ForestConfusion.are line 5 col 1 in section area: Expected # got N
+frstdead.are line 16 col 8 in section economy: Error reading section 'economy'
+futzone.are line 7 col 1 in section area: Expected # got A
+Garmaine.are line 5 col 1 in section area: Expected # got N
+gdhoo.are line 893 col 7 in section objects: Error reading section 'objects'
+gnome.are line 802 col 0 in section rooms: Error reading section 'rooms'
+gragh.are line 40 col 6 in section mobiles: Error reading section 'mobiles'
+grail.are line 8 col 2 in section area: Expected # got A
+grave.are line 1 col -1 in section rooms: Error reading section 'rooms'
+Graveyard.are line 5 col 1 in section area: Expected # got N
+green.are line 8 col 1 in section area: Expected # got A
+gyard.are line 8 col 1 in section area: Expected # got A
+heroretr.are line 64 col 7 in section mobiles: Error reading section 'mobiles'
+hilg.are line 26 col 6 in section mobiles: Error reading section 'mobiles'
+hochenya.are line 16 col 8 in section economy: Error reading section 'economy'
+hollywd.are line 8 col 1 in section area: Expected # got J
+Hotel.are line 5 col 1 in section area: Expected # got N
+iscariot.are line 16 col 8 in section economy: Error reading section 'economy'
+isledead.are line 16 col 8 in section economy: Error reading section 'economy'
+isles.are line 1391 col 11 in section objects: Error reading section 'objects'
+
+jher.are line 8 col 1 in section area: Expected # got J
+kat.are line 12 col 6 in section area: Expected # got 0
+kender.are line 15 col 3 in section area: Expected # got $
+keraptis.are line 16 col 8 in section economy: Error reading section 'economy'
+keyroom.are line 25 col 6 in section mobiles: Error reading section 'mobiles'
+Kindergarten.are line 5 col 1 in section area: Expected # got N
+land.are line 7 col 1 in section area: Expected # got H
+lanfear.are line 7 col 1 in section area: Expected # got C
+lhouse.are line 8 col 1 in section area: Expected # got L
+lilith.are line 16 col 8 in section economy: Error reading section 'economy'
+LostIsle.are line 5 col 1 in section area: Expected # got N
+madanon.are line 439 col 20 in section mobiles: Error reading section 'mobiles'
+malathar.are line 7 col 1 in section area: Expected # got D
+MazeIcarus.are line 5 col 1 in section area: Expected # got N
+merith.are line 5 col 1 in section area: Expected # got {
+mgoose.are line 10 col 1 in section area: Expected # got L
+Microcosm.are line 5 col 1 in section area: Expected # got N
+
+MinotaurKeep.are line 5 col 1 in section area: Expected # got N
+MinotaurWarcamp.are line 5 col 1 in section area: Expected # got N
+
+
+Moribund.are line 5 col 1 in section area: Expected # got N
+mtdoom.are line 8 col 1 in section area: Expected # got T
+mthydra.are line 27 col 5 in section mobiles: Error reading section 'mobiles'
+mystmoon.are line 25 col 8 in section mobiles: Error reading section 'mobiles'
+myth.are line 9 col 1 in section area: Expected # got S
+
+
+
+northrd.are line 23 col 22 in section mobiles: Error reading section 'mobiles'
+ocean.are line 47 col 11 in section objects: Error reading section 'objects'
+
+olympus2.are line 7 col 1 in section area: Expected # got Z
+orchold.are line 16 col 8 in section economy: Error reading section 'economy'
+pagesvisited.are line 1 col -1 in section N/A: Expected # got h
+park.are line 5 col 1 in section area: Expected # got {
+
+
+Pecortan.are line 5 col 1 in section area: Expected # got N
+peeks.are line 32 col 7 in section mobiles: Error reading section 'mobiles'
+pground.are line 8 col 1 in section area: Expected # got A
+pit.are line 8 col 1 in section area: Expected # got A
+pitt.are line 77 col 7 in section mobiles: Error reading section 'mobiles'
+PlaneMortals.are line 5 col 1 in section area: Expected # got N
+prehist.are line 8 col 1 in section area: Expected # got A
+prison.are line 5 col 1 in section area: Expected # got {
+PublicDungeons.are line 5 col 1 in section area: Expected # got N
+
+rain.are line 27 col 7 in section mobiles: Error reading section 'mobiles'
+redferne.are line 43 col 7 in section mobiles: Error reading section 'mobiles'
+rensh.are line 8 col 1 in section area: Expected # got S
+
+RocRoad.are line 5 col 1 in section area: Expected # got N
+ROT-caverns.are line 25 col 1 in section mobiles: Error reading section 'mobiles'
+ROT-fragrant.are line 26 col 20 in section mobiles: Error reading section 'mobiles'
+ROT-gdhoo.are line 26 col 13 in section mobiles: Error reading section 'mobiles'
+ROT-mthydra.are line 25 col 18 in section mobiles: Error reading section 'mobiles'
+ROT-mystmoon.are line 23 col 13 in section mobiles: Error reading section 'mobiles'
+ROT-olympus.are line 26 col 13 in section mobiles: Error reading section 'mobiles'
+ROT-shadval150.are line 26 col 3 in section mobiles: Error reading section 'mobiles'
+rshouse.are line 8 col 1 in section area: Expected # got R
+
+seahome.are line 5 col 1 in section area: Expected # got {
+seekers.are line 16 col 8 in section economy: Error reading section 'economy'
+sentinel.are line 16 col 8 in section economy: Error reading section 'economy'
+
+sesame.are line 7 col 1 in section area: Expected # got O
+seven.are line 11 col 3 in section area: Expected # got $
+sfield.are line 71 col 18 in section mobiles: Error reading section 'mobiles'
+
+silver.are line 268 col 12 in section objects: Error reading section 'objects'
+starwa.are line 7 col 1 in section area: Expected # got A
+supermarket.are line 7 col 1 in section area: Expected # got A
+swroad.are line 25 col 20 in section mobiles: Error reading section 'mobiles'
+tcwnn.are line 735 col 20 in section mobiles: Error reading section 'mobiles'
+templofm.are line 29 col 5 in section mobiles: Error reading section 'mobiles'
+templofs.are line 29 col 5 in section mobiles: Error reading section 'mobiles'
+thoran.are line 7 col 1 in section area: Expected # got A
+TirnanOgoth.are line 5 col 1 in section area: Expected # got N
+
+tower.are - string index out of range
+trillium.are line 5 col 1 in section area: Expected # got {
+troy.are line 8 col 1 in section area: Expected # got A
+under.are line 8 col 1 in section area: Expected # got A
+unholy.are line 7 col 1 in section area: Expected # got A
+villa.are line 8 col 1 in section area: Expected # got T
+warner.are line 8 col 1 in section area: Expected # got B
+weater.are line 16 col 8 in section economy: Error reading section 'economy'
+weirdan.are line 8 col 1 in section area: Expected # got B
+xchan1.are line 16 col 8 in section economy: Error reading section 'economy'
+yrarl.are line 5 col 1 in section area: Expected # got {
+zoo.are line 1369 col 6 in section objects: Error reading section 'objects'

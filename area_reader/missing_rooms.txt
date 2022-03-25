@@ -1,0 +1,74 @@
+22-03-21 04:05:24-04 [..] 8525 rooms created.
+22-03-21 04:05:57-04 [EE] ! deadend: high tower: Exit north in EVid #544 skipped -1 not found.
+22-03-21 04:05:57-04 [EE] ! deadend: high tower: Exit south in EVid #544 skipped -1 not found.
+22-03-21 04:05:57-04 [EE] ! deadend: high tower: Exit west in EVid #544 skipped -1 not found.
+22-03-21 04:06:00-04 [EE] ! deadend: high tower: Exit down in EVid #609 skipped -1 not found.
+22-03-21 04:06:50-04 [EE] ! deadend: miden'nir: Exit east in EVid #1442 skipped -1 not found.
+22-03-21 04:06:50-04 [EE] ! deadend: miden'nir: Exit west in EVid #1443 skipped -1 not found.
+22-03-21 04:06:51-04 [EE] ! deadend: miden'nir: Exit south in EVid #1449 skipped 1501 not found.
+22-03-21 04:07:14-04 [EE] ! deadend: arena: Exit up in EVid #1831 skipped 3384 not found.
+22-03-21 04:07:40-04 [EE] ! deadend: firetop mountain: Exit down in EVid #2271 skipped 13400 not found.
+22-03-21 04:08:02-04 [EE] ! deadend: sewers: Exit down in EVid #2663 skipped -1 not found.
+22-03-21 04:08:03-04 [EE] ! deadend: sewers: Exit east in EVid #2680 skipped -1 not found.
+22-03-21 04:08:06-04 [EE] ! deadend: sewers: Exit north in EVid #2726 skipped -1 not found.
+22-03-21 04:08:06-04 [EE] ! deadend: sewers: Exit up in EVid #2726 skipped -1 not found.
+22-03-21 04:08:07-04 [EE] ! deadend: sewers: Exit down in EVid #2762 skipped -1 not found.
+22-03-21 04:08:24-04 [EE] ! deadend: astral plane: Exit south in EVid #2992 skipped -1 not found.
+22-03-21 04:08:24-04 [EE] ! deadend: astral plane: Exit east in EVid #2993 skipped -1 not found.
+22-03-21 04:08:24-04 [EE] ! deadend: astral plane: Exit up in EVid #2994 skipped -1 not found.
+22-03-21 04:08:24-04 [EE] ! deadend: astral plane: Exit west in EVid #2995 skipped -1 not found.
+22-03-21 04:08:24-04 [EE] ! deadend: astral plane: Exit up in EVid #2996 skipped -1 not found.
+22-03-21 04:08:24-04 [EE] ! deadend: astral plane: Exit down in EVid #2996 skipped -1 not found.
+22-03-21 04:08:25-04 [EE] ! deadend: astral plane: Exit east in EVid #3015 skipped -1 not found.
+22-03-21 04:08:38-04 [EE] ! deadend: ghost town: Exit down in EVid #3226 skipped -1 not found.
+22-03-21 04:08:41-04 [EE] ! deadend: zoo of midgaard: Exit north in EVid #3265 skipped -1 not found.
+22-03-21 04:08:43-04 [EE] ! deadend: generic old marsh: Exit south in EVid #3311 skipped -1 not found.
+22-03-21 04:08:54-04 [EE] ! deadend: mirkwood: Exit down in EVid #3448 skipped 14000 not found.
+22-03-21 04:09:11-04 [EE] ! deadend: new thalos: Exit south in EVid #3739 skipped -1 not found.
+22-03-21 04:09:16-04 [EE] ! deadend: the plains of blood: Exit down in EVid #3803 skipped 30338 not found.
+22-03-21 04:09:16-04 [EE] ! deadend: the plains of blood: Exit down in EVid #3811 skipped 3801 not found.
+22-03-21 04:09:17-04 [EE] ! deadend: the plains of blood: Exit north in EVid #3823 skipped 28398 not found.
+22-03-21 04:09:20-04 [EE] ! deadend: new thalos: Exit east in EVid #3895 skipped -1 not found.
+22-03-21 04:09:20-04 [EE] ! deadend: new thalos: Exit west in EVid #3895 skipped -1 not found.
+22-03-21 04:09:31-04 [EE] ! deadend: the shielding: Exit west in EVid #4086 skipped -1 not found.
+22-03-21 04:09:31-04 [EE] ! deadend: the shielding: Exit east in EVid #4090 skipped 13404 not found.
+22-03-21 04:09:46-04 [EE] ! deadend: white lotus: Exit east in EVid #4339 skipped 10018 not found.
+22-03-21 04:10:02-04 [EE] ! deadend: twilight city of pawmist: Exit north in EVid #4632 skipped -1 not found.
+22-03-21 04:10:02-04 [EE] ! deadend: twilight city of pawmist: Exit north in EVid #4634 skipped -1 not found.
+22-03-21 04:10:02-04 [EE] ! deadend: twilight city of pawmist: Exit south in EVid #4636 skipped -1 not found.
+22-03-21 04:10:02-04 [EE] ! deadend: twilight city of pawmist: Exit west in EVid #4638 skipped -1 not found.
+22-03-21 04:10:33-04 [EE] ! deadend: anonopolis: Exit east in EVid #5193 skipped 22136 not found.
+22-03-21 04:10:43-04 [EE] ! deadend: the dungeon: Exit up in EVid #5375 skipped -1 not found.
+22-03-21 04:10:48-04 [EE] ! deadend: king's castle: Exit down in EVid #5457 skipped -1 not found.
+22-03-21 04:10:49-04 [EE] ! deadend: king's castle: Exit north in EVid #5482 skipped -1 not found.
+22-03-21 04:10:49-04 [EE] ! deadend: king's castle: Exit east in EVid #5482 skipped -1 not found.
+22-03-21 04:10:49-04 [EE] ! deadend: king's castle: Exit south in EVid #5482 skipped -1 not found.
+22-03-21 04:10:49-04 [EE] ! deadend: king's castle: Exit west in EVid #5482 skipped -1 not found.
+22-03-21 04:11:00-04 [EE] ! deadend: chessboard: Exit west in EVid #5627 skipped 9268 not found.
+22-03-21 04:11:05-04 [EE] ! deadend: elven realms: Exit south in EVid #5720 skipped 15008 not found.
+22-03-21 04:11:36-04 [EE] ! deadend: warzone: Exit east in EVid #6262 skipped 22000 not found.
+22-03-21 04:11:39-04 [EE] ! deadend: treasure island: Exit south in EVid #6315 skipped 13310 not found.
+22-03-21 04:11:39-04 [EE] ! deadend: heaven: Exit north in EVid #6316 skipped 17799 not found.
+22-03-21 04:11:59-04 [EE] ! deadend: gilda and the dragon: Exit south in EVid #6658 skipped 1169 not found.
+22-03-21 04:12:19-04 [EE] ! deadend: shaolin temple: Exit south in EVid #6976 skipped 9777 not found.
+22-03-21 04:12:35-04 [EE] ! deadend: camelot1: Exit north in EVid #7268 skipped 16805 not found.
+22-03-21 04:12:42-04 [EE] ! deadend: steab: Exit east in EVid #7369 skipped 9733 not found.
+22-03-21 04:12:58-04 [EE] ! deadend: the dreamweaver's path: Exit up in EVid #7622 skipped 21760 not found.
+22-03-21 04:12:58-04 [EE] ! deadend: river of despair: Exit east in EVid #7632 skipped -1 not found.
+22-03-21 04:12:59-04 [EE] ! deadend: river of despair: Exit up in EVid #7653 skipped -1 not found.
+22-03-21 04:12:59-04 [EE] ! deadend: river of despair: Exit up in EVid #7654 skipped -1 not found.
+22-03-21 04:13:00-04 [EE] ! deadend: river of despair: Exit north in EVid #7663 skipped -1 not found.
+22-03-21 04:13:00-04 [EE] ! deadend: river of despair: Exit south in EVid #7663 skipped -1 not found.
+22-03-21 04:13:00-04 [EE] ! deadend: river of despair: Exit west in EVid #7665 skipped -1 not found.
+22-03-21 04:13:11-04 [EE] ! deadend: the amazon jungle: Exit east in EVid #7870 skipped 12201 not found.
+22-03-21 04:13:11-04 [EE] ! deadend: the amazon jungle: Exit east in EVid #7871 skipped 14700 not found.
+22-03-21 04:13:11-04 [EE] ! deadend: the amazon jungle: Exit west in EVid #7887 skipped 17171 not found.
+22-03-21 04:13:11-04 [EE] ! deadend: the amazon jungle: Exit north in EVid #7888 skipped 14900 not found.
+22-03-21 04:13:11-04 [EE] ! deadend: the amazon jungle: Exit north in EVid #7889 skipped 25100 not found.
+22-03-21 04:13:24-04 [EE] ! deadend: cannabis: Exit west in EVid #8055 skipped 164 not found.
+22-03-21 04:13:24-04 [EE] ! deadend: cannabis: Exit north in EVid #8056 skipped -1 not found.
+22-03-21 04:13:40-04 [EE] ! deadend: the walls of the city of anon: Exit up in EVid #8261 skipped 21202 not found.
+22-03-21 04:13:40-04 [EE] ! deadend: the walls of the city of anon: Exit up in EVid #8262 skipped 21207 not found.
+22-03-21 04:13:40-04 [EE] ! deadend: the walls of the city of anon: Exit up in EVid #8273 skipped 21214 not found.
+22-03-21 04:13:40-04 [EE] ! deadend: the walls of the city of anon: Exit up in EVid #8274 skipped 21215 not found.
+22-03-21 04:13:44-04 [EE] ! deadend: the walls of the city of anon: Exit south in EVid #8339 skipped 17454 not found.
