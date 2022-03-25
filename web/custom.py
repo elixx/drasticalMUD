@@ -1,4 +1,4 @@
-from evennia.web.website import views as website_views
+#from evennia.web.website import views as website_views
 from django.views.generic import TemplateView, ListView, DetailView
 from world.utils import area_count
 
