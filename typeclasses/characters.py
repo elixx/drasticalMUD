@@ -93,12 +93,12 @@ class Character(DefaultCharacter):
 
             if self.db.last_area:
                 if cur_area != self.db.last_area:
-                    self.msg("You have entered {y%s{n." % capwords(cur_area))
+                    self.msg("You have entered |Y%s|n." % capwords(cur_area))
                     self.db.last_area = cur_area
             else:
                 self.db.last_area = source_area
 
-             try:
+            try:
                 if 'visited' in self.db.stats.keys():
                     if cur_area not in self.db.stats['visited'].keys():
                         self.db.stats['visited'][cur_area] = [self.location.id]
