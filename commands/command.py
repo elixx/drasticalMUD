@@ -201,14 +201,11 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     priority = -60
 
     def func(self):
-        start = time.time()  ##DEBUG
         table = EvTable("|YArea", "|YRooms", width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
             table.add_row(capwords(key), value)
         output = str(table) + '\n'
         EvMore(self.caller, output)
-        end = time.time()  ##DEBUG
-        utils.logger.log_err("CmdAreas.func() took %ss" % (end - start))  ##DEBUG
 
 
 class CmdWhere(COMMAND_DEFAULT_CLASS):
@@ -292,6 +289,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         else:
             owner = self.caller.id
             visited = self.caller.db.stats['visited']
+
         for area in visited.keys():
             if area not in explored.keys():
                 explored[area] = {}
@@ -352,8 +350,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         output += str(table) + '\n'
 
         self.caller.msg(output)
+
         end = time.time()  ##DEBUG
-        utils.logger.log_err("CmdScore.func() took %ss" % (end - start))  ##DEBUG
 
 
 class CmdRecall(COMMAND_DEFAULT_CLASS):

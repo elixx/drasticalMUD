@@ -167,7 +167,6 @@ def qual(obj):
 
 
 def area_count():
-    start = time.time()  ##DEBUG
     from typeclasses.rooms import ImportedRoom
     counts = {}
     areas = search_tag_object(category='area')
@@ -175,8 +174,6 @@ def area_count():
     for area in areas:
         rooms = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room")
         counts[area.db_key] = rooms.count()  # key was capitalized?
-    end = time.time()  ##DEBUG
-    log_err("area_count() took %ss" % (end - start))  ##DEBUG
     return (counts)
 
 
@@ -212,7 +209,7 @@ def exploreReport(user):
         stats = o.db.stats
         seen = stats['visited']
         for area in seen.keys():
-            total = rooms_in_area(area)
+            total = total_rooms_in_area(area)
             claimed = len(claimed_in_area(area, o))
             visited = len(visited_in_area(area, o))
             summary[area] = {'total': total, 'visited': visited, 'claimed': claimed}

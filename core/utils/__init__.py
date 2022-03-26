@@ -157,7 +157,6 @@ def createTrain(key="a cosmic train", aliases=['train']):
 
 
 def fingerPlayer(character):
-    start = time.time()  ##DEBUG
     character = search_object(character)
     if len(character) > 0:
         character = character.first()
@@ -196,6 +195,4 @@ def fingerPlayer(character):
     table.add_row("{yPercent Explored:", pct)
     table.add_row("{yGold:", gold)
     output = str(table) + '\n'
-    end = time.time()  ##DEBUG
-    log_err("CmdScore.func() took %ss" % (end - start))  ##DEBUG
     return (output)
