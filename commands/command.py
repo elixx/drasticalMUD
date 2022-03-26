@@ -16,6 +16,7 @@ from core import sendWebHook
 from core.utils import fingerPlayer
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
+from evennia.utils.evmore import EvMore
 from core.extended_room import CmdExtendedRoomLook
 
 import time
@@ -161,10 +162,8 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                     session.protocol_key,
                 )
         is_one = naccounts == 1
-        self.caller.msg(
-            "|wAccounts:|n\n%s\n%s unique account%s logged in."
-            % (table, "One" if is_one else naccounts, "" if is_one else "s")
-        )
+        output = "|wAccounts:|n\n%s\n%s unique account%s logged in." % (table, "One" if is_one else naccounts, "" if is_one else "s")
+        EvMore(self.caller, output)
 
 
 class CmdFinger(COMMAND_DEFAULT_CLASS):
@@ -204,7 +203,7 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
             table.add_row(key, value)
         output = str(table) + '\n'
-        self.caller.msg(output)
+        EvMore(self.caller, output)
         end = time.time()  ##DEBUG
         utils.logger.log_err("CmdAreas.func() took %ss" % (end - start))  ##DEBUG
 
