@@ -31,7 +31,7 @@ class ChattyMob(LegacyMob):
             )
 
     def _init_chatdb(self):
-        if self.db.random_quotes == None:
+        if self.db.random_quotes is  None:
             self.db.random_quotes = ["Blah blah blah", "foo bar baz"]
         if self.db.chatty is None:
             self.db.chatty = True
