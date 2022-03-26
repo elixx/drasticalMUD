@@ -290,19 +290,21 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         if not self.caller.db.stats:
             raise("NotAPlayerNoMore")
         else:
+            owner = self.caller.id
             visited = self.caller.db.stats['visited']
         for area in visited.keys():
             if area not in explored.keys():
                 explored[area] = {}
             explored[area]['total'] = total_rooms_in_area(area)
-            explored[area]['seen'] = len(visited_in_area(area, self.caller))
+            explored[area]['seen'] = len(visited_in_area(area, owner))
             totalvisited += explored[area]['seen']
-            explored[area]['owned'] = len(claimed_in_area(area, self.caller))
+            claimed = claimed_in_area(area, owner)
+            explored[area]['owned'] = claimed.count()
 
         totalpct = round(totalvisited / totalrooms * 100, 2)
-        table = self.styled_table("|YArea" + " " * 35, "|YRooms", "|YSeen", "|Y%Seen", "|Y%Owned",
+        table = self.styled_table("|YArea" + " " * 45, "|YSeen", "|Y%Seen", "|YOwned", "|Y%Owned", "|YTotal",
                                   border="none", width=80)
-        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
+        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['total'], reverse=True):
             if key is not None:
                 if value['total'] > value['seen']:
                     pct = round(value['seen'] / value['total'] * 100, 1)
@@ -324,8 +326,12 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                 else:
                     pct = color_percent(pct)
 
-                table.add_row(utils.crop(capwords(str(key)), width=40), value['total'], value['seen'], pct + '%',
-                              opct + '%')
+                table.add_row(utils.crop(capwords(str(key)), width=50),
+                              value['seen'],
+                              pct + '%',
+                              value['owned'],
+                              opct + '%',
+                              value['total'])
 
         output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'
         output += str(table) + '\n'
