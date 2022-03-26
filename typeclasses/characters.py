@@ -93,22 +93,23 @@ class Character(DefaultCharacter):
 
             if self.db.last_area:
                 if cur_area != self.db.last_area:
-                    self.msg("You have entered {y%s{n." % capwords(cur_area))
+                    self.msg("You have entered |Y%s|n." % capwords(cur_area))
                     self.db.last_area = cur_area
             else:
                 self.db.last_area = source_area
 
-            # try:
-            if 'visited' in self.db.stats.keys():
-                if cur_area not in self.db.stats['visited'].keys():
-                    self.db.stats['visited'][cur_area] = [self.location.id]
+            try:
+                if 'visited' in self.db.stats.keys():
+                    if cur_area not in self.db.stats['visited'].keys():
+                        self.db.stats['visited'][cur_area] = [self.location.id]
+                    else:
+                        self.db.stats['visited'][cur_area].append(self.location.id)
                 else:
-                    self.db.stats['visited'][cur_area].append(self.location.id)
-            else:
-                self.db.stats['visited'] = { cur_area: [self.location.id] }
+                    self.db.stats['visited'] = { cur_area: [self.location.id] }
 
-            # except Exception as e:
-            #     log_err("at_post_move:110: %s" % e)
+            except Exception as e:
+                self.db.stats['visited'] = {}
+                log_err("at_post_move:110: Resettings stats on %s:%s - %s" % (self.id, self.name, e))
 
 
         super().at_after_move(source_location)
