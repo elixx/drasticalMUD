@@ -56,7 +56,7 @@ class MovingRoom(DefaultRoom):
         if not self.db.route:
             self.db.route = ["#2", 6, "#140", 6, "#1000", 10]
             self.db.wait_at_destination = 10
-            self.db.speed = 2
+            self.db.speed = 1
 
         self.db.in_service = False
         self.db.in_station = True
@@ -139,7 +139,7 @@ class MovingRoom(DefaultRoom):
             if next.tags.get(category='area') != None:
                 nextarea = next.tags.get(category='area')
                 announce = "%s announces, '|xNext stop: |c%s|x in |y%s|x.|n'" % (
-                self.name.capitalize(), next.name, capwords(nextarea))
+                self.name.capitalize(), next.name.replace("{","|"), capwords(nextarea))
             else:
                 announce = "%s announces, '|xNext stop: |c%s|x.|n'" % (self.name.capitalize(), loc.name.replace("{",""))
             self.db.desc = "An electronic sign reads:\n\t|yDeparting:\t|c%s|x\n\t|yNext Stop:\t|c%s|x" % (
@@ -186,8 +186,8 @@ class MovingRoom(DefaultRoom):
             announce = "%s announces, '|xNow arriving at |c%s|x.'" % (self.name.capitalize(), loc.name.replace("{",""))
         self.msg_contents(announce)
         self.update_exits()
-        self.msg_contents("%s glides to a halt and the doors open." % self.name.capitalize())
-        loc.msg_contents("%s pulls up and slows to a halt. The doors open." % self.name.capitalize())
+        self.msg_contents("%s glides to a halt and the doors open. You may now |Yleave|n." % self.name.capitalize())
+        loc.msg_contents("%s pulls up and slows to a halt. The doors open and you may |Yboard|n it." % self.name.capitalize())
         self.db.current_dist = 0
         if self.db.route_pos < len(self.db.route) - 3:
             next = search_object(self.db.route[self.db.route_pos + 2])[0]
