@@ -18,6 +18,7 @@ from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
 from evennia.utils.evtable import EvTable
+from world.utils import visited_in_area, claimed_in_area, total_rooms_in_area
 from string import capwords
 from core.extended_room import CmdExtendedRoomLook
 
@@ -263,7 +264,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
 
 class CmdScore(COMMAND_DEFAULT_CLASS):
     """
-    Show progress stats.
+    Show player statistics.
 
     """
 
@@ -276,34 +277,28 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         output = fingerPlayer(character)
         explored = {}
         totalrooms = 0
+        totalvisited = 0
         areas = [x.db_key for x in search_tag_object(category='area')]
+
+        # Systemwide room total:
         e = ObjectDB.objects.object_totals()
         for k in e.keys():
             if "room" in k.lower():
                 totalrooms += e[k]
-        visited = self.caller.db.stats['visited']
-        for roomid in visited:
-            room = search_object("#" + str(roomid))
-            if len(room) > 0:
-                room = room[0]
-                area = room.tags.get(category='area')
-                if room.db.owner == self.caller.id:
-                    owner = True
-                else:
-                    owner = False
-            else:
-                continue
+
+        # Sanity check
+        if not self.caller.db.stats:
+            raise("NotAPlayerNoMore")
+        else:
+            visited = self.caller.db.stats['visited']
+        for area in visited.keys():
             if area not in explored.keys():
-                total = search_tag(area, category="room").count()
-                if owner:
-                    explored[area] = {'total': total, 'seen': 1, 'owned': 1}
-                else:
-                    explored[area] = {'total': total, 'seen': 1, 'owned': 0}
-            else:
-                explored[area]['seen'] += 1
-                if owner:
-                    explored[area]['owned'] += 1
-        totalvisited = len(visited)
+                explored[area] = {}
+            explored[area]['total'] = total_rooms_in_area(area)
+            explored[area]['seen'] = len(visited_in_area(area, self.caller))
+            totalvisited += explored[area]['seen']
+            explored[area]['owned'] = len(claimed_in_area(area, self.caller))
+
         totalpct = round(totalvisited / totalrooms * 100, 2)
         table = self.styled_table("|YArea" + " " * 35, "|YRooms", "|YSeen", "|Y%Seen", "|Y%Owned",
                                   border="none", width=80)

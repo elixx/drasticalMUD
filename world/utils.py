@@ -180,7 +180,7 @@ def area_count():
     return (counts)
 
 
-def rooms_in_area(area):
+def total_rooms_in_area(area):
     results = search_tag(area, category="room")
     return (results.count())
 
