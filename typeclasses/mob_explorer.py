@@ -12,18 +12,17 @@ class ExplorerMob(ChattyMob):
 
     def at_init(self):
         self.ndb.is_patrolling = self.db.patrolling and not self.db.is_dead
+        self.ndb.seen = {}
         # if self.db.patrolling:
         #     self.start_patrolling()
+        super().at_init()
 
     def at_object_creation(self):
-        super().at_object_creation()
         self.ndb.seen = {}
+        super().at_object_creation()
 
-    def at_after_move(self, source_location, **kwargs):
+    def at_post_move(self, source_location, **kwargs):
         area = self.location.tags.get(category='area')
-        if not self.ndb.seen:
-            self.ndb.seen = {}
-
         if area not in self.ndb.seen.keys():
             self.ndb.seen[area] = [self.location.id]
         else:
@@ -56,8 +55,6 @@ class ExplorerMob(ChattyMob):
 
 class ContinentExplorer(ExplorerMob):
     def at_init(self):
-        if not self.ndb.seen:
-            self.ndb.seen = {}
         if self.db.seen:
             self.ndb.seen = self.db.seen
         if self.db.patrolling is None:
