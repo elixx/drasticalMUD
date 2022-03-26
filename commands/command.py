@@ -98,7 +98,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                         location = puppet.location
                         if location.tags:
                             try:
-                                area = puppet.location.tags.get(category='area').title()
+                                area = capwords(puppet.location.tags.get(category='area'))
                             except:
                                 area = "None"
                         else:
@@ -148,7 +148,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 if puppet == None:
                     continue
                 location = puppet.location if puppet and puppet.location else "None"
-                location = location.tags.get(category='area').title() if location.tags and location else "None"
+                location = capwords(location.tags.get(category='area')) if location.tags and location else "None"
                 if puppet.db:
                     if puppet.db.title:
                         title = puppet.db.title
@@ -201,9 +201,9 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         start = time.time()  ##DEBUG
-        table = self.styled_table("|YArea", "|YRooms", width=60)
+        table = EvTable("|YArea", "|YRooms", width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
-            table.add_row(key, value)
+            table.add_row(capwords(key), value)
         output = str(table) + '\n'
         EvMore(self.caller, output)
         end = time.time()  ##DEBUG
