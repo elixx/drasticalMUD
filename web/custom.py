@@ -1,6 +1,7 @@
 #from evennia.web.website import views as website_views
 from django.views.generic import TemplateView, ListView, DetailView
 from world.utils import area_count
+from string import capwords
 
 #class areaView(website_views.EvenniaIndexView):
 class areaView(TemplateView):
@@ -68,7 +69,7 @@ def _area_stats():
     areas = []
 
     for area in ac:
-        areas.append( { 'area': area[0], 'rooms': area[1] } )
+        areas.append( { 'area': capwords(area[0]), 'rooms': area[1] } )
 
     pagevars = {
         "areas": areas,

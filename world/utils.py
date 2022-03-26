@@ -167,28 +167,29 @@ def qual(obj):
 
 
 def area_count():
-    start = time.time()  ##DEBUG
     from typeclasses.rooms import ImportedRoom
     counts = {}
     areas = search_tag_object(category='area')
     allrooms = ImportedRoom.objects.all()
     for area in areas:
-        rooms = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room")
-        counts[area.db_key] = rooms.count()  # key was capitalized?
-    end = time.time()  ##DEBUG
-    log_err("area_count() took %ss" % (end - start))  ##DEBUG
+        counts[area.db_key] = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
     return (counts)
 
 
-def rooms_in_area(area):
+def total_rooms_in_area(area):
     results = search_tag(area, category="room")
     return (results.count())
 
 
 def claimed_in_area(area, owner):
-    results = search_tag(area, category='room')
-    results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=owner)
-    return (results)
+    if isinstance(owner, int):
+        owner = "#" + str(owner)
+    o = search_object(owner)
+    if o is not None:
+        o = o.first()
+        results = search_tag(area, category='room')
+        results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o.id)
+        return (results)
 
 
 def visited_in_area(area, owner):
@@ -201,7 +202,7 @@ def visited_in_area(area, owner):
         if o.db.stats['visited']:
             if area in o.db.stats['visited'].keys():
                 matches = o.db.stats['visited'][area]
-    return (matches)
+        return (matches)
 
 
 def exploreReport(user):
@@ -212,7 +213,7 @@ def exploreReport(user):
         stats = o.db.stats
         seen = stats['visited']
         for area in seen.keys():
-            total = rooms_in_area(area)
+            total = total_rooms_in_area(area)
             claimed = len(claimed_in_area(area, o))
             visited = len(visited_in_area(area, o))
             summary[area] = {'total': total, 'visited': visited, 'claimed': claimed}

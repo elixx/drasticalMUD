@@ -11,7 +11,7 @@ from evennia import search_object
 from evennia.commands.cmdset import CmdSet
 from evennia.utils import utils
 from core.extended_room import ExtendedRoom
-from world.gametime import get_time_and_season
+from core.gametime import get_time_and_season
 from core.utils import color_time as cc
 from world.utils import claimRoom
 from world.map import Map

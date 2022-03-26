@@ -18,6 +18,7 @@ from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
 from evennia.utils.evtable import EvTable
+from world.utils import visited_in_area, claimed_in_area, total_rooms_in_area
 from string import capwords
 from core.extended_room import CmdExtendedRoomLook
 
@@ -200,14 +201,11 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     priority = -60
 
     def func(self):
-        start = time.time()  ##DEBUG
         table = EvTable("|YArea", "|YRooms", width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
             table.add_row(capwords(key), value)
         output = str(table) + '\n'
         EvMore(self.caller, output)
-        end = time.time()  ##DEBUG
-        utils.logger.log_err("CmdAreas.func() took %ss" % (end - start))  ##DEBUG
 
 
 class CmdWhere(COMMAND_DEFAULT_CLASS):
@@ -236,22 +234,12 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("This property is currently claimed by you.")
             else:
                 owner_name = search_object("#" + str(ownerid))[0].name
-                self.caller.msg("It is currently owned by {y%s{n." % owner_name)
-        total = search_tag(area, category="area")
-        total = len(total.filter(db_typeclass_path__contains="room"))
-        count = 0
-        owned = 0
-        visited = self.caller.db.stats['visited']
-        for roomid in visited:
-            room = search_object("#" + str(roomid))
-            if len(room) > 0:
-                temp = room[0].tags.get(category='area')
-                if temp == area:
-                    count += 1
-                    if room[0].db.owner == self.caller.id:
-                        owned += 1
-            else:
-                continue
+                self.caller.msg("It is currently claimed by {y%s{n." % owner_name)
+
+        total = total_rooms_in_area(area)
+        count = len(visited_in_area(area, self.caller.id))
+        owned = len(claimed_in_area(area, self.caller.id))
+
         pct = color_percent(round(count / total * 100, 2))
         opct = color_percent(round(owned / total * 100, 2))
         count = color_percent(count)
@@ -263,7 +251,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
 
 class CmdScore(COMMAND_DEFAULT_CLASS):
     """
-    Show progress stats.
+    Show player statistics.
 
     """
 
@@ -276,38 +264,35 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         output = fingerPlayer(character)
         explored = {}
         totalrooms = 0
+        totalvisited = 0
         areas = [x.db_key for x in search_tag_object(category='area')]
+
+        # Systemwide room total:
         e = ObjectDB.objects.object_totals()
         for k in e.keys():
             if "room" in k.lower():
                 totalrooms += e[k]
-        visited = self.caller.db.stats['visited']
-        for roomid in visited:
-            room = search_object("#" + str(roomid))
-            if len(room) > 0:
-                room = room[0]
-                area = room.tags.get(category='area')
-                if room.db.owner == self.caller.id:
-                    owner = True
-                else:
-                    owner = False
-            else:
-                continue
+
+        # Sanity check
+        if not self.caller.db.stats:
+            raise("NotAPlayerNoMore")
+        else:
+            owner = self.caller.id
+            visited = self.caller.db.stats['visited']
+
+        for area in visited.keys():
             if area not in explored.keys():
-                total = search_tag(area, category="room").count()
-                if owner:
-                    explored[area] = {'total': total, 'seen': 1, 'owned': 1}
-                else:
-                    explored[area] = {'total': total, 'seen': 1, 'owned': 0}
-            else:
-                explored[area]['seen'] += 1
-                if owner:
-                    explored[area]['owned'] += 1
-        totalvisited = len(visited)
+                explored[area] = {}
+            explored[area]['total'] = total_rooms_in_area(area)
+            explored[area]['seen'] = len(visited_in_area(area, owner))
+            totalvisited += explored[area]['seen']
+            claimed = claimed_in_area(area, owner)
+            explored[area]['owned'] = claimed.count()
+
         totalpct = round(totalvisited / totalrooms * 100, 2)
-        table = self.styled_table("|YArea" + " " * 35, "|YRooms", "|YSeen", "|Y%Seen", "|Y%Owned",
+        table = self.styled_table("|YArea" + " " * 45, "|YSeen", "|Y%Seen", "|YOwned", "|Y%Owned", "|YTotal",
                                   border="none", width=80)
-        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
+        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['total'], reverse=True):
             if key is not None:
                 if value['total'] > value['seen']:
                     pct = round(value['seen'] / value['total'] * 100, 1)
@@ -329,8 +314,12 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                 else:
                     pct = color_percent(pct)
 
-                table.add_row(utils.crop(capwords(str(key)), width=40), value['total'], value['seen'], pct + '%',
-                              opct + '%')
+                table.add_row(utils.crop(capwords(str(key)), width=50),
+                              value['seen'],
+                              pct + '%',
+                              value['owned'],
+                              opct + '%',
+                              value['total'])
 
         output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'
         output += str(table) + '\n'
@@ -351,8 +340,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         output += str(table) + '\n'
 
         self.caller.msg(output)
+
         end = time.time()  ##DEBUG
-        utils.logger.log_err("CmdScore.func() took %ss" % (end - start))  ##DEBUG
 
 
 class CmdRecall(COMMAND_DEFAULT_CLASS):
