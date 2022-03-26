@@ -29,7 +29,7 @@ def at_initial_setup():
     user = search_object("#1")[0] # 6=void, =u/d->7
     user.permissions.add("admin")
 
-    limbo = search_object("#2")[0] # 6=void, =u/d->7
+    limbo = search_object("#2")[0]
     limbo.tags.add("drastical", category='area')
     limbo.tags.add("drastical", category="room")
     limbo.db.desc = "The center of the [partial] universe!"

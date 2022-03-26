@@ -215,6 +215,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
     """
 
     key = "where"
+    aliases = ["seen"]
     locks = "cmd:all()"
 
     def func(self):

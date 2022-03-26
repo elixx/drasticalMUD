@@ -5,6 +5,7 @@ from django.conf import settings
 from evennia.utils import utils
 from commands.command import CmdExamine
 from string import capwords
+from evennia.utils.evtable import EvTable
 from evennia.utils.evmore import EvMore
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -26,7 +27,7 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         self.caller.location.msg_contents("%s uses %s." % (self.caller.name, self.obj.name), exclude=self.caller)
 
         x = ObjectDB.objects.get_objs_with_attr("patrolling")
-        table = self.styled_table("|Y#", "|YType", "|YLocation", "|YArea", '|YDB', "|YPtl", "|YAreas", "|YRooms",
+        table = EvTable("|Y#", "|YType", "|YLocation", "|YArea", '|YDB', "|YPtl", "|YAreas", "|YRooms",
                                   border="none")
 
         total_areas = []
@@ -99,7 +100,7 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
         output = str(table) + '\n'
         output += "Total areas: %s (%s)" % (len(areas), len(areas) - wiztool_last_len_areas) + '\n'
         output += "Total rooms: %s (%s)" % (rooms, rooms - wiztool_last_len_rooms) + '\n'
-        output += "Total bots: %s " % count + '\n'
+        output += "CExplore bots: %s (%s)" % (cexcount, cexcount - wiztool_last_cex) + '\n'
 
         EvMore(self.caller, output)
 
