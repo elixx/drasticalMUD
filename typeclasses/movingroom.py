@@ -9,6 +9,7 @@ from evennia import DefaultRoom
 from typeclasses.objects import Object
 from evennia.utils.evtable import EvTable
 from evennia.utils.logger import log_info
+from string import capwords
 from world.bookmarks import starts as start_rooms
 
 from random import choice
@@ -36,7 +37,7 @@ class RoomDisplayBoard(Object):
             elif isinstance(stop, int):
                 stop_time = stop
             if stop_name != None and stop_time != None:
-                display.add_row(stop_name, area_name.title(), stop_time)
+                display.add_row(stop_name, capwords(area_name), stop_time)
                 stop_name = None
                 stop_time = None
         output = self.db.base_desc + "\n" + str(display)
@@ -137,7 +138,7 @@ class MovingRoom(DefaultRoom):
             if next.tags.get(category='area') != None:
                 nextarea = next.tags.get(category='area')
                 announce = "%s announces, '|xNext stop: |c%s|x in |y%s|x.|n'" % (
-                self.name.capitalize(), next.name, nextarea.title())
+                self.name.capitalize(), next.name, capwords(nextarea))
             else:
                 announce = "%s announces, '|xNext stop: |c%s|x.|n'" % (self.name.capitalize(), loc.name.replace("{",""))
             self.db.desc = "An electronic sign reads:\n\t|yDeparting:\t|c%s|x\n\t|yNext Stop:\t|c%s|x" % (
@@ -179,7 +180,7 @@ class MovingRoom(DefaultRoom):
         if loc.tags.get(category='area') != None:
             area = loc.tags.get(category='area')
             # announce = "%s announces, '|xWelcome to |Y%s|x in |y%s|x.'" % (self.name.capitalize(), loc.name, area.title())
-            announce = "%s announces, '|xNow arriving at |c%s|x in |y%s|x.'" % (self.name, loc.name.replace("{",""), area.title())
+            announce = "%s announces, '|xNow arriving at |c%s|x in |y%s|x.'" % (self.name, loc.name.replace("{",""), capwords(area))
         else:
             announce = "%s announces, '|xNow arriving at |c%s|x.'" % (self.name.capitalize(), loc.name.replace("{",""))
         self.msg_contents(announce)
@@ -209,7 +210,7 @@ class MovingRoom(DefaultRoom):
                 if not isinstance(i, int):
                     if i == dest:
                         return (self.db.route)
-            area = "|n in |C%s|n " % area.title() if area is not None else "|n"
+            area = "|n in |C%s|n " % capwords(area) if area is not None else "|n"
             self.db.route.append(dest)
             self.db.route.append(time_to_next)
 

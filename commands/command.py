@@ -17,6 +17,8 @@ from core.utils import fingerPlayer
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
+from evennia.utils.evtable import EvTable
+from string import capwords
 from core.extended_room import CmdExtendedRoomLook
 
 import time
@@ -96,7 +98,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                         location = puppet.location
                         if location.tags:
                             try:
-                                area = puppet.location.tags.get(category='area').title()
+                                area = capwords(puppet.location.tags.get(category='area'))
                             except:
                                 area = "None"
                         else:
@@ -146,7 +148,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 if puppet == None:
                     continue
                 location = puppet.location if puppet and puppet.location else "None"
-                location = location.tags.get(category='area').title() if location.tags and location else "None"
+                location = capwords(location.tags.get(category='area')) if location.tags and location else "None"
                 if puppet.db:
                     if puppet.db.title:
                         title = puppet.db.title
@@ -199,9 +201,9 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         start = time.time()  ##DEBUG
-        table = self.styled_table("|YArea", "|YRooms", width=60)
+        table = EvTable("|YArea", "|YRooms", width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
-            table.add_row(key, value)
+            table.add_row(capwords(key), value)
         output = str(table) + '\n'
         EvMore(self.caller, output)
         end = time.time()  ##DEBUG
@@ -226,7 +228,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
                 area = self.caller.location.db.area
             else:
                 area = "unknown"
-        areaname = area.title()
+        areaname = capwords(area)
         self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
         if self.caller.location.db.owner:
             ownerid = self.caller.location.db.owner
@@ -327,7 +329,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                 else:
                     pct = color_percent(pct)
 
-                table.add_row(utils.crop(str(key).title(), width=40), value['total'], value['seen'], pct + '%',
+                table.add_row(utils.crop(capwords(str(key)), width=40), value['total'], value['seen'], pct + '%',
                               opct + '%')
 
         output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'

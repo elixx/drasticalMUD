@@ -29,7 +29,7 @@ class robot(DefaultObject):
                                    "A quiet grinding noise comes from the direction of the %s.",
                                    "Blip-blop. The %s is broken.",
                                    "The robot starts to glow for a moment, then fades."]
-        self.cmdset.add_default(RobotCmdSet, permanent=True)
+        self.cmdset.add_default(RobotCmdSet, persistent=True)
         self.db.max = 20
         if self.db.quotes is None:
             self.db.quotes = ["I was a cockatoo, once...", "hmmm...", "I am working on... nothing!"]

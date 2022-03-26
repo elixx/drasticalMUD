@@ -10,6 +10,7 @@ creation commands.
 from core.clothing.clothing import ClothedCharacter
 from evennia import DefaultCharacter
 from evennia import gametime
+from string import capwords
 
 class Character(DefaultCharacter):
     """
@@ -91,7 +92,7 @@ class Character(DefaultCharacter):
 
             if self.db.last_area:
                 if cur_area != area_name:
-                    self.msg("You have entered {y%s{n." % cur_area.title())
+                    self.msg("You have entered {y%s{n." % capwords(cur_area))
                     self.db.last_area = cur_area
             else:
                 self.db.last_area = area_name
