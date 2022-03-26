@@ -75,9 +75,9 @@ class ContinentExplorer(ExplorerMob):
             targetName = target.key
             self.key = combineNames(self.key, targetName)
             self.ndb.seen.update(target.ndb.seen)
-            self.db.seen = self.ndb.seen
             target.delete()
             log_warn("%s-%s (convergence) %s+%s=%s" % (self.key, target.key, self.id, target.id, self.key))
+        self.db.seen = self.ndb.seen
         super().do_patrol(*args, **kwargs)
 
     def at_msg_receive(self, text=None, from_obj=None, **kwargs):
