@@ -5,40 +5,42 @@ from . import area_reader
 ROOM_TYPECLASS = "typeclasses.rooms.ImportedRoom"
 EXIT_TYPECLASS = "typeclasses.exits.LegacyExit"
 ITEM_TYPECLASS = "typeclasses.objects.LegacyObject"
-MOB_TYPECLASS = "typeclasses.mob.LegacyMob"
+# MOB_TYPECLASS = "typeclasses.mob.LegacyMob"
+MOB_TYPECLASS = "typeclasses.mob_explorer.ContinentExplorer"
 
 AREA_TRANSLATIONS = {"pawmist": "twilight city of pawmist",
-                 "erealms": "elven realms",
-                 "shadval150": "kandahar shadow valley",
-                 "sdearth": "south dearthwood",
-                 "edearth": "east dearthwood",
-                 "avalonch": "avalon",
-                 "talonvle": "gilda and the dragon",
-                 "takshrin": "shrine of tahkien",
-                 "dawn": "city of dawn",
-                 "tisland": "treasure island",
-                 "amazon": "the amazon jungle",
-                 "partbody": "body parts castle",
-                 "north": "northern road",
-                 'river': 'durgas river',
-                 'island': 'island of illusion',
-                 'east': 'eastern road',
-                 'demise': 'death room',
-                 'path': 'the hidden path',
-                 'gstrong': 'goblin stronghold',
-                 'plains': 'plains of the north',
-                 'pyramid': 'the great pyramid',
-                 'weaverei': 'the dreamweaver\'s path',
-                 'marsh': 'generic old marsh',
-                 'tree': 'yggdrasil',
-                 'zoology': 'mudschool fieldtrip',
-                 'dock': 'calinth docks',
-                 'water': 'blizzard water nymphs',
-                 'chessbrd': 'chessboard',
+                     "erealms": "elven realms",
+                     "shadval150": "kandahar shadow valley",
+                     "shadval45": "shadow valley",
+                     "sdearth": "south dearthwood",
+                     "edearth": "east dearthwood",
+                     "wdearth": "west dearthwood",
+                     "avalonch": "avalon",
+                     "talonvle": "gilda and the dragon",
+                     "takshrin": "shrine of tahkien",
+                     "dawn": "city of dawn",
+                     "tisland": "treasure island",
+                     "amazon": "the amazon jungle",
+                     "partbody": "body parts castle",
+                     "north": "northern road",
+                     'river': 'durgas river',
+                     'island': 'island of illusion',
+                     'east': 'eastern road',
+                     'demise': 'death room',
+                     'path': 'the hidden path',
+                     'gstrong': 'goblin stronghold',
+                     'plains': 'plains of the north',
+                     'pyramid': 'the great pyramid',
+                     'weaverei': 'the dreamweaver\'s path',
+                     'marsh': 'generic old marsh',
+                     'tree': 'yggdrasil',
+                     'zoology': 'mudschool fieldtrip',
+                     'dock': 'calinth docks',
+                     'water': 'blizzard water nymphs',
+                     'chessbrd': 'chessboard',
                      'drmscp': 'dreamscape',
                      'chessbrd': 'chessboard',
                      'under2': 'underdark'}
-
 
 DIRS = {0: "north",
         1: "east",
@@ -63,6 +65,8 @@ DIRALIAS = {"north": 'n',
             "northeast": 'ne',
             "southeast": 'se',
             "somewhere": 'xyzzy'}
+
+FIX_DOUBLESPACE = ["the bazaar", "sesame street"]
 
 
 class AreaImporter(object):
@@ -106,7 +110,7 @@ class AreaImporter(object):
             s = s.replace(".", "")
             self.areaname = s
 
-        if self.areaname in AREA_TRANSLATIONS.keys():
+        if self.areaname.lower() in AREA_TRANSLATIONS.keys():
             self.areaname = AREA_TRANSLATIONS[self.areaname]
 
         self.rooms_created = False
@@ -217,18 +221,20 @@ class AreaImporter(object):
                     self.last_area = room['area']
                     firstRoom = True
                 newroom = create_object(typeclass=ROOM_TYPECLASS,
-                                        key=room['name'],locks="puppet:false()")
-                newroom.db.desc = room['desc']
-                newroom.db.vnum = vnum
-                newroom.tags.add(room['area'], category='area')
-                newroom.tags.add(room['area'], category='room')
-                newroom.tags.add('imported', category='room')
-                newroom.db.area = room['area']
+                                        key=room['name'],
+                                        attributes=[('desc', room['desc']),
+                                                    ('vnum', vnum),
+                                                    ('value', 100),
+                                                    ('area', room['area'])],
+                                        tags=[(room['area'], 'area'),
+                                              (room['area'], 'room'),
+                                              ('imported', 'room')])
+
                 self.room_translate[vnum] = newroom.id
                 # log_info(
                 #     "spawnRooms(): Area:%s Room:'%s' Vnum:%s Evid:%s" % (room['area'], room['name'], vnum, newroom.id))
                 if (firstRoom):
-                    log_warn("* Entry to "+ room['area'] + ' - #' + str(newroom.id) + " = " + room['name'])
+                    log_warn("* Entry to " + room['area'] + ' - #' + str(newroom.id) + " = " + room['name'])
                     if room['area'] in entries.keys():
                         entries[room['area']].append(newroom.id)
                     else:
@@ -238,7 +244,7 @@ class AreaImporter(object):
             self.rooms_created = True
             log_info("%s rooms created." % count)
             self._spawnRooms_exits()
-            return(entries)
+            return (entries)
 
     def _spawnRooms_exits(self):
         if self.exits_created:
@@ -255,18 +261,20 @@ class AreaImporter(object):
                             log_err('! missing source: ' + str(loc))
                             continue
                     if exitData['dest'] not in self.room_translate.keys():
-                        log_err('! no source: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(evid) + " skipped, " + str(exitData['dest']) + " not found.")
+                        log_err('! no source: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
+                            evid) + " skipped, " + str(exitData['dest']) + " not found.")
                         continue
                     evdestid = "#" + str(self.room_translate[exitData['dest']])
                     dest = search_object(evdestid)[0]
                     if dest is None:
-                        log_err('! no destination: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(evid) + " skipped, " + str(exitData['dest']) + " not found.")
+                        log_err('! no destination: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
+                            evid) + " skipped, " + str(exitData['dest']) + " not found.")
                         continue
                     newexit = create_object(typeclass=EXIT_TYPECLASS,
                                             key=exitDir, location=loc, destination=dest, aliases=[DIRALIAS[exitDir]],
-                                            tags=[(room['area'],'area'),
-                                                  (room['area'],'exit'),
-                                                  ('imported','exit')],
+                                            tags=[(room['area'], 'area'),
+                                                  (room['area'], 'exit'),
+                                                  ('imported', 'exit')],
                                             attributes=[('area', room['area']),
                                                         ('vnum', vnum)])
 
@@ -322,7 +330,7 @@ class AreaImporter(object):
             for vnum in sorted(self.objects):
                 ob = self.objects[vnum]
                 if vnum not in self.object_location.keys():
-                    #log_err("! %s - vnum not found in object_location table: %s" % (ob.name, vnum))
+                    # log_err("! %s - vnum not found in object_location table: %s" % (ob.name, vnum))
                     continue
                 else:
                     evid = "#" + str(self.room_translate[self.object_location[vnum]])
@@ -335,13 +343,13 @@ class AreaImporter(object):
                     else:
                         loc = loc[0]
                         newob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
-                                                  typeclass=ITEM_TYPECLASS,
-                                                  attributes=[('desc', ob['desc']),
-                                                              ('ext_desc', ob['ext']),
-                                                              ('type', ob['type']),
-                                                              ('area', ob['area']),
-                                                              ('vnum', vnum)],
-                                                  tags=[("imported", "object"),
-                                                        (self.areaname, 'area'),
-                                                        (self.areaname, 'item')])
-                        #log_info("%s created in %s - #%s" % (ob['name'], loc.name, newob.id))
+                                              typeclass=ITEM_TYPECLASS,
+                                              attributes=[('desc', ob['desc']),
+                                                          ('ext_desc', ob['ext']),
+                                                          ('type', ob['type']),
+                                                          ('area', ob['area']),
+                                                          ('vnum', vnum)],
+                                              tags=[("imported", "object"),
+                                                    (self.areaname, 'area'),
+                                                    (self.areaname, 'item')])
+                        # log_info("%s created in %s - #%s" % (ob['name'], loc.name, newob.id))

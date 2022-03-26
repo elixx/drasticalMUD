@@ -4,6 +4,7 @@ from evennia.utils.create import create_object
 from evennia.utils.logger import log_err, log_info
 from world.bookmarks import starts as start_rooms
 from random import choice
+from string import capwords
 import time
 
 
@@ -40,15 +41,15 @@ def warpArea(caller, area=None):
         caller.msg("beep boop " + "brrzap" * len(dest))
         log_err("warpArea(): " + str(dest))
     else:
-        caller.msg("You are warped to {y%s{n." % area.title())
-        caller.location.msg_contents("{y%s{n is warped to somewhere in {g%s{n." % (caller.name, area.title()))
+        caller.msg("You are warped to {y%s{n." % capwords(area))
+        caller.location.msg_contents("{y%s{n is warped to somewhere in {g%s{n." % (caller.name, capwords(area)))
         caller.location = dest[0]
 
 
 def claimRoom(owner, location):
     caller = owner
     area = location.tags.get(category='area')
-    area = area.title()
+    area = capwords(area)
     claim = False
 
     # Room is unclaimed
@@ -173,7 +174,7 @@ def area_count():
     allrooms = ImportedRoom.objects.all()
     for area in areas:
         rooms = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room")
-        counts[area.db_key.title()] = rooms.count()
+        counts[area.db_key] = rooms.count()  # key was capitalized?
     end = time.time()  ##DEBUG
     log_err("area_count() took %ss" % (end - start))  ##DEBUG
     return (counts)

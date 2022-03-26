@@ -26,7 +26,7 @@ does what you expect it to.
 
 
 def at_initial_setup():
-    user = search_object("#2")[0] # 6=void, =u/d->7
+    user = search_object("#1")[0] # 6=void, =u/d->7
     user.permissions.add("admin")
 
     limbo = search_object("#2")[0] # 6=void, =u/d->7
@@ -62,6 +62,8 @@ def at_initial_setup():
         importer.load(areafile)
     log_info("Creating rooms...")
     starts = importer.spawnRooms()
+    # log_info("Creating mobs...")
+    # starts = importer.spawnMobs()
     log_info("Creating objects...")
     importer.spawnObjects()
     log_info("Import complete.")
