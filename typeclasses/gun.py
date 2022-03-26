@@ -15,7 +15,7 @@ class Gun(DefaultObject):
         self.db.ammo_type = 'generic'
         self.ndb.aiming = False
         self.ndb.target = None
-        self.cmdset.add_default(GunCmdSet, permanent=True)
+        self.cmdset.add_default(GunCmdSet, persistent=True)
 
     def on_hit_target(self, target, shooter, range=0, first=True):
         exits = [exi for exi in target.location.exits if exi.access(target, "traverse")]

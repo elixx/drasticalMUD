@@ -13,7 +13,7 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 class ShopRoom(Room):
     def at_object_creation(self):
         super().at_object_creation()
-        self.cmdset.add_default(ShopRoomCmdSet, permanent=True)
+        self.cmdset.add_default(ShopRoomCmdSet, persistent=True)
 
 
 class CmdShopRoomShop(COMMAND_DEFAULT_CLASS):

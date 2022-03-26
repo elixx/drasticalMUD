@@ -11,7 +11,7 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 class WizTool(DefaultObject):
     def at_object_creation(self):
         super().at_object_creation()
-        self.cmdset.add_default(WizToolCmdSet, permanent=True)
+        self.cmdset.add_default(WizToolCmdSet, persistent=True)
 
 
 class CmdFindMobs(COMMAND_DEFAULT_CLASS):
@@ -116,7 +116,7 @@ class WizToolCmdSet(CmdSet):
 class Tricorder(DefaultObject):
     def at_object_creation(self):
         super().at_object_creation()
-        self.cmdset.add_default(TricorderCmdSet, permanent=True)
+        self.cmdset.add_default(TricorderCmdSet, persistent=True)
         self.db.ephemeral = True
 
 

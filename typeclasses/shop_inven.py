@@ -49,7 +49,7 @@ class ShopInvRoom(Room):
                                           'attributes': [('desc', 'a generic clip of gun ammunition'),
                                                          ('capacity', 8),
                                                          ('ammo_type', 'generic')]}}
-        self.cmdset.add_default(ShopInvRoomCmdSet, permanent=True)
+        self.cmdset.add_default(ShopInvRoomCmdSet, persistent=True)
 
 
 class CmdShopInvRoomShop(COMMAND_DEFAULT_CLASS):
