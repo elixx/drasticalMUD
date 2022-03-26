@@ -172,8 +172,7 @@ def area_count():
     areas = search_tag_object(category='area')
     allrooms = ImportedRoom.objects.all()
     for area in areas:
-        rooms = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room")
-        counts[area.db_key] = rooms.count()  # key was capitalized?
+        counts[area.db_key] = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
     return (counts)
 
 
@@ -183,9 +182,14 @@ def total_rooms_in_area(area):
 
 
 def claimed_in_area(area, owner):
-    results = search_tag(area, category='room')
-    results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=owner)
-    return (results)
+    if isinstance(owner, int):
+        owner = "#" + str(owner)
+    o = search_object(owner)
+    if o is not None:
+        o = o.first()
+        results = search_tag(area, category='room')
+        results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o)
+        return (results)
 
 
 def visited_in_area(area, owner):
@@ -198,7 +202,7 @@ def visited_in_area(area, owner):
         if o.db.stats['visited']:
             if area in o.db.stats['visited'].keys():
                 matches = o.db.stats['visited'][area]
-    return (matches)
+        return (matches)
 
 
 def exploreReport(user):

@@ -234,22 +234,12 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("This property is currently claimed by you.")
             else:
                 owner_name = search_object("#" + str(ownerid))[0].name
-                self.caller.msg("It is currently owned by {y%s{n." % owner_name)
-        total = search_tag(area, category="area")
-        total = len(total.filter(db_typeclass_path__contains="room"))
-        count = 0
-        owned = 0
-        visited = self.caller.db.stats['visited']
-        for roomid in visited:
-            room = search_object("#" + str(roomid))
-            if len(room) > 0:
-                temp = room[0].tags.get(category='area')
-                if temp == area:
-                    count += 1
-                    if room[0].db.owner == self.caller.id:
-                        owned += 1
-            else:
-                continue
+                self.caller.msg("It is currently claimed by {y%s{n." % owner_name)
+
+        total = total_rooms_in_area(area)
+        count = len(visited_in_area(area, self.caller.id))
+        owned = len(claimed_in_area(area, self.caller.id))
+
         pct = color_percent(round(count / total * 100, 2))
         opct = color_percent(round(owned / total * 100, 2))
         count = color_percent(count)
