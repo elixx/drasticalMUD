@@ -40,7 +40,8 @@ AREA_TRANSLATIONS = {"pawmist": "twilight city of pawmist",
                      'chessbrd': 'chessboard',
                      'drmscp': 'dreamscape',
                      'chessbrd': 'chessboard',
-                     'under2': 'underdark'}
+                     'under2': 'underdark',
+                     'newbie2': 'newbie zone'}
 
 DIRS = {0: "north",
         1: "east",
@@ -252,6 +253,7 @@ class AreaImporter(object):
         else:
             for vnum in sorted(self.rooms):
                 room = self.rooms[vnum]
+                count = 0
                 for exitDir, exitData in room['exits'].items():
                     evid = "#" + str(self.room_translate[vnum])
                     loc = search_object(evid)[0]
@@ -277,7 +279,9 @@ class AreaImporter(object):
                                                   ('imported', 'exit')],
                                             attributes=[('area', room['area']),
                                                         ('vnum', vnum)])
-
+                    count += 1
+                if count == 0:
+                    log_err("! blackhole detected - vnum %s, EvId %s" % (vnum, self.room_translate[vnum]))
             self.exits_created = True
 
     def spawnMobs(self):

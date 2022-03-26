@@ -10,6 +10,7 @@ creation commands.
 from core.clothing.clothing import ClothedCharacter
 from evennia import DefaultCharacter
 from evennia import gametime
+from evennia.utils.logger import log_err
 from string import capwords
 
 class Character(DefaultCharacter):
@@ -112,7 +113,8 @@ class Character(DefaultCharacter):
             if target.typeclass_path == "typeclasses.rooms.ImportedRoom":
                 try:
                     target.update_description()
-                except:
+                except Exception as e:
+                    log_err("characters:at_look():116: %s" % e)
                     pass
             if not target.access(self, "view"):
                 try:

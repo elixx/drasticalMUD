@@ -15,6 +15,7 @@ from world.bookmarks import starts as start_rooms
 from random import choice
 
 
+# WIP:
 class RoomDisplayBoard(Object):
     def at_object_creation(self):
         self.locks.add("get:false()")
@@ -195,7 +196,10 @@ class MovingRoom(DefaultRoom):
         self.db.desc = "An electronic sign reads:\n\t|yCurrent Stop:\t|c%s|x\n\t|yNext:\t\t|c%s|x" % (
         loc.name, next.name)
         loc.msg_contents(announce)
-        self._set_ticker(self.db.wait_at_destination, "start_service")
+        if self.db.route_pos == 0:
+            self._set_ticker(self.db.wait_at_destination * 1.5, "start_service") # Wait longer at recall / start room
+        else:
+            self._set_ticker(self.db.wait_at_destination, "start_service")
 
     def add_destination(self, dest, time_to_next=10, index=-1):
         loc = search_object(dest)
