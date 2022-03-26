@@ -40,7 +40,8 @@ AREA_TRANSLATIONS = {"pawmist": "twilight city of pawmist",
                      'chessbrd': 'chessboard',
                      'drmscp': 'dreamscape',
                      'chessbrd': 'chessboard',
-                     'under2': 'underdark'}
+                     'under2': 'underdark',
+                     'newbie2': 'newbie zone'}
 
 DIRS = {0: "north",
         1: "east",
