@@ -4,6 +4,8 @@ from evennia import ObjectDB
 from django.conf import settings
 from evennia.utils import utils
 from commands.command import CmdExamine
+from string import capwords
+from evennia.utils.evmore import EvMore
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -37,7 +39,7 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
             if bot.location != None:
                 area = bot.location.tags.get(category='area')
                 if area is not None:
-                    area = area.title()
+                    area = capwords(area)
                 location = utils.crop(str(bot.location.id) + ':' + bot.location.name, 30)
             else:
                 location = None
@@ -94,11 +96,12 @@ class CmdFindMobs(COMMAND_DEFAULT_CLASS):
             self.caller.db.wiztool_last_cex = 0
             wiztool_last_cex = 0
 
-        self.caller.msg(str(table))
-        self.caller.msg("Total areas: %s (%s)" % (len(areas), len(areas) - wiztool_last_len_areas))
-        self.caller.msg("Total rooms: %s (%s)" % (rooms, rooms - wiztool_last_len_rooms))
-        self.caller.msg("Total bots: %s " % count)
-        self.caller.msg("ContinentExplorers: %s (%s)" % (cexcount, cexcount - wiztool_last_cex))
+        output = str(table) + '\n'
+        output += "Total areas: %s (%s)" % (len(areas), len(areas) - wiztool_last_len_areas) + '\n'
+        output += "Total rooms: %s (%s)" % (rooms, rooms - wiztool_last_len_rooms) + '\n'
+        output += "Total bots: %s " % count + '\n'
+
+        EvMore(self.caller, output)
 
         self.caller.db.wiztool_last_len_areas = len(areas)
         self.caller.db.wiztool_last_len_rooms = rooms
