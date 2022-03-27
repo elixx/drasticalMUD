@@ -41,8 +41,8 @@ def warpArea(caller, area=None):
         caller.msg("beep boop " + "brrzap" * len(dest))
         log_err("warpArea(): " + str(dest))
     else:
-        caller.msg("You are warped to {y%s{n." % capwords(area))
-        caller.location.msg_contents("{y%s{n is warped to somewhere in {g%s{n." % (caller.name, capwords(area)))
+        caller.msg("You are warped to |Y%s|n." % capwords(area))
+        caller.location.msg_contents("|Y%s|n is warped to somewhere in |g%s|n." % (caller.name, capwords(area)))
         caller.location = dest[0]
 
 
@@ -218,3 +218,4 @@ def exploreReport(user):
             visited = len(visited_in_area(area, o))
             summary[area] = {'total': total, 'visited': visited, 'claimed': claimed}
     return summary
+
