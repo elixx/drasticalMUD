@@ -472,3 +472,22 @@ class CmdQuit(COMMAND_DEFAULT_CLASS):
                 account.msg("{YY'all c{yome b{Wack n{yow, y{Y'hear{n...?\n" + self.logout_screen, session=self.session)
                 sendWebHook("Quit: " + self.caller.name + " from " + self.session.address)
             account.disconnect_session_from_account(self.session, reason)
+
+
+
+class CmdClaimed(COMMAND_DEFAULT_CLASS):
+    """
+    See top landowners
+
+    """
+    key = "claimed"
+    locks = "cmd:all()"
+
+    def func(self):
+        from typeclasses.rooms import topClaimed
+        claimed = topClaimed()
+        table = EvTable("|YPlayer", "|YRooms Owned")
+        for (player, count) in claimed:
+            table.add_row(player, count)
+        output = str(table) + '\n'
+        self.caller.msg(output)
