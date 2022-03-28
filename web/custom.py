@@ -159,6 +159,6 @@ def _player_stats(**kwargs):
             claimed = claimed_in_area(area, character.id)
             owned = claimed.count()
             explored.append({'name': area, 'total': total, 'seen': seen, 'owned': owned})
-
+        explored = sorted(explored, key=lambda x: x['seen'], reverse=True)
     return {'character': character, 'gold': character.db.stats['gold'], 'explored': explored }
 
