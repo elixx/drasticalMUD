@@ -7,10 +7,10 @@ def global_tick():
     #
     # # Increment growth rooms
     log("growth")
-    growable = search_tag("growable")
+    growable = search_tag("growable",category="object")
     for obj in growable:
-        if obj.db.age:
-            obj.db.age += 1
+        if obj.db.age and obj.db.planted:
+            obj.grow()
     #
     # log("spawnage")
     # # Spawn items
