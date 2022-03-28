@@ -379,9 +379,9 @@ class CmdLook(CmdExtendedRoomLook):
 
     key = "look"
     aliases = ["l", "ls", "ll"]
-    locks = "cmd:all()"
-    arg_regex = r"\s|$"
-    priority = -60
+    # locks = "cmd:all()"
+    # arg_regex = r"\s|$"
+    # priority = -60
 
     def func(self):
         """
@@ -398,6 +398,7 @@ class CmdLook(CmdExtendedRoomLook):
         else:
             target = caller.search(self.args)
             if not target:
+                super().func()
                 return
 
         if 'false' not in target.locks.get('puppet') or target.has_account != 0:
@@ -405,7 +406,8 @@ class CmdLook(CmdExtendedRoomLook):
             caller.location.msg_contents("%s looks at %s." % (caller, target), exclude=[caller, target])
             target.msg("%s looks at you." % caller)
 
-        self.msg((caller.at_look(target), {"type": "look"}), options=None)
+        #self.msg((caller.at_look(target), {"type": "look"}), options=None)
+        super().func()
 
 
 class CmdQuit(COMMAND_DEFAULT_CLASS):
