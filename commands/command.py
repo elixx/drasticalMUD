@@ -228,14 +228,14 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
             else:
                 area = "unknown"
         areaname = capwords(area)
-        self.caller.msg("The room {c%s{n is a part of {y%s{n." % (roomname, areaname))
+        self.caller.msg("The room |c%s|n is a part of |y%s|n." % (roomname, areaname))
         if self.caller.location.db.owner:
             ownerid = self.caller.location.db.owner
             if ownerid == self.caller.id:
                 self.caller.msg("This property is currently claimed by you.")
             else:
                 owner_name = search_object("#" + str(ownerid))[0].name
-                self.caller.msg("It is currently claimed by {y%s{n." % owner_name)
+                self.caller.msg("It is currently claimed by |y%s|n." % owner_name)
 
         total = total_rooms_in_area(area)
         count = len(visited_in_area(area, self.caller.id))
@@ -244,7 +244,7 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
         pct = color_percent(round(count / total * 100, 2))
         opct = color_percent(round(owned / total * 100, 2))
         count = color_percent(count)
-        self.caller.msg("You have visited %s out of {w%s{n (%s%%) rooms in {Y%s{n." % (count, total, pct, areaname))
+        self.caller.msg("You have visited %s out of |w%s|n (%s%%) rooms in |Y%s|n." % (count, total, pct, areaname))
         self.caller.msg("You own %s%% of %s." % (opct, areaname))
         end = time.time()  ##DEBUG
         utils.logger.log_err("CmdWhere.func() took %ss" % (end - start))  ##DEBUG
@@ -358,8 +358,8 @@ class CmdRecall(COMMAND_DEFAULT_CLASS):
         home = utils.search.search_object(home)
         if len(home) > 0:
             if not self.caller.db.no_recall and not self.caller.ndb.no_recall:
-                self.caller.location.msg_contents("%s is {cswept{C away{n...", exclude=self.caller)
-                self.caller.msg("You summon your energy and are {cswept{C away{n...")
+                self.caller.location.msg_contents("%s is swept away...", exclude=self.caller)
+                self.caller.msg("You summon your energy and are swept away...")
                 self.caller.move_to(home[0])
         else:
             self.caller.msg("Uh-oh! You are homeless!")

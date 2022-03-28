@@ -3,14 +3,14 @@ from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.logger import log_info as log
 
 def global_tick():
-    # log("-- start global_tick --")
+    log("-- start global_tick --")
     #
     # # Increment growth rooms
-    # log("growth")
-    # growable = search_tag("growable", category='room')
-    # for obj in growable:
-    #     if obj.db.growth:
-    #         obj.db.growth += 1
+    log("growth")
+    growable = search_tag("growable",category="object")
+    for obj in growable:
+        if obj.db.age and obj.db.planted:
+            obj.grow()
     #
     # log("spawnage")
     # # Spawn items
@@ -18,5 +18,5 @@ def global_tick():
     # for obj in spawnable:
     #     obj.db.age += 1
     #
-    # log("-- finish global_tick --")
+    log("-- finish global_tick --")
     pass
