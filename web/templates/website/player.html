@@ -16,8 +16,28 @@
                     <tbody>
                         <tr>
                             <td>Gold</td><td>{{ gold }}</td>
+                        </tr><tr>
+                            <td>Wood</td><td>-</td>
+                        </tr><tr>
+                            <td>Stone</td><td>-</td>
+                        </tr><tr>
+                            <td>Gems</td><td>-</td>
                         </tr>
                     </tbody>
+                </table>
+            <hr />
+                <table>
+                    <thead>
+                    <tr>
+                        <th>area</th> <th>owned</th> <th>seen</th> <th>total</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    {%  for area in explored %}
+                        <tr>
+                            <td>{{  area.name }}</td> <td>{{  area.owned }}</td> <td>{{  area.seen }}</td>  <td>{{  area.total }}</td></tr>
+                    {% endfor %}
+                </tbody>
                 </table>
             </div>
         </div>
