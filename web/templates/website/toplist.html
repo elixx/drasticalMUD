@@ -19,7 +19,7 @@
                     </thead>
                     {% for s in stats %}
                         <tr>
-                            <td>{{ s.name }}</td><td>{{ s.owned }}</td><td>{{ s.gold }}</td>
+                            <td><a href="/player/{{ s.id }}">{{ s.name }}</a></td><td>{{ s.owned }}</td><td>{{ s.gold }}</td>
                         </tr>
                     {% endfor %}
                 </table>
