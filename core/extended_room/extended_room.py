@@ -373,14 +373,14 @@ class CmdExtendedRoomLook(default_cmds.CmdLook):
         else:
             looking_at_obj = caller.location
             if not looking_at_obj:
-                caller.msg("You have no location to look at!")
+                #caller.msg("You have no location to look at!")
                 return
 
         if not hasattr(looking_at_obj, "return_appearance"):
             # this is likely due to us having an account instead
             looking_at_obj = looking_at_obj.character
         if not looking_at_obj.access(caller, "view"):
-            caller.msg("Could not find '%s'." % args)
+            #caller.msg("Could not find '%s'." % args)
             return
         # get object's appearance
         caller.msg(looking_at_obj.return_appearance(caller))
