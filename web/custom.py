@@ -1,5 +1,7 @@
 #from evennia.web.website import views as website_views
 from django.views.generic import TemplateView, ListView, DetailView
+
+import evennia
 from world.utils import area_count
 from string import capwords
 from evennia.utils.logger import log_err
@@ -113,7 +115,8 @@ def _toplist_stats():
 
     output = []
     for player in stats.keys():
-        output.append({'name': player, 'owned': stats[player]['claimed'], 'gold': stats[player]['gold']})
+        pid = evennia.search_object(player).first().id
+        output.append({'name': player, 'owned': stats[player]['claimed'], 'gold': stats[player]['gold'], 'id':pid})
 
     pagevars = { "stats": output }
     return pagevars

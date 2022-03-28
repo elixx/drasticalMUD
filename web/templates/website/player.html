@@ -1,20 +1,26 @@
-{% extends "base.html" %}
+{% extends "website/base.html" %}
 {% block content %}
 
-    <h1>{{ character.name }}</h1>
+{% block titleblock %}Player Stats{% endblock %}
 
-    <p>{{ character.db.desc }}</p>
-
-    <h2>Stats</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Stat</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Gold</td><td>{{ gold }}</td></tr>
-      </tbody>
-    </table>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 align-center card card-tertiary" style="width: 50%;">
+            <div class="card card-header"><h6>{{ character.name }}</h6></div>
+            <div class="card card-body">
+                <p>{{ character.db.desc }}</p>
+                <table>
+                    <thead>
+                        <th>stat</th><th>value</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Gold</td><td>{{ gold }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
