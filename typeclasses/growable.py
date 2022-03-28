@@ -8,7 +8,7 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 class GrowableObject(DefaultObject):
     def at_object_creation(self):
         self.cmdset.add_default(GrowableCmdSet, persistent=True)
-        self.db.age = 0
+        self.db.age = -1
         self.db.planted = False
         self.tags.add("growable", category='object')
         if not self.db.growth_phases:
@@ -55,6 +55,7 @@ class CmdPlant(COMMAND_DEFAULT_CLASS):
                         obj.location = self.caller.location
                         obj.db.planted = True
                         obj.locks.add("get:false()")
+                        obj.grow()
 
 
 class GrowableCmdSet(CmdSet):
