@@ -9,7 +9,7 @@ def global_tick():
     log("growth")
     growable = search_tag("growable",category="object")
     for obj in growable:
-        if obj.db.age and obj.db.planted:
+        if obj.db.age >= 0 and obj.db.planted:
             obj.grow()
     #
     # log("spawnage")
