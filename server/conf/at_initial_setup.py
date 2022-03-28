@@ -7,6 +7,10 @@ from core.utils import create_exit
 from typeclasses.movingroom import createTrainStops
 from glob import glob
 
+from evennia import TICKER_HANDLER as th
+from world.ticker import global_tick
+from typeclasses.resources import spawnJunk
+
 
 """
 At_initial_setup module template
@@ -61,7 +65,7 @@ def at_initial_setup():
     for areafile in imports:
         importer.load(areafile)
     log_info("Creating rooms...")
-    starts = importer.spawnRooms()
+    importer.spawnRooms()
     # log_info("Creating mobs...")
     # starts = importer.spawnMobs()
     log_info("Creating objects...")
@@ -71,8 +75,24 @@ def at_initial_setup():
     create_exit("up", "#2", "#8", exit_aliases="u")
     create_exit("down", "#8", "#2", exit_aliases="d")
 
+    temple_square = search_object("#1219").first()
+    assert temple_square.key == "The Temple Square"
+    # Create recycle bin
+    create_object("typeclasses.recycle_bin.RecycleBin",
+                  key="recycle bin",
+                  home=temple_square,
+                  location=temple_square,
+                  aliases=['bin'],
+                  locks=["get:false()"],
+                  attributes=[
+                      ('desc', 'A recycle bin that you can |Yput|n junk into and be rewarded a small amount.')
+                  ])
 
     log_info("Train ID is #%s." % train.id)
     log_info("Bulletin board is #%s." % board.id)
 
-    createTrainStops(entries=starts)
+    createTrainStops(entries=importer.entries)
+
+    th.add(300, global_tick)
+    th.add(86400, spawnJunk)
+    spawnJunk()

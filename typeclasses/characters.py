@@ -104,6 +104,7 @@ class Character(DefaultCharacter):
                         self.db.stats['visited'][cur_area] = [self.location.id]
                     else:
                         self.db.stats['visited'][cur_area].append(self.location.id)
+                        self.db.stats['visited'][cur_area] = list(set(self.db.stats['visited'][cur_area]))
                 else:
                     self.db.stats['visited'] = { cur_area: [self.location.id] }
 

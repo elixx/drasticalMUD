@@ -128,6 +128,8 @@ class AreaImporter(object):
         self.enumerateObjects()
         self.enumerateObjectLocations()
 
+        self.entries = {}
+
     def enumerateRooms(self):
         areaname = self.areaname
         count = 0
@@ -214,7 +216,6 @@ class AreaImporter(object):
             log_err("! Rooms already created!")
         else:
             firstRoom = True
-            entries = {}
             count = 0
             for vnum in sorted(self.rooms):
                 room = self.rooms[vnum]
@@ -229,23 +230,24 @@ class AreaImporter(object):
                                                     ('area', room['area'])],
                                         tags=[(room['area'], 'area'),
                                               (room['area'], 'room'),
-                                              ('imported', 'room')])
+                                              ('imported', 'room'),
+                                              ('random_spawn', 'room'),
+                                              ('random_growth', 'room')])
 
                 self.room_translate[vnum] = newroom.id
                 # log_info(
                 #     "spawnRooms(): Area:%s Room:'%s' Vnum:%s Evid:%s" % (room['area'], room['name'], vnum, newroom.id))
                 if (firstRoom):
                     log_warn("* Entry to " + room['area'] + ' - #' + str(newroom.id) + " = " + room['name'])
-                    if room['area'] in entries.keys():
-                        entries[room['area']].append(newroom.id)
+                    if room['area'] in self.entries.keys():
+                        self.entries[room['area']].append(newroom.id)
                     else:
-                        entries[room['area']] = [newroom.id]
+                        self.entries[room['area']] = [newroom.id]
                     firstRoom = False
                 count += 1
             self.rooms_created = True
             log_info("%s rooms created." % count)
             self._spawnRooms_exits()
-            return (entries)
 
     def _spawnRooms_exits(self):
         if self.exits_created:
@@ -282,6 +284,7 @@ class AreaImporter(object):
                     count += 1
                 if count == 0:
                     log_err("! blackhole detected - vnum %s, EvId %s" % (vnum, self.room_translate[vnum]))
+                    # TODO: check IDs listed in self.entries and remove if present
             self.exits_created = True
 
     def spawnMobs(self):
@@ -323,7 +326,7 @@ class AreaImporter(object):
                                        tags=[("imported", "mob"),
                                              (self.areaname, 'area'),
                                              (self.areaname, 'mob')])
-                self.room_translate[vnum] = newmob.id
+                self.mob_translate[vnum] = newmob.id
             self.mobs_created = True
 
     def spawnObjects(self):
@@ -333,19 +336,26 @@ class AreaImporter(object):
             log_info("spawning items")
             for vnum in sorted(self.objects):
                 ob = self.objects[vnum]
-                if vnum not in self.object_location.keys():
+                if vnum not in self.object_location.keys() or self.mob_location.keys():
                     # log_err("! %s - vnum not found in object_location table: %s" % (ob.name, vnum))
                     continue
                 else:
-                    evid = "#" + str(self.room_translate[self.object_location[vnum]])
+                    if self.room_translate[self.object_location[vnum]]:
+                        evid = "#" + str(self.room_translate[self.object_location[vnum]])
+                    elif self.room_translate[self.mob_location[vnum]]:
+                        evid = "#" + str(self.room_translate[self.mob_location[vnum]])
                     loc = search_object(evid)
                     if len(loc) > 1:
                         loc = loc.filter(db_tags__db_key=self.objects[vnum]['area'])
                     if loc is None:
-                        log_err("! spawnObjects(): vnum %s - location %s not found" % (vnum, evid))
-                        continue
-                    else:
-                        loc = loc[0]
+                        if vnum in self.mob_location.keys():
+                            loc = self.mob_location[vnum]
+                        else:
+                            log_err("! spawnObjects(): vnum %s - location %s not found" % (vnum, evid))
+                            continue
+                    if loc is not None:
+                        if 'QuerySet' in str(loc.__class__):
+                            loc = loc[0]
                         newob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
                                               typeclass=ITEM_TYPECLASS,
                                               attributes=[('desc', ob['desc']),
