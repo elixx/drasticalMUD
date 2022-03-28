@@ -493,3 +493,35 @@ class CmdClaimed(COMMAND_DEFAULT_CLASS):
             table.add_row(player, count)
         output = str(table) + '\n'
         self.caller.msg(output)
+
+class CmdTopList(COMMAND_DEFAULT_CLASS):
+    """
+    See top player statistics
+
+    """
+    key = "toplist"
+    aliases=['top']
+    locks = "cmd:all()"
+
+    def func(self):
+        from typeclasses.rooms import topClaimed
+        from world.utils import topGold
+        claimed = topClaimed()
+        gold = topGold()
+        stats = {}
+        for (player, count) in claimed:
+            if player in stats.keys():
+                stats[player]['claimed'] = count
+            else:
+                stats[player] = { 'claimed': count, 'gold': '-' }
+        for (player, g) in gold:
+            if player in stats.keys():
+                stats[player]['gold'] = g
+            else:
+                stats[player] = { 'claimed': '-', 'gold': g }
+
+        table = EvTable("|YPlayer", "|YRooms Owned", "|YTotal Gold")
+        for i,v in stats.items():
+            table.add_row(i, v['claimed'], v['gold'])
+        output = str(table) + '\n'
+        self.caller.msg(output)
