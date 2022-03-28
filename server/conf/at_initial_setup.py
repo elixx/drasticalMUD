@@ -7,6 +7,10 @@ from core.utils import create_exit
 from typeclasses.movingroom import createTrainStops
 from glob import glob
 
+from evennia import TICKER_HANDLER as th
+from world.ticker import global_tick
+from typeclasses.resources import spawnJunk
+
 
 """
 At_initial_setup module template
@@ -89,5 +93,6 @@ def at_initial_setup():
 
     createTrainStops(entries=importer.entries)
 
-    from typeclasses.resources import spawnJunk
+    th.add(300, global_tick)
+    th.add(86400, spawnJunk)
     spawnJunk()
