@@ -1,17 +1,34 @@
 from typeclasses.objects import Object
+from random import randint
+from world.resource_types import *
 
-RESOURCE_TYPES={'wood':     0.3,
-                'stone':    0.3,
-                'cloth':    0.15,
-                'metal':    0.15,
-                'gem':      0.05,
-                'essence':  0.05}
+def spawnJunk(caller=None):
+    from evennia.utils.search import search_tag
+    from evennia.utils.create import create_object
+    results = search_tag("random_spawn", category='room')
+    ob = None
+    for n in range(0 , int(results.count() * (TRASH_SPAWN_PERCENT/100))):
+        loc = choice(results)
+        ob = create_object(key='trash', typeclass="typeclasses.resources.Resource", home=loc, location=loc, attributes=[('ephemeral', True)])
+    for n in range(0, int(results.count() * (GEM_SPAWN_PERCENT / 100))):
+        loc = choice(results)
+        ob = create_object(key='a gem', typeclass="typeclasses.resources.Resource", home=loc, location=loc, attributes=[('resources',{'gem': 1})])
 
-GEM_TYPES =     ['quartz','amethyst','topaz','emerald','aquamarine','ruby','amethyst','jade','diamond']
-ESSENCE_TYPES = ['mind','power','reality','soul','space','time']
 
 class Resource(Object):
     def at_object_creation(self):
-        pass
+
+        if not self.db.resources:
+            self.db.resources = {'trash':1}
+        elif 'gem' in self.db.resources.keys():
+            self.key = gem()
+
+        if not self.db.qual:
+            self.db.qual = randint(0,100)
+
         super().at_object_creation()
 
+    def at_init(self):
+        if 'trash' in self.db.resources.keys():
+            self.key = trash()
+            self.aliases.add('trash')
