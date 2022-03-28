@@ -159,7 +159,7 @@ def claimRoom(owner, location):
                 pub_message = "{W%s{n has taken over {y%s{n in {G%s{n from {w%s{n!" % (
                     caller.name, location.name, area, curr_owner.name)
                 ## TODO: Conflict resolution to result in claim=True
-                # caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
+                caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
                 # claim=False
                 # if location.db.last_owner and location.db.last_owner != -1:
                 #     last_owner = search_object('#' + str(location.db.last_owner))
