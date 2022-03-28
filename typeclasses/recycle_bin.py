@@ -67,13 +67,15 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
             if ui.strip().lower() in ['yes', 'y']:
                 self.caller.msg("You put %s into %s." % (self.obj1.name, self.obj.name))
                 self.caller.location.msg_contents("%s whirrs to live and devours %s." % (self.obj.name, self.obj1.name))
-                if self.obj1.db.qual > 0:
+                if not self.obj1.db.qual:
+                    val = 100
+                elif self.obj1.db.qual > 0:
                     val = int(self.obj1.db.qual * 10)
-                    if 'gold' in self.caller.db.stats.keys():
-                        self.caller.db.stats['gold'] += val
-                    else:
-                        self.caller.db.stats['gold'] = val
-                    self.caller.msg("{nYou receive {y%s gold{n for cleaning up." % val)
+                if 'gold' in self.caller.db.stats.keys():
+                    self.caller.db.stats['gold'] += val
+                else:
+                    self.caller.db.stats['gold'] = val
+                self.caller.msg("{nYou receive {y%s gold{n for cleaning up." % val)
                 self.obj1.location = self.obj
 
 
