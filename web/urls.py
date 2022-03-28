@@ -6,7 +6,7 @@ help.
 """
 
 from django.urls import path, include
-from web.custom import areaView
+from web.custom import areaView, toplistView
 # default evennia patterns
 
 from evennia.web.website.urls import urlpatterns as evennia_default_urlpatterns
@@ -21,6 +21,7 @@ urlpatterns = [
     path("admin/", include("evennia.web.admin.urls")),
     # add any extra urls here:
     # path("mypath/", include("path.to.my.urls.file")),
+    path(r'toplist/', toplistView.as_view(), name='toplist'),
     path(r'areas/', areaView.as_view(), name='areas')
 ]
 
