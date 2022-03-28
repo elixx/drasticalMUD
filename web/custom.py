@@ -133,10 +133,11 @@ class playerView(TemplateView):
         return context
 
 def _player_stats(**kwargs):
-    from evennia.utils.search import search_object as object_search
+    from evennia.utils.search import search_object as object_search, search_tag_object
     from django.http import Http404
     #from django.shortcuts import render
     from evennia.utils.utils import inherits_from
+    from world.utils import claimed_in_area, total_rooms_in_area, visited_in_area
     from django.conf import settings
 
     object_id = kwargs['object_id']
@@ -150,6 +151,14 @@ def _player_stats(**kwargs):
         if not inherits_from(character, settings.BASE_CHARACTER_TYPECLASS):
             raise Http404("I couldn't find a character with that ID. "
                           "Found something else instead.")
+        explored=[]
+        visited = character.db.stats['visited']
+        for area in visited.keys():
+            total = total_rooms_in_area(area)
+            seen = len(visited_in_area(area, character.id))
+            claimed = claimed_in_area(area, character.id)
+            owned = claimed.count()
+            explored.append({'name': area, 'total': total, 'seen': seen, 'owned': owned})
 
-    return {'character': character, 'gold': character.db.stats['gold']}
+    return {'character': character, 'gold': character.db.stats['gold'], 'explored': explored }
 
