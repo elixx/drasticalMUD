@@ -20,10 +20,10 @@ class Resource(Object):
 
         if not self.db.resources:
             self.db.resources = {'trash':1}
+            self.db.qual = randint(0, 5)
         elif 'gem' in self.db.resources.keys():
             self.key = "a %s gem" % gem()
-
-
+            self.db.qual = randint(40, 100)
         if not self.db.qual:
             self.db.qual = randint(0,100)
 
