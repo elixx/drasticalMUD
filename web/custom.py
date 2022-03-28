@@ -2,6 +2,7 @@
 from django.views.generic import TemplateView, ListView, DetailView
 from world.utils import area_count
 from string import capwords
+from evennia.utils.logger import log_err
 
 #class areaView(website_views.EvenniaIndexView):
 class areaView(TemplateView):
@@ -75,4 +76,44 @@ def _area_stats():
         "areas": areas,
         "number_of_areas": len(ac),
     }
+    return pagevars
+
+
+class toplistView(TemplateView):
+
+    template_name = "website/toplist.html"
+
+    # This method tells the view what data should be displayed on the template.
+    def get_context_data(self, **kwargs):
+
+        # Always call the base implementation first to get a context object
+        context = super(TemplateView, self).get_context_data(**kwargs)
+
+        # Add game statistics and other pagevars
+        context.update(_toplist_stats())
+
+        return context
+
+def _toplist_stats():
+    from typeclasses.rooms import topClaimed
+    from world.utils import topGold
+    claimed = topClaimed()
+    gold = topGold()
+    stats = {}
+    for (player, count) in claimed:
+        if player in stats.keys():
+            stats[player]['claimed'] = count
+        else:
+            stats[player] = {'claimed': count, 'gold': '-'}
+    for (player, g) in gold:
+        if player in stats:
+            stats[player]['gold'] = g
+        else:
+            stats[player] = {'name': player, 'claimed': '-', 'gold': g}
+
+    output = []
+    for player in stats.keys():
+        output.append({'name': player, 'owned': stats[player]['claimed'], 'gold': stats[player]['gold']})
+
+    pagevars = { "stats": output }
     return pagevars

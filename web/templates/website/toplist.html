@@ -1,0 +1,30 @@
+{% extends "website/base.html" %}
+
+{% block titleblock %}Areas{% endblock %}
+
+
+{% block header_ext %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="card card-tertiary" style="width: 50%;">
+            <div class="card card-header"><h6>Top Players</h6></div>
+            <div class="card card-body">
+                <table>
+                    <thead>
+                        <th scope="col" class="col-xs-3">player name</th> <th scope="col" class="col-xs-1">rooms owned</th> <th scope="col" class="col-xs-1">gold</th>
+                    </thead>
+                    {% for s in stats %}
+                        <tr>
+                            <td>{{ s.name }}</td><td>{{ s.owned }}</td><td>{{ s.gold }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}}
