@@ -262,7 +262,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
     def func(self):
         start = time.time()  ##DEBUG
         character = self.caller
-        output = fingerPlayer(character)
+        output = ""
         explored = {}
         totalrooms = 0
         totalvisited = 0
@@ -339,6 +339,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             table.add_row("|YVisited Rooms:",
                           "{y" + str(totalvisited) + "{n of {Y" + str(totalrooms) + "{n (" + totalpct + "|n%|n)")
         output += str(table) + '\n'
+
+        output = fingerPlayer(character) + output
 
         self.caller.msg(output)
 
