@@ -1,5 +1,7 @@
 #from evennia.web.website import views as website_views
 from django.views.generic import TemplateView, ListView, DetailView
+
+import evennia
 from world.utils import area_count
 from string import capwords
 from evennia.utils.logger import log_err
@@ -113,7 +115,41 @@ def _toplist_stats():
 
     output = []
     for player in stats.keys():
-        output.append({'name': player, 'owned': stats[player]['claimed'], 'gold': stats[player]['gold']})
+        pid = evennia.search_object(player).first().id
+        output.append({'name': player, 'owned': stats[player]['claimed'], 'gold': stats[player]['gold'], 'id':pid})
 
     pagevars = { "stats": output }
     return pagevars
+
+class playerView(TemplateView):
+
+    template_name = "website/player.html"
+
+    def get_context_data(self, **kwargs):
+        # Always call the base implementation first to get a context object
+        context = super(TemplateView, self).get_context_data(**kwargs)
+        # Add game statistics and other pagevars
+        context.update(_player_stats(**kwargs))
+        return context
+
+def _player_stats(**kwargs):
+    from evennia.utils.search import search_object as object_search
+    from django.http import Http404
+    #from django.shortcuts import render
+    from evennia.utils.utils import inherits_from
+    from django.conf import settings
+
+    object_id = kwargs['object_id']
+
+    if object_id is not None:
+        object_id = "#" + str(object_id)
+        try:
+            character = object_search(object_id)[0]
+        except IndexError:
+            raise Http404("I couldn't find a character with that ID.")
+        if not inherits_from(character, settings.BASE_CHARACTER_TYPECLASS):
+            raise Http404("I couldn't find a character with that ID. "
+                          "Found something else instead.")
+
+    return {'character': character, 'gold': character.db.stats['gold']}
+
