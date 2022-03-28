@@ -21,7 +21,8 @@ class Resource(Object):
         if not self.db.resources:
             self.db.resources = {'trash':1}
         elif 'gem' in self.db.resources.keys():
-            self.key = gem()
+            self.key = "a %s gem" % gem()
+
 
         if not self.db.qual:
             self.db.qual = randint(0,100)
@@ -32,3 +33,4 @@ class Resource(Object):
         if 'trash' in self.db.resources.keys():
             self.key = trash()
             self.aliases.add('trash')
+
