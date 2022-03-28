@@ -120,6 +120,19 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
         claimRoom(caller, location)
 
 
+def topClaimed():
+    from evennia.utils.search import search_object_attribute
+    owned = [str(x.db.owner) for x in search_object_attribute("owner")]
+    counts = {}
+    for o in owned:
+        owner = search_object('#'+o).first().name
+        if owner not in counts.keys():
+            counts[owner] = 1
+        else:
+            counts[owner] += 1
+    return(sorted(counts.items(), key=lambda x: x[1], reverse=True))
+
+
 def claimRoom(owner, location):
     caller = owner
     area = location.tags.get(category='area')
