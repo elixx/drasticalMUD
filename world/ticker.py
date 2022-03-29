@@ -1,9 +1,10 @@
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.logger import log_info as log
+from world.utils import spawnJunk
 
-def global_tick():
-    log("-- start global_tick --")
+def ticker_5min():
+    log("-- start world.ticker.ticker_5min --")
     #
     # # Increment growth rooms
     log("growth")
@@ -11,12 +12,13 @@ def global_tick():
     for obj in growable:
         if obj.db.age >= 0 and obj.db.planted:
             obj.grow()
-    #
-    # log("spawnage")
-    # # Spawn items
-    # spawnable = search_tag("spawnitems", category='room')
-    # for obj in spawnable:
-    #     obj.db.age += 1
-    #
-    log("-- finish global_tick --")
+
+
+    log("-- finish world.ticker.ticker_5min --")
     pass
+
+
+def ticker_daily():
+    log("-- start world.ticker.daily --")
+    spawnJunk()
+    log("-- finish world.ticker.daily --")

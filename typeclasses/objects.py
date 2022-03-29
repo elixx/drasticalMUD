@@ -1,5 +1,6 @@
 from random import randint
 from world.utils import qual
+from evennia.utils import delay
 
 """
 Object
@@ -19,20 +20,8 @@ from evennia.objects.objects import DefaultObject
 
 class Object(DefaultObject):
     """
-    This is the root typeclass object, implementing an in-game Evennia
-    game object, such as having a location, being able to be
-    manipulated or looked at, etc. If you create a new typeclass, it
-    must always inherit from this object (or any of the other objects
-    in this file, since they all actually inherit from BaseObject, as
-    seen in src.object.objects).
-
-    The BaseObject class implements several hooks tying into the game
-    engine. By re-implementing these hooks you can control the
-    system. You should never need to re-implement special Python
-    methods, such as __init__ and especially never __getattribute__ and
-    __setattr__ since these are used heavily by the typeclass system
-    of Evennia and messing with them might well break things for you.
-
+    This is the OLD root typeclass reference
+    See evennia.objects.objects.DefaultObject in evennia/objects/objects.py:197
 
     * Base properties defined/available on all Objects
 
@@ -164,19 +153,59 @@ class Object(DefaultObject):
      """
 
     def at_server_reload(self):
-        super().at_server_reload()
-
         if (self.db.ephemeral):
             self.delete()
+            return
+        super().at_server_reload()
 
 
-class LegacyObject(Object):
+class Item(Object):
     def at_object_creation(self):
-        super().at_object_creation()
-        self.tags.add('loot')
-        self.db.quality=randint(1,100)
-    pass
+        # All items have a 'resources' value
+        # This is what an item deconstructs into
+        # It is also what stacks of resources count into when stacks are formed.
+        # All items have a Quality value - this is a modifier of value in gold
 
+        if not self.db.resources:
+            self.db.resources = {'trash': randint(1,5)}
+            self.db.quality = randint(0, 5)
+
+        if not self.db.quality:
+            self.db.quality = randint(0, 100)
+
+        super().at_object_creation()
+
+    def at_server_reload(self):
+        # Deletion of objects flagged 'ephemeral'
+        super().at_server_reload()
+
+        # Respawn of objects flagged 'respawn'
+        go_home = False
+        if self.db.respawn is True:
+            if self.db.respawn_time:
+                if self.db.respawn_time <= 0:
+                    go_home = True
+                    self.db.respawn_time = None
+            else:
+                go_home = True
+            if go_home:
+                self.location = self.home
+                self.location.msg_contents("%s materializes." % self.key)
+
+        super().at_server_reload()
+
+    # Show looker an estimation of quality
     def at_desc(self, looker=None, **kwargs):
-        super().at_desc(looker, **kwargs)
         looker.msg("It is of %s quality." % qual(self))
+        super().at_desc(looker, **kwargs)
+
+    def at_object_delete(self):
+        if self.db.respawn:
+            if not self.db.respawn_time:
+                self.location = self.home
+            else:
+                self.location = None
+                delay(self.db.respawn_time, self.move_to, self.home)
+            return False
+        else:
+            return True

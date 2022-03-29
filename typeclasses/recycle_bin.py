@@ -16,6 +16,7 @@ class RecycleBin(DefaultObject):
         super().at_object_creation()
         self.locks.add("get:false()")
         self.db.auto_purge = False
+        self.db.destructive = False
         if not self.db.stats:
             self.db.stats = {}
         self.cmdset.add_default(RecycleBinCmdSet, persistent=True)
@@ -32,7 +33,11 @@ class RecycleBin(DefaultObject):
                 self.db.stats['recycled'] = 1
             else:
                 self.db.stats['recycled'] += 1
-            ob.delete()
+            if self.db.destructive:
+                ob.delete()
+            else:
+                ob.location = None
+                ob.db.ephemeral = True
 
 
 class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
@@ -66,15 +71,26 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
             ui = yield ("Are you sure you want to recycle %s? Type {Cyes{n if sure." % self.obj1.name)
             if ui.strip().lower() in ['yes', 'y']:
                 self.caller.msg("You put %s into %s." % (self.obj1.name, self.obj.name))
-                self.caller.location.msg_contents("%s whirrs to live and devours %s." % (self.obj.name, self.obj1.name))
-                if not self.obj1.db.qual:
-                    val = 100
-                elif self.obj1.db.qual > 0:
-                    val = int(self.obj1.db.qual * 2.5)
+                self.caller.location.msg_contents("%s whirrs to life and devours %s." % (self.obj.name, self.obj1.name))
+
+                val = 10
+                if self.obj1.db.resources:
+                    for k in self.obj1.db.resources.keys():
+                        if k == "trash":
+                            val += val*1
+                        if k == "wood":
+                            val += val*1.2
+                        if k == "stone":
+                            val += val*1.25
+                if self.obj1.db.qual:
+                    if self.obj1.db.qual > 0:
+                        val = val + (val * int(self.obj1.db.qual * 0.05))
+
                 if 'gold' in self.caller.db.stats.keys():
                     self.caller.db.stats['gold'] += val
                 else:
                     self.caller.db.stats['gold'] = val
+
                 self.caller.msg("{nYou receive {y%s gold{n for cleaning up." % val)
                 self.obj1.location = self.obj
 
