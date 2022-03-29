@@ -1,36 +1,84 @@
-from typeclasses.objects import Object
-from random import randint
+from django.conf import settings
+from evennia import utils
+log_err = utils.logger.log_err
+from typeclasses.objects import Item
 from world.resource_types import *
 
-def spawnJunk(caller=None):
-    from evennia.utils.search import search_tag
-    from evennia.utils.create import create_object
-    results = search_tag("random_spawn", category='room')
-    ob = None
-    for n in range(0 , int(results.count() * (TRASH_SPAWN_PERCENT/100))):
-        loc = choice(results)
-        ob = create_object(key='trash', typeclass="typeclasses.resources.Resource", home=loc, location=loc, attributes=[('ephemeral', True)])
-    for n in range(0, int(results.count() * (GEM_SPAWN_PERCENT / 100))):
-        loc = choice(results)
-        ob = create_object(key='a gem', typeclass="typeclasses.resources.Resource", home=loc, location=loc, attributes=[('resources',{'gem': 1})])
+from evennia.commands.cmdset import CmdSet
+COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
-class Resource(Object):
+class Resource(Item):
     def at_object_creation(self):
-
-        if not self.db.resources:
-            self.db.resources = {'trash':1}
-            self.db.qual = randint(0, 5)
-        elif 'gem' in self.db.resources.keys():
-            self.key = "a %s gem" % gem()
-            self.db.qual = randint(40, 100)
-        if not self.db.qual:
-            self.db.qual = randint(0,100)
-
         super().at_object_creation()
-
-    def at_init(self):
-        if 'trash' in self.db.resources.keys():
+        keys = self.db.resources.keys()
+        if len(keys) == 1 and 'trash' in keys:
             self.key = trash()
             self.aliases.add('trash')
+        self.cmdset.add_default(ResourceCmdSet, persistent=True)
 
+
+    def join(self, obj):
+        if "Resource" not in obj.db_typeclass_path:
+            raise("NotResourceObject")
+        if not obj.db.resources:
+            raise("NoResourceAttrib")
+
+        for k in obj.db.resources.keys():
+            # Both items are similar
+            if (self.db.resources.keys() == obj.db.resources.keys()):
+                if len(self.db.resources.keys()) == 1:
+                    if k == 'trash':
+                        self.key = "pile of trash"
+                        self.aliases.add(['trash', 'pile'])
+                    if k == 'wood':
+                        self.key = "bundle of wood"
+                        self.aliases.add(['bundle','wood'])
+                    if k == 'wood':
+                        self.key = "pile of stone"
+                        self.aliases.adD(['stone','pile'])
+                else:
+                    self.key = "bundle of resources"
+                    self.aliases.add(['bundle'])
+            else:
+                self.key = "bundle of resources"
+                self.aliases.add(['bundle'])
+
+            # Combine values
+            if k in self.db.resources.keys():
+                self.db.resources[k] += obj.db.resources[k]
+            else:
+                self.db.resources[k] = obj.db.resources[k]
+
+            size = sum([v for v in self.db.resources.values()])
+            log_err(size)
+
+        obj.db.resources = {}
+        obj.delete()
+        return
+
+class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
+
+    key = "join"
+    #locks = "cmd:superuser()"
+    arg_regex = r"\s|$"
+    rhs_split = ("with", " and ")  # Prefer = delimiter, but allow " to " usage.
+
+    def func(self):
+        if not self.args:
+            # Join what with what??
+            return
+        else:
+            caller = self.caller
+            obj1 = caller.search(self.lhs)
+            obj2 = caller.search(self.rhs)
+            if obj1 == obj2:
+                return
+            obj1.join( obj2 )
+
+class ResourceCmdSet(CmdSet):
+    key = "ResourceCmdSet"
+
+    def at_cmdset_creation(self):
+        self.duplicates = False
+        self.add(CmdResourceJoin,allow_duplicates=False)
