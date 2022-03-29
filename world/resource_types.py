@@ -16,6 +16,6 @@ TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife
                'broken record', 'smelly sock']
 
 trash = lambda: choice(TRASH)
-essence = lambda: choice(ESSENCES)
-gem = lambda: choice(GEMS)
+essence = lambda: '%s essence' % choice(ESSENCES)
+gem = lambda: '%s gem' % choice(GEMS)
 wood = lambda: '%s %s' % (choice(WOOD), choice(WOOD_SIZE))
