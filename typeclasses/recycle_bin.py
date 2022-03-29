@@ -70,7 +70,7 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
                 if not self.obj1.db.qual:
                     val = 100
                 elif self.obj1.db.qual > 0:
-                    val = int(self.obj1.db.qual * 10)
+                    val = int(self.obj1.db.qual * 2.5)
                 if 'gold' in self.caller.db.stats.keys():
                     self.caller.db.stats['gold'] += val
                 else:
