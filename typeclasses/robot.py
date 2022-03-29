@@ -85,6 +85,25 @@ class robot(DefaultObject):
 
         super().msg(text=text, from_obj=from_obj, **kwargs)
 
+    def at_msg_receive(self, text=None, from_obj=None, **kwargs):
+        if "pokes at you" in text:
+            chances = random.randint(0, 100)  # chance of breaking
+            if chances < 20:
+                chosen = True
+            else:
+                chosen = False
+            if chosen:
+                from_obj.msg(
+                    "{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
+                from_obj.location.msg_contents(
+                    "{xSparks fly and you hear a frizzing noise. It looks like {Y%s{x just {rbroke{x %s." % (
+                        from_obj, self.name),
+                    exclude=from_obj)
+                self.malfunction()
+                self.delayQuote(poked=True, sleeptime=random.randint(2, 5))
+            else:
+                self.delayQuote(poked=True, sleeptime=random.randint(0, 3))
+
     def malfunction(self):
         if self.db.broken:
             self.location.msg_contents("A grinding sound emanates from the %s." % self.name)
@@ -163,48 +182,48 @@ class robot(DefaultObject):
                         self.delayQuote(poked=True, sleeptime=300)
 
 
-class CmdRobotPoke(COMMAND_DEFAULT_CLASS):
-    """
-    poke the robot
-
-    """
-
-    key = "poke"
-    locks = "cmd:all()"
-
-    def func(self):
-        if not self.args:
-            self.caller.msg("You poke yourself in the face.")
-            self.caller.location.msg_contents("%s pokes themself in the face." % self.caller, exclude=self.caller)
-        else:
-            target = self.args.strip()
-            obj = self.caller.search(target)
-            if not obj:
-                self.caller.msg("You can't find it!")
-            else:
-                if 'doQuote' in dir(obj):
-                    self.caller.msg("You poke %s." % obj)
-                    self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
-                    chances = random.randint(0, 100)  # chance of breaking
-                    if chances < 8:
-                        chosen = True
-                    else:
-                        chosen = False
-                    if chosen:
-                        self.caller.msg(
-                            "{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
-                        self.caller.location.msg_contents(
-                            "{xSparks fly and you hear a frizzing noise. It looks like {Y%s{x just {rbroke{x %s." % (
-                                self.caller, obj.name),
-                            exclude=self.caller)
-                        yield 1
-                        obj.malfunction()
-                        yield random.randint(1, 3)
-                        obj.delayQuote(poked=True, sleeptime=random.randint(1, 3))
-                    else:
-                        obj.delayQuote(poked=True, sleeptime=random.randint(1, 3))
-                else:
-                    self.caller.msg("That wouldn't be nice.")
+# class CmdRobotPoke(COMMAND_DEFAULT_CLASS):
+#     """
+#     poke the robot
+#
+#     """
+#
+#     key = "poke"
+#     locks = "cmd:all()"
+#
+#     def func(self):
+#         if not self.args:
+#             self.caller.msg("You poke yourself in the face.")
+#             self.caller.location.msg_contents("%s pokes themself in the face." % self.caller, exclude=self.caller)
+#         else:
+#             target = self.args.strip()
+#             obj = self.caller.search(target)
+#             if not obj:
+#                 self.caller.msg("You can't find it!")
+#             else:
+#                 if 'doQuote' in dir(obj):
+#                     self.caller.msg("You poke %s." % obj)
+#                     self.caller.location.msg_contents("%s pokes %s." % (self.caller, obj), exclude=self.caller)
+#                     chances = random.randint(0, 100)  # chance of breaking
+#                     if chances < 8:
+#                         chosen = True
+#                     else:
+#                         chosen = False
+#                     if chosen:
+#                         self.caller.msg(
+#                             "{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
+#                         self.caller.location.msg_contents(
+#                             "{xSparks fly and you hear a frizzing noise. It looks like {Y%s{x just {rbroke{x %s." % (
+#                                 self.caller, obj.name),
+#                             exclude=self.caller)
+#                         yield 1
+#                         obj.malfunction()
+#                         yield random.randint(1, 3)
+#                         obj.delayQuote(poked=True, sleeptime=random.randint(1, 3))
+#                     else:
+#                         obj.delayQuote(poked=True, sleeptime=random.randint(1, 3))
+#                 else:
+#                     self.caller.msg("That wouldn't be nice.")
 
 
 class CmdRobotGag(COMMAND_DEFAULT_CLASS):
@@ -358,7 +377,7 @@ class RobotCmdSet(CmdSet):
     key = "RobotCmdSet"
 
     def at_cmdset_creation(self):
-        self.add(CmdRobotPoke())
+        #self.add(CmdRobotPoke())
         self.add(CmdRobotGag())
         self.add(CmdRobotUngag())
         self.add(CmdRobotFix())
