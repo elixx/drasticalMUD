@@ -12,30 +12,14 @@ from world.ticker import global_tick
 from typeclasses.resources import spawnJunk
 
 
-"""
-At_initial_setup module template
-
-Custom at_initial_setup method. This allows you to hook special
-modifications to the initial server startup process. Note that this
-will only be run once - when the server starts up for the very first
-time! It is called last in the startup process and can thus be used to
-overload things that happened before it.
-
-The module must contain a global function at_initial_setup().  This
-will be called without arguments. Note that tracebacks in this module
-will be QUIETLY ignored, so make sure to check it well to make sure it
-does what you expect it to.
-
-"""
-
 
 def at_initial_setup():
     user = search_object("#1")[0] # 6=void, =u/d->7
     user.permissions.add("admin")
 
     limbo = search_object("#2")[0]
-    limbo.tags.add("drastical", category='area')
-    limbo.tags.add("drastical", category="room")
+    #limbo.tags.add("drastical", category='area')
+    #limbo.tags.add("drastical", category="room")
     limbo.db.desc = "The center of the [partial] universe!"
 
     board = create_object("typeclasses.newsboard.NewsBoard",
@@ -45,7 +29,7 @@ def at_initial_setup():
                           aliases=['bulletin','board','news'],
                           locks=["get:false()"],
                           attributes=[("desc", "A billboard of sorts, for news and things. You can probably {yread{n it.")],
-                          tags=[('drastical','object')])
+                          )#tags=[('drastical','object')])
 
     # Set up first transportation room
     train = create_object("typeclasses.movingroom.MovingRoom",
@@ -54,8 +38,8 @@ def at_initial_setup():
                   location=None,
                   aliases=["train"],
                   attributes=[("desc", "A curious train wiggles through spacetime.")],
-                          tags=[('drastical','area'),
-                                ('drastical', 'room')]
+    #                      tags=[('drastical','area'),
+    #                            ('drastical', 'room')]
                   )
 
     print("FOOOOOOOOOOOOOOOOO")
