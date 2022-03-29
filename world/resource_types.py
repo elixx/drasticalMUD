@@ -1,11 +1,8 @@
 from random import choice
 
-TRASH_SPAWN_PERCENT=10
-GEM_SPAWN_PERCENT=2
-ESSENCE_SPAWN_PERCENT=1
 
+RESOURCE_TYPES=['wood','stone', 'trash']
 
-RESOURCE_TYPES=['wood','stone','gem','essence','trash']
 WOOD = ['mahogany', 'oak', 'maple', 'birch', 'cedar', 'spruce', 'dogwood', 'fir', 'pine']
 WOOD_SIZE = {'twig':1, 'branch':2, 'bundle':5}
 GEMS = ['quartz', 'amethyst', 'topaz', 'emerald', 'aquamarine', 'ruby', 'amethyst', 'jade', 'diamond']
@@ -16,6 +13,6 @@ TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife
                'broken record', 'smelly sock']
 
 trash = lambda: choice(TRASH)
-essence = lambda: choice(ESSENCES)
-gem = lambda: choice(GEMS)
+essence = lambda: '%s essence' % choice(ESSENCES)
+gem = lambda: '%s gem' % choice(GEMS)
 wood = lambda: '%s %s' % (choice(WOOD), choice(WOOD_SIZE))

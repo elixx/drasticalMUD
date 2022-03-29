@@ -4,9 +4,8 @@ from . import area_reader
 
 ROOM_TYPECLASS = "typeclasses.rooms.ImportedRoom"
 EXIT_TYPECLASS = "typeclasses.exits.LegacyExit"
-ITEM_TYPECLASS = "typeclasses.objects.LegacyObject"
-# MOB_TYPECLASS = "typeclasses.mob.LegacyMob"
-MOB_TYPECLASS = "typeclasses.mob_explorer.ContinentExplorer"
+ITEM_TYPECLASS = "typeclasses.objects.Item"
+MOB_TYPECLASS = "typeclasses.mob.LegacyMob"
 
 AREA_TRANSLATIONS = {"pawmist": "twilight city of pawmist",
                      "erealms": "elven realms",
@@ -39,7 +38,6 @@ AREA_TRANSLATIONS = {"pawmist": "twilight city of pawmist",
                      'water': 'blizzard water nymphs',
                      'chessbrd': 'chessboard',
                      'drmscp': 'dreamscape',
-                     'chessbrd': 'chessboard',
                      'under2': 'underdark',
                      'newbie2': 'newbie zone'}
 
@@ -230,7 +228,7 @@ class AreaImporter(object):
                                                     ('area', room['area'])],
                                         tags=[(room['area'], 'area'),
                                               (room['area'], 'room'),
-                                              ('imported', 'room'),
+                                              ('imported'),
                                               ('random_spawn', 'room'),
                                               ('random_growth', 'room')])
 
@@ -274,11 +272,11 @@ class AreaImporter(object):
                         log_err('! no destination: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
                             evid) + " skipped, " + str(exitData['dest']) + " not found.")
                         continue
-                    newexit = create_object(typeclass=EXIT_TYPECLASS,
+                    create_object(typeclass=EXIT_TYPECLASS,
                                             key=exitDir, location=loc, destination=dest, aliases=[DIRALIAS[exitDir]],
                                             tags=[(room['area'], 'area'),
                                                   (room['area'], 'exit'),
-                                                  ('imported', 'exit')],
+                                                  ('imported')],
                                             attributes=[('area', room['area']),
                                                         ('vnum', vnum)])
                     count += 1
@@ -323,7 +321,7 @@ class AreaImporter(object):
                                                    ('alignment', ob['alignment']),
                                                    ('area', ob['area']),
                                                    ('vnum', vnum)],
-                                       tags=[("imported", "mob"),
+                                       tags=[("imported"),
                                              (self.areaname, 'area'),
                                              (self.areaname, 'mob')])
                 self.mob_translate[vnum] = newmob.id
@@ -333,7 +331,6 @@ class AreaImporter(object):
         if self.objects_created:
             log_err("Objects already created!")
         else:
-            log_info("spawning items")
             for vnum in sorted(self.objects):
                 ob = self.objects[vnum]
                 if vnum not in self.object_location.keys() or self.mob_location.keys():
@@ -351,19 +348,31 @@ class AreaImporter(object):
                         if vnum in self.mob_location.keys():
                             loc = self.mob_location[vnum]
                         else:
-                            log_err("! spawnObjects(): vnum %s - location %s not found" % (vnum, evid))
+                           # log_err("! spawnObjects(): vnum %s - location %s not found" % (vnum, evid))
                             continue
                     if loc is not None:
                         if 'QuerySet' in str(loc.__class__):
                             loc = loc[0]
+                        if 'weight' in ob.__dict__.keys():
+                            weight=ob.weight
+                        else:
+                            weight=5
+                        if 'cost' in ob.__dict__.keys():
+                            cost=ob.cost
+                        else:
+                            cost=10
                         newob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
                                               typeclass=ITEM_TYPECLASS,
                                               attributes=[('desc', ob['desc']),
                                                           ('ext_desc', ob['ext']),
-                                                          ('type', ob['type']),
+                                                          ('item_type', ob['type']),
                                                           ('area', ob['area']),
-                                                          ('vnum', vnum)],
-                                              tags=[("imported", "object"),
+                                                          ('vnum', vnum),
+                                                          ('quality', weight),
+                                                          ('resources', {'trash': cost}),
+                                                          ('respawn', True),
+                                                          ('respawn_time', 60)],
+                                              tags=[("imported"),
                                                     (self.areaname, 'area'),
                                                     (self.areaname, 'item')])
-                        # log_info("%s created in %s - #%s" % (ob['name'], loc.name, newob.id))
+                        log_info("%s created in %s:%s - #%s" % (ob['name'], loc.id, loc.name, newob.id))

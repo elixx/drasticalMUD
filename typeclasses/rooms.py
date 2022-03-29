@@ -199,7 +199,9 @@ def claimRoom(owner, location):
         if pub_message is not None:
             channel = search_channel("public")[0].msg(pub_message)
         try:
-            caller.location.update_description()
+            location.update_description()
+            if location.db.value:
+                location.db.value = location.db.value * 1.25
         except Exception as e:
             log_err(str(e))
     caller.msg(caller_message)
