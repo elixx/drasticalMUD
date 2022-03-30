@@ -155,11 +155,15 @@ def topGold():
                     reverse=True)
     return(output)
 
-def spawnJunk(TRASH_SPAWN_PERCENT=5):
+def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
     from world.resource_types import trash
     results = search_tag("random_spawn", category='room')
     ob = None
 
     for n in range(0, int(results.count() * (TRASH_SPAWN_PERCENT / 100))):
+        loc = choice(results)
+        ob = create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
+
+    for n in range(0, int(results.count() * (BUNDLE_SPAWN_PERCENT / 100))):
         loc = choice(results)
         ob = create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
