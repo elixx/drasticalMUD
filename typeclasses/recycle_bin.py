@@ -77,14 +77,14 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
                 if self.obj1.db.resources:
                     for k in self.obj1.db.resources.keys():
                         if k == "trash":
-                            val += val*1
+                            val += val*10
                         if k == "wood":
-                            val += val*1.2
+                            val += val*28
                         if k == "stone":
-                            val += val*1.25
+                            val += val*25
                 if self.obj1.db.qual:
                     if self.obj1.db.qual > 0:
-                        val = val + (val * int(self.obj1.db.qual * 0.15))
+                        val = val + (val * int(self.obj1.db.qual) * 0.5)
 
                 if 'gold' in self.caller.db.stats.keys():
                     self.caller.db.stats['gold'] += val
