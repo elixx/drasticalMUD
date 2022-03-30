@@ -167,7 +167,7 @@ class Item(Object):
         # All items have a Quality value - this is a modifier of value in gold
 
         if not self.db.resources:
-            self.db.resources = {'trash': randint(1,10), 'wood': randint(0,10), 'stone': randint(0,9)}
+            self.db.resources = {'trash': randint(0,2), 'wood': randint(0,1), 'stone': randint(0,1)}
             self.db.quality = randint(0, 100)
 
         if not self.db.quality:
