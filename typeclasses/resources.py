@@ -14,15 +14,21 @@ class Resource(Item):
         keys = self.db.resources.keys()
         if len(keys) == 1 and 'trash' in keys:
             self.key = trash()
-            self.aliases.add('trash')
         self.cmdset.add_default(ResourceCmdSet, persistent=True)
+
+    def at_desc(self, looker=None, **kwargs):
+        resources = " ".join(["|C%s|n: %s" % (k, v) for (k, v) in self.db.resources.items()])
+        looker.msg("It deconstructs to: %s" % resources)
+        super().at_desc(looker, **kwargs)
 
 
     def join(self, obj):
+        if obj is None:
+            return False
         if "Resource" not in obj.db_typeclass_path:
-            raise("NotResourceObject")
+            return False
         if not obj.db.resources:
-            raise("NoResourceAttrib")
+            return False
 
         for k in obj.db.resources.keys():
             # Both items are similar
@@ -34,7 +40,7 @@ class Resource(Item):
                     if k == 'wood':
                         self.key = "bundle of wood"
                         self.aliases.add(['bundle','wood'])
-                    if k == 'wood':
+                    if k == 'stone':
                         self.key = "pile of stone"
                         self.aliases.adD(['stone','pile'])
                 else:
@@ -50,9 +56,6 @@ class Resource(Item):
             else:
                 self.db.resources[k] = obj.db.resources[k]
 
-            size = sum([v for v in self.db.resources.values()])
-            log_err(size)
-
         obj.db.resources = {}
         obj.delete()
         return
@@ -66,7 +69,7 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         if not self.args:
-            # Join what with what??
+            self.caller.msg("Join what with what?")
             return
         else:
             caller = self.caller
@@ -74,7 +77,12 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
             obj2 = caller.search(self.rhs)
             if obj1 == obj2:
                 return
-            obj1.join( obj2 )
+            result = obj1.join( obj2 )
+            if result is False:
+                self.caller.msg("You can't do that!")
+            else:
+                self.caller.msg("You create %s." % (obj1.name))
+                self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, obj1.name, obj2.name))
 
 class ResourceCmdSet(CmdSet):
     key = "ResourceCmdSet"
