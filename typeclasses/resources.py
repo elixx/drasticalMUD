@@ -14,8 +14,12 @@ class Resource(Item):
         keys = self.db.resources.keys()
         if len(keys) == 1 and 'trash' in keys:
             self.key = trash()
-            self.aliases.add('trash')
         self.cmdset.add_default(ResourceCmdSet, persistent=True)
+
+    def at_desc(self, looker=None, **kwargs):
+        resources = " ".join(["|C%s|n: %s" % (k, v) for (k, v) in self.db.resources.items()])
+        looker.msg("It deconstructs to: %s" % resources)
+        super().at_desc(looker, **kwargs)
 
 
     def join(self, obj):
@@ -36,7 +40,7 @@ class Resource(Item):
                     if k == 'wood':
                         self.key = "bundle of wood"
                         self.aliases.add(['bundle','wood'])
-                    if k == 'wood':
+                    if k == 'stone':
                         self.key = "pile of stone"
                         self.aliases.adD(['stone','pile'])
                 else:
