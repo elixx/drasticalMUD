@@ -84,7 +84,7 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
                             val += val*1.25
                 if self.obj1.db.qual:
                     if self.obj1.db.qual > 0:
-                        val = val + (val * int(self.obj1.db.qual * 0.05))
+                        val = val + (val * int(self.obj1.db.qual * 0.15))
 
                 if 'gold' in self.caller.db.stats.keys():
                     self.caller.db.stats['gold'] += val
