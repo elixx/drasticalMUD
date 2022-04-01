@@ -1,34 +1,24 @@
 from django.conf import settings
 from area_reader.evennia_import import AreaImporter
 from evennia.utils.logger import log_info, log_err
-from evennia import create_object
-from evennia import search_object
-from world.utils import create_exit
-from random import choice, randint
+from evennia.utils.create import create_object
+from evennia.utils.search import search_object
+from core.utils import create_exit
+from typeclasses.movingroom import createTrainStops
 from glob import glob
 
+from evennia import TICKER_HANDLER as th
+from world.ticker import ticker_5min, ticker_daily
 
-"""
-At_initial_setup module template
-
-Custom at_initial_setup method. This allows you to hook special
-modifications to the initial server startup process. Note that this
-will only be run once - when the server starts up for the very first
-time! It is called last in the startup process and can thus be used to
-overload things that happened before it.
-
-The module must contain a global function at_initial_setup().  This
-will be called without arguments. Note that tracebacks in this module
-will be QUIETLY ignored, so make sure to check it well to make sure it
-does what you expect it to.
-
-"""
-
+TESTING=False
 
 def at_initial_setup():
+    user = search_object("#1")[0]
+    user.permissions.add("admin")   # Used to show room id in prompt
 
-    limbo = search_object("#2")[0] # 6=void, =u/d->7
-    limbo.tags.add("drastical", category='area')
+    limbo = search_object("#2")[0]
+    #limbo.tags.add("drastical", category='area')
+    #limbo.tags.add("drastical", category="room")
     limbo.db.desc = "The center of the [partial] universe!"
 
     board = create_object("typeclasses.newsboard.NewsBoard",
@@ -36,8 +26,9 @@ def at_initial_setup():
                           home=limbo,
                           location=limbo,
                           aliases=['bulletin','board','news'],
-                          attributes=[("desc", "A billboard of sorts, for news and things. You can probably {yread{n it.")])
-    board.tags.add("drastical", category="object")
+                          locks=["get:false()"],
+                          attributes=[("desc", "A billboard of sorts, for news and things. You can probably {yread{n it.")],
+                          tags=[('drastical')])
 
     # Set up first transportation room
     train = create_object("typeclasses.movingroom.MovingRoom",
@@ -45,37 +36,61 @@ def at_initial_setup():
                   home=None,
                   location=None,
                   aliases=["train"],
-                  attributes=[("desc", "A curious train wiggles through spacetime.")]
-                  )
-    train.tags.add("drastical", category='room')
-
-    #train.db.route = ['#2', 6, "#8", 4, "#320",4,"#490",4,'#1633',4,'#2668',2,'#3563',6,'#5691',2]
-    #train.db.route = ['#2', 6, '#9', 4, '#320', 4, '#490', 4, '#1633', 4, '#2668', 2, '#3563', 6, '#5691', 2, '#7270', 10, '#8118', 10, '#5786', 10, '#812', 10]
-    train.db.route = ['#2', 6]
-
-    log_err("Train ID is %s" % train.id)
+                  attributes=[("desc", "A curious train wiggles through spacetime.")],
+                  tags=[('drastical')])
+    #                            ('drastical', 'room')]
 
     print("FOOOOOOOOOOOOOOOOO")
 
+    # Behold, creator of worlds
     importer = AreaImporter()
     imports = glob(settings.AREA_IMPORT_PATH)
+
+    if TESTING: imports = imports[:25]
+
     for areafile in imports:
-        log_info("Loading %s" % areafile)
         importer.load(areafile)
     log_info("Creating rooms...")
-    entries = importer.spawnRooms()
-    log_info("Enumerating objects...")
-    importer.enumerateObjectLocations()
+    importer.spawnRooms()
+    # log_info("Creating mobs...")
+    # starts = importer.spawnMobs()
     log_info("Creating objects...")
     importer.spawnObjects()
     log_info("Import complete.")
 
-    create_exit("up", "#2", "#8", exit_aliases="u")
-    create_exit("down", "#8", "#2", exit_aliases="d")
+    if not TESTING:
+        # Connect Limbo to Limbo
+        create_exit("up", "#2", "#8", exit_aliases="u")
+        create_exit("down", "#8", "#2", exit_aliases="d")
 
-    # # Choose 20 random areas and create transit stops
-    for n in range(0,19):
-        area = choice(list(entries.keys()))
-        dest = entries[area][0]
-        train.add_destination(dest, randint(3,10))
-        log_info("Train stop added for %s" % area)
+        create_exit("east", "#7", "#7669", exit_aliases="e")
+        create_exit("west", "#7669", "#7", exit_aliases="w")
+
+
+        # Check that room IDs align as expected"
+        temple_square = search_object("#1219").first()
+        assert temple_square.key == "The Temple Square"
+
+        # Create recycle bin
+        create_object("typeclasses.recycle_bin.RecycleBin",
+                      key="recycle bin",
+                      home=temple_square,
+                      location=temple_square,
+                      aliases=['bin'],
+                      locks=["get:false()"],
+                      attributes=[
+                          ('desc', 'A recycle bin that you can |Yput|n junk into and be rewarded a small amount.')
+                      ],
+                      tags=[('drastical')])
+
+    log_info("Train ID is #%s." % train.id)
+    log_info("Bulletin board is #%s." % board.id)
+
+    createTrainStops(entries=importer.entries)
+
+    # Set up global ticker functions
+    th.add(300, ticker_5min)
+    th.add(86400, ticker_daily)
+
+    from world.utils import spawnJunk
+    spawnJunk(TRASH_SPAWN_PERCENT=18)

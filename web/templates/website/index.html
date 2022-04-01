@@ -1,0 +1,116 @@
+{% extends "website/base.html" %}
+
+{% block titleblock %}Home{% endblock %}
+
+{% block header_ext %}
+{% endblock %}
+
+{% block content %}
+<div class="row opacity-8">
+  <div class="col-md-8">
+
+    <div class="card card-tertiary">
+      <div class="card-header">
+        Welcome aboard...
+      </div>
+      <div class="card-body">
+        <P>After a little bit of a hiatus, the system has been wiped, and now even more areas, better performance, and some new game mechanics are on the way!</P>
+      <P>
+        DrasticalMUD is running <a href="https://github.com/evennia/evennia" class="highlight-link">Evennia</a> with a bunch of nostalgic MUD areas imported from
+        legacy MUDs. The thought is there will be an emphasis on exploration and farming/crafting mechanics. I might go for adding some hack-and-slash eventually, but
+        right now I've been focusing on property ownership and resource items for a crafting system. Right now, world scores are tracked by how much of the world you have
+          explored, how much property you have claimed, and how much gold you have acquired. This is undergoing changes and undoubtedly will continue being tuned
+          as things progress. For the time being, expect frequent wipes, as I'm still doing tweaks to world-building (or, more like stitching), on the side from the
+          core functionality.
+      </P>
+      <P>
+        Things that have been developed so far:
+          <UL>
+              <LI>Core commands (i.e. who, score, areas, finger, top, etc)</LI>
+              <LI>A basic transit system (train) to traverse between disconnected areas along a set route.</LI>
+              <LI>A template for simple emote verbs, and a bunch of socials.</LI>
+              <LI>Wandering chatty mobs (these will become NPCs and peddlers)</LI>
+              <LI>Spawning of random loot for foraging</LI>
+              <LI>Basic planting / growable items (trees, so far..)</LI>
+              <LI>Other things...</LI>
+          </UL>
+
+        <P>
+            Things that might be in the works:
+        <UL>
+              <LI>Resources system for crafting and economy: Stone, Wood, Gold, Trash</LI>
+              <LI>NPCs</LI>
+              <LI>Crafting / disassembly / recycling</LI>
+
+        </UL>
+
+      </P>
+        <P>Check out the <a href="/areas/" class="highlight-link fa-border">list of areas</a> that have been imported!</P>
+
+        <P>We are listed on and participate in <a href="https://grapevine.haus/" class="highlight-link">Grapevine</a> listings and chat.</P>
+
+          {% if webclient_enabled %}
+        <p>
+          You can connect to the game directly from your browser using our
+          <a href="{% url 'webclient:index' %}">online client</a>!<br>
+        </p>
+          {% endif %}
+        <P>You can also connect via <a href="telnet://mud.drastical.net:9099" class="highlight-link">telnet mud.drastical.net 9099</a></P>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr />
+
+<div class="row opacity-8">
+  <div class="col-12 col-md-4 mb-3">
+    <div class="card card-tertiary">
+      <h4 class="card-header text-center">Accounts</h4>
+
+      <div class="card-body">
+        <p>
+          There's currently <strong>{{num_accounts_connected}}</strong> connected out of a total of <strong>{{num_accounts_registered}}</strong> account{{num_accounts_registered|pluralize}} registered.
+        </p>
+        <p>
+          Of these, <strong>{{num_accounts_registered_recent}}</strong> were created this week, and <strong>{{num_accounts_connected_recent}}</strong> have connected within the last seven days.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-4 mb-3">
+    <div class="card card-tertiary">
+      <h4 class="card-header text-center">Recently Connected</h4>
+
+      <div class="card-body px-0 py-0">
+        <ul class="list-group">
+          {% for account in accounts_connected_recent %}
+            <li class="list-group-item">{{account.username}}&mdash;<em>{{account.last_login|timesince}} ago</em></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-4 mb-3">
+    <div class="card card-tertiary">
+      <h4 class="card-header text-center">Database Stats</h4>
+
+      <div class="card-body py-0 px-0">
+        <ul class="list-group">
+          <li class="list-group-item">{{num_accounts_registered}} account{{num_accounts_registered|pluralize}} (+ {{num_characters}} character{{num_characters|pluralize}})</li>
+          <li class="list-group-item">{{num_rooms}} room{{num_rooms|pluralize}} (+ {{num_exits}} exits)</li>
+          <li class="list-group-item">{{num_others}} other objects</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+
+  </div>
+</div>
+{% endblock %}

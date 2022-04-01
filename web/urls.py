@@ -4,18 +4,27 @@ views. Search the Django documentation for "URL dispatcher" for more
 help.
 
 """
-from django.conf.urls import url, include
 
+from django.urls import path, include
+from web.custom import areaView, toplistView, playerView
 # default evennia patterns
-from evennia.web.urls import urlpatterns
 
-import web.custom
+from evennia.web.website.urls import urlpatterns as evennia_default_urlpatterns
 
-# eventual custom patterns
-custom_patterns = [
-    # url(r'/desired/url/', view, name='example'),
-    url(r'areas/', web.custom.areaView.as_view(), name='areas')
+# add patterns
+urlpatterns = [
+    # website
+    path("", include("evennia.web.website.urls")),
+    # webclient
+    path("webclient/", include("evennia.web.webclient.urls")),
+    # web admin
+    path("admin/", include("evennia.web.admin.urls")),
+    # add any extra urls here:
+    # path("mypath/", include("path.to.my.urls.file")),
+    path(r'toplist/', toplistView.as_view(), name='toplist'),
+    path(r'areas/', areaView.as_view(), name='areas'),
+    path(r'player/<object_id>', playerView.as_view(), name='player')
 ]
 
-# this is required by Django.
-urlpatterns = custom_patterns + urlpatterns
+# 'urlpatterns' must be named such for Django to find it.
+urlpatterns = urlpatterns + evennia_default_urlpatterns

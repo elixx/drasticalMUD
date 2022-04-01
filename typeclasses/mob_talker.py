@@ -4,6 +4,17 @@ import random
 
 
 class ChattyMob(LegacyMob):
+    def at_init(self):
+        if not self.db.random_quotes:
+            self._init_chatdb()
+        super().at_init()
+
+    # def at_object_creation(self):
+    #     super().at_object_creation()
+    #     self._init_chatdb()
+    #     if self.db.chatty:
+    #         self._chat_ticker(self.db.chat_frequency, "do_chat")
+
     def _chat_ticker(self, interval, hook_key, stop=False):
         idstring = "TalkerMob"
         last_chat_interval = self.db.last_chat_ticker_interval
@@ -20,23 +31,13 @@ class ChattyMob(LegacyMob):
             )
 
     def _init_chatdb(self):
-        if self.db.random_quotes == None:
+        if self.db.random_quotes is  None:
             self.db.random_quotes = ["Blah blah blah", "foo bar baz"]
-        if self.db.chatty == None:
+        if self.db.chatty is None:
             self.db.chatty = True
-        if self.db.chat_frequency == None:
+        if self.db.chat_frequency is None:
             self.db.chat_frequency = 5
 
     def do_chat(self):
         quote = random.choice(self.db.random_quotes)
         self.location.msg_contents("%s says, '%s'." % (self.name, quote))
-
-    def at_init(self):
-        super().at_init()
-        self._init_chatdb()
-
-    def at_object_creation(self):
-        super().at_object_creation()
-        self._init_chatdb()
-        if self.db.chatty:
-            self._chat_ticker(self.db.chat_frequency, "do_chat")

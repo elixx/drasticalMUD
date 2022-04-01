@@ -28,10 +28,12 @@ from commands.command import CmdRecall
 from commands.command import CmdQuit
 from commands.command import CmdFinger
 from commands.command import CmdScore
+from commands.command import CmdClaimed
+from commands.command import CmdTopList
 
-from evennia.contrib.clothing import ClothedCharacterCmdSet
-from evennia.contrib import extended_room
-from evennia.contrib import mail
+from core.clothing import ClothedCharacterCmdSet
+from core import extended_room
+from core import mail
 
 
 
@@ -62,6 +64,8 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(CmdLook)
         self.add(extended_room.CmdExtendedRoomDesc)
         self.add(extended_room.CmdExtendedRoomDetail)
+        self.add(CmdClaimed)
+        self.add(CmdTopList)
 
         #
         # any commands you add below will overload the default ones.

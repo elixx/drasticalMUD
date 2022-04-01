@@ -1,0 +1,46 @@
+{% extends "website/base.html" %}
+{% block content %}
+
+{% block titleblock %}Player Stats{% endblock %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6 align-center card card-tertiary" style="width: 50%;">
+            <div class="card card-header"><h6>{{ character.name }}</h6></div>
+            <div class="card card-body">
+                <p>{{ character.db.desc }}</p>
+                <table>
+                    <thead>
+                        <th>stat</th><th>value</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Gold</td><td>{{ gold }}</td>
+                        </tr><tr>
+                            <td>Wood</td><td>-</td>
+                        </tr><tr>
+                            <td>Stone</td><td>-</td>
+                        </tr><tr>
+                            <td>Gems</td><td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            <hr />
+                <table>
+                    <thead>
+                    <tr>
+                        <th>area</th> <th>owned</th> <th>seen</th> <th>total</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    {%  for area in explored %}
+                        <tr>
+                            <td>{{  area.name }}</td> <td>{{  area.owned }}</td> <td>{{  area.seen }}</td>  <td>{{  area.total }}</td></tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

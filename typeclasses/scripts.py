@@ -90,32 +90,3 @@ class Script(DefaultScript):
     """
 
     pass
-
-from evennia.utils.search import search_tag
-from evennia.utils.logger import log_info as log
-from evennia.utils import run_async
-
-def _doGrowth():
-    log("growth")
-    growable = search_tag("growable", category='room')
-    for obj in growable:
-        if obj.db.growth:
-            obj.db.growth += 1
-
-def _doSpawn():
-    log("spawnage")
-    spawnable = search_tag("random_spawn", category='room')
-    for obj in spawnable:
-        if obj.db.age:
-            obj.db.age += 1
-        else:
-            obj.db.age = 0
-
-class backgroundGrowth(Script):
-    def at_script_creation(self):
-        self.key = "backgroundGrowth"
-        self.interval = 60 * 2
-
-    def at_repeat(self):
-        _doGrowth()
-        _doSpawn()

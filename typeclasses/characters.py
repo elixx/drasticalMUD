@@ -7,10 +7,13 @@ is setup to be the "default" character type created by the default
 creation commands.
 
 """
-from evennia.contrib.clothing import ClothedCharacter
+from core.clothing.clothing import ClothedCharacter
+from evennia import DefaultCharacter
 from evennia import gametime
+from evennia.utils.logger import log_err
+from string import capwords
 
-class Character(ClothedCharacter):
+class Character(DefaultCharacter):
     """
     The Character defaults to reimplementing some of base Object's hook methods with the
     following functionality:
@@ -33,7 +36,7 @@ class Character(ClothedCharacter):
     def at_object_creation(self):
         super().at_object_creation()
         if self.db.stats == None:
-            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0, 'visited': [], 'claims': 0}
+            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0, 'visited': {}, 'claims': 0}
 
     def at_post_puppet(self):
         super().at_post_puppet()
@@ -51,7 +54,7 @@ class Character(ClothedCharacter):
             else:
                 self.db.stats['conn_time'] = delta
 
-    def at_before_say(self, message, **kwargs):
+    def at_pre_say(self, message, **kwargs):
         """
         Before the object says something.
 
@@ -76,18 +79,12 @@ class Character(ClothedCharacter):
         styled_message = "|y" + message + "|n"
         return styled_message
 
-    def at_after_move(self, source_location):
-        try:
-            if source_location and source_location.id not in self.db.stats['visited']:
-                self.db.stats['visited'].append(source_location.id)
-        except KeyError:
-            self.db.stats['visited'] = []
-
+    def at_post_move(self, source_location):
         if source_location is not None:
             if source_location.tags.get(category='area'):
-                area_name = source_location.tags.get(category='area')
+                source_area = source_location.tags.get(category='area')
             else:
-                area_name = "unknown territory"
+                source_area = "unknown territory"
 
             if  self.location.tags.get(category='area'):
                 cur_area = self.location.tags.get(category='area')
@@ -95,11 +92,26 @@ class Character(ClothedCharacter):
                 cur_area = "unknown territory"
 
             if self.db.last_area:
-                if cur_area != area_name:
-                    self.msg("You have entered {y%s{n." % cur_area.title())
+                if cur_area != self.db.last_area:
+                    self.msg("You have entered |Y%s|n." % capwords(cur_area))
                     self.db.last_area = cur_area
             else:
-                self.db.last_area = area_name
+                self.db.last_area = source_area
+
+            try:
+                if 'visited' in self.db.stats.keys():
+                    if cur_area not in self.db.stats['visited'].keys():
+                        self.db.stats['visited'][cur_area] = [self.location.id]
+                    else:
+                        self.db.stats['visited'][cur_area].append(self.location.id)
+                        self.db.stats['visited'][cur_area] = list(set(self.db.stats['visited'][cur_area]))
+                else:
+                    self.db.stats['visited'] = { cur_area: [self.location.id] }
+
+            except Exception as e:
+                self.db.stats['visited'] = {}
+                log_err("at_post_move:110: Resettings stats on %s:%s - %s" % (self.id, self.name, e))
+
 
         super().at_after_move(source_location)
 
@@ -109,7 +121,8 @@ class Character(ClothedCharacter):
             if target.typeclass_path == "typeclasses.rooms.ImportedRoom":
                 try:
                     target.update_description()
-                except:
+                except Exception as e:
+                    log_err("characters:at_look():116: %s" % e)
                     pass
             if not target.access(self, "view"):
                 try:

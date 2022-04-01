@@ -73,7 +73,7 @@ class LegacyMob(Object):
         Called the first time the object is created.
         We set up the base properties and flags here.
         """
-        self.cmdset.add(MobCmdSet, permanent=True)
+        self.cmdset.add(MobCmdSet, persistent=True)
         if self.db.patrolling == None:
             self.db.patrolling = True
 
@@ -81,7 +81,7 @@ class LegacyMob(Object):
         self.db.is_dead = False
 
         self.db.patrolling_pace = 6
-        self.db.hunting_pace = 1
+        self.db.hunting_pace = 2
         self.db.death_pace = 300  # stay dead for 100 seconds
 
         self.db.last_ticker_interval = None
@@ -89,10 +89,10 @@ class LegacyMob(Object):
         self.db.desc_alive = "This is a moving object."
         self.db.desc_dead = "A dead body."
 
-        self.db.send_defeated_to = "#2"
-        self.db.defeat_msg = "You fall to the ground."
-        self.db.defeat_msg_room = "%s falls to the ground."
-        self.db.death_msg = "After the last hit %s evaporates." % self.key
+        # self.db.send_defeated_to = "#2"
+        # self.db.defeat_msg = "You fall to the ground."
+        # self.db.defeat_msg_room = "%s falls to the ground."
+        # self.db.death_msg = "After the last hit %s evaporates." % self.key
         self.db.irregular_msgs = ["the enemy looks about.", "the enemy changes stance."]
 
         if self.db.patrolling:
@@ -167,7 +167,7 @@ class LegacyMob(Object):
         # self._set_ticker(self.db.aggressive_pace, "do_attack")
         self.ndb.is_patrolling = False
         self.ndb.is_hunting = False
-        # self.ndb.is_attacking = True
+        self.ndb.is_attacking = True
 
     def do_patrol(self, *args, **kwargs):
         if random.random() < 0.01 and self.db.irregular_msgs:

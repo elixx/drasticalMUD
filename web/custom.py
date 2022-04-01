@@ -1,6 +1,10 @@
-from evennia.web.website import views as website_views
+#from evennia.web.website import views as website_views
 from django.views.generic import TemplateView, ListView, DetailView
+
+import evennia
 from world.utils import area_count
+from string import capwords
+from evennia.utils.logger import log_err
 
 #class areaView(website_views.EvenniaIndexView):
 class areaView(TemplateView):
@@ -68,10 +72,93 @@ def _area_stats():
     areas = []
 
     for area in ac:
-        areas.append( { 'area': area[0], 'rooms': area[1] } )
+        areas.append( { 'area': capwords(area[0]), 'rooms': area[1] } )
 
     pagevars = {
         "areas": areas,
         "number_of_areas": len(ac),
     }
     return pagevars
+
+
+class toplistView(TemplateView):
+
+    template_name = "website/toplist.html"
+
+    # This method tells the view what data should be displayed on the template.
+    def get_context_data(self, **kwargs):
+
+        # Always call the base implementation first to get a context object
+        context = super(TemplateView, self).get_context_data(**kwargs)
+
+        # Add game statistics and other pagevars
+        context.update(_toplist_stats())
+
+        return context
+
+def _toplist_stats():
+    from typeclasses.rooms import topClaimed
+    from world.utils import topGold
+    claimed = topClaimed()
+    gold = topGold()
+    stats = {}
+    for (player, count) in claimed:
+        if player in stats.keys():
+            stats[player]['claimed'] = count
+        else:
+            stats[player] = {'claimed': count, 'gold': '-'}
+    for (player, g) in gold:
+        if player in stats:
+            stats[player]['gold'] = g
+        else:
+            stats[player] = {'name': player, 'claimed': '-', 'gold': g}
+
+    output = []
+    for player in stats.keys():
+        pid = evennia.search_object(player).first().id
+        output.append({'name': player, 'owned': stats[player]['claimed'], 'gold': stats[player]['gold'], 'id':pid})
+
+    pagevars = { "stats": output }
+    return pagevars
+
+class playerView(TemplateView):
+
+    template_name = "website/player.html"
+
+    def get_context_data(self, **kwargs):
+        # Always call the base implementation first to get a context object
+        context = super(TemplateView, self).get_context_data(**kwargs)
+        # Add game statistics and other pagevars
+        context.update(_player_stats(**kwargs))
+        return context
+
+def _player_stats(**kwargs):
+    from evennia.utils.search import search_object as object_search, search_tag_object
+    from django.http import Http404
+    #from django.shortcuts import render
+    from evennia.utils.utils import inherits_from
+    from world.utils import claimed_in_area, total_rooms_in_area, visited_in_area
+    from django.conf import settings
+
+    object_id = kwargs['object_id']
+
+    if object_id is not None:
+        object_id = "#" + str(object_id)
+        try:
+            character = object_search(object_id)[0]
+        except IndexError:
+            raise Http404("I couldn't find a character with that ID.")
+        if not inherits_from(character, settings.BASE_CHARACTER_TYPECLASS):
+            raise Http404("I couldn't find a character with that ID. "
+                          "Found something else instead.")
+        explored=[]
+        visited = character.db.stats['visited']
+        for area in visited.keys():
+            total = total_rooms_in_area(area)
+            seen = len(visited_in_area(area, character.id))
+            claimed = claimed_in_area(area, character.id)
+            owned = claimed.count()
+            explored.append({'name': area, 'total': total, 'seen': seen, 'owned': owned})
+        explored = sorted(explored, key=lambda x: x['seen'], reverse=True)
+    return {'character': character, 'gold': character.db.stats['gold'], 'explored': explored }
+

@@ -5,8 +5,8 @@ from evennia.commands.cmdset import CmdSet
 from evennia import ObjectDB
 from evennia import search_object
 from datetime import datetime
-from world.utils import color_percent
-from evennia import TICKER_HANDLER as tickerhandler
+from core.utils import color_percent
+from string import capwords
 from world.utils import area_count
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -17,8 +17,6 @@ class StatsMachine(DefaultObject):
         """
         Called whenever a new object is created
         """
-        super().at_object_creation()
-
         self.key = "a stats machine"
         self.db.desc = "{xA statistics keeping machine. You can {Yget stats{x for stuff.{n"
         if not self.db.stats:
@@ -33,19 +31,21 @@ class StatsMachine(DefaultObject):
             self.db.userstats = {}
         if not self.db.guestlog:
             self.db.guestlog = []
-
         self.locks.add("get:false()")
-        self.cmdset.add_default(StatsMachineCmdSet, permanent=True)
+        self.cmdset.add_default(StatsMachineCmdSet, persistent=True)
+        super().at_object_creation()
 
     def at_init(self):
         """
         Called when object is loaded into memory"
         """
-        super().at_init()
-        if not self.db.stats['loaded']:
+        if self.db.stats is None:
+            self.db.stats = {}
+        elif 'loaded' not in self.db.stats.keys():
             self.db.stats['loaded'] = 1
         else:
             self.db.stats['loaded'] += 1
+        super().at_init()
 
     def incr(self, statname):
         if not statname in self.db.stats.keys():
@@ -81,6 +81,7 @@ class StatsMachine(DefaultObject):
             if not stat in self.db.userstats.keys():
                 self.db.userstats[stat] = {key: {}}
             self.db.userstats[stat][key] = value
+
 
 
 class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
@@ -133,7 +134,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                 # if privileged:
                 table = self.styled_table("|YEvent", "|YCount", border="none", width=width)
                 for (key, value) in self.obj.db.stats.items():
-                    label = key.replace("_", " ").title()
+                    label = capwords(key.replace("_", " "))
                     table.add_row(label, value)
                 output += str(table) + "\n"
 
@@ -178,7 +179,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                             opct = 0
                         pct = color_percent(pct)
                         opct = color_percent(opct)
-                        table.add_row(utils.crop(str(key).title(),width=18), value['total'], value['count'], pct + '%', opct + '%')
+                        table.add_row(utils.crop(capwords(str(key)),width=18), value['total'], value['count'], pct + '%', opct + '%')
                 output += "{x" + pad(" {YExploration Stats{x ", width=width, fillchar="*") + '\n'
                 output += str(table) + '\n'
                 table = self.styled_table(width=width, border='none')
