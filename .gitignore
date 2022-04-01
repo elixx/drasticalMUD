@@ -33,8 +33,7 @@ server/conf/secret_settings.py
 server/conf/settings.py
 
 server/logs/*.log*
-web/static/**
-web/media/**
+server/.static
 
 # No logs
 server/logs/*
