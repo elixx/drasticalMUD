@@ -116,7 +116,7 @@ def _toplist_stats():
     output = []
     for player in stats.keys():
         pid = evennia.search_object(player).first().id
-        output.append({'name': player, 'owned': stats[player]['claimed'], 'gold': stats[player]['gold'], 'id':pid})
+        output.append({'name': player, 'owned': stats[player]['claimed'], 'gold': int(stats[player]['gold']), 'id':pid})
 
     pagevars = { "stats": output }
     return pagevars
