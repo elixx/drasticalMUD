@@ -1,4 +1,4 @@
-![drastical logo](./web/static_overrides/website/images/dr.gif)
+![drastical logo](./web/static/website/images/dr.gif)
 
 **drasticalMUD**
 
