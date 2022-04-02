@@ -51,11 +51,59 @@ class CmdPlant(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("You can't find it!")
             else:
                 if "growable" in obj.db_typeclass_path:
-                    if obj.db.planted == False:
-                        obj.location = self.caller.location
-                        obj.db.planted = True
-                        obj.locks.add("get:false()")
-                        obj.grow()
+                    if self.caller.id == self.caller.location.db.owner:
+                        if obj.db.planted == False:
+                            self.caller.msg("You plant %s in %s." % (obj.name, self.caller.location.name))
+                            self.caller.location.msg_contents("%s plants %s." % (self.caller.name, obj.name), exclude=self.caller)
+                            obj.home = self.caller.location
+                            obj.move_to(self.caller.location)
+                            obj.db.planted = True
+                            obj.locks.add("get:false()")
+                            obj.grow()
+                    else:
+                        self.caller.msg("You must own a room in order to plant things in it.")
+                else:
+                    self.caller.msg("You cannot plant anything here.")
+
+
+class CmdHarvest(COMMAND_DEFAULT_CLASS):
+    """
+    Collect resources from a growable object
+
+    """
+
+    key = "harvest"
+    locks = "cmd:all()"
+
+    def func(self):
+        if not self.args:
+            self.caller.msg("You daydream about having a good harvest.")
+            self.caller.location.msg_contents("%s daydreams about a good harvest." % self.caller, exclude=self.caller)
+        else:
+            target = self.args.strip()
+            obj = self.caller.search(target)
+            if not obj:
+                self.caller.msg("You can't find it!")
+            else:
+                if "growable" in obj.db_typeclass_path:
+                    if self.caller.id == self.caller.location.db.owner:
+                        if obj.db.planted == True and obj.db.age > 1:
+                            levels = obj.db.growth_phases.keys()
+                            factor = 0.5
+                            for level in levels:
+                                if obj.db.age > level:
+                                    factor += 0.5
+                            wood = obj.db.age * factor
+                            ui = yield ("You will receive |y%s wood|n from harvesting %s. Continue? (Yes/No)" % (wood, obj.name))
+                            if ui.strip().lower() in ['yes', 'y']:
+                                from evennia.utils.create import create_object
+                                from world.resource_types import wood as wood_name
+                                bundle = create_object(key=wood_name, typeclass="typeclasses.resources.Resource",
+                                                       home=self.caller, location=self.caller,
+                                                       attributes=[('resources', {'wood': wood})])
+                                obj.delete()
+                    else:
+                        self.caller.msg("You must own a room in order to harvest from things in it.")
 
 
 class GrowableCmdSet(CmdSet):
@@ -65,7 +113,9 @@ class GrowableCmdSet(CmdSet):
     """
 
     key = "GrowableCmdSet"
+    duplicates = False
 
     def at_cmdset_creation(self):
-        self.add(CmdPlant())
+        self.add(CmdPlant(), allow_duplicates=False)
+        self.add(CmdHarvest(), allow_duplicates=False)
         super().at_cmdset_creation()
