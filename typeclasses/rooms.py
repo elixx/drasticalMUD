@@ -125,7 +125,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
         if caller.id == location.db.owner:
             caller_message = "You already are the owner of |c%s|n." % location.name
         elif balance < cost:
-            caller_message = "You don't have enough gold. %s costs %s to own." % (location.name, cost)
+            caller_message = "You don't have enough gold. %s costs |y%s gold|n to own." % (location.name, cost)
         elif not location.db.owner:
                 ui = yield ("Are you sure you want to take |c%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (location.name, cost))
                 if ui.strip().lower() in ['yes', 'y']:
