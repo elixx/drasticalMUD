@@ -170,7 +170,7 @@ def fingerPlayer(character):
     table = styled_table()
     logincount = character.db.stats['logins']
     try:
-        gold = character.db.stats['gold']
+        gold = round(character.db.stats['gold'],2)
     except KeyError:
         gold = 0
         character.db.stats['gold'] = gold
