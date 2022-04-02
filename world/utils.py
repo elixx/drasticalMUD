@@ -151,7 +151,7 @@ def exploreReport(user):
 def topGold():
     from evennia.utils.search import search_object_attribute
     results = search_object_attribute('stats')
-    output = sorted([(v.name, v.db.stats['gold']) for v in results if 'gold' in v.db.stats.keys()],key=lambda x: x[1],
+    output = sorted([(v.name, round(v.db.stats['gold'],2)) for v in results if 'gold' in v.db.stats.keys()],key=lambda x: x[1],
                     reverse=True)
     return(output)
 
