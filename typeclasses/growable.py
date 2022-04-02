@@ -177,3 +177,4 @@ class Plant(GrowableObject):
                 300: ("a firmly-rooted weed", "These are starting to pop up all over the place!"),
                 500: ("a giant weed",
                       "Huge, fertile stalks lean in every direction. You can barely make out where it starts or ends.")}
+        super().at_object_creation()
