@@ -14,8 +14,13 @@ TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife
 WOOD = ['mahogany', 'oak', 'maple', 'birch', 'cedar', 'spruce', 'dogwood', 'fir', 'pine', "myrtle", "poplar", "sycamore"]
 WOOD_SIZE = {'twig':1, 'branch':2, 'bundle':5}
 
+FRUIT_TREES = ['apple','orange','pineapple','cherry','apricot','plum','peach','pear','pomegranate','banana',
+               'coconut','lemon','lime','tangerine','fig']
+
 trash = lambda: choice(TRASH_ADJS) + " " + choice(TRASH_OBS)
-wood = lambda: '%s %s' % (choice(WOOD), choice(WOOD_SIZE))
+tree_type = lambda: choice(WOOD)
+fruit_tree_type = lambda: choice(FRUIT_TREES)
+wood = lambda: '%s %s' % (wood_type(), choice(WOOD_SIZE))
 # essence = lambda: '%s essence' % choice(ESSENCES)
 # gem = lambda: '%s gem' % choice(GEMS)
 

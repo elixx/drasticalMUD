@@ -45,8 +45,11 @@ class LegacyExit(Exit):
 
         # if the traverser has an Attribute move_speed, use that,
         # otherwise default to "walk" speed
-        move_speed = traversing_object.db.move_speed or 1
-        move_delay = 1
+        #move_speed = traversing_object.db.move_speed or 0.5
+        move_delay = 0.5
+        if traversing_object.db.speed_boost:
+            move_delay -= traversing_object.db.speed_boost
+            move_delay = 0 if move_delay < 0 else move_delay
 
         def move_callback():
             "This callback will be called by utils.delay after move_delay seconds."
