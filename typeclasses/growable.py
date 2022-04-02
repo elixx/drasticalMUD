@@ -56,7 +56,7 @@ class CmdPlant(COMMAND_DEFAULT_CLASS):
                             self.caller.msg("You plant %s in %s." % (obj.name, self.caller.location.name))
                             self.caller.location.msg_contents("%s plants %s." % (self.caller.name, obj.name), exclude=self.caller)
                             obj.home = self.caller.location
-                            obj.move_to(self.caller.location)
+                            obj.location = self.caller.location
                             obj.db.planted = True
                             obj.locks.add("get:false()")
                             obj.grow()
