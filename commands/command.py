@@ -293,7 +293,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         totalpct = round(totalvisited / totalrooms * 100, 2)
         table = self.styled_table("|YArea" + " " * 45, "|YSeen", "|Y%Seen", "|YOwned", "|Y%Owned", "|YTotal",
                                   border="none", width=80)
-        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['total'], reverse=True):
+        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
             if key is not None:
                 if value['total'] > value['seen']:
                     pct = round(value['seen'] / value['total'] * 100, 1)
