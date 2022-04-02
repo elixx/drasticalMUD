@@ -7,7 +7,7 @@ for allowing Characters to traverse the exit to its destination.
 
 """
 from evennia import DefaultExit
-
+from evennia import utils
 
 class Exit(DefaultExit):
     """
@@ -38,4 +38,34 @@ class Exit(DefaultExit):
     pass
 
 class LegacyExit(Exit):
-    pass
+    def at_traverse(self, traversing_object, target_location):
+        """
+        Implements the actual traversal, using utils.delay to delay the move_to.
+        """
+
+        # if the traverser has an Attribute move_speed, use that,
+        # otherwise default to "walk" speed
+        move_speed = traversing_object.db.move_speed or 1
+        move_delay = 1
+
+        def move_callback():
+            "This callback will be called by utils.delay after move_delay seconds."
+            source_location = traversing_object.location
+            if traversing_object.move_to(target_location):
+                self.at_post_traverse(traversing_object, source_location)
+            else:
+                if self.db.err_traverse:
+                    # if exit has a better error message, let's use it.
+                    self.caller.msg(self.db.err_traverse)
+                else:
+                    # No shorthand error message. Call hook.
+                    self.at_failed_traverse(traversing_object)
+
+        #traversing_object.msg("You start moving %s at a %s." % (self.key, move_speed))
+
+        # create a delayed movement
+        t = utils.delay(move_delay, move_callback)
+        # we store the deferred on the character, this will allow us
+        # to abort the movement. We must use an ndb here since
+        # deferreds cannot be pickled.
+        traversing_object.ndb.currently_moving = t
