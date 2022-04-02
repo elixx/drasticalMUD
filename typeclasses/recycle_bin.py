@@ -73,18 +73,19 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("You put %s into %s." % (self.obj1.name, self.obj.name))
                 self.caller.location.msg_contents("%s whirrs to life and devours %s." % (self.obj.name, self.obj1.name))
 
-                val = 12
+                baseval = 12
+                val = 0
                 if self.obj1.db.resources:
                     for k in self.obj1.db.resources.keys():
                         if k == "trash":
-                            val += val*0.85
+                            val += baseval*0.8*self.obj1.db.resources['trash']
                         if k == "wood":
-                            val += val*2.3
+                            val += baseval*1.8*self.obj1.db.resources['wood']
                         if k == "stone":
-                            val += val*1.8
+                            val += baseval*1.2*self.obj1.db.resources['stone']
                 if self.obj1.db.qual:
                     if self.obj1.db.qual > 0:
-                        val = val * ( int(self.obj1.db.qual) / 100)
+                        val += val * (int(self.self.obj1.db.qual) / 100)
 
                 if 'gold' in self.caller.db.stats.keys():
                     self.caller.db.stats['gold'] += val
