@@ -117,7 +117,52 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
     def func(self):
         caller = self.caller
         location = self.caller.location
-        claimRoom(caller, location)
+        area = capwords(location.tags.get(category='area'))
+        balance = caller.db.stats['gold'] if caller.db.stats['gold'] else 0
+        cost = location.db.value if location.db.value else 0
+        claim = False
+        caller_message = None
+        if caller.id == location.db.owner:
+            caller_message = "You already are the owner of |c%s|n." % location.name
+        elif balance < cost:
+            caller_message = "You don't have enough gold. %s costs %s to own." % (location.name, cost)
+        elif not location.db.owner:
+                ui = yield ("Are you sure you want to take |c%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (location.name, cost))
+                if ui.strip().lower() in ['yes', 'y']:
+                    claim = True
+                    caller_message = "You now own {y%s{n." % location.name
+                    pub_message = "{w%s{n has taken over {y%s{n in {G%s{n!" % (caller.name, location.name, area)
+        elif location.db.owner == caller.id:
+            caller_message = "You already own %s." % location.name
+        else:
+            curr_owner = '#' + str(location.db.owner)
+            curr_owner = search_object(curr_owner)
+            if curr_owner is not None: curr_owner = curr_owner.first()
+
+            ui = yield ("Are you sure you want to take |c%s|n from |R%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (location.name, curr_owner.name, cost))
+            if ui.strip().lower() in ['yes', 'y']:
+                claim = True
+                caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
+                pub_message = "{w%s{n has removed {W%s{n's control of {y%s{n in {G%s{n!" % (
+                    caller.name, curr_owner.name, location.name, area)
+
+        if location.access(caller, "ownable") and claim == True:
+            location.db.last_owner = location.db.owner
+            location.db.owner = caller.id
+            if 'claims' in caller.db.stats.keys():
+                caller.db.stats['claims'] += 1
+            else:
+                caller.db.stats['claims'] = 1
+            if pub_message is not None:
+                channel = search_channel("public")[0].msg(pub_message)
+            try:
+                location.update_description()
+                if location.db.value:
+                    location.db.value = int(location.db.value * 1.5)
+                caller.db.stats['gold'] -= cost
+            except Exception as e:
+                utils.logger.log_err(str(e))
+        caller.msg(caller_message)
 
 
 def topClaimed():
@@ -133,75 +178,3 @@ def topClaimed():
     return(sorted(counts.items(), key=lambda x: x[1], reverse=True))
 
 
-def claimRoom(owner, location):
-    caller = owner
-    area = location.tags.get(category='area')
-    area = capwords(area)
-    claim = False
-
-    # Room is unclaimed
-    if not location.db.owner:
-        pub_message = "{y%s{w is now the owner of {y%s{n in {G%s{n!" % (caller.name, location.name, area)
-        caller_message = "You are now the owner of {y%s{n!" % location.name
-        claim = True
-    # Room is already claimed by caller
-    elif location.db.owner == caller.id:
-        caller_message = "You already own  %s." % location.name
-        pub_message = None
-        claim = False
-    # Room is already claimed by other
-    elif location.db.owner:
-        curr_owner = search_object('#' + str(location.db.owner))
-        if len(curr_owner) > 0:
-            curr_owner = curr_owner[0]
-            # Guests can't takeover
-            if caller.permissions.get('guests'):
-                claim = False
-                caller_message = "%s is already claimed by %s. Guests can only claim unclaimed rooms." % (
-                    location.name, curr_owner.name)
-            # Allow reclaiming property from guests
-            elif curr_owner.permissions.get('guests'):
-                claim = True
-                caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                pub_message = "{w%s{n has removed {W%s{n's temporary control of {y%s{n in {G%s{n!" % (
-                    caller.name, curr_owner.name, location.name, area)
-            else:
-                # TODO: Conflict / Takeover resolution
-                claim = True
-                caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                pub_message = "{W%s{n has taken over {y%s{n in {G%s{n from {w%s{n!" % (
-                    caller.name, location.name, area, curr_owner.name)
-                ## TODO: Conflict resolution to result in claim=True
-                caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
-                # claim=False
-                # if location.db.last_owner and location.db.last_owner != -1:
-                #     last_owner = search_object('#' + str(location.db.last_owner))
-                #     if len(last_owner) > 0:
-                #         last_owner = last_owner[0]
-                #     if caller.id == location.db.last_owner:
-                #         caller_message = "You have reclaimed {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                #         pub_message = "{y%s{w has reclaimed{G %s{w from {Y%s{w!{x" % (caller.name, location.name, owner.name)
-                #         claim=True
-                #     else:
-                #         caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                #         pub_message = "%s has taken over {y%s{n from {W%s{n!" % (caller.name, location.name, curr_owner.name)
-    else:
-        # This should never happen
-        log_err("No owner: typeclasses/rooms.py:132 Caller: %s Location: %s" % (caller.id, location.id))
-
-    if location.access(caller, "ownable") and claim == True:
-        location.db.last_owner = location.db.owner
-        location.db.owner = caller.id
-        if 'claims' in caller.db.stats.keys():
-            caller.db.stats['claims'] += 1
-        else:
-            caller.db.stats['claims'] = 1
-        if pub_message is not None:
-            channel = search_channel("public")[0].msg(pub_message)
-        try:
-            location.update_description()
-            if location.db.value:
-                location.db.value = location.db.value * 1.25
-        except Exception as e:
-            log_err(str(e))
-    caller.msg(caller_message)
