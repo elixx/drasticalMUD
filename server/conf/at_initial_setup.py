@@ -66,6 +66,9 @@ def at_initial_setup():
         create_exit("east", "#7", "#7669", exit_aliases="e")
         create_exit("west", "#7669", "#7", exit_aliases="w")
 
+        create_exit("west", "#7", "#8", exit_aliases="w")
+        create_exit("east", "#8", "#7", exit_aliases="e")
+
 
         # Check that room IDs align as expected"
         temple_square = search_object("#1219").first()
