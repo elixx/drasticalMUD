@@ -3,7 +3,7 @@ from evennia.utils.search import search_tag_object, search_channel, search_tag
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err, log_info
 from world.bookmarks import starts as start_rooms
-from random import choice
+from random import choice, randint
 from string import capwords
 
 def findStatsMachine():
@@ -64,7 +64,7 @@ def restartExplorers(location=None):
         mob.at_object_creation()
 
 
-def fixContinentExplorers():
+def fixContExplorers():
     from typeclasses.mob_explorer import ContinentExplorer
     for bot in ContinentExplorer.objects.all():
         if bot.db.seen == None:
@@ -162,8 +162,9 @@ def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
 
     for n in range(0, int(results.count() * (TRASH_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        ob = create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
+        create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
 
     for n in range(0, int(results.count() * (BUNDLE_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        ob = create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
+        create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=loc, location=loc,
+                           attributes=[('resources', { 'wood': randint(0,10), 'stone': randint(0,10)})])
