@@ -162,14 +162,14 @@ class ImportedRoom(Room):
             daytime = "{" + cc(daytime) + daytime + "{x"
 
             if not self.db.owner:
-                owner = "{Wnobody{x"
+                owner = "{W|lcclaim|ltnobody|le{x"
             else:
                 owner = search_object('#' + str(self.db.owner))
                 if len(owner) > 0:
                     owner = owner[0]
                     owner = '{W' + owner.name + '{x'
                 else:
-                    owner = "{cnobody{x"
+                    owner = "{W|lcclaim|ltnobody|le{x"
 
             if "This room is claimed by" in self.db.desc:
                 self.db.desc = RE_FOOTER.sub('', self.db.desc)
