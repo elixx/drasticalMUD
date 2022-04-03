@@ -50,6 +50,9 @@ class LegacyExit(Exit):
         if traversing_object.db.speed_boost:
             move_delay -= traversing_object.db.speed_boost
             move_delay = 0 if move_delay < 0 else move_delay
+        if traversing_object.ndb.speed_boost:
+            move_delay -= traversing_object.ndb.speed_boost
+            move_delay = 0 if move_delay < 0 else move_delay
 
         def move_callback():
             "This callback will be called by utils.delay after move_delay seconds."
