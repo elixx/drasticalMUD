@@ -203,7 +203,14 @@ def fade(s, rmin=0, rmax=5, gmin=0, gmax=5, bmin=0, bmax=5, ascending=True):
     b = bmin if ascending else bmax
     r1 = g1 = b1 = True
     o = ""
+    skip = False
     for (i, c) in enumerate(s):
+        if c in ['{', '|']:
+            skip = True
+            continue
+        elif skip == True:
+            skip = False
+            continue
         o += '|%s%s%s%s' % (r, g, b, c)
         r1 = False if r >= rmax else True if r <= rmin else r1
         g1 = False if g >= gmax else True if g <= gmin else g1
@@ -216,7 +223,14 @@ def fade(s, rmin=0, rmax=5, gmin=0, gmax=5, bmin=0, bmax=5, ascending=True):
 def rainbow(s, r1=None, rmin=0, rmax=5, g1=None, gmin=0, gmax=5, b1=None, bmin=0, bmax=5):
     r=g=b=1
     o = ""
+    skip = False
     for (i, c) in enumerate(s):
+        if c in ['{', '|']:
+            skip = True
+            continue
+        elif skip == True:
+            skip = False
+            continue
         r = randint(rmin,rmax) if r1 is None else r1
         g = randint(gmin,gmax) if g1 is None else g1
         b = randint(bmin,bmax) if b1 is None else b1
