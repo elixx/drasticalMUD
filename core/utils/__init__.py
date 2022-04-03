@@ -217,17 +217,8 @@ def rainbow(s, r1=None, rmin=0, rmax=5, g1=None, gmin=0, gmax=5, b1=None, bmin=0
     r=g=b=1
     o = ""
     for (i, c) in enumerate(s):
-        if r1 is None:
-            r = randint(rmin,rmax)
-        else:
-            r = r1
-        if g1 is None:
-            g = randint(gmin,gmax)
-        else:
-            g = g1
-        if b1 is None:
-            b = randint(bmin,bmax)
-        else:
-            b = b1
+        r = randint(rmin,rmax) if r1 is None else r1
+        g = randint(gmin,gmax) if g1 is None else g1
+        b = randint(bmin,bmax) if b1 is None else b1
         o += '|%s%s%s%s' % (r, g, b, c)
     return o
