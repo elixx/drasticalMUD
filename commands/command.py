@@ -10,10 +10,9 @@ from evennia import default_cmds
 from django.conf import settings
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from core.utils import color_percent
 from world.utils import area_count
 from core import sendWebHook
-from core.utils import fingerPlayer, rainbow, fade
+from core.utils import fingerPlayer, rainbow, fade, color_percent, ff
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
@@ -291,7 +290,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             explored[area]['owned'] = claimed.count()
 
         totalpct = round(totalvisited / totalrooms * 100, 2)
-        table = self.styled_table("|YArea" + " " * 45, "|YSeen", "|Y%Seen", "|YOwned", "|Y%Owned", "|YTotal",
+        table = self.styled_table(ff("Area") + " " * 45, ff("Seen"), ff("%Seen"), ff("Owned"), ff("%Owned"), ff("Total"),
                                   border="none", width=80)
         for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
             if key is not None:
@@ -322,9 +321,9 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                               opct + '%',
                               value['total'])
 
-        output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'
+        output += fade("---------------------------- Exploration Stats ----------------------------",rmin=1,rmax=3,bmin=1,bmax=3) + '\n'
         output += str(table) + '\n'
-        output += "{x" + utils.utils.pad(" Summary ", width=79, fillchar="-") + '\n'
+        output += fade("------------------- Summary -------------------",rmin=1,rmax=3,bmin=1,bmax=3) + '\n'
         unseen = []
         for area in areas:
             if area not in explored.keys():
@@ -332,11 +331,11 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         areapct = color_percent(round(len(explored) / len(areas) * 100, 2))
         areastats = "{y%s{n of {Y%s (%s%%){n" % (len(explored.keys()), len(unseen), areapct)
         table = self.styled_table(width=50, border='none')
-        table.add_row("|YVisited Areas:", areastats)
+        table.add_row(ff("Visited Areas:"), areastats)
         if totalvisited:
             self.caller.db.stats['explored'] = totalpct
             totalpct = color_percent(totalpct)
-            table.add_row("|YVisited Rooms:",
+            table.add_row(ff("Visited Rooms:"),
                           "{y" + str(totalvisited) + "{n of {Y" + str(totalrooms) + "{n (" + totalpct + "|n%|n)")
         output += str(table) + '\n'
 
