@@ -32,7 +32,7 @@ class GrowableObject(DefaultObject):
     def at_access(self, result, accessing_obj, access_type):
         if access_type == "get" and result == False:
             if self.db.planted:
-                accessing_obj.msg("It is already planted firmly in the ground.")
+                accessing_obj.msg("It is planted firmly in the ground.")
 
 
 class CmdPlant(COMMAND_DEFAULT_CLASS):
