@@ -3,7 +3,7 @@ from evennia.utils.create import create_object
 from evennia.utils.search import search_object
 from core import EXITS_REV, EXIT_ALIAS
 from area_reader.evennia_import import AREA_TRANSLATIONS
-from random import choice
+from random import choice, randint
 import time
 from evennia.utils.evtable import EvTable as styled_table
 from evennia.utils.logger import log_err, log_info
@@ -196,3 +196,36 @@ def fingerPlayer(character):
     table.add_row("{yGold:", gold)
     output = str(table) + '\n'
     return (output)
+
+def fade(s, rmax=5, gmax=5, bmax=5):
+    r = g = b = 1
+    r1 = g1 = b1 = True
+    o = ""
+    for (i, c) in enumerate(s):
+        o += '|%s%s%s%s' % (r, g, b, c)
+        r1 = False if r >= rmax else True
+        g1 = False if g >= gmax else True
+        b1 = False if b >= bmax else True
+        r += 1 if r1 else -1
+        g += 1 if g1 else -1
+        b += 1 if b1 else -1
+    return o
+
+def rainbow(s, r1=None, g1=None, b1=None):
+    r=g=b=1
+    o = ""
+    for (i, c) in enumerate(s):
+        if r1 is None:
+            r = randint(1,5)
+        else:
+            r = r1
+        if g1 is None:
+            g = randint(1,5)
+        else:
+            g = g1
+        if b1 is None:
+            b = randint(1,5)
+        else:
+            b = b1
+        o += '|%s%s%s%s' % (r, g, b, c)
+    return o
