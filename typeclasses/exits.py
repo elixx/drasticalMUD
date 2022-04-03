@@ -6,6 +6,7 @@ set and has a single command defined on itself with the same name as its key,
 for allowing Characters to traverse the exit to its destination.
 
 """
+from django.conf import settings
 from evennia import DefaultExit
 from evennia import utils
 
@@ -46,7 +47,11 @@ class LegacyExit(Exit):
         # if the traverser has an Attribute move_speed, use that,
         # otherwise default to "walk" speed
         #move_speed = traversing_object.db.move_speed or 0.5
-        move_delay = 0.5
+        if 'BASE_MOVE_DELAY' in dir(settings):
+            move_delay = settings.BASE_MOVE_DELAY
+        else:
+            move_delay = 0.35
+
         if traversing_object.db.speed_boost:
             move_delay -= traversing_object.db.speed_boost
             move_delay = 0 if move_delay < 0 else move_delay
