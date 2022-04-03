@@ -13,7 +13,7 @@ from evennia.server.sessionhandler import SESSIONS
 from core.utils import color_percent
 from world.utils import area_count
 from core import sendWebHook
-from core.utils import fingerPlayer
+from core.utils import fingerPlayer, rainbow, fade
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
@@ -306,12 +306,12 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                     opct = 0
 
                 if opct == 100:
-                    opct = "{wCOMPLETE{n"
+                    opct = rainbow("COMPLETE")
                 else:
                     opct = color_percent(opct)
 
                 if pct == 100:
-                    pct = "{wCOMPLETE{n"
+                    pct = rainbow("COMPLETE")
                 else:
                     pct = color_percent(pct)
 

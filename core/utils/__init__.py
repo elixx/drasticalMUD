@@ -197,8 +197,10 @@ def fingerPlayer(character):
     output = str(table) + '\n'
     return (output)
 
-def fade(s, rmin=0, rmax=5, gmin=0, gmax=5, bmin=0, bmax=5):
-    r = g = b = 1
+def fade(s, rmin=0, rmax=5, gmin=0, gmax=5, bmin=0, bmax=5, ascending=True):
+    r = rmin if ascending else rmax
+    g = gmin if ascending else gmax
+    b = bmin if ascending else bmax
     r1 = g1 = b1 = True
     o = ""
     for (i, c) in enumerate(s):
@@ -211,20 +213,20 @@ def fade(s, rmin=0, rmax=5, gmin=0, gmax=5, bmin=0, bmax=5):
         b += 1 if b1 else -1
     return o
 
-def rainbow(s, r1=None, g1=None, b1=None):
+def rainbow(s, r1=None, rmin=0, rmax=5, g1=None, gmin=0, gmax=5, b1=None, bmin=0, bmax=5):
     r=g=b=1
     o = ""
     for (i, c) in enumerate(s):
         if r1 is None:
-            r = randint(1,5)
+            r = randint(rmin,rmax)
         else:
             r = r1
         if g1 is None:
-            g = randint(1,5)
+            g = randint(gmin,gmax)
         else:
             g = g1
         if b1 is None:
-            b = randint(1,5)
+            b = randint(bmin,bmax)
         else:
             b = b1
         o += '|%s%s%s%s' % (r, g, b, c)
