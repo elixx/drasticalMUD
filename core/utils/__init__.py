@@ -13,7 +13,7 @@ search = search_object
 
 def color_percent(pct):
     if pct == 100:
-        pct = fade("|W100|n")
+        pct = "|W|*100|n"
     elif pct > 95:
         pct = "|551" + str(pct) + '|n'
     elif pct > 80:
@@ -27,7 +27,7 @@ def color_percent(pct):
     elif pct > 1:
         pct = "|011" + str(pct) + "|n"
     else:
-        pct = "|W" + str(pct) + "|n"
+        pct = "|x" + str(pct) + "|n"
     return pct
 
 
