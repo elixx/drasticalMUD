@@ -1,0 +1,24 @@
+{% extends "website/base.html" %}
+
+{% block titleblock %}Areas{% endblock %}
+
+
+{% block header_ext %}
+{% endblock %}
+
+{% block content %}
+    {% autoescape off %}
+<div class="container">
+    <div class="row">
+        <div class="col-xs-3 align-center card card-tertiary">
+            <div class="card card-header"><h6>{{ area }}</h6></div>
+            <div class="card card-body">
+                <P>
+                    {{ areainfo }}
+                </P>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endautoescape %}
+{% endblock %}}

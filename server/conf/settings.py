@@ -68,22 +68,6 @@ GUEST_LIST = [str(s) + "_Guest" for s in GUEST_COLORS ]
 
 CMDSET_UNLOGGEDIN = "core.menu_login.UnloggedinCmdSet"
 
-# Prod
-# SERVERNAME = "drastical"
-# GAME_SLOGAN = "I don't know what's going on, here..."
-# WEBSOCKET_CLIENT_URL = "wss://mud.drastical.tech/ws"
-# trust_x_forwarded_for = 1
-# UPSTREAM_IPS = ["10.15.0.20"]
-# IDLE_TIMEOUT = -1
-# IN_GAME_ERRORS = False
-# DEBUG = False
-# GRAPEVINE_ENABLED = True
-# STAFF_CONTACT_EMAIL = "elixx@drastical.net"
-# SESSION_COOKIE_AGE = 172800   # 86400=1d  # Default: 1209600 (2 weeks, in seconds)
-# DRASTICAL_SEND_WEBHOOK = True
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-# CSRF_COOKIE_SAMESITE = None
-# IRC_ENABLED = True
 
 # # Dev
 SERVERNAME = "devsandbox"
