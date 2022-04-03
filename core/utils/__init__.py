@@ -197,15 +197,15 @@ def fingerPlayer(character):
     output = str(table) + '\n'
     return (output)
 
-def fade(s, rmax=5, gmax=5, bmax=5):
+def fade(s, rmin=0, rmax=5, gmin=0, gmax=5, bmin=0, bmax=5):
     r = g = b = 1
     r1 = g1 = b1 = True
     o = ""
     for (i, c) in enumerate(s):
         o += '|%s%s%s%s' % (r, g, b, c)
-        r1 = False if r >= rmax else True
-        g1 = False if g >= gmax else True
-        b1 = False if b >= bmax else True
+        r1 = False if r >= rmax else True if r <= rmin else r1
+        g1 = False if g >= gmax else True if g <= gmin else g1
+        b1 = False if b >= bmax else True if b <= bmin else b1
         r += 1 if r1 else -1
         g += 1 if g1 else -1
         b += 1 if b1 else -1
