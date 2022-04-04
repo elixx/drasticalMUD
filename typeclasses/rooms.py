@@ -20,7 +20,7 @@ from evennia.utils.utils import list_to_string
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
-RE_FOOTER = re.compile(r"\{xIt is .*?claimed by .*?\.\{n", re.IGNORECASE)
+RE_FOOTER = re.compile(r"\{xIt is .*?\|lcclaim\|ltclaimed\|le by .*?\.\{n", re.IGNORECASE)
 
 
 class Room(ExtendedRoom):
@@ -156,25 +156,26 @@ class ImportedRoom(Room):
             update = True
 
         if self.db.desc and update == True:
-            season = "{" + cc(season) + season + "{x"
+            season = "|" + cc(season) + season + "|x"
 
-            daytime = "{" + cc(daytime) + daytime + "{x"
+            daytime = "|" + cc(daytime) + daytime + "|x"
 
             if not self.db.owner:
-                owner = "{W|lcclaim|ltnobody|le{x"
+                owner = "{Wnobody{x"
             else:
                 owner = search_object('#' + str(self.db.owner))
                 if len(owner) > 0:
                     owner = owner[0]
-                    owner = '{W' + owner.name + '{x'
+                    owner = '|W' + owner.name + '|x'
                 else:
-                    owner = "{W|lcclaim|ltnobody|le{x"
+                    owner = "{Wnobody{x"
 
-            if "This room is claimed by" in self.db.desc:
+            if "This room is |lcclaim|ltclaimed|le by" in self.db.desc:
                 self.db.desc = RE_FOOTER.sub('', self.db.desc)
-
-            self.db.desc += "{xIt is %s %s. This room is claimed by %s.{n" % (season, daytime, owner)
-
+            if self.db.value:
+                self.db.desc += "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (season, daytime, self.db.value, owner)
+            else:
+                self.db.desc += "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
     def return_appearance(self, looker):
         self.update_description()
 
@@ -196,7 +197,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
     """
     Claim a room to allow building and resource production.
     Guests may claim unclaimed rooms, but regular players may reclaim from them.
-    Future: conflict resolution / trade to allow players reclaiming from players
+    Future will include trade of owned property between players.
     """
     key = "claim"
     locks = "cmd:all()"
@@ -231,6 +232,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
             location.name, curr_owner.name, cost))
             if ui.strip().lower() in ['yes', 'y']:
                 claim = True
+                caller.db.stats['takeovers'] += 1
                 caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
                 pub_message = "{w%s{n has removed {W%s{n's control of {y%s{n in {G%s{n!" % (
                     caller.name, curr_owner.name, location.name, area)
