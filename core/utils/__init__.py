@@ -237,5 +237,5 @@ def rainbow(s, r1=None, rmin=0, rmax=5, g1=None, gmin=0, gmax=5, b1=None, bmin=0
         o += '|%s%s%s%s' % (r, g, b, c)
     return o+'|n'
 
-def ff(s):
-    return fade(s,rmin=1,bmin=1,gmin=0)
+def ff(s, r=1, rx=3, b=1, bx=3, g=0, gx=5):
+    return fade(s,rmin=r,rmax=rx,bmin=b,bmax=bx,gmin=g,gmax=gx)
