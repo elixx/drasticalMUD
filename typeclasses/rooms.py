@@ -70,60 +70,59 @@ class Room(ExtendedRoom):
 
         # contents
         content_names_map = self.get_content_names(looker, **kwargs)
-        #exits = list_to_string(content_names_map["exits"])
-        exits = list_to_string(["|lc%s|lt%s|le" % (re.sub('\(.*\)','',exit), exit) for exit in content_names_map["exits"]])
+        # exits = list_to_string(content_names_map["exits"])
+        exits = list_to_string(
+            ["|lc%s|lt%s|le" % (re.sub('\(.*\)', '', exit), exit) for exit in content_names_map["exits"]])
         characters = list_to_string(content_names_map["characters"])
         things = list_to_string(content_names_map["things"])
 
         # populate the appearance_template string. It's a good idea to strip it and
         # let the client add any extra spaces instead.
 
-
         return self.appearance_template.format(
             header="",
             name=name,
             desc=desc,
-            #exits=f"|wExits:|n {exits}" if exits else "",
-            exits=f"|wExits:|n %s" % exits if exits else "",
+            exits=f"|wExits:|n {exits}" if exits else "",
+            # exits=f"|wExits:|n %s" % exits if exits else "",
             characters=f"\n|wCharacters:|n {characters}" if characters else "",
             things=f"\n|wYou see:|n {things}" if things else "",
             footer="",
         ).strip()
 
-    def at_look(self, target, **kwargs):
-        """
-        Called when this object performs a look. It allows to
-        customize just what this means. It will not itself
-        send any data.
-
-        Args:
-            target (Object): The target being looked at. This is
-                commonly an object or the current location. It will
-                be checked for the "view" type access.
-            **kwargs (dict): Arbitrary, optional arguments for users
-                overriding the call. This will be passed into
-                return_appearance, get_display_name and at_desc but is not used
-                by default.
-
-        Returns:
-            lookstring (str): A ready-processed look string
-                potentially ready to return to the looker.
-
-        """
-        if not target.access(self, "view"):
-            try:
-                return "Could not view '%s'." % target.get_display_name(self, **kwargs)
-            except AttributeError:
-                return "Could not view '%s'." % target.key
-
-        description = target.return_appearance(self, **kwargs)
-
-        # the target's at_desc() method.
-        # this must be the last reference to target so it may delete itself when acted on.
-        target.at_desc(looker=self, **kwargs)
-
-        return description
-
+    # def at_look(self, target, **kwargs):
+    #     """
+    #     Called when this object performs a look. It allows to
+    #     customize just what this means. It will not itself
+    #     send any data.
+    #
+    #     Args:
+    #         target (Object): The target being looked at. This is
+    #             commonly an object or the current location. It will
+    #             be checked for the "view" type access.
+    #         **kwargs (dict): Arbitrary, optional arguments for users
+    #             overriding the call. This will be passed into
+    #             return_appearance, get_display_name and at_desc but is not used
+    #             by default.
+    #
+    #     Returns:
+    #         lookstring (str): A ready-processed look string
+    #             potentially ready to return to the looker.
+    #
+    #     """
+    #     if not target.access(self, "view"):
+    #         try:
+    #             return "Could not view '%s'." % target.get_display_name(self, **kwargs)
+    #         except AttributeError:
+    #             return "Could not view '%s'." % target.key
+    #
+    #     description = target.return_appearance(self, **kwargs)
+    #
+    #     # the target's at_desc() method.
+    #     # this must be the last reference to target so it may delete itself when acted on.
+    #     target.at_desc(looker=self, **kwargs)
+    #
+    #     return description
 
 
 class ImportedRoom(Room):
@@ -215,11 +214,12 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
         elif balance < cost:
             caller_message = "You don't have enough gold. %s costs |y%s gold|n to own." % (location.name, cost)
         elif not location.db.owner:
-                ui = yield ("Are you sure you want to take |c%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (location.name, cost))
-                if ui.strip().lower() in ['yes', 'y']:
-                    claim = True
-                    caller_message = "You now own {y%s{n." % location.name
-                    pub_message = "{w%s{n has taken over {y%s{n in {G%s{n!" % (caller.name, location.name, area)
+            ui = yield ("Are you sure you want to take |c%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (
+            location.name, cost))
+            if ui.strip().lower() in ['yes', 'y']:
+                claim = True
+                caller_message = "You now own {y%s{n." % location.name
+                pub_message = "{w%s{n has taken over {y%s{n in {G%s{n!" % (caller.name, location.name, area)
         elif location.db.owner == caller.id:
             caller_message = "You already own %s." % location.name
         else:
@@ -227,7 +227,8 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
             curr_owner = search_object(curr_owner)
             if curr_owner is not None: curr_owner = curr_owner.first()
 
-            ui = yield ("Are you sure you want to take |c%s|n from |R%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (location.name, curr_owner.name, cost))
+            ui = yield ("Are you sure you want to take |c%s|n from |R%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (
+            location.name, curr_owner.name, cost))
             if ui.strip().lower() in ['yes', 'y']:
                 claim = True
                 caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
@@ -258,11 +259,9 @@ def topClaimed():
     owned = [str(x.db.owner) for x in search_object_attribute("owner")]
     counts = {}
     for o in owned:
-        owner = search_object('#'+o).first().name
+        owner = search_object('#' + o).first().name
         if owner not in counts.keys():
             counts[owner] = 1
         else:
             counts[owner] += 1
-    return(sorted(counts.items(), key=lambda x: x[1], reverse=True))
-
-
+    return (sorted(counts.items(), key=lambda x: x[1], reverse=True))
