@@ -70,15 +70,15 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
         if show_session_data:
             # privileged info
             table = self.styled_table(
-                "|YName",
-                "|YOn for",
-                "|YIdle",
+                ff("Name"),
+                ff("On for"),
+                ff("Idle"),
                 #    "|YPuppeting",
-                "|YRoom",
-                "|YArea",
-                "|YCmds",
-                "|YVia",
-                "|YHost",
+                ff("Room"),
+                ff("Area"),
+                ff("Cmds"),
+                ff("Via"),
+                ff("Host"),
                 pretty_corners=False,
                 border="table",
                 border_char="-",
@@ -132,7 +132,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 )
         else:
             # unprivileged
-            table = self.styled_table("|YName", "|YOn for", "|YIdle", "|YArea", "|YVia",
+            table = self.styled_table(ff("Name"), ff("On for"), ff("Idle"), ff("Area"), ff("Via"),
                                       pretty_corners=True,
                                       border="table",
                                       border_char="-",
@@ -200,7 +200,7 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     priority = -60
 
     def func(self):
-        table = EvTable("|YArea", "|YRooms", width=60)
+        table = EvTable(ff("Area"), ff("Rooms"), width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
             table.add_row(capwords(key), value)
         output = str(table) + '\n'
@@ -321,9 +321,9 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                               opct + '%',
                               value['total'])
 
-        output += fade("---------------------------- Exploration Stats ----------------------------",rmin=1,rmax=3,bmin=1,bmax=3) + '\n'
+        output += ff("----------------------------")+ff(" Exploration Stats ")+ff("----------------------------") + '\n'
         output += str(table) + '\n'
-        output += fade("------------------- Summary -------------------",rmin=1,rmax=3,bmin=1,bmax=3) + '\n'
+        output += ff("-------------------")+ff(" Summary ")+ff("-------------------") + '\n'
         unseen = []
         for area in areas:
             if area not in explored.keys():
@@ -487,7 +487,7 @@ class CmdClaimed(COMMAND_DEFAULT_CLASS):
     def func(self):
         from typeclasses.rooms import topClaimed
         claimed = topClaimed()
-        table = EvTable("|YPlayer", "|YRooms Owned")
+        table = EvTable(ff("Player"), ff("Rooms Owned"))
         for (player, count) in claimed:
             table.add_row(player, count)
         output = str(table) + '\n'
@@ -519,7 +519,7 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
             else:
                 stats[player] = { 'claimed': '-', 'gold': g }
 
-        table = EvTable("|YPlayer", "|YRooms Owned", "|YTotal Gold")
+        table = EvTable(ff("Player"), ff("Rooms Owned"), ff("Total Gold"))
         for i,v in stats.items():
             table.add_row(i, v['claimed'], v['gold'])
         output = str(table) + '\n'
