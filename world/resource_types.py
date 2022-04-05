@@ -9,9 +9,9 @@ from random import choice
 # sizes for identification of bundles
 # maybe other things too
 
-BASE_VALUE = { 'trash': 0.5,
-               'stone': 0.8,
-               'wood': 0.85,
+BASE_VALUE = { 'trash': 0.8,
+               'stone': 1,
+               'wood': 1.25,
                'essence': 10 }
 
 def SIZES(v):

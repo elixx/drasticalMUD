@@ -1,32 +1,32 @@
 {% extends "website/base.html" %}
 {% block content %}
 
-{% block titleblock %}Player Stats{% endblock %}
+    {% block titleblock %}<h6>Player Stats</h6>{% endblock %}
 
 <div class="container">
-    <div class="row">
-        <div class="col-xs-6 align-center card card-tertiary" style="width: 50%;">
-            <div class="card card-header"><h6>{{ character.name }}</h6></div>
+        <div class="col-xs-8 align-center card card-tertiary" style="width: 50%;">
+            <div class="card card-header"><h4>{{ character.name }}</h4></div>
             <div class="card card-body">
-                <p>{{ character.db.desc }}</p>
-                <table>
+                <p class="lead">{{ character.db.desc }}</p>
+
+                <table class="col-10">
                     <thead>
-                        <th>stat</th><th>value</th>
+                        <tr>
+                            <th class="col-6">stat</th>         <th class="col-2">value</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Gold</td><td>{{ gold }}</td>
-                        </tr><tr>
-                            <td>Claims</td><td>{{ claims }}</td>
-                        </tr><tr>
-                            <td>Takeovers</td><td>{{ takeovers }}</td>
-                        </tr><tr>
-                            <td>Gems</td><td>-</td>
-                        </tr>
+                            <tr><td class="col-6">Gold</td>           <td class="col-2">{{ gold }}</td></tr>
+                            <tr><td class="col-6">World Explored</td> <td class="col-2">{{ totalpct }} %</td></tr>
+                            <tr><td class="col-6">Rooms Claims</td>   <td class="col-2">{{ claims }}</td></tr>
+                            <tr><td class="col-6">Takeovers</td>      <td class="col-2">{{ takeovers }}</td></tr>
+                            <!-- tr><td>Gems</td>           <td>-</td></tr -->
                     </tbody>
                 </table>
+
             <hr />
-                <table>
+
+                <table class="col-10">
                     <thead>
                     <tr>
                         <th>area</th> <th>owned</th> <th>seen</th> <th>total</th>
@@ -41,6 +41,5 @@
                 </table>
             </div>
         </div>
-    </div>
 </div>
 {% endblock %}
