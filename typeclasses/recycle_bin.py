@@ -66,23 +66,26 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
         if (self.obj2 != self.obj) and self.obj1:
             self.caller.msg("You think about putting %s in %s." % (self.obj1.name, self.obj.name))
         elif self.obj1:
-            ui = yield ("Are you sure you want to recycle %s? Type {Cyes{n if sure." % self.obj1.name)
+
+            factor = 1
+            if self.obj1.db.quality:
+                if self.obj1.db.quality > 0:
+                    factor = 1 - int(self.obj1.db.quality) / 100  # quality bonus
+
+            val = 0
+            if self.obj1.db.resources:
+                for k in self.obj1.db.resources.keys():
+                    if k in BASE_VALUE.keys():
+                        val += round(BASE_VALUE[k] * self.obj1.db.resources[k],2)
+
+            val += (val * factor)  # quality bonus
+
+            val = round(val,2)
+
+            ui = yield ("Are you sure you want to recycle %s for %s? Type {Cyes{n if sure." % (self.obj1.name, val))
             if ui.strip().lower() in ['yes', 'y']:
                 self.caller.msg("You put %s into %s." % (self.obj1.name, self.obj.name))
                 self.caller.location.msg_contents("%s whirrs to life and devours %s." % (self.obj.name, self.obj1.name))
-
-                if self.obj1.db.qual:
-                    if self.obj1.db.qual > 0:
-                        factor = int(self.self.obj1.db.qual) / 100    # quality bonus
-                    else:
-                        factor = 1
-
-                val = 0
-                if self.obj1.db.resources:
-                    for k in self.obj1.db.resources.keys():
-                        if k in BASE_VALUE.keys():
-                            val += BASE_VALUE[k]*factor*self.obj1.db.resources[k]
-
 
                 if 'gold' in self.caller.db.stats.keys():
                     self.caller.db.stats['gold'] += val
