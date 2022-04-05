@@ -82,7 +82,7 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
 
             val = round(val,2)
 
-            ui = yield ("Are you sure you want to recycle %s for %s? Type {Cyes{n if sure." % (self.obj1.name, val))
+            ui = yield ("Are you sure you want to recycle %s for |Y%s gold|x? Type {Cyes{n if sure." % (self.obj1.name, val))
             if ui.strip().lower() in ['yes', 'y']:
                 self.caller.msg("You put %s into %s." % (self.obj1.name, self.obj.name))
                 self.caller.location.msg_contents("%s whirrs to life and devours %s." % (self.obj.name, self.obj1.name))
