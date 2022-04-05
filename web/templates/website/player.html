@@ -4,12 +4,12 @@
     {% block titleblock %}Player Stats{% endblock %}
 
 <div class="container">
-        <div class="col-xs-8 align-center card card-tertiary" style="width: 50%;">
+        <div class="col-xs-9 align-center card card-tertiary" style="width: 50%;">
             <div class="card card-header"><h4>{{ character.name }}</h4></div>
             <div class="card card-body">
                 <p class="lead">{{ character.db.desc }}</p>
 
-                <table class="col-10">
+                <table class="col-8">
                     <thead>
                         <tr>
                             <th class="col-6">stat</th>         <th class="col-2">value</th>
@@ -35,7 +35,7 @@
                 <tbody>
                     {%  for area in explored %}
                         <tr>
-                            <td>{{  area.name }}</td>
+                            <td class="text-justify"><small>{{  area.name }}</small></td>
                             <td class="text-right">{{  area.owned }}</td>
                             <td class="text-right"><sub>({{ area.opct }}%)</sub></td>
                             <td class="text-right">{{  area.seen  }}</td>
