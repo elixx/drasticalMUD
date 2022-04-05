@@ -4,6 +4,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 import evennia
 from world.utils import area_count
 from string import capwords
+from evennia import ObjectDB
 from evennia.utils.logger import log_err
 
 
@@ -156,18 +157,27 @@ def _player_stats(**kwargs):
         if not inherits_from(character, settings.BASE_CHARACTER_TYPECLASS):
             raise Http404("I couldn't find a character with that ID. "
                           "Found something else instead.")
+        totalrooms = 0
+        e = ObjectDB.objects.object_totals()
+        for k in e.keys():
+            if "room" in k.lower():
+                totalrooms += e[k]
         explored = []
         visited = character.db.stats['visited']
+        totalvisited = 0
         for area in visited.keys():
             total = total_rooms_in_area(area)
             seen = len(visited_in_area(area, character.id))
             claimed = claimed_in_area(area, character.id)
+            totalvisited += seen
             owned = claimed.count()
             explored.append({'name': area, 'total': total, 'seen': seen, 'owned': owned})
         explored = sorted(explored, key=lambda x: x['seen'], reverse=True)
+        totalpct = round(totalvisited / totalrooms * 100, 2)
     return {'character': character,
             'gold': round(character.db.stats['gold'],2),
             'explored': explored,
+            'totalpct': totalpct,
             'claims': character.db.stats['claims'],
             'takeovers': character.db.stats['takeovers']}
 
