@@ -32,23 +32,8 @@ class Resource(Item):
 
         for k in obj.db.resources.keys():
             # Both items are similar
-            if (self.db.resources.keys() == obj.db.resources.keys()):
-                if len(self.db.resources.keys()) == 1:
-                    if k == 'trash':
-                        self.key = "pile of trash"
-                        self.aliases.add(['trash', 'pile'])
-                    if k == 'wood':
-                        self.key = "bundle of wood"
-                        self.aliases.add(['bundle','wood'])
-                    if k == 'stone':
-                        self.key = "pile of stone"
-                        self.aliases.adD(['stone','pile'])
-                else:
-                    self.key = "bundle of resources"
-                    self.aliases.add(['bundle'])
-            else:
-                self.key = "bundle of resources"
-                self.aliases.add(['bundle'])
+            self.key = "resource bundle"
+            self.aliases.add(['bundle'])
 
             # Combine values
             if k in self.db.resources.keys():
@@ -76,13 +61,18 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
             obj1 = caller.search(self.lhs)
             obj2 = caller.search(self.rhs)
             if obj1 == obj2:
+                self.caller.msg("You can't join that with itself!")
                 return
+            elif obj1 is None or obj2 is None:
+                self.caller.msg("Can't find that!")
+                return
+            oldname = obj1.name
             result = obj1.join( obj2 )
             if result is False:
                 self.caller.msg("You can't do that!")
             else:
                 self.caller.msg("You create %s." % (obj1.name))
-                self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, obj1.name, obj2.name))
+                self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, oldname, obj2.name))
 
 class ResourceCmdSet(CmdSet):
     key = "ResourceCmdSet"
