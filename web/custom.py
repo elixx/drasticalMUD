@@ -165,7 +165,11 @@ def _player_stats(**kwargs):
             owned = claimed.count()
             explored.append({'name': area, 'total': total, 'seen': seen, 'owned': owned})
         explored = sorted(explored, key=lambda x: x['seen'], reverse=True)
-    return {'character': character, 'gold': round(character.db.stats['gold'],2), 'explored': explored}
+    return {'character': character,
+            'gold': round(character.db.stats['gold'],2),
+            'explored': explored,
+            'claims': character.db.stats['claims'],
+            'takeovers': character.db.stats['takeovers']}
 
 
 class areaInfoView(TemplateView):
