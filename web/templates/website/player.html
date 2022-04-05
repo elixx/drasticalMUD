@@ -29,13 +29,19 @@
                 <table class="col-10">
                     <thead>
                     <tr>
-                        <th>area</th> <th>owned</th> <th>seen</th> <th>total</th>
+                        <th>area</th>  <th class="text-right">owned</th> <th class="text-right"></th> <th class="text-right">seen</th> <th class="text-right"></th>  <th class="text-right">total</th>
                     </tr>
                     </thead>
                 <tbody>
                     {%  for area in explored %}
                         <tr>
-                            <td>{{  area.name }}</td> <td>{{  area.owned }}</td> <td>{{  area.seen }}</td>  <td>{{  area.total }}</td></tr>
+                            <td>{{  area.name }}</td>
+                            <td class="text-right">{{  area.owned }}</td>
+                            <td class="text-right"><sup>({{ area.opct }}%)</sup></td>
+                            <td class="text-right">{{  area.seen  }}</td>
+                            <td class="text-right"><sup>({{ area.vpct }}%)</sup></td>
+                            <td class="text-right">{{  area.total }}</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
                 </table>
