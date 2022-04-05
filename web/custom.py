@@ -149,7 +149,10 @@ def _player_stats(**kwargs):
     object_id = kwargs['object_id']
 
     if object_id is not None:
-        object_id = "#" + str(object_id)
+        if str(object_id).isnumeric():
+            object_id = "#" + str(object_id)
+        else:
+            pass
         try:
             character = object_search(object_id)[0]
         except IndexError:
