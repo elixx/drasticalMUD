@@ -174,8 +174,8 @@ def _player_stats(**kwargs):
             claimed = claimed_in_area(area, character.id)
             totalvisited += seen
             owned = claimed.count()
-            vpct = round(seen / total * 100, 2) if total > 0 else 0
-            opct = round(owned / total * 100, 2) if total > 0 else 0
+            vpct = round(seen / total * 100, 1) if total > 0 else 0
+            opct = round(owned / total * 100, 1) if total > 0 else 0
             explored.append({ 'name': area, 'total': total, 'seen': seen, 'owned': owned,
                              'opct': opct, 'vpct': vpct })
         explored = sorted(explored, key=lambda x: x['seen'], reverse=True)
