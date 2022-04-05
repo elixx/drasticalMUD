@@ -10,11 +10,13 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 class Resource(Item):
     def at_object_creation(self):
-        super().at_object_creation()
+        if not self.db.resources:
+            self.db.resources = {}
         keys = self.db.resources.keys()
         if len(keys) == 1 and 'trash' in keys:
             self.key = trash()
-        self.cmdset.add_default(ResourceCmdSet, persistent=True)
+        self.cmdset.add(ResourceCmdSet, persistent=True)
+        super().at_object_creation()
 
     def at_desc(self, looker=None, **kwargs):
         resources = " ".join(["|C%s|n: %s" % (k, v) for (k, v) in self.db.resources.items()])
@@ -46,7 +48,13 @@ class Resource(Item):
         return
 
 class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
+    """
+    Usage: join <item1> with <item2>
+    Combine two different items to create a resource bundle.
+    Both objects will be consumed. The bundle will contain all of both items' resources.
+    The bundle will have the quality of item1.
 
+    """
     key = "join"
     #locks = "cmd:superuser()"
     arg_regex = r"\s|$"
@@ -67,11 +75,12 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("Can't find that!")
                 return
             oldname = obj1.name
+            oldname2 = obj2.name
             result = obj1.join( obj2 )
             if result is False:
                 self.caller.msg("You can't do that!")
             else:
-                self.caller.msg("You create %s." % (obj1.name))
+                self.caller.msg("You create %s out of %s and %s." % (obj1.name, oldname, oldname2))
                 self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, oldname, obj2.name))
 
 class ResourceCmdSet(CmdSet):
