@@ -1,11 +1,11 @@
 {% extends "website/base.html" %}
 {% block content %}
 
-{% block titleblock %}Player Stats{% endblock %}
+    {% block titleblock %}<h6>Player Stats</h6>{% endblock %}
 
 <div class="container">
         <div class="col-xs-8 align-center card card-tertiary" style="width: 50%;">
-            <div class="card card-header"><h6>{{ character.name }}</h6></div>
+            <div class="card card-header"><h4>{{ character.name }}</h4></div>
             <div class="card card-body">
                 <p class="lead">{{ character.db.desc }}</p>
 
