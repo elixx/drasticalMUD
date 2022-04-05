@@ -10,8 +10,8 @@ from random import choice
 # maybe other things too
 
 BASE_VALUE = { 'trash': 1,
-               'stone': 3,
-               'wood': 3.5,
+               'stone': 2,
+               'wood': 2.5,
                'essence': 10 }
 
 def SIZES(v):
