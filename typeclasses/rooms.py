@@ -70,9 +70,11 @@ class Room(ExtendedRoom):
 
         # contents
         content_names_map = self.get_content_names(looker, **kwargs)
-        # exits = list_to_string(content_names_map["exits"])
+
+        # clickable exits
         exits = list_to_string(
             ["|lc%s|lt%s|le" % (re.sub('\(.*\)', '', exit), exit) for exit in content_names_map["exits"]])
+
         characters = list_to_string(content_names_map["characters"])
         things = list_to_string(content_names_map["things"])
 
@@ -83,8 +85,8 @@ class Room(ExtendedRoom):
             header="",
             name=name,
             desc=desc,
-            exits=f"|wExits:|n {exits}" if exits else "",
-            # exits=f"|wExits:|n %s" % exits if exits else "",
+             exits=f"|wExits:|n {exits}" if exits else "",
+            #exits=f"|wExits:|n %s" % exits if exits else "",
             characters=f"\n|wCharacters:|n {characters}" if characters else "",
             things=f"\n|wYou see:|n {things}" if things else "",
             footer="",
