@@ -2,9 +2,7 @@ from evennia import utils
 from django.conf import settings
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
-from evennia import search_channel
-from datetime import datetime
-from evennia.utils import wrap
+from world.resource_types import BASE_VALUE
 import re
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -73,19 +71,15 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("You put %s into %s." % (self.obj1.name, self.obj.name))
                 self.caller.location.msg_contents("%s whirrs to life and devours %s." % (self.obj.name, self.obj1.name))
 
-                baseval = 12
                 val = 0
                 if self.obj1.db.resources:
                     for k in self.obj1.db.resources.keys():
-                        if k == "trash":
-                            val += baseval*0.8*self.obj1.db.resources['trash']
-                        if k == "wood":
-                            val += baseval*1.8*self.obj1.db.resources['wood']
-                        if k == "stone":
-                            val += baseval*1.2*self.obj1.db.resources['stone']
+                        if k in BASE_VALUE.keys():
+                            val += BASE_VALUE[k]*self.obj1.db.resources[k]
+
                 if self.obj1.db.qual:
                     if self.obj1.db.qual > 0:
-                        val += val * (int(self.self.obj1.db.qual) / 100)
+                        val += val * (int(self.self.obj1.db.qual) / 100)    # quality bonus
 
                 if 'gold' in self.caller.db.stats.keys():
                     self.caller.db.stats['gold'] += val

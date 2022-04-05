@@ -1,10 +1,48 @@
 from random import choice
 
 
-# RESOURCE_TYPES=['wood','stone', 'trash']
+# RESOURCE_TYPES=['wood','stone', 'trash', <fruit>]
 
 # GEMS = ['quartz', 'amethyst', 'topaz', 'emerald', 'aquamarine', 'ruby', 'amethyst', 'jade', 'diamond']
 # ESSENCES = ['mind', 'power', 'reality', 'soul', 'space', 'time']
+
+# sizes for identification of bundles
+# maybe other things too
+
+BASE_VALUE = { 'trash': 0.5,
+               'stone': 0.8,
+               'wood': 0.85,
+               'essence': 10 }
+
+def SIZES(v):
+    if  v==0:
+        return "empty"
+    elif v<5:
+        return "tiny"
+    elif v<10:
+        return "small"
+    elif v<20:
+        return "medium"
+    elif v<30:
+        return "large"
+    elif v<50:
+        return "giant"
+    elif v<100:
+        return "enormous"
+    elif v<200:
+        return "extravagant"
+    elif v<300:
+        return "gigantic"
+    elif v<500:
+        return "ridiculous"
+    elif v<800:
+        return "cosmic"
+    elif v<1000:
+        return "inconceivable"
+    else:
+        return "improperly balanced"
+
+
 
 TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife', 'cellophane wrapper',
                'empty bag of chips', 'soggy paper bag', 'dirty napkin', 'broken CD', 'dirty tampon', 'dirty condom',
@@ -12,7 +50,6 @@ TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife
                'broken record', 'smelly sock', 'broken tape', 'broken gizmo', 'greasy sprocket', 'piece of junk']
 
 WOOD = ['mahogany', 'oak', 'maple', 'birch', 'cedar', 'spruce', 'dogwood', 'fir', 'pine', "myrtle", "poplar", "sycamore"]
-WOOD_SIZE = {'twig':1, 'branch':2, 'bundle':5}
 
 FRUIT_TREES = ['apple','orange','pineapple','cherry','apricot','plum','peach','pear','pomegranate','banana',
                'coconut','lemon','lime','tangerine','fig']
@@ -20,7 +57,7 @@ FRUIT_TREES = ['apple','orange','pineapple','cherry','apricot','plum','peach','p
 trash = lambda: choice(TRASH_ADJS) + " " + choice(TRASH_OBS)
 tree_type = lambda: choice(WOOD)
 fruit_tree_type = lambda: choice(FRUIT_TREES)
-wood = lambda: '%s %s' % (wood_type(), choice(WOOD_SIZE))
+
 # essence = lambda: '%s essence' % choice(ESSENCES)
 # gem = lambda: '%s gem' % choice(GEMS)
 
