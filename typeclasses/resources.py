@@ -2,6 +2,7 @@ from django.conf import settings
 from evennia import utils
 log_err = utils.logger.log_err
 from typeclasses.objects import Item
+from evennia.utils import list_to_string
 from world.resource_types import *
 
 from evennia.commands.cmdset import CmdSet
@@ -33,15 +34,16 @@ class Resource(Item):
             return False
 
         for k in obj.db.resources.keys():
-            # Both items are similar
-            self.key = "resource bundle"
-            self.aliases.add(['bundle'])
-
+            self.db.quality = (self.db.quality + obj.db.quality) / 2
             # Combine values
             if k in self.db.resources.keys():
                 self.db.resources[k] += obj.db.resources[k]
             else:
                 self.db.resources[k] = obj.db.resources[k]
+
+        agg = sum(self.db.resources.values())
+        self.key = "%s resource bundle" % SIZES(agg)
+        self.aliases.add(['bundle'])
 
         obj.db.resources = {}
         obj.delete()
@@ -49,13 +51,14 @@ class Resource(Item):
 
 class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
     """
-    Usage: join <item1> with <item2>
+    Usage: join/combine <item1> with <item2>
     Combine two different items to create a resource bundle.
     Both objects will be consumed. The bundle will contain all of both items' resources.
-    The bundle will have the quality of item1.
+    The bundle will have an average quality of the two items.
 
     """
     key = "join"
+    aliases = ["combine"]
     #locks = "cmd:superuser()"
     arg_regex = r"\s|$"
     rhs_split = ("with", " and ")  # Prefer = delimiter, but allow " to " usage.
@@ -81,7 +84,8 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("You can't do that!")
             else:
                 self.caller.msg("You create %s out of %s and %s." % (obj1.name, oldname, oldname2))
-                self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, oldname, obj2.name))
+                self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, oldname, obj2.name), exclude=self.caller)
+                self.caller.msg("|xResulting bundle: %s" % list_to_string(list(obj1.db.resources.items())))
 
 class ResourceCmdSet(CmdSet):
     key = "ResourceCmdSet"
