@@ -125,8 +125,8 @@ def make_pants(caller):
 
 
 def make_hazmat(caller):
-    name, desc = ("a |Yyellow|n hazmat suit",
-                  "A |Yyellow|x hazmat suit|n, such as to protect from hazardous |Gchemicals|n and |Rradiation|n.")
+    name, desc = ("a |yyellow|n hazmat suit",
+                  "A |yyellow|x hazmat suit|n, such as to protect from hazardous |Gchemicals|n and |Rradiation|n.")
     suit = create_object("core.clothing.Clothing",
                          key=name,
                          aliases=["hazmat", "suit"],
