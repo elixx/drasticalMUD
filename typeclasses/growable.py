@@ -1,33 +1,56 @@
 from django.conf import settings
 from evennia import utils
-from evennia import DefaultObject
+from typeclasses.objects import Item
 from evennia.commands.cmdset import CmdSet
+from evennia.utils.utils import list_to_string
+from world.resource_types import SIZES
+
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
-class GrowableObject(DefaultObject):
+class GrowableObject(Item):
     def at_object_creation(self):
         self.cmdset.add_default(GrowableCmdSet, persistent=True)
         self.db.age = -1
         self.db.planted = False
         self.tags.add("growable", category='object')
+        self.tags.add("trash", category="growth")
+        self.db.resources={'trash': 1, 'wood': 1}
 
         if not self.db.growth_phases:
             self.db.growth_phases = {
                 0: ("mold spore", "A greenish tinge is barely visible."),
                 30: ("small spot", "A greenish blip grows lightly over the surface."),
-                90: ("mold spot", "A green mass begins to creep over the surface."),
-                150: ("large mold spot", "A section of the surface is covered in fuzzy, green moss."),
-                300: ("fuzzy mold blob", "A large, green and white mass. It makes you feel uncomfortable."),
-                500: ("giant mold growth", "This thing is huge! You worry a bit about your health.")}
+                50: ("mold spot", "A green-brown growth begins to creep over the surface."),
+                80: ("mushroom", "A section of the surface is covered in mushrooms."),
+                100: ("small mushroom patch", "A small gathering of mushrooms has started here."),
+                150: ("mushroom patch", "A gathering of mushrooms has made its home here."),
+                250: ("large mushroom patch", "Mushrooms have begun to spread all over."),
+                9000: ("large mold blob", "A large, green and white mass. It makes you feel uncomfortable."),
+                10000: ("giant mold growth", "This thing is huge! You worry a bit about your health.")}
         super().at_object_creation()
 
     def grow(self):
         self.db.age += 1
         if self.db.age in self.db.growth_phases.keys() and self.db.planted == True:
+            self.location.msg_contents("%s transforms into %s." % (self.name, self.db.growth_phases[self.db.age][0]))
             self.key = self.db.growth_phases[self.db.age][0]
             self.db.desc = self.db.growth_phases[self.db.age][1]
+            growths = self.tags.get(category="growth")
+            levels = self.db.growth_phases.keys()
+            factor = self.db.growth_factor if self.db.growth_factor else 1
+            for level in levels:
+                if self.db.age > level:
+                    factor += 0.03                  # 3% bonus production per growth level
+            if isinstance(growths, str): growths = [growths]
+            growth_factor = self.db.growth_factor if self.db.growth_factor else 1
+            for growth in growths:
+                if growth not in self.db.resources.keys():
+                    self.db.resources[growth] = 1 * growth_factor
+                else:
+                    self.db.resources[growth] += 1 * growth_factor
+
 
     def at_access(self, result, accessing_obj, access_type):
         if access_type == "get" and result == False:
@@ -58,6 +81,10 @@ class CmdPlant(COMMAND_DEFAULT_CLASS):
                 if "growable" in obj.db_typeclass_path:
                     if self.caller.id == self.caller.location.db.owner:
                         if obj.db.planted == False:
+                            for growing in self.caller.location.contents:
+                                if "growable" in growing.db_typeclass_path and growing.db.planted:
+                                    self.caller.msg("There is already something growing here!")
+                                    return
                             self.caller.msg("You plant %s in %s." % (obj.name, self.caller.location.name))
                             self.caller.location.msg_contents("%s plants %s." % (self.caller.name, obj.name),
                                                               exclude=self.caller)
@@ -68,8 +95,10 @@ class CmdPlant(COMMAND_DEFAULT_CLASS):
                             obj.grow()
                     else:
                         self.caller.msg("You must own a room in order to plant things in it.")
+                        return
                 else:
                     self.caller.msg("You cannot plant anything here.")
+                    return
 
 
 class CmdHarvest(COMMAND_DEFAULT_CLASS):
@@ -94,20 +123,24 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                 if "growable" in obj.db_typeclass_path:
                     if self.caller.id == self.caller.location.db.owner:
                         if obj.db.planted == True and obj.db.age > 1:
-                            levels = obj.db.growth_phases.keys()
-                            factor = 0.5
-                            for level in levels:
-                                if obj.db.age > level:
-                                    factor += 0.5
-                            wood = obj.db.age * factor
-                            ui = yield ("You will receive |y%s wood|n from harvesting %s. Continue? (Yes/No)" % (
-                                wood, obj.name))
+                            factor = 1
+                            if obj.db.quality:
+                                factor += (1-obj.db.quality/100)    # quality bonus
+                            amounts = {}
+                            amount_strs = []
+                            for r, v in obj.db.resources.items():
+                                amounts[r] = round(v*factor,2)
+                            for r, v in amounts.items():
+                                amount_strs.append("%s %s" % (v*factor, r))
+                            ui = yield ("You will receive |y%s|n from harvesting %s. Continue? (Yes/No)" % (
+                                list_to_string(amount_strs), obj.name))
                             if ui.strip().lower() in ['yes', 'y']:
                                 from evennia.utils.create import create_object
-                                from world.resource_types import wood as wood_name
-                                bundle = create_object(key=wood_name, typeclass="typeclasses.resources.Resource",
+                                agg = sum(amounts.values())
+                                harvest_name = "%s resource bundle" % SIZES(agg)
+                                bundle = create_object(key=harvest_name, typeclass="typeclasses.resources.Resource",
                                                        home=self.caller, location=self.caller,
-                                                       attributes=[('resources', {'wood': wood})])
+                                                       attributes=[('resources', amounts)])
                                 obj.delete()
                     else:
                         self.caller.msg("You must own a room in order to harvest from things in it.")
@@ -123,8 +156,8 @@ class GrowableCmdSet(CmdSet):
     duplicates = False
 
     def at_cmdset_creation(self):
-        self.add(CmdPlant(), allow_duplicates=False)
-        self.add(CmdHarvest(), allow_duplicates=False)
+        self.add(CmdPlant())
+        self.add(CmdHarvest())
         super().at_cmdset_creation()
 
 
@@ -133,6 +166,9 @@ class Tree(GrowableObject):
         if not self.db.tree_type:
             from world.resource_types import tree_type
             self.db.tree_type = tree_type()
+            self.tags.add("wood",category="growth")
+            self.tags.remove("trash",category="growth")
+
         if not self.db.growth_phases:
             self.db.growth_phases = {
                 0: ("a seedling", "You recognize the mound of dirt to be a recently-buried seedling."),
@@ -152,6 +188,10 @@ class FruitTree(GrowableObject):
         if not self.db.tree_type:
             from resource_types import fruit_tree_type
             self.db.tree_type = fruit_tree_type()
+            self.tags.add("wood",category="growth")
+            self.tags.add("fruit",category="growth")
+            self.tags.remove("trash",category="growth")
+
         if not self.db.growth_phases:
             self.db.growth_phases = {
                 0: ("a seedling", "You recognize the mound of dirt to be a recently-buried seedling."),
@@ -168,6 +208,9 @@ class FruitTree(GrowableObject):
 
 class Plant(GrowableObject):
     def at_object_creation(self):
+        self.tags.add("wood", category="growth")
+        self.tags.add("trash", category="growth")
+
         if not self.db.growth_phases:
             self.db.growth_phases = {
                 0: ("a seedling", "You recognize the mound of dirt to be a recently-buried seedling."),
