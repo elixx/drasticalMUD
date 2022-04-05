@@ -158,7 +158,6 @@ class Object(DefaultObject):
             return
         super().at_server_reload()
 
-
 class Item(Object):
     def at_object_creation(self):
         # All items have a 'resources' value
@@ -209,3 +208,5 @@ class Item(Object):
             return False
         else:
             return True
+
+LegacyObject = Item

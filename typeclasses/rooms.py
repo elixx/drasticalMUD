@@ -20,7 +20,7 @@ from evennia.utils.utils import list_to_string
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
-RE_FOOTER = re.compile(r"\{xIt is .*?\|lcclaim\|ltclaimed\|le by .*?\.\{n", re.IGNORECASE)
+RE_FOOTER = re.compile(r"\|xIt is .*? .*? by .*?\|x\.", re.IGNORECASE)
 
 
 class Room(ExtendedRoom):
@@ -170,13 +170,15 @@ class ImportedRoom(Room):
                 else:
                     owner = "{Wnobody{x"
 
-            if "This room is |lcclaim|ltclaimed|le by" in self.db.desc:
+            if "ltclaimed" in self.db.desc:
                 self.db.desc = RE_FOOTER.sub('', self.db.desc)
             if self.db.value:
-                self.db.desc += "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (season, daytime, self.db.value, owner)
+                self.db.desc += "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
+                season, daytime, self.db.value, owner)
             else:
                 self.db.desc += "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
-    def return_appearance(self, looker):
+
+    def return_appearance(self, looker, **kwargs):
         self.update_description()
 
         string = "%s\n" % Map(looker).show_map()
@@ -215,8 +217,8 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
         elif balance < cost:
             caller_message = "You don't have enough gold. %s costs |y%s gold|n to own." % (location.name, cost)
         elif not location.db.owner:
-            ui = yield ("Are you sure you want to take |c%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (
-            location.name, cost))
+            ui = yield ("Are you sure you want to take |c%s|n for |Y%s gold|n? Type |c|lcyes|ltyes|le|n if sure." % (
+                location.name, cost))
             if ui.strip().lower() in ['yes', 'y']:
                 claim = True
                 caller_message = "You now own {y%s{n." % location.name
@@ -229,7 +231,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
             if curr_owner is not None: curr_owner = curr_owner.first()
 
             ui = yield ("Are you sure you want to take |c%s|n from |R%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (
-            location.name, curr_owner.name, cost))
+                location.name, curr_owner.name, cost))
             if ui.strip().lower() in ['yes', 'y']:
                 claim = True
                 caller.db.stats['takeovers'] += 1
