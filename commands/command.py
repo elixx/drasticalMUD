@@ -36,10 +36,9 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
 
     Usage:
       who
-      doing
 
-    Shows who is currently online. Doing is an alias that limits info
-    also for those with all permissions.
+    Shows who is currently online.
+
     """
 
     key = "who"
@@ -170,7 +169,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
 
 class CmdFinger(COMMAND_DEFAULT_CLASS):
     """
-    Get information about a user's stats
+    Get information about yourself or another user's stats
 
     """
     key = "finger"
@@ -191,7 +190,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
 
 class CmdAreas(COMMAND_DEFAULT_CLASS):
     """
-    list of tagged areas
+    Show a table of all areas and room statistics.
 
     """
 
@@ -209,7 +208,7 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
 
 class CmdWhere(COMMAND_DEFAULT_CLASS):
     """
-    Show current area
+    Show info about your current area
 
     """
 

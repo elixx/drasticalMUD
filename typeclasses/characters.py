@@ -8,12 +8,12 @@ creation commands.
 
 """
 from core.clothing.clothing import ClothedCharacter
-from evennia import DefaultCharacter
+from core.clothing import ClothedCharacter
 from evennia import gametime
 from evennia.utils.logger import log_err
 from string import capwords
 
-class Character(DefaultCharacter):
+class Character(ClothedCharacter):
     """
     The Character defaults to reimplementing some of base Object's hook methods with the
     following functionality:

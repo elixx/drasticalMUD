@@ -200,6 +200,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
     Claim a room to allow building and resource production.
     Guests may claim unclaimed rooms, but regular players may reclaim from them.
     Future will include trade of owned property between players.
+
     """
     key = "claim"
     locks = "cmd:all()"
