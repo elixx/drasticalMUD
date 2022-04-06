@@ -3,7 +3,7 @@ from evennia.utils.search import search_tag_object, search_channel, search_tag
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err, log_info
 from world.bookmarks import starts as start_rooms
-from random import choice
+from random import choice, randint
 from string import capwords
 
 def findStatsMachine():
@@ -64,7 +64,7 @@ def restartExplorers(location=None):
         mob.at_object_creation()
 
 
-def fixContinentExplorers():
+def fixContExplorers():
     from typeclasses.mob_explorer import ContinentExplorer
     for bot in ContinentExplorer.objects.all():
         if bot.db.seen == None:
@@ -79,18 +79,22 @@ def fixContinentExplorers():
 def qual(obj):
     if obj.db.quality:
         quality = obj.db.quality
-        if quality > 95:
-            return "legendary"
-        elif quality > 75:
-            return "exceptional"
-        elif quality > 50:
-            return "good"
-        elif quality > 20:
-            return "average"
-        elif quality > 0:
-            return "poor"
-        elif quality == 0:
+        if quality == 0:
             return "trash"
+        elif quality > 95:
+            return "legendary"
+        elif quality > 85:
+            return "exceptional"
+        elif quality > 80:
+            return "impressive"
+        elif quality > 70:
+            return "great"
+        elif quality > 60:
+            return "good"
+        elif quality > 45:
+            return "average"
+        elif quality <= 45:
+            return "poor"
     else:
         return "standard"
 
@@ -151,7 +155,7 @@ def exploreReport(user):
 def topGold():
     from evennia.utils.search import search_object_attribute
     results = search_object_attribute('stats')
-    output = sorted([(v.name, v.db.stats['gold']) for v in results if 'gold' in v.db.stats.keys()],key=lambda x: x[1],
+    output = sorted([(v.name, round(v.db.stats['gold'],2)) for v in results if 'gold' in v.db.stats.keys()],key=lambda x: x[1],
                     reverse=True)
     return(output)
 
@@ -162,8 +166,9 @@ def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
 
     for n in range(0, int(results.count() * (TRASH_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        ob = create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
+        create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
 
     for n in range(0, int(results.count() * (BUNDLE_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        ob = create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
+        create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=loc, location=loc,
+                           attributes=[('resources', { 'wood': randint(0,10), 'stone': randint(0,10)})])

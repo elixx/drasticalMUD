@@ -175,11 +175,9 @@ def findUnions():
     areas = set(areas)
     print(areas)
     print(len(areas))
-    redo = True
     c=0
-    for i in temp.keys():
-        if i > 0:
-            if temp[i].intersection(temp[i - 1]):
-                temp[i-1] = temp[i-1].union(temp[i])
-
-    print(temp)
+    for bot in areas.keys():
+        for si, s in enumerate(temp):
+            if areas[bot].intersection(s):
+                areas[bot] = areas[bot].union(s)
+    print(areas)

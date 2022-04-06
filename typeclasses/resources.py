@@ -2,6 +2,7 @@ from django.conf import settings
 from evennia import utils
 log_err = utils.logger.log_err
 from typeclasses.objects import Item
+from evennia.utils import list_to_string
 from world.resource_types import *
 
 from evennia.commands.cmdset import CmdSet
@@ -10,11 +11,13 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 class Resource(Item):
     def at_object_creation(self):
-        super().at_object_creation()
+        if not self.db.resources:
+            self.db.resources = {}
         keys = self.db.resources.keys()
         if len(keys) == 1 and 'trash' in keys:
             self.key = trash()
-        self.cmdset.add_default(ResourceCmdSet, persistent=True)
+        self.cmdset.add(ResourceCmdSet, persistent=True)
+        super().at_object_creation()
 
     def at_desc(self, looker=None, **kwargs):
         resources = " ".join(["|C%s|n: %s" % (k, v) for (k, v) in self.db.resources.items()])
@@ -31,38 +34,31 @@ class Resource(Item):
             return False
 
         for k in obj.db.resources.keys():
-            # Both items are similar
-            if (self.db.resources.keys() == obj.db.resources.keys()):
-                if len(self.db.resources.keys()) == 1:
-                    if k == 'trash':
-                        self.key = "pile of trash"
-                        self.aliases.add(['trash', 'pile'])
-                    if k == 'wood':
-                        self.key = "bundle of wood"
-                        self.aliases.add(['bundle','wood'])
-                    if k == 'stone':
-                        self.key = "pile of stone"
-                        self.aliases.adD(['stone','pile'])
-                else:
-                    self.key = "bundle of resources"
-                    self.aliases.add(['bundle'])
-            else:
-                self.key = "bundle of resources"
-                self.aliases.add(['bundle'])
-
+            self.db.quality = (self.db.quality + obj.db.quality) / 2
             # Combine values
             if k in self.db.resources.keys():
                 self.db.resources[k] += obj.db.resources[k]
             else:
                 self.db.resources[k] = obj.db.resources[k]
 
+        agg = sum(self.db.resources.values())
+        self.key = "%s resource bundle" % SIZES(agg)
+        self.aliases.add(['bundle'])
+
         obj.db.resources = {}
         obj.delete()
         return
 
 class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
+    """
+    Usage: join/combine <item1> with <item2>
+    Combine two different items to create a resource bundle.
+    Both objects will be consumed. The bundle will contain all of both items' resources.
+    The bundle will have an average quality of the two items.
 
+    """
     key = "join"
+    aliases = ["combine"]
     #locks = "cmd:superuser()"
     arg_regex = r"\s|$"
     rhs_split = ("with", " and ")  # Prefer = delimiter, but allow " to " usage.
@@ -76,13 +72,20 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
             obj1 = caller.search(self.lhs)
             obj2 = caller.search(self.rhs)
             if obj1 == obj2:
+                self.caller.msg("You can't join that with itself!")
                 return
+            elif obj1 is None or obj2 is None:
+                self.caller.msg("Can't find that!")
+                return
+            oldname = obj1.name
+            oldname2 = obj2.name
             result = obj1.join( obj2 )
             if result is False:
                 self.caller.msg("You can't do that!")
             else:
-                self.caller.msg("You create %s." % (obj1.name))
-                self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, obj1.name, obj2.name))
+                self.caller.msg("You create %s out of %s and %s." % (obj1.name, oldname, oldname2))
+                self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, oldname, obj2.name), exclude=self.caller)
+                self.caller.msg("|xResulting bundle: %s" % list_to_string(list(obj1.db.resources.items())))
 
 class ResourceCmdSet(CmdSet):
     key = "ResourceCmdSet"

@@ -89,7 +89,7 @@ def make_shirt(caller):
               ("a plain blue shirt", "It's blue. It's a shirt.", ""),
               ("a shiny knit shirt", "It's made out of some kind of shimmery fabric.", "that catches your attention")]
     name, desc, worn = choice(shirts)
-    shirt = create_object("evennia.contrib.clothing.Clothing",
+    shirt = create_object("core.clothing.Clothing",
                           key=name,
                           aliases=["shirt"],
                           home=caller,
@@ -113,7 +113,7 @@ def make_pants(caller):
              ("a pair of pants", "They're pants. What more could you ask for?", ["pants"], "looking nondescript")]
 
     name, desc, aliases, worn = choice(pants)
-    shirt = create_object("evennia.contrib.clothing.Clothing",
+    shirt = create_object("core.clothing.Clothing",
                           key=name,
                           aliases=aliases,
                           home=caller,
@@ -125,28 +125,28 @@ def make_pants(caller):
 
 
 def make_hazmat(caller):
-    name, desc = ("a {Yyellow{n hazmat suit",
-                  "A {Yyellow{x hazmat suit{n, such as to protect from hazardous {Gchemicals{n and {Rradiation{n.")
-    suit = create_object("evennia.contrib.clothing.Clothing",
+    name, desc = ("a |yyellow|n hazmat suit",
+                  "A |yyellow|x hazmat suit|n, such as to protect from hazardous |Gchemicals|n and |Rradiation|n.")
+    suit = create_object("core.clothing.Clothing",
                          key=name,
                          aliases=["hazmat", "suit"],
                          home=caller,
                          location=caller,
                          attributes=[("clothing_type", "fullbody"),
                                      ("desc", desc),
-                                     ("worn", "to protect from {yhazardous{g chemicals{n")])
+                                     ("worn", "to protect from |yhazardous|g chemicals|n")])
     caller.msg("You get %s" % suit.name)
 
 
 def make_sunglasses(caller):
-    glasses = create_object("evennia.contrib.clothing.Clothing",
-                            key="a pair of {xdark sunglasses{n",
+    glasses = create_object("core.clothing.Clothing",
+                            key="a pair of |xdark sunglasses|n",
                             aliases=["glasses", "sunglasses"],
                             home=caller,
                             location=caller,
                             attributes=[("clothing_type", "jewelry"),
-                                        ("desc", "A pair of {xdark sunglasses{n."),
-                                        ("worn", "that let them see the world as it {yreally{n is")])
+                                        ("desc", "A pair of |xdark sunglasses|n."),
+                                        ("worn", "that let them see the world as it |yreally|n is")])
     caller.msg("You get %s" % glasses.name)
 
 
@@ -160,7 +160,7 @@ def make_hat(caller):
             ("a graduation cap", "You feel smart just looking at this!", ["cap", "graduation"],
              "that makes them look smart")]
     name, desc, aliases, worn = choice(hats)
-    hat = create_object("evennia.contrib.clothing.Clothing",
+    hat = create_object("core.clothing.Clothing",
                         key=name,
                         aliases=aliases,
                         home=caller,

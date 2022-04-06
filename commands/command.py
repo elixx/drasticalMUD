@@ -10,10 +10,9 @@ from evennia import default_cmds
 from django.conf import settings
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from core.utils import color_percent
 from world.utils import area_count
 from core import sendWebHook
-from core.utils import fingerPlayer
+from core.utils import fingerPlayer, rainbow, fade, color_percent, ff
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
@@ -37,10 +36,9 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
 
     Usage:
       who
-      doing
 
-    Shows who is currently online. Doing is an alias that limits info
-    also for those with all permissions.
+    Shows who is currently online.
+
     """
 
     key = "who"
@@ -71,17 +69,17 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
         if show_session_data:
             # privileged info
             table = self.styled_table(
-                "|YName",
-                "|YOn for",
-                "|YIdle",
+                ff("Name"),
+                ff("On for"),
+                ff("Idle"),
                 #    "|YPuppeting",
-                "|YRoom",
-                "|YArea",
-                "|YCmds",
-                "|YVia",
-                "|YHost",
+                ff("Room"),
+                ff("Area"),
+                ff("Cmds"),
+                ff("Via"),
+                ff("Host"),
                 pretty_corners=False,
-                border="table",
+                border="none",
                 border_char="-",
                 header_line_char="-"
             )
@@ -133,9 +131,9 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 )
         else:
             # unprivileged
-            table = self.styled_table("|YName", "|YOn for", "|YIdle", "|YArea", "|YVia",
+            table = self.styled_table(ff("Name"), ff("On for"), ff("Idle"), ff("Area"), ff("Via"),
                                       pretty_corners=True,
-                                      border="table",
+                                      border="none",
                                       border_char="-",
                                       header_line_char="-",
                                       )
@@ -149,7 +147,9 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 if puppet == None:
                     continue
                 location = puppet.location if puppet and puppet.location else "None"
-                location = capwords(location.tags.get(category='area')) if location.tags and location else "None"
+                if location is not "None":
+                    area = location.tags.get(category='area')
+                    area = capwords(area) if area is not None else "None"
                 if puppet.db:
                     if puppet.db.title:
                         title = puppet.db.title
@@ -161,7 +161,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                     utils.crop(title + " " + account.get_display_name(account), width=25),
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
-                    utils.crop(location, width=25),
+                    utils.crop(area, width=25),
                     session.protocol_key,
                 )
         is_one = naccounts == 1
@@ -171,7 +171,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
 
 class CmdFinger(COMMAND_DEFAULT_CLASS):
     """
-    Get information about a user's stats
+    Get information about yourself or another user's stats
 
     """
     key = "finger"
@@ -192,7 +192,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
 
 class CmdAreas(COMMAND_DEFAULT_CLASS):
     """
-    list of tagged areas
+    Show a table of all areas and room statistics.
 
     """
 
@@ -201,7 +201,7 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     priority = -60
 
     def func(self):
-        table = EvTable("|YArea", "|YRooms", width=60)
+        table = EvTable(ff("Area"), ff("Rooms"), width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
             table.add_row(capwords(key), value)
         output = str(table) + '\n'
@@ -210,7 +210,7 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
 
 class CmdWhere(COMMAND_DEFAULT_CLASS):
     """
-    Show current area
+    Show info about your current area
 
     """
 
@@ -291,9 +291,9 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             explored[area]['owned'] = claimed.count()
 
         totalpct = round(totalvisited / totalrooms * 100, 2)
-        table = self.styled_table("|YArea" + " " * 45, "|YSeen", "|Y%Seen", "|YOwned", "|Y%Owned", "|YTotal",
+        table = self.styled_table(ff("Area") + " " * 45, ff("Seen"), ff("%Seen"), ff("Owned"), ff("%Owned"), ff("Total"),
                                   border="none", width=80)
-        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['total'], reverse=True):
+        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
             if key is not None:
                 if value['total'] > value['seen']:
                     pct = round(value['seen'] / value['total'] * 100, 1)
@@ -306,12 +306,12 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                     opct = 0
 
                 if opct == 100:
-                    opct = "{wCOMPLETE{n"
+                    opct = rainbow("COMPLETE")
                 else:
                     opct = color_percent(opct)
 
                 if pct == 100:
-                    pct = "{wCOMPLETE{n"
+                    pct = rainbow("COMPLETE")
                 else:
                     pct = color_percent(pct)
 
@@ -322,9 +322,9 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                               opct + '%',
                               value['total'])
 
-        output += "{w" + utils.utils.pad(" {YExploration Stats{w ", width=79, fillchar="-") + '\n'
+        output += ff("----------------------------")+ff(" Exploration Stats ")+ff("----------------------------") + '\n'
         output += str(table) + '\n'
-        output += "{x" + utils.utils.pad(" Summary ", width=79, fillchar="-") + '\n'
+        output += ff("-------------------")+ff(" Summary ")+ff("-------------------") + '\n'
         unseen = []
         for area in areas:
             if area not in explored.keys():
@@ -332,11 +332,11 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         areapct = color_percent(round(len(explored) / len(areas) * 100, 2))
         areastats = "{y%s{n of {Y%s (%s%%){n" % (len(explored.keys()), len(unseen), areapct)
         table = self.styled_table(width=50, border='none')
-        table.add_row("|YVisited Areas:", areastats)
+        table.add_row(ff("Visited Areas:"), areastats)
         if totalvisited:
             self.caller.db.stats['explored'] = totalpct
             totalpct = color_percent(totalpct)
-            table.add_row("|YVisited Rooms:",
+            table.add_row(ff("Visited Rooms:"),
                           "{y" + str(totalvisited) + "{n of {Y" + str(totalrooms) + "{n (" + totalpct + "|n%|n)")
         output += str(table) + '\n'
 
@@ -488,11 +488,32 @@ class CmdClaimed(COMMAND_DEFAULT_CLASS):
     def func(self):
         from typeclasses.rooms import topClaimed
         claimed = topClaimed()
-        table = EvTable("|YPlayer", "|YRooms Owned")
+        table = EvTable(ff("Player"), ff("Rooms Owned"))
         for (player, count) in claimed:
             table.add_row(player, count)
         output = str(table) + '\n'
         self.caller.msg(output)
+
+
+class CmdProperty(COMMAND_DEFAULT_CLASS):
+    """
+    See what property you have currently claimed
+
+    """
+    key = "property"
+    locks = "cmd:all()"
+
+    def func(self):
+        from evennia.utils.search import search_object_attribute
+        claimed = [ room for room in search_object_attribute(key='owner', value=self.caller.id) ]
+        claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
+        table = EvTable(ff("Area"), ff("Rooms"), border="none")
+        for room in claimed:
+            table.add_row(capwords(room.tags.get(category='area')), room.name)
+        output = str(table) + '\n'
+        self.caller.msg(output)
+
+
 
 class CmdTopList(COMMAND_DEFAULT_CLASS):
     """
@@ -520,7 +541,7 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
             else:
                 stats[player] = { 'claimed': '-', 'gold': g }
 
-        table = EvTable("|YPlayer", "|YRooms Owned", "|YTotal Gold")
+        table = EvTable(ff("Player"), ff("Rooms Owned"), ff("Total Gold"), border="none")
         for i,v in stats.items():
             table.add_row(i, v['claimed'], v['gold'])
         output = str(table) + '\n'

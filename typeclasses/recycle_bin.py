@@ -2,9 +2,7 @@ from evennia import utils
 from django.conf import settings
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
-from evennia import search_channel
-from datetime import datetime
-from evennia.utils import wrap
+from world.resource_types import BASE_VALUE
 import re
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -68,23 +66,26 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
         if (self.obj2 != self.obj) and self.obj1:
             self.caller.msg("You think about putting %s in %s." % (self.obj1.name, self.obj.name))
         elif self.obj1:
-            ui = yield ("Are you sure you want to recycle %s? Type {Cyes{n if sure." % self.obj1.name)
+
+            factor = 1
+            if self.obj1.db.quality:
+                if self.obj1.db.quality > 0:
+                    factor = 1 - int(self.obj1.db.quality) / 100  # quality bonus
+
+            val = 0
+            if self.obj1.db.resources:
+                for k in self.obj1.db.resources.keys():
+                    if k in BASE_VALUE.keys():
+                        val += BASE_VALUE[k] * self.obj1.db.resources[k]
+
+            val += (val * factor)  # quality bonus
+
+            val = round(val,2)
+
+            ui = yield ("Are you sure you want to recycle %s for |Y%s gold|x? Type {Cyes{n if sure." % (self.obj1.name, val))
             if ui.strip().lower() in ['yes', 'y']:
                 self.caller.msg("You put %s into %s." % (self.obj1.name, self.obj.name))
                 self.caller.location.msg_contents("%s whirrs to life and devours %s." % (self.obj.name, self.obj1.name))
-
-                val = 12
-                if self.obj1.db.resources:
-                    for k in self.obj1.db.resources.keys():
-                        if k == "trash":
-                            val += val*0.85
-                        if k == "wood":
-                            val += val*2.3
-                        if k == "stone":
-                            val += val*1.8
-                if self.obj1.db.qual:
-                    if self.obj1.db.qual > 0:
-                        val = val * ( int(self.obj1.db.qual) / 100)
 
                 if 'gold' in self.caller.db.stats.keys():
                     self.caller.db.stats['gold'] += val

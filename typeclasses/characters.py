@@ -8,12 +8,12 @@ creation commands.
 
 """
 from core.clothing.clothing import ClothedCharacter
-from evennia import DefaultCharacter
+from core.clothing import ClothedCharacter
 from evennia import gametime
 from evennia.utils.logger import log_err
 from string import capwords
 
-class Character(DefaultCharacter):
+class Character(ClothedCharacter):
     """
     The Character defaults to reimplementing some of base Object's hook methods with the
     following functionality:
@@ -36,7 +36,11 @@ class Character(DefaultCharacter):
     def at_object_creation(self):
         super().at_object_creation()
         if self.db.stats == None:
-            self.db.stats = {'kills': 0, 'deaths': 0, 'logins': 0, 'visited': {}, 'claims': 0}
+            self.db.stats = {'gold': 0,
+                             'logins': 0,
+                             'visited': {},
+                             'takeovers': 0,
+                             'claims': 0}
 
     def at_post_puppet(self):
         super().at_post_puppet()

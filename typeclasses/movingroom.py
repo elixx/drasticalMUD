@@ -186,8 +186,8 @@ class MovingRoom(DefaultRoom):
             announce = "%s announces, '|xNow arriving at |c%s|x.'" % (self.name.capitalize(), loc.name.replace("{",""))
         self.msg_contents(announce)
         self.update_exits()
-        self.msg_contents("%s glides to a halt and the doors open. You may now |Yleave|n." % self.name.capitalize())
-        loc.msg_contents("%s pulls up and slows to a halt. The doors open and you may |Yboard|n it." % self.name.capitalize())
+        self.msg_contents("%s glides to a halt and the doors open. You may now |Y|lcleave|ltleave|le|n." % self.name.capitalize())
+        loc.msg_contents("%s pulls up and slows to a halt. The doors open and you may |Y|lcboard|ltboard|le|n it." % self.name.capitalize())
         self.db.current_dist = 0
         if self.db.route_pos < len(self.db.route) - 3:
             next = search_object(self.db.route[self.db.route_pos + 2])[0]

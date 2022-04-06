@@ -3,8 +3,7 @@ from evennia.utils.create import create_object
 from evennia.utils.search import search_object
 from core import EXITS_REV, EXIT_ALIAS
 from area_reader.evennia_import import AREA_TRANSLATIONS
-from random import choice
-import time
+from random import choice, randint
 from evennia.utils.evtable import EvTable as styled_table
 from evennia.utils.logger import log_err, log_info
 
@@ -14,21 +13,21 @@ search = search_object
 
 def color_percent(pct):
     if pct == 100:
-        pct = "|w100|n"
+        pct = "|W|*100|n"
     elif pct > 95:
-        pct = "|r" + str(pct) + '|n'
+        pct = "|551" + str(pct) + '|n'
     elif pct > 80:
-        pct = "|R" + str(pct) + '|n'
+        pct = "|440" + str(pct) + '|n'
     elif pct > 50:
-        pct = "|y" + str(pct) + "|n"
+        pct = "|330" + str(pct) + "|n"
     elif pct > 30:
-        pct = "|Y" + str(pct) + "|n"
+        pct = "|220" + str(pct) + "|n"
     elif pct > 10:
-        pct = "|g" + str(pct) + "|n"
+        pct = "|121" + str(pct) + "|n"
     elif pct > 1:
-        pct = "|b" + str(pct) + "|n"
+        pct = "|011" + str(pct) + "|n"
     else:
-        pct = "|W" + str(pct) + "|n"
+        pct = "|x" + str(pct) + "|n"
     return pct
 
 
@@ -167,10 +166,10 @@ def fingerPlayer(character):
     else:
         title = ""
     name = title + " " + character.name
-    table = styled_table()
+    table = styled_table(border="none")
     logincount = character.db.stats['logins']
     try:
-        gold = character.db.stats['gold']
+        gold = round(character.db.stats['gold'],2)
     except KeyError:
         gold = 0
         character.db.stats['gold'] = gold
@@ -185,14 +184,58 @@ def fingerPlayer(character):
         pct = character.db.stats['explored']
     else:
         pct = -1
-    table.add_row("{yName:", name)
-    table.add_row("{yTimes Connected:", logincount)
-    table.add_row("{yTime Online:", totaltime)
+    #######################################################################
+    table.add_row(ff("Target name:"), fade(name,rmin=1,bmin=1,gmin=1))
+    table.add_row(ff("Times Connected:"), logincount)
+    table.add_row(ff("Time Online:"), totaltime)
     if pct > -1:
         pct = str(pct) + '%'
     else:
         pct = "???"
-    table.add_row("{yPercent Explored:", pct)
-    table.add_row("{yGold:", gold)
+    table.add_row(ff("Percent Explored:"), pct)
+    table.add_row(ff("Gold:"), gold)
     output = str(table) + '\n'
     return (output)
+
+def fade(s, rmin=0, rmax=5, gmin=0, gmax=5, bmin=0, bmax=5, ascending=True):
+    r = rmin if ascending else rmax
+    g = gmin if ascending else gmax
+    b = bmin if ascending else bmax
+    r1 = g1 = b1 = True
+    o = ""
+    skip = False
+    for (i, c) in enumerate(s):
+        if c in ['{', '|']:
+            skip = True
+            continue
+        elif skip == True:
+            skip = False
+            continue
+        o += '|%s%s%s%s' % (r, g, b, c)
+        r1 = False if r >= rmax else True if r <= rmin else r1
+        g1 = False if g >= gmax else True if g <= gmin else g1
+        b1 = False if b >= bmax else True if b <= bmin else b1
+        r += 1 if r1 else -1
+        g += 1 if g1 else -1
+        b += 1 if b1 else -1
+    return o+'|n'
+
+def rainbow(s, r1=None, rmin=0, rmax=5, g1=None, gmin=0, gmax=5, b1=None, bmin=0, bmax=5):
+    r=g=b=1
+    o = ""
+    skip = False
+    for (i, c) in enumerate(s):
+        if c in ['{', '|']:
+            skip = True
+            continue
+        elif skip == True:
+            skip = False
+            continue
+        r = randint(rmin,rmax) if r1 is None else r1
+        g = randint(gmin,gmax) if g1 is None else g1
+        b = randint(bmin,bmax) if b1 is None else b1
+        o += '|%s%s%s%s' % (r, g, b, c)
+    return o+'|n'
+
+def ff(s, r=1, rx=3, b=1, bx=3, g=0, gx=5):
+    return fade(s,rmin=r,rmax=rx,bmin=b,bmax=bx,gmin=g,gmax=gx)

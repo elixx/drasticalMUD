@@ -16,10 +16,11 @@ from core.utils import color_time as cc
 from world.map import Map
 from string import capwords
 from evennia.utils.search import search_channel
+from evennia.utils.utils import list_to_string
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
-RE_FOOTER = re.compile(r"\{xIt is .*?claimed by .*?\.\{n", re.IGNORECASE)
+RE_FOOTER = re.compile(r"\|xIt is .*? .*? by .*?\|x\.", re.IGNORECASE)
 
 
 class Room(ExtendedRoom):
@@ -33,9 +34,100 @@ class Room(ExtendedRoom):
     properties and methods available on all Objects.
     """
 
-    def at_init(self):
-        pass
-        super().at_init()
+    def return_appearance(self, looker, **kwargs):
+        """
+        Main callback used by 'look' for the object to describe itself.
+        This formats a description. By default, this looks for the `appearance_template`
+        string set on this class and populates it with formatting keys
+            'name', 'desc', 'exits', 'characters', 'things' as well as
+            (currently empty) 'header'/'footer'.
+
+        Args:
+            looker (Object): Object doing the looking.
+            **kwargs (dict): Arbitrary, optional arguments for users
+                overriding the call. This is passed into the helper
+                methods and into `get_display_name` calls.
+
+        Returns:
+            str: The description of this entity. By default this includes
+                the entity's name, description and any contents inside it.
+
+        Notes:
+            To simply change the layout of how the object displays itself (like
+            adding some line decorations or change colors of different sections),
+            you can simply edit `.appearance_template`. You only need to override
+            this method (and/or its helpers) if you want to change what is passed
+            into the template or want the most control over output.
+
+        """
+
+        if not looker:
+            return ""
+
+        # ourselves
+        name = self.get_display_name(looker, **kwargs)
+        desc = self.db.desc or "You see nothing special."
+
+        # contents
+        content_names_map = self.get_content_names(looker, **kwargs)
+
+        # clickable exits
+        exits = list_to_string(
+            ["|lc%s|lt%s|le" % (re.sub('\(.*\)', '', exit), exit) for exit in content_names_map["exits"]])
+
+        characters = list_to_string(content_names_map["characters"])
+
+        # clickable things
+        temp="|lc%s %s|lt%s|le"
+        things = list_to_string([temp % ("get", obj,obj) if obj.access(looker, 'get') else temp % ("look", obj, obj) for obj in self.get_visible_contents(looker)['things'] ])
+
+        # populate the appearance_template string. It's a good idea to strip it and
+        # let the client add any extra spaces instead.
+
+        return self.appearance_template.format(
+            header="",
+            name=name,
+            desc=desc,
+             exits=f"|wExits:|n {exits}" if exits else "",
+            #exits=f"|wExits:|n %s" % exits if exits else "",
+            characters=f"\n|wCharacters:|n {characters}" if characters else "",
+            things=f"\n|wYou see:|n {things}" if things else "",
+            footer="",
+        ).strip()
+
+    # def at_look(self, target, **kwargs):
+    #     """
+    #     Called when this object performs a look. It allows to
+    #     customize just what this means. It will not itself
+    #     send any data.
+    #
+    #     Args:
+    #         target (Object): The target being looked at. This is
+    #             commonly an object or the current location. It will
+    #             be checked for the "view" type access.
+    #         **kwargs (dict): Arbitrary, optional arguments for users
+    #             overriding the call. This will be passed into
+    #             return_appearance, get_display_name and at_desc but is not used
+    #             by default.
+    #
+    #     Returns:
+    #         lookstring (str): A ready-processed look string
+    #             potentially ready to return to the looker.
+    #
+    #     """
+    #     if not target.access(self, "view"):
+    #         try:
+    #             return "Could not view '%s'." % target.get_display_name(self, **kwargs)
+    #         except AttributeError:
+    #             return "Could not view '%s'." % target.key
+    #
+    #     description = target.return_appearance(self, **kwargs)
+    #
+    #     # the target's at_desc() method.
+    #     # this must be the last reference to target so it may delete itself when acted on.
+    #     target.at_desc(looker=self, **kwargs)
+    #
+    #     return description
 
 
 class ImportedRoom(Room):
@@ -69,9 +161,9 @@ class ImportedRoom(Room):
             update = True
 
         if self.db.desc and update == True:
-            season = "{" + cc(season) + season + "{x"
+            season = "|" + cc(season) + season + "|x"
 
-            daytime = "{" + cc(daytime) + daytime + "{x"
+            daytime = "|" + cc(daytime) + daytime + "|x"
 
             if not self.db.owner:
                 owner = "{Wnobody{x"
@@ -79,16 +171,19 @@ class ImportedRoom(Room):
                 owner = search_object('#' + str(self.db.owner))
                 if len(owner) > 0:
                     owner = owner[0]
-                    owner = '{W' + owner.name + '{x'
+                    owner = '|W' + owner.name + '|x'
                 else:
-                    owner = "{cnobody{x"
+                    owner = "{Wnobody{x"
 
-            if "This room is claimed by" in self.db.desc:
+            if "ltclaimed" in self.db.desc:
                 self.db.desc = RE_FOOTER.sub('', self.db.desc)
+            if self.db.value:
+                self.db.desc += "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
+                season, daytime, self.db.value, owner)
+            else:
+                self.db.desc += "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
 
-            self.db.desc += "{xIt is %s %s. This room is claimed by %s.{n" % (season, daytime, owner)
-
-    def return_appearance(self, looker):
+    def return_appearance(self, looker, **kwargs):
         self.update_description()
 
         string = "%s\n" % Map(looker).show_map()
@@ -109,7 +204,8 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
     """
     Claim a room to allow building and resource production.
     Guests may claim unclaimed rooms, but regular players may reclaim from them.
-    Future: conflict resolution / trade to allow players reclaiming from players
+    Future will include trade of owned property between players.
+
     """
     key = "claim"
     locks = "cmd:all()"
@@ -117,7 +213,55 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
     def func(self):
         caller = self.caller
         location = self.caller.location
-        claimRoom(caller, location)
+        area = capwords(location.tags.get(category='area'))
+        balance = caller.db.stats['gold'] if caller.db.stats['gold'] else 0
+        cost = location.db.value if location.db.value else 0
+        claim = False
+        caller_message = None
+        if caller.id == location.db.owner:
+            caller_message = "You already are the owner of |c%s|n." % location.name
+        elif balance < cost:
+            caller_message = "You don't have enough gold. %s costs |y%s gold|n to own." % (location.name, cost)
+        elif not location.db.owner:
+            ui = yield ("Are you sure you want to take |c%s|n for |Y%s gold|n? Type |c|lcyes|ltyes|le|n if sure." % (
+                location.name, cost))
+            if ui.strip().lower() in ['yes', 'y']:
+                claim = True
+                caller_message = "You now own {y%s{n." % location.name
+                pub_message = "{w%s{n has taken over {y%s{n in {G%s{n!" % (caller.name, location.name, area)
+        elif location.db.owner == caller.id:
+            caller_message = "You already own %s." % location.name
+        else:
+            curr_owner = '#' + str(location.db.owner)
+            curr_owner = search_object(curr_owner)
+            if curr_owner is not None: curr_owner = curr_owner.first()
+
+            ui = yield ("Are you sure you want to take |c%s|n from |R%s|n for |Y%s gold|n? Type {Cyes{n if sure." % (
+                location.name, curr_owner.name, cost))
+            if ui.strip().lower() in ['yes', 'y']:
+                claim = True
+                caller.db.stats['takeovers'] += 1
+                caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
+                pub_message = "{w%s{n has removed {W%s{n's control of {y%s{n in {G%s{n!" % (
+                    caller.name, curr_owner.name, location.name, area)
+
+        if location.access(caller, "ownable") and claim == True:
+            location.db.last_owner = location.db.owner
+            location.db.owner = caller.id
+            if 'claims' in caller.db.stats.keys():
+                caller.db.stats['claims'] += 1
+            else:
+                caller.db.stats['claims'] = 1
+            if pub_message is not None:
+                channel = search_channel("public")[0].msg(pub_message)
+            try:
+                location.update_description()
+                if location.db.value:
+                    location.db.value = int(location.db.value * 1.5)
+                caller.db.stats['gold'] -= cost
+            except Exception as e:
+                utils.logger.log_err(str(e))
+        caller.msg(caller_message)
 
 
 def topClaimed():
@@ -125,83 +269,9 @@ def topClaimed():
     owned = [str(x.db.owner) for x in search_object_attribute("owner")]
     counts = {}
     for o in owned:
-        owner = search_object('#'+o).first().name
+        owner = search_object('#' + o).first().name
         if owner not in counts.keys():
             counts[owner] = 1
         else:
             counts[owner] += 1
-    return(sorted(counts.items(), key=lambda x: x[1], reverse=True))
-
-
-def claimRoom(owner, location):
-    caller = owner
-    area = location.tags.get(category='area')
-    area = capwords(area)
-    claim = False
-
-    # Room is unclaimed
-    if not location.db.owner:
-        pub_message = "{y%s{w is now the owner of {y%s{n in {G%s{n!" % (caller.name, location.name, area)
-        caller_message = "You are now the owner of {y%s{n!" % location.name
-        claim = True
-    # Room is already claimed by caller
-    elif location.db.owner == caller.id:
-        caller_message = "You already own  %s." % location.name
-        pub_message = None
-        claim = False
-    # Room is already claimed by other
-    elif location.db.owner:
-        curr_owner = search_object('#' + str(location.db.owner))
-        if len(curr_owner) > 0:
-            curr_owner = curr_owner[0]
-            # Guests can't takeover
-            if caller.permissions.get('guests'):
-                claim = False
-                caller_message = "%s is already claimed by %s. Guests can only claim unclaimed rooms." % (
-                    location.name, curr_owner.name)
-            # Allow reclaiming property from guests
-            elif curr_owner.permissions.get('guests'):
-                claim = True
-                caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                pub_message = "{w%s{n has removed {W%s{n's temporary control of {y%s{n in {G%s{n!" % (
-                    caller.name, curr_owner.name, location.name, area)
-            else:
-                # TODO: Conflict / Takeover resolution
-                claim = True
-                caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                pub_message = "{W%s{n has taken over {y%s{n in {G%s{n from {w%s{n!" % (
-                    caller.name, location.name, area, curr_owner.name)
-                ## TODO: Conflict resolution to result in claim=True
-                caller_message = "%s is already owned by %s." % (location.name, curr_owner.name)
-                # claim=False
-                # if location.db.last_owner and location.db.last_owner != -1:
-                #     last_owner = search_object('#' + str(location.db.last_owner))
-                #     if len(last_owner) > 0:
-                #         last_owner = last_owner[0]
-                #     if caller.id == location.db.last_owner:
-                #         caller_message = "You have reclaimed {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                #         pub_message = "{y%s{w has reclaimed{G %s{w from {Y%s{w!{x" % (caller.name, location.name, owner.name)
-                #         claim=True
-                #     else:
-                #         caller_message = "You have taken over {y%s{n from {W%s{n!" % (location.name, curr_owner.name)
-                #         pub_message = "%s has taken over {y%s{n from {W%s{n!" % (caller.name, location.name, curr_owner.name)
-    else:
-        # This should never happen
-        log_err("No owner: typeclasses/rooms.py:132 Caller: %s Location: %s" % (caller.id, location.id))
-
-    if location.access(caller, "ownable") and claim == True:
-        location.db.last_owner = location.db.owner
-        location.db.owner = caller.id
-        if 'claims' in caller.db.stats.keys():
-            caller.db.stats['claims'] += 1
-        else:
-            caller.db.stats['claims'] = 1
-        if pub_message is not None:
-            channel = search_channel("public")[0].msg(pub_message)
-        try:
-            location.update_description()
-            if location.db.value:
-                location.db.value = location.db.value * 1.25
-        except Exception as e:
-            log_err(str(e))
-    caller.msg(caller_message)
+    return (sorted(counts.items(), key=lambda x: x[1], reverse=True))

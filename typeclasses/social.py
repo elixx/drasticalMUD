@@ -42,16 +42,17 @@ class DefaultCmdSocial(COMMAND_DEFAULT_CLASS):
 
 class DefaultCmdSocialFmt(COMMAND_DEFAULT_CLASS):
     """
-    generic social command, override parse() vars after super():
-        no_target_self_msg
-        no_target_room_msg
-        target_not_found_room_msg
-        target_not_found_self_msg
-        target_found_self_msg
-        target_found_room_msg
-        target_found_target_msg
+    generic social command
 
     """
+    # override parse() vars after super():
+    #    no_target_self_msg
+    #    no_target_room_msg
+    #    target_not_found_room_msg
+    #    target_not_found_self_msg
+    #    target_found_self_msg
+    #    target_found_room_msg
+    #    target_found_target_msg
 
     key = "verb2"
     locks = "cmd:all()"
