@@ -18,7 +18,7 @@ class StatsMachine(DefaultObject):
         Called whenever a new object is created
         """
         self.key = "a stats machine"
-        self.db.desc = "{xA statistics keeping machine. You can {Yget stats{x for stuff.{n"
+        self.db.desc = "|xA statistics keeping machine. You can |Y|lcget stats|ltget stats|le|x for stuff.|n"
         if not self.db.stats:
             self.db.stats = {"server_start": 1,
                              "server_stop": 0,
@@ -101,7 +101,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
         privileged = self.caller.locks.check(self.caller, "cmd:perm_above(Helper)")
 
         if not self.args:
-            self.msg("You can {yget stats{n for any of: {yserver{n, {ygame{n, {yareas{n, {yusers{n, or {yguests{n.")
+            self.msg("You can {yget stats{n for any of: |y|lc get stats server|ltserver|le|n, |y|lcget stats game|ltgame|le|n, |y|lcget stats areas|ltareas|le{n, |y|lcget stats users|ltusers|le|n, or |y|lcget stats guests|ltguests|le|n.")
             selection = ["SERVER","AREA"]
         else:
             args = self.args.strip()
