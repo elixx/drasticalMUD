@@ -6,6 +6,7 @@ from area_reader.evennia_import import AREA_TRANSLATIONS
 from random import choice, randint
 from evennia.utils.evtable import EvTable as styled_table
 from evennia.utils.logger import log_err, log_info
+from datetime import datetime
 
 create = create_object
 search = search_object
@@ -155,7 +156,7 @@ def createTrain(key="a cosmic train", aliases=['train']):
                           )
 
 
-def fingerPlayer(character):
+def fingerPlayer(character, privileged=False):
     character = search_object(character)
     if len(character) > 0:
         character = character.first()
@@ -194,6 +195,19 @@ def fingerPlayer(character):
         pct = "???"
     table.add_row(ff("Percent Explored:"), pct)
     table.add_row(ff("Gold:"), gold)
+    if privileged:
+        log = character.db.lastsite
+        if log is None:
+            log = character.account.db.lastsite
+            if log is None:
+                raise("NoLoginHistory")
+        table.add_row()
+        table.add_row(fade("  Timestamp",rmin=1), fade("{yConnecting IP",rmin=1))
+        count = 0
+        for (ip, time) in log:
+            count += 1
+            table.add_row("  " + str(datetime.fromtimestamp(time)), ip)
+
     output = str(table) + '\n'
     return (output)
 
