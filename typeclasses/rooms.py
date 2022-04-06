@@ -76,7 +76,10 @@ class Room(ExtendedRoom):
             ["|lc%s|lt%s|le" % (re.sub('\(.*\)', '', exit), exit) for exit in content_names_map["exits"]])
 
         characters = list_to_string(content_names_map["characters"])
-        things = list_to_string(content_names_map["things"])
+
+        # clickable things
+        temp="|lc%s %s|lt%s|le"
+        things = list_to_string([temp % ("get", obj,obj) if obj.access(looker, 'get') else temp % ("look", obj, obj) for obj in self.get_visible_contents(looker)['things'] ])
 
         # populate the appearance_template string. It's a good idea to strip it and
         # let the client add any extra spaces instead.
