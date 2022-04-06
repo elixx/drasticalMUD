@@ -11,7 +11,7 @@ from random import choice
 
 BASE_VALUE = { 'trash': 1,
                'stone': 3,
-               'wood': 3.5,
+               'wood': 4,
                'essence': 10 }
 
 GEM_RARITY = { 0: ['stone','slate','silica','rock'],

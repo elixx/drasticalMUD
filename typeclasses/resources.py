@@ -4,6 +4,7 @@ log_err = utils.logger.log_err
 from typeclasses.objects import Item
 from evennia.utils import list_to_string
 from world.resource_types import *
+from world.utils import qual
 
 from evennia.commands.cmdset import CmdSet
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -83,9 +84,10 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
             if result is False:
                 self.caller.msg("You can't do that!")
             else:
+                result = ["|Y%s|n: |w%s|n"% (k.title(),v) for k,v in obj1.db.resources.items() ]
                 self.caller.msg("You create %s out of %s and %s." % (obj1.name, oldname, oldname2))
                 self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, oldname, obj2.name), exclude=self.caller)
-                self.caller.msg("|xResulting bundle: %s" % list_to_string(list(obj1.db.resources.items())))
+                self.caller.msg("|xResulting bundle quality: %s - %s" % (qual(obj1), list_to_string(result)))
 
 class ResourceCmdSet(CmdSet):
     key = "ResourceCmdSet"
