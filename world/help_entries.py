@@ -80,12 +80,18 @@ HELP_ENTRY_DICTS = [
             
             ### Credits
             
-            Credits go to:
+            Credits go to the maintainers of and contributors to:
+            
              - Evennia - https://github.com/evennia/evennia/
-             - Area_Reader - https://github.com/ctoth/area_reader
-             - windows-95-ui-kit - https://github.com/themesberg/windows-95-ui-kit
              
-             Public source is available at https://gitlab.drastical.net/elixx/drasticalmud
+             - Area_Reader - https://github.com/ctoth/area_reader
+             
+             - Mud-Areas - https://github.com/vedicveko/Mud-Areas
+             
+             - windows-95-ui-kit - https://github.com/themesberg/windows-95-ui-kit
+         
+            
+         The DrasticalMUD Public source is available at: https://gitlab.drastical.net/elixx/drasticalmud
 
         """,
     },
