@@ -3,13 +3,15 @@
 # These are keys set with the Attribute sector_type on the room.
 # The keys None and "you" must always exist.
 SYMBOLS = {None: ' . ',  # for rooms without a sector_type attr
-           'you': '[@]',
-           'SECT_INSIDE': '[.]'}
+           'you': ' |r@|n ',
+           'SECT_INSIDE': '[.]',
+           'owned-self': "|g , |n",
+           'owned-other': "|R , |n"}
 
 
 class Map(object):
 
-    def __init__(self, caller, max_width=5, max_length=5):
+    def __init__(self, caller, max_width=7, max_length=7):
         self.caller = caller
         self.max_width = max_width
         self.max_length = max_length
@@ -68,6 +70,8 @@ class Map(object):
             self.worm_has_mapped[room] = [self.curX, self.curY]
             # this will use the sector_type Attribute or None if not set.
             self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
+            if room.db.owner:
+                self.grid[self.curX][self.curY] = SYMBOLS['owned-self'] if room.db.owner == self.caller.id else SYMBOLS['owned-other']
 
     def median(self, num):
         lst = sorted(range(0, num))
