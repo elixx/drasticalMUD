@@ -95,40 +95,6 @@ class Room(ExtendedRoom):
             footer="",
         ).strip()
 
-    # def at_look(self, target, **kwargs):
-    #     """
-    #     Called when this object performs a look. It allows to
-    #     customize just what this means. It will not itself
-    #     send any data.
-    #
-    #     Args:
-    #         target (Object): The target being looked at. This is
-    #             commonly an object or the current location. It will
-    #             be checked for the "view" type access.
-    #         **kwargs (dict): Arbitrary, optional arguments for users
-    #             overriding the call. This will be passed into
-    #             return_appearance, get_display_name and at_desc but is not used
-    #             by default.
-    #
-    #     Returns:
-    #         lookstring (str): A ready-processed look string
-    #             potentially ready to return to the looker.
-    #
-    #     """
-    #     if not target.access(self, "view"):
-    #         try:
-    #             return "Could not view '%s'." % target.get_display_name(self, **kwargs)
-    #         except AttributeError:
-    #             return "Could not view '%s'." % target.key
-    #
-    #     description = target.return_appearance(self, **kwargs)
-    #
-    #     # the target's at_desc() method.
-    #     # this must be the last reference to target so it may delete itself when acted on.
-    #     target.at_desc(looker=self, **kwargs)
-    #
-    #     return description
-
 
 class ImportedRoom(Room):
     """
