@@ -186,7 +186,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
         if not self.args:
             self.args = self.caller.name
 
-        output = fingerPlayer(self.args)
+        output = fingerPlayer(self.args, privileged=privileged)
         self.caller.msg(output)
 
 
