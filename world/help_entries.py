@@ -63,6 +63,30 @@ HELP_ENTRY_DICTS = [
             On a claimed plot of land, tress and other plants can be planted from seeds. Over time, these will grow in size
             and be able to be harvested for resources. These will eventually be season dependant.
 
+            ### Quality
+            
+            All items and bundles have an inherent 'quality' that provides a bonus percentage on rewards and production
+            
+            Quality Ranking
+            0       trash
+            9-45    poor
+            45-60   average
+            60-70   good
+            70-80   great
+            80-85   impressive
+            85-95   exceptional   
+            95-100  legendary
+            
+            
+            ### Credits
+            
+            Credits go to:
+             - Evennia - https://github.com/evennia/evennia/
+             - Area_Reader - https://github.com/ctoth/area_reader
+             - windows-95-ui-kit - https://github.com/themesberg/windows-95-ui-kit
+             
+             Public source is available at https://gitlab.drastical.net/elixx/drasticalmud
+
         """,
     },
 ]
