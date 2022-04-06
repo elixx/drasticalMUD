@@ -79,18 +79,22 @@ def fixContExplorers():
 def qual(obj):
     if obj.db.quality:
         quality = obj.db.quality
-        if quality > 95:
-            return "legendary"
-        elif quality > 75:
-            return "exceptional"
-        elif quality > 50:
-            return "good"
-        elif quality > 20:
-            return "average"
-        elif quality > 0:
-            return "poor"
-        elif quality == 0:
+        if quality == 0:
             return "trash"
+        elif quality > 95:
+            return "legendary"
+        elif quality > 85:
+            return "exceptional"
+        elif quality > 80:
+            return "impressive"
+        elif quality > 70:
+            return "great"
+        elif quality > 60:
+            return "good"
+        elif quality > 45:
+            return "average"
+        elif quality <= 45:
+            return "poor"
     else:
         return "standard"
 
