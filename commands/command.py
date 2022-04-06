@@ -79,7 +79,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 ff("Via"),
                 ff("Host"),
                 pretty_corners=False,
-                border="table",
+                border="none",
                 border_char="-",
                 header_line_char="-"
             )
@@ -133,7 +133,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
             # unprivileged
             table = self.styled_table(ff("Name"), ff("On for"), ff("Idle"), ff("Area"), ff("Via"),
                                       pretty_corners=True,
-                                      border="table",
+                                      border="none",
                                       border_char="-",
                                       header_line_char="-",
                                       )
@@ -147,7 +147,9 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 if puppet == None:
                     continue
                 location = puppet.location if puppet and puppet.location else "None"
-                location = capwords(location.tags.get(category='area')) if location.tags and location else "None"
+                if location is not "None":
+                    area = location.tags.get(category='area')
+                    area = capwords(area) if area is not None else "None"
                 if puppet.db:
                     if puppet.db.title:
                         title = puppet.db.title
@@ -159,7 +161,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                     utils.crop(title + " " + account.get_display_name(account), width=25),
                     utils.time_format(delta_conn, 0),
                     utils.time_format(delta_cmd, 1),
-                    utils.crop(location, width=25),
+                    utils.crop(area, width=25),
                     session.protocol_key,
                 )
         is_one = naccounts == 1
@@ -492,6 +494,27 @@ class CmdClaimed(COMMAND_DEFAULT_CLASS):
         output = str(table) + '\n'
         self.caller.msg(output)
 
+
+class CmdProperty(COMMAND_DEFAULT_CLASS):
+    """
+    See what property you have currently claimed
+
+    """
+    key = "property"
+    locks = "cmd:all()"
+
+    def func(self):
+        from evennia.utils.search import search_object_attribute
+        claimed = [ room for room in search_object_attribute(key='owner', value=self.caller.id) ]
+        claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
+        table = EvTable(ff("Area"), ff("Rooms"), border="none")
+        for room in claimed:
+            table.add_row(capwords(room.tags.get(category='area')), room.name)
+        output = str(table) + '\n'
+        self.caller.msg(output)
+
+
+
 class CmdTopList(COMMAND_DEFAULT_CLASS):
     """
     See top player statistics
@@ -518,7 +541,7 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
             else:
                 stats[player] = { 'claimed': '-', 'gold': g }
 
-        table = EvTable(ff("Player"), ff("Rooms Owned"), ff("Total Gold"))
+        table = EvTable(ff("Player"), ff("Rooms Owned"), ff("Total Gold"), border="none")
         for i,v in stats.items():
             table.add_row(i, v['claimed'], v['gold'])
         output = str(table) + '\n'
