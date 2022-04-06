@@ -5,7 +5,7 @@ from evennia import TICKER_HANDLER
 from typeclasses.exits import Exit
 from evennia import search_object
 from evennia.utils.create import create_object
-from evennia import DefaultRoom
+from typeclasses.rooms import Room
 from typeclasses.objects import Object
 from evennia.utils.evtable import EvTable
 from evennia.utils.logger import log_info
@@ -45,7 +45,7 @@ class RoomDisplayBoard(Object):
         return (output)
 
 
-class MovingRoom(DefaultRoom):
+class MovingRoom(Room):
     def at_object_creation(self):
         if (self.db.exitIn) and (self.db.exitOut):
             self.exitIn = search_object(self.db.exitIn)[0]

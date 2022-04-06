@@ -4,6 +4,7 @@ from evennia.utils.create import create_object
 from evennia.utils.logger import log_err, log_info
 from world.bookmarks import starts as start_rooms
 from random import choice, randint
+from core.utils import rainbow
 from string import capwords
 
 def findStatsMachine():
@@ -80,21 +81,21 @@ def qual(obj):
     if obj.db.quality:
         quality = obj.db.quality
         if quality == 0:
-            return "trash"
+            return "|111trash"
         elif quality > 95:
-            return "legendary"
+            return rainbow("legendary")
         elif quality > 85:
-            return "exceptional"
+            return "|441exceptional|n"
         elif quality > 80:
-            return "impressive"
+            return "|Rimpressive"
         elif quality > 70:
-            return "great"
+            return "|ggreat|n"
         elif quality > 60:
-            return "good"
+            return "|Ggood|n"
         elif quality > 45:
-            return "average"
+            return "|Yaverage|n"
         elif quality <= 45:
-            return "poor"
+            return "|xpoor|n"
     else:
         return "standard"
 

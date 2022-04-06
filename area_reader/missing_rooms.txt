@@ -1,0 +1,191 @@
+2022-03-27T10:31:42-0400 [EE] ! blackhole detected - vnum 1, EvId 7
+2022-03-27T10:31:42-0400 [EE] ! blackhole detected - vnum 1, EvId 7
+2022-03-27T10:31:45-0400 [EE] ! blackhole detected - vnum 120, EvId 28
+2022-03-27T10:31:50-0400 [EE] ! blackhole detected - vnum 345, EvId 86
+2022-03-27T10:32:17-0400 [EE] ! blackhole detected - vnum 1205, EvId 410
+2022-03-27T10:32:17-0400 [EE] ! blackhole detected - vnum 1206, EvId 411
+2022-03-27T10:32:17-0400 [EE] ! blackhole detected - vnum 1206, EvId 411
+2022-03-27T10:32:20-0400 [EE] ! blackhole detected - vnum 1329, EvId 455
+2022-03-27T10:32:27-0400 [EE] ! no source: high tower: Exit south in EVid #544 skipped, -1 not found.
+2022-03-27T10:32:27-0400 [EE] ! no source: high tower: Exit west in EVid #544 skipped, -1 not found.
+2022-03-27T10:32:31-0400 [EE] ! no source: high tower: Exit down in EVid #609 skipped, -1 not found.
+2022-03-27T10:32:31-0400 [EE] ! blackhole detected - vnum 1499, EvId 609
+2022-03-27T10:32:32-0400 [EE] ! blackhole detected - vnum 1607, EvId 617
+2022-03-27T10:32:32-0400 [EE] ! blackhole detected - vnum 1607, EvId 617
+2022-03-27T10:32:35-0400 [EE] ! blackhole detected - vnum 1700, EvId 663
+2022-03-27T10:32:35-0400 [EE] ! blackhole detected - vnum 1700, EvId 663
+2022-03-27T10:32:37-0400 [EE] ! blackhole detected - vnum 1734, EvId 697
+2022-03-27T10:32:37-0400 [EE] ! blackhole detected - vnum 1735, EvId 698
+2022-03-27T10:32:38-0400 [EE] ! blackhole detected - vnum 1747, EvId 710
+2022-03-27T10:32:38-0400 [EE] ! blackhole detected - vnum 1768, EvId 711
+2022-03-27T10:32:38-0400 [EE] ! blackhole detected - vnum 1769, EvId 712
+2022-03-27T10:32:38-0400 [EE] ! blackhole detected - vnum 1786, EvId 713
+2022-03-27T10:32:38-0400 [EE] ! blackhole detected - vnum 1787, EvId 714
+2022-03-27T10:32:39-0400 [EE] ! blackhole detected - vnum 1809, EvId 724
+2022-03-27T10:32:39-0400 [EE] ! blackhole detected - vnum 1812, EvId 727
+2022-03-27T10:32:40-0400 [EE] ! blackhole detected - vnum 1816, EvId 731
+2022-03-27T10:32:49-0400 [EE] ! blackhole detected - vnum 2007, EvId 856
+2022-03-27T10:33:03-0400 [EE] ! blackhole detected - vnum 2244, EvId 1032
+2022-03-27T10:33:13-0400 [EE] ! blackhole detected - vnum 2800, EvId 1148
+2022-03-27T10:33:16-0400 [EE] ! blackhole detected - vnum 2842, EvId 1190
+2022-03-27T10:33:16-0400 [EE] ! blackhole detected - vnum 2842, EvId 1190
+2022-03-27T10:33:20-0400 [EE] ! blackhole detected - vnum 3032, EvId 1246
+2022-03-27T10:33:30-0400 [EE] ! blackhole detected - vnum 3409, EvId 1360
+2022-03-27T10:33:36-0400 [EE] ! no source: miden'nir: Exit east in EVid #1442 skipped, -1 not found.
+2022-03-27T10:33:36-0400 [EE] ! no source: miden'nir: Exit west in EVid #1443 skipped, -1 not found.
+2022-03-27T10:33:37-0400 [EE] ! no source: miden'nir: Exit south in EVid #1449 skipped, 1501 not found.
+2022-03-27T10:33:37-0400 [EE] ! no source: miden'nir: Exit south in EVid #1449 skipped, 1501 not found.
+2022-03-27T10:33:39-0400 [EE] ! blackhole detected - vnum 3607, EvId 1484
+2022-03-27T10:33:39-0400 [EE] ! blackhole detected - vnum 3609, EvId 1486
+2022-03-27T10:33:39-0400 [EE] ! blackhole detected - vnum 3615, EvId 1492
+2022-03-27T10:33:39-0400 [EE] ! blackhole detected - vnum 3617, EvId 1494
+2022-03-27T10:33:39-0400 [EE] ! blackhole detected - vnum 3639, EvId 1498
+2022-03-27T10:33:40-0400 [EE] ! blackhole detected - vnum 3641, EvId 1500
+2022-03-27T10:33:40-0400 [EE] ! blackhole detected - vnum 3643, EvId 1502
+2022-03-27T10:33:40-0400 [EE] ! blackhole detected - vnum 3645, EvId 1504
+2022-03-27T10:33:40-0400 [EE] ! blackhole detected - vnum 3647, EvId 1506
+2022-03-27T10:34:09-0400 [EE] ! blackhole detected - vnum 4469, EvId 1830
+2022-03-27T10:34:09-0400 [EE] ! no source: arena: Exit up in EVid #1831 skipped, 3384 not found.
+2022-03-27T10:34:21-0400 [EE] ! blackhole detected - vnum 5143, EvId 1985
+2022-03-27T10:34:25-0400 [EE] ! blackhole detected - vnum 5245, EvId 2038
+2022-03-27T10:34:35-0400 [EE] ! blackhole detected - vnum 5577, EvId 2167
+2022-03-27T10:34:43-0400 [EE] ! blackhole detected - vnum 5738, EvId 2271
+2022-03-27T10:34:43-0400 [EE] ! blackhole detected - vnum 5738, EvId 2271
+2022-03-27T10:34:46-0400 [EE] ! blackhole detected - vnum 5784, EvId 2317
+2022-03-27T10:34:54-0400 [EE] ! blackhole detected - vnum 6131, EvId 2423
+2022-03-27T10:34:58-0400 [EE] ! blackhole detected - vnum 6380, EvId 2490
+2022-03-27T10:34:58-0400 [EE] ! blackhole detected - vnum 6380, EvId 2490
+2022-03-27T10:35:12-0400 [EE] ! no source: sewers: Exit down in EVid #2663 skipped, -1 not found.
+2022-03-27T10:35:12-0400 [EE] ! blackhole detected - vnum 7114, EvId 2672
+2022-03-27T10:35:13-0400 [EE] ! no source: sewers: Exit east in EVid #2680 skipped, -1 not found.
+2022-03-27T10:35:13-0400 [EE] ! blackhole detected - vnum 7130, EvId 2683
+2022-03-27T10:35:13-0400 [EE] ! blackhole detected - vnum 7190, EvId 2684
+2022-03-27T10:35:16-0400 [EE] ! no source: sewers: Exit north in EVid #2726 skipped, -1 not found.
+2022-03-27T10:35:16-0400 [EE] ! no source: sewers: Exit up in EVid #2726 skipped, -1 not found.
+2022-03-27T10:35:16-0400 [EE] ! blackhole detected - vnum 7301, EvId 2726
+2022-03-27T10:35:18-0400 [EE] ! no source: sewers: Exit down in EVid #2762 skipped, -1 not found.
+2022-03-27T10:35:33-0400 [EE] ! blackhole detected - vnum 7698, EvId 2945
+2022-03-27T10:35:33-0400 [EE] ! blackhole detected - vnum 7699, EvId 2946
+2022-03-27T10:35:40-0400 [EE] ! no source: astral plane: Exit east in EVid #2993 skipped, -1 not found.
+2022-03-27T10:35:40-0400 [EE] ! no source: astral plane: Exit up in EVid #2994 skipped, -1 not found.
+2022-03-27T10:35:40-0400 [EE] ! no source: astral plane: Exit west in EVid #2995 skipped, -1 not found.
+2022-03-27T10:35:40-0400 [EE] ! no source: astral plane: Exit up in EVid #2996 skipped, -1 not found.
+2022-03-27T10:35:40-0400 [EE] ! no source: astral plane: Exit down in EVid #2996 skipped, -1 not found.
+2022-03-27T10:35:41-0400 [EE] ! no source: astral plane: Exit east in EVid #3015 skipped, -1 not found.
+2022-03-27T10:35:42-0400 [EE] ! blackhole detected - vnum 7779, EvId 3026
+2022-03-27T10:35:51-0400 [EE] ! blackhole detected - vnum 7883, EvId 3110
+2022-03-27T10:35:59-0400 [EE] ! no source: ghost town: Exit down in EVid #3226 skipped, -1 not found.
+2022-03-27T10:36:03-0400 [EE] ! no source: zoo of midgaard: Exit north in EVid #3265 skipped, -1 not found.
+2022-03-27T10:36:06-0400 [EE] ! no source: generic old marsh: Exit south in EVid #3311 skipped, -1 not found.
+2022-03-27T10:36:12-0400 [EE] ! blackhole detected - vnum 8699, EvId 3347
+2022-03-27T10:36:13-0400 [EE] ! blackhole detected - vnum 8707, EvId 3355
+2022-03-27T10:36:24-0400 [EE] ! blackhole detected - vnum 8999, EvId 3499
+2022-03-27T10:36:24-0400 [EE] ! blackhole detected - vnum 8999, EvId 3499
+2022-03-27T10:36:36-0400 [EE] ! blackhole detected - vnum 9199, EvId 3647
+2022-03-27T10:36:43-0400 [EE] ! no source: new thalos: Exit south in EVid #3739 skipped, -1 not found.
+2022-03-27T10:36:50-0400 [EE] ! no source: the plains of blood: Exit down in EVid #3811 skipped, 3801 not found.
+2022-03-27T10:36:51-0400 [EE] ! no source: the plains of blood: Exit north in EVid #3823 skipped, 28398 not found.
+2022-03-27T10:36:53-0400 [EE] ! blackhole detected - vnum 9631, EvId 3859
+2022-03-27T10:36:55-0400 [EE] ! no source: new thalos: Exit east in EVid #3895 skipped, -1 not found.
+2022-03-27T10:36:55-0400 [EE] ! no source: new thalos: Exit west in EVid #3895 skipped, -1 not found.
+2022-03-27T10:36:55-0400 [EE] ! no source: new thalos: Exit west in EVid #3895 skipped, -1 not found.
+2022-03-27T10:36:58-0400 [EE] ! blackhole detected - vnum 9706, EvId 3934
+2022-03-27T10:37:00-0400 [EE] ! blackhole detected - vnum 9778, EvId 3965
+2022-03-27T10:37:09-0400 [EE] ! no source: the shielding: Exit west in EVid #4086 skipped, -1 not found.
+2022-03-27T10:37:10-0400 [EE] ! no source: the shielding: Exit east in EVid #4090 skipped, 13404 not found.
+2022-03-27T10:37:21-0400 [EE] ! blackhole detected - vnum 10536, EvId 4233
+2022-03-27T10:37:31-0400 [EE] ! no source: white lotus: Exit east in EVid #4339 skipped, 10018 not found.
+2022-03-27T10:37:42-0400 [EE] ! blackhole detected - vnum 10873, EvId 4511
+2022-03-27T10:37:52-0400 [EE] ! no source: twilight city of pawmist: Exit north in EVid #4632 skipped, -1 not found.
+2022-03-27T10:37:52-0400 [EE] ! no source: twilight city of pawmist: Exit north in EVid #4634 skipped, -1 not found.
+2022-03-27T10:37:52-0400 [EE] ! no source: twilight city of pawmist: Exit south in EVid #4636 skipped, -1 not found.
+2022-03-27T10:37:52-0400 [EE] ! no source: twilight city of pawmist: Exit west in EVid #4638 skipped, -1 not found.
+2022-03-27T10:38:03-0400 [EE] ! blackhole detected - vnum 11700, EvId 4797
+2022-03-27T10:38:03-0400 [EE] ! blackhole detected - vnum 11702, EvId 4799
+2022-03-27T10:38:05-0400 [EE] ! blackhole detected - vnum 12703, EvId 4841
+2022-03-27T10:38:18-0400 [EE] ! blackhole detected - vnum 12890, EvId 5007
+2022-03-27T10:38:27-0400 [EE] ! blackhole detected - vnum 14109, EvId 5117
+2022-03-27T10:38:27-0400 [EE] ! blackhole detected - vnum 14109, EvId 5117
+2022-03-27T10:38:30-0400 [EE] ! blackhole detected - vnum 14152, EvId 5160
+2022-03-27T10:38:33-0400 [EE] ! no source: anonopolis: Exit east in EVid #5193 skipped, 22136 not found.
+2022-03-27T10:38:33-0400 [EE] ! blackhole detected - vnum 14247, EvId 5208
+2022-03-27T10:38:33-0400 [EE] ! blackhole detected - vnum 14247, EvId 5208
+2022-03-27T10:38:34-0400 [EE] ! blackhole detected - vnum 14255, EvId 5216
+2022-03-27T10:38:46-0400 [EE] ! no source: the dungeon: Exit up in EVid #5375 skipped, -1 not found.
+2022-03-27T10:38:53-0400 [EE] ! no source: king's castle: Exit down in EVid #5457 skipped, -1 not found.
+2022-03-27T10:38:55-0400 [EE] ! no source: king's castle: Exit east in EVid #5482 skipped, -1 not found.
+2022-03-27T10:38:55-0400 [EE] ! no source: king's castle: Exit south in EVid #5482 skipped, -1 not found.
+2022-03-27T10:38:55-0400 [EE] ! no source: king's castle: Exit west in EVid #5482 skipped, -1 not found.
+2022-03-27T10:38:55-0400 [EE] ! no source: king's castle: Exit west in EVid #5482 skipped, -1 not found.
+2022-03-27T10:38:57-0400 [EE] ! blackhole detected - vnum 15421, EvId 5504
+2022-03-27T10:39:00-0400 [EE] ! blackhole detected - vnum 15471, EvId 5554
+2022-03-27T10:39:01-0400 [EE] ! blackhole detected - vnum 15478, EvId 5561
+2022-03-27T10:39:08-0400 [EE] ! no source: chessboard: Exit west in EVid #5627 skipped, 9268 not found.
+2022-03-27T10:39:09-0400 [EE] ! blackhole detected - vnum 15916, EvId 5644
+2022-03-27T10:39:09-0400 [EE] ! blackhole detected - vnum 15916, EvId 5644
+2022-03-27T10:39:17-0400 [EE] ! blackhole detected - vnum 15996, EvId 5719
+2022-03-27T10:39:17-0400 [EE] ! no source: elven realms: Exit south in EVid #5720 skipped, 15008 not found.
+2022-03-27T10:39:54-0400 [EE] ! blackhole detected - vnum 16498, EvId 6212
+2022-03-27T10:39:54-0400 [EE] ! blackhole detected - vnum 16498, EvId 6212
+2022-03-27T10:39:58-0400 [EE] ! no source: warzone: Exit east in EVid #6262 skipped, 22000 not found.
+2022-03-27T10:39:58-0400 [EE] ! blackhole detected - vnum 16551, EvId 6264
+2022-03-27T10:39:59-0400 [EE] ! blackhole detected - vnum 16916, EvId 6281
+2022-03-27T10:40:00-0400 [EE] ! blackhole detected - vnum 16939, EvId 6304
+2022-03-27T10:40:00-0400 [EE] ! blackhole detected - vnum 16940, EvId 6305
+2022-03-27T10:40:02-0400 [EE] ! no source: treasure island: Exit south in EVid #6315 skipped, 13310 not found.
+2022-03-27T10:40:02-0400 [EE] ! no source: heaven: Exit north in EVid #6316 skipped, 17799 not found.
+2022-03-27T10:40:02-0400 [EE] ! blackhole detected - vnum 17000, EvId 6316
+2022-03-27T10:40:03-0400 [EE] ! blackhole detected - vnum 17024, EvId 6334
+2022-03-27T10:40:03-0400 [EE] ! blackhole detected - vnum 17027, EvId 6337
+2022-03-27T10:40:06-0400 [EE] ! blackhole detected - vnum 17103, EvId 6370
+2022-03-27T10:40:07-0400 [EE] ! blackhole detected - vnum 17122, EvId 6388
+2022-03-27T10:40:07-0400 [EE] ! blackhole detected - vnum 17122, EvId 6388
+2022-03-27T10:40:09-0400 [EE] ! blackhole detected - vnum 17153, EvId 6419
+2022-03-27T10:40:09-0400 [EE] ! blackhole detected - vnum 17154, EvId 6420
+2022-03-27T10:40:09-0400 [EE] ! blackhole detected - vnum 18006, EvId 6426
+2022-03-27T10:40:09-0400 [EE] ! blackhole detected - vnum 18006, EvId 6426
+2022-03-27T10:40:11-0400 [EE] ! blackhole detected - vnum 18046, EvId 6466
+2022-03-27T10:40:18-0400 [EE] ! blackhole detected - vnum 18125, EvId 6545
+2022-03-27T10:40:27-0400 [EE] ! no source: gilda and the dragon: Exit south in EVid #6658 skipped, 1169 not found.
+2022-03-27T10:40:27-0400 [EE] ! no source: gilda and the dragon: Exit south in EVid #6658 skipped, 1169 not found.
+2022-03-27T10:40:39-0400 [EE] ! blackhole detected - vnum 19128, EvId 6786
+2022-03-27T10:40:39-0400 [EE] ! blackhole detected - vnum 19129, EvId 6787
+2022-03-27T10:40:41-0400 [EE] ! blackhole detected - vnum 19147, EvId 6805
+2022-03-27T10:40:42-0400 [EE] ! blackhole detected - vnum 19170, EvId 6828
+2022-03-27T10:40:53-0400 [EE] ! no source: shaolin temple: Exit south in EVid #6976 skipped, 9777 not found.
+2022-03-27T10:41:11-0400 [EE] ! blackhole detected - vnum 20330, EvId 7205
+2022-03-27T10:41:11-0400 [EE] ! blackhole detected - vnum 20330, EvId 7205
+2022-03-27T10:41:16-0400 [EE] ! blackhole detected - vnum 20987, EvId 7263
+2022-03-27T10:41:16-0400 [EE] ! blackhole detected - vnum 20994, EvId 7264
+2022-03-27T10:41:16-0400 [EE] ! blackhole detected - vnum 20995, EvId 7265
+2022-03-27T10:41:16-0400 [EE] ! blackhole detected - vnum 20997, EvId 7266
+2022-03-27T10:41:16-0400 [EE] ! blackhole detected - vnum 20998, EvId 7267
+2022-03-27T10:41:16-0400 [EE] ! no source: camelot1: Exit north in EVid #7268 skipped, 16805 not found.
+2022-03-27T10:41:23-0400 [EE] ! blackhole detected - vnum 21076, EvId 7345
+2022-03-27T10:41:24-0400 [EE] ! no source: steab: Exit east in EVid #7369 skipped, 9733 not found.
+2022-03-27T10:41:25-0400 [EE] ! blackhole detected - vnum 21508, EvId 7377
+2022-03-27T10:41:26-0400 [EE] ! blackhole detected - vnum 21518, EvId 7387
+2022-03-27T10:41:26-0400 [EE] ! blackhole detected - vnum 21525, EvId 7394
+2022-03-27T10:41:27-0400 [EE] ! blackhole detected - vnum 21546, EvId 7415
+2022-03-27T10:41:27-0400 [EE] ! blackhole detected - vnum 21546, EvId 7415
+2022-03-27T10:41:40-0400 [EE] ! blackhole detected - vnum 22200, EvId 7569
+2022-03-27T10:41:41-0400 [EE] ! blackhole detected - vnum 22211, EvId 7580
+2022-03-27T10:41:41-0400 [EE] ! blackhole detected - vnum 22220, EvId 7589
+2022-03-27T10:41:44-0400 [EE] ! blackhole detected - vnum 22250, EvId 7619
+2022-03-27T10:41:44-0400 [EE] ! no source: the dreamweaver's path: Exit up in EVid #7622 skipped, 21760 not found.
+2022-03-27T10:41:44-0400 [EE] ! blackhole detected - vnum 22299, EvId 7622
+2022-03-27T10:41:45-0400 [EE] ! no source: river of despair: Exit east in EVid #7632 skipped, -1 not found.
+2022-03-27T10:41:46-0400 [EE] ! no source: river of despair: Exit up in EVid #7654 skipped, -1 not found.
+2022-03-27T10:41:47-0400 [EE] ! no source: river of despair: Exit south in EVid #7663 skipped, -1 not found.
+2022-03-27T10:41:48-0400 [EE] ! no source: river of despair: Exit west in EVid #7665 skipped, -1 not found.
+2022-03-27T10:41:50-0400 [EE] ! blackhole detected - vnum 24044, EvId 7712
+2022-03-27T10:41:50-0400 [EE] ! blackhole detected - vnum 24044, EvId 7712
+2022-03-27T10:41:52-0400 [EE] ! blackhole detected - vnum 24069, EvId 7732
+2022-03-27T10:42:02-0400 [EE] ! no source: the amazon jungle: Exit east in EVid #7871 skipped, 14700 not found.
+2022-03-27T10:42:03-0400 [EE] ! no source: the amazon jungle: Exit north in EVid #7888 skipped, 14900 not found.
+2022-03-27T10:42:03-0400 [EE] ! no source: the amazon jungle: Exit north in EVid #7889 skipped, 25100 not found.
+2022-03-27T10:42:22-0400 [EE] ! blackhole detected - vnum 30100, EvId 8054
+2022-03-27T10:42:22-0400 [EE] ! no source: cannabis: Exit west in EVid #8055 skipped, 164 not found.
+2022-03-27T10:42:22-0400 [EE] ! no source: cannabis: Exit north in EVid #8056 skipped, -1 not found.
+2022-03-27T10:42:42-0400 [EE] ! no source: the walls of the city of anon: Exit up in EVid #8262 skipped, 21207 not found.
+2022-03-27T10:42:44-0400 [EE] ! no source: the walls of the city of anon: Exit up in EVid #8274 skipped, 21215 not found.

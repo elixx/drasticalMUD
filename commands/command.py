@@ -186,7 +186,7 @@ class CmdFinger(COMMAND_DEFAULT_CLASS):
         if not self.args:
             self.args = self.caller.name
 
-        output = fingerPlayer(self.args)
+        output = fingerPlayer(self.args, privileged=privileged)
         self.caller.msg(output)
 
 
@@ -501,17 +501,35 @@ class CmdProperty(COMMAND_DEFAULT_CLASS):
 
     """
     key = "property"
+    aliases = ['owned']
     locks = "cmd:all()"
 
     def func(self):
         from evennia.utils.search import search_object_attribute
         claimed = [ room for room in search_object_attribute(key='owner', value=self.caller.id) ]
         claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
-        table = EvTable(ff("Area"), ff("Rooms"), border="none")
+        table = EvTable(ff("Area   "), ff("Room Name"), border="none")
+        totalclaimed = 0
         for room in claimed:
             table.add_row(capwords(room.tags.get(category='area')), room.name)
+            totalclaimed += 1
         output = str(table) + '\n'
+        output += "|xTotal Owned|n: |y%s|n\n" % totalclaimed
+        output += "|xAll Time|n: |y%s|n" % self.caller.db.stats['claims']
         self.caller.msg(output)
+
+
+class CmdWorth(COMMAND_DEFAULT_CLASS):
+    """
+    Display amount of currency held
+
+    """
+    key = "worth"
+    aliases = ['gold']
+    locks = "cmd:all()"
+
+    def func(self):
+        self.caller.msg("|xYou currently have |y%s gold|n." % round(self.caller.db.stats['gold'],2))
 
 
 
