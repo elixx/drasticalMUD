@@ -56,11 +56,13 @@ def SIZES(v):
         return "improperly balanced"
 
 
-TRASH_OBS = ['soda', 'beer', 'spoon', 'fork', 'knife', 'wrapper', 'bag', 'can', 'napkin',' towel', 'CD',
+TRASH_OBS = ['soda', 'beer', 'spoon', 'fork', 'knife', 'wrapper', 'bag', 'can', 'napkin','towel', 'CD',
              'cassette', 'diaper', 'syringe', 'record', 'condom', 'sock', 'tape', 'piece of junk', 'piece of trash',
-             'paper bag', 'trash bag', 'carton', 'gizmo', 'sprocket']
+             'paper bag', 'trash bag', 'carton', 'gizmo', 'sprocket', 'debris', 'waste', 'refuse', 'scrap', 'rubbish',
+             'garbage']
 TRASH_ADJS = ['broken', 'greasy', 'damaged', 'empty', 'irreparable', 'dirty', 'old', 'used', 'smelly', 'stinky', 'worn',
-              'inoperable', 'useless', 'blasted', 'shattered', 'putrid']
+              'inoperable', 'useless', 'rusted', 'dilapidated', 'busted', 'blasted', 'shattered', 'putrid', 'squeaky',
+              'musty', 'musky', 'gross', 'ugly', 'horrid', 'obnoxious', 'intolerable', 'offensive']
 
 # TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife', 'cellophane wrapper',
 #                'empty bag of chips', 'soggy paper bag', 'dirty napkin', 'broken CD', 'dirty tampon', 'dirty condom',
