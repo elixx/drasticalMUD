@@ -15,7 +15,7 @@ BASE_VALUE = { 'trash': 1,
                'essence': 10 }
 
 GEM_RARITY = { 0: ['stone','slate','silica','rock'],
-             70: ['quartz', 'amethyst', 'aquamarine','topaz','silver','lapiz lazuli','copper'],
+             45: ['quartz', 'amethyst', 'aquamarine','topaz','silver','lapiz lazuli','copper'],
              85: ['jade', 'ruby', 'sapphire','gold'],
              90: ['diamond'],
              99: ['prismatic shard', 'magical essence', 'rare earth'] }
