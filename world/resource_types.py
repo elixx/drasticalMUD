@@ -14,6 +14,19 @@ BASE_VALUE = { 'trash': 1,
                'wood': 3.5,
                'essence': 10 }
 
+GEM_RARITY = { 0: ['stone','slate','silica','rock'],
+             45: ['quartz', 'amethyst', 'aquamarine','topaz','silver','lapiz lazuli','copper'],
+             85: ['jade', 'ruby', 'sapphire','gold'],
+             90: ['diamond'],
+             99: ['prismatic shard', 'magical essence', 'rare earth'] }
+
+def GEM(v):
+    gem = None
+    for k in GEM_RARITY.keys():
+        if v >= k:
+              gem = choice(GEM_RARITY[k])
+    return gem
+
 def SIZES(v):
     if  v==0:
         return "empty"
@@ -43,11 +56,16 @@ def SIZES(v):
         return "improperly balanced"
 
 
+TRASH_OBS = ['soda', 'beer', 'spoon', 'fork', 'knife', 'wrapper', 'bag', 'can', 'napkin',' towel', 'CD',
+             'cassette', 'diaper', 'syringe', 'record', 'condom', 'sock', 'tape', 'piece of junk', 'piece of trash',
+             'paper bag', 'trash bag', 'carton', 'gizmo', 'sprocket']
+TRASH_ADJS = ['broken', 'greasy', 'damaged', 'empty', 'irreparable', 'dirty', 'old', 'used', 'smelly', 'stinky', 'worn',
+              'inoperable', 'useless', 'blasted', 'shattered', 'putrid']
 
-TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife', 'cellophane wrapper',
-               'empty bag of chips', 'soggy paper bag', 'dirty napkin', 'broken CD', 'dirty tampon', 'dirty condom',
-               'dirty sock', 'old trash bag', 'piece of trash', 'rotten egg', 'soiled diaper', 'dirty syringe',
-               'broken record', 'smelly sock', 'broken tape', 'broken gizmo', 'greasy sprocket', 'piece of junk']
+# TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife', 'cellophane wrapper',
+#                'empty bag of chips', 'soggy paper bag', 'dirty napkin', 'broken CD', 'dirty tampon', 'dirty condom',
+#                'dirty sock', 'old trash bag', 'piece of trash', 'rotten egg', 'soiled diaper', 'dirty syringe',
+#                'broken record', 'smelly sock', 'broken tape', 'broken gizmo', 'greasy sprocket', 'piece of junk']
 
 WOOD = ['mahogany', 'oak', 'maple', 'birch', 'cedar', 'spruce', 'dogwood', 'fir', 'pine', "myrtle", "poplar", "sycamore"]
 
@@ -72,9 +90,3 @@ fruit_tree_type = lambda: choice(FRUIT_TREES)
 
 
 """
-
-TRASH_OBS = ['soda', 'beer', 'spoon', 'fork', 'knife', 'wrapper', 'bag', 'can', 'napkin',' towel', 'CD',
-             'cassette', 'diaper', 'syringe', 'record', 'condom', 'sock', 'tape', 'piece of junk', 'piece of trash',
-             'paper bag', 'trash bag', 'carton', 'gizmo', 'sprocket']
-TRASH_ADJS = ['broken', 'greasy', 'damaged', 'empty', 'irreparable', 'dirty', 'old', 'used', 'smelly', 'stinky', 'worn',
-              'inoperable', 'useless', 'blasted', 'shattered', 'putrid']
