@@ -2,11 +2,12 @@
 
 # These are keys set with the Attribute sector_type on the room.
 # The keys None and "you" must always exist.
-SYMBOLS = {None: ' . ',  # for rooms without a sector_type attr
-           'you': ' |r@|n ',
-           'SECT_INSIDE': '[.]',
-           'owned-self': "|g , |n",
-           'owned-other': "|R , |n"}
+SYMBOLS = {None:           ' |n.|n ',  # for rooms without a sector_type attr
+           'owned-self':   ' |g,|n ',   # owned by self
+           'owned-other':  ' |R.|n ',  # owned by other player
+           'you':          ' |r@|n ',          # self
+           'SECT_INSIDE':    '[.]',
+           'attention':    ' |y*|n ' }
 
 
 class Map(object):
@@ -71,7 +72,8 @@ class Map(object):
             # this will use the sector_type Attribute or None if not set.
             self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
             if room.db.owner:
-                self.grid[self.curX][self.curY] = SYMBOLS['owned-self'] if room.db.owner == self.caller.id else SYMBOLS['owned-other']
+                self.grid[self.curX][self.curY] = SYMBOLS['owned-self'] if room.db.owner == self.caller.id else SYMBOLS[
+                    'owned-other']
 
     def median(self, num):
         lst = sorted(range(0, num))
