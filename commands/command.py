@@ -165,7 +165,8 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                     session.protocol_key,
                 )
         is_one = naccounts == 1
-        output = "|wAccounts:|n\n%s\n%s unique account%s logged in." % (table, "One" if is_one else naccounts, "" if is_one else "s")
+        output = "|wAccounts:|n\n%s\n%s unique account%s logged in." % (
+        table, "One" if is_one else naccounts, "" if is_one else "s")
         EvMore(self.caller, output)
 
 
@@ -276,7 +277,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
 
         # Sanity check
         if not self.caller.db.stats:
-            raise("NotAPlayerNoMore")
+            raise ("NotAPlayerNoMore")
         else:
             owner = self.caller.id
             visited = self.caller.db.stats['visited']
@@ -291,7 +292,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             explored[area]['owned'] = claimed.count()
 
         totalpct = round(totalvisited / totalrooms * 100, 2)
-        table = self.styled_table(ff("Area") + " " * 45, ff("Seen"), ff("%Seen"), ff("Owned"), ff("%Owned"), ff("Total"),
+        table = self.styled_table(ff("Area") + " " * 45, ff("Seen"), ff("%Seen"), ff("Owned"), ff("%Owned"),
+                                  ff("Total"),
                                   border="none", width=80)
         for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
             if key is not None:
@@ -322,9 +324,10 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                               opct + '%',
                               value['total'])
 
-        output += ff("----------------------------")+ff(" Exploration Stats ")+ff("----------------------------") + '\n'
+        output += ff("----------------------------") + ff(" Exploration Stats ") + ff(
+            "----------------------------") + '\n'
         output += str(table) + '\n'
-        output += ff("-------------------")+ff(" Summary ")+ff("-------------------") + '\n'
+        output += ff("-------------------") + ff(" Summary ") + ff("-------------------") + '\n'
         unseen = []
         for area in areas:
             if area not in explored.keys():
@@ -381,6 +384,7 @@ class CmdLook(CmdExtendedRoomLook):
 
     key = "look"
     aliases = ["l", "ls", "ll"]
+
     # locks = "cmd:all()"
     # arg_regex = r"\s|$"
     # priority = -60
@@ -408,7 +412,7 @@ class CmdLook(CmdExtendedRoomLook):
             caller.location.msg_contents("%s looks at %s." % (caller, target), exclude=[caller, target])
             target.msg("%s looks at you." % caller)
 
-        #self.msg((caller.at_look(target), {"type": "look"}), options=None)
+        # self.msg((caller.at_look(target), {"type": "look"}), options=None)
         super().func()
 
 
@@ -476,7 +480,6 @@ class CmdQuit(COMMAND_DEFAULT_CLASS):
             account.disconnect_session_from_account(self.session, reason)
 
 
-
 class CmdClaimed(COMMAND_DEFAULT_CLASS):
     """
     See top landowners
@@ -506,7 +509,7 @@ class CmdProperty(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         from evennia.utils.search import search_object_attribute
-        claimed = [ room for room in search_object_attribute(key='owner', value=self.caller.id) ]
+        claimed = [room for room in search_object_attribute(key='owner', value=self.caller.id)]
         claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
         table = EvTable(ff("Area   "), ff("Room Name"), border="none")
         totalclaimed = 0
@@ -529,8 +532,7 @@ class CmdWorth(COMMAND_DEFAULT_CLASS):
     locks = "cmd:all()"
 
     def func(self):
-        self.caller.msg("|xYou currently have |y%s gold|n." % round(self.caller.db.stats['gold'],2))
-
+        self.caller.msg("|xYou currently have |y%s gold|n." % round(self.caller.db.stats['gold'], 2))
 
 
 class CmdTopList(COMMAND_DEFAULT_CLASS):
@@ -539,7 +541,7 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
 
     """
     key = "toplist"
-    aliases=['top']
+    aliases = ['top']
     locks = "cmd:all()"
 
     def func(self):
@@ -552,15 +554,15 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
             if player in stats.keys():
                 stats[player]['claimed'] = count
             else:
-                stats[player] = { 'claimed': count, 'gold': '-' }
+                stats[player] = {'claimed': count, 'gold': '-'}
         for (player, g) in gold:
             if player in stats.keys():
                 stats[player]['gold'] = g
             else:
-                stats[player] = { 'claimed': '-', 'gold': g }
+                stats[player] = {'claimed': '-', 'gold': g}
 
         table = EvTable(ff("Player"), ff("Rooms Owned"), ff("Total Gold"), border="none")
-        for i,v in stats.items():
+        for i, v in stats.items():
             table.add_row(i, v['claimed'], v['gold'])
         output = str(table) + '\n'
         self.caller.msg(output)

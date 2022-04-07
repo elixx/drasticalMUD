@@ -9,7 +9,7 @@ from random import choice
 # sizes for identification of bundles
 # maybe other things too
 
-BASE_VALUE = { 'trash': 1,
+BASE_VALUE = { 'trash': 1.5,
                'stone': 3,
                'wood': 4,
                'essence': 10 }
