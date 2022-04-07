@@ -125,13 +125,13 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                         if obj.db.planted == True and obj.db.age > 1:
                             factor = 1
                             if obj.db.quality:
-                                factor += (1-obj.db.quality/100)    # quality bonus
+                                factor += (1-obj.db.quality/100)    # quality to percent
                             amounts = {}
                             amount_strs = []
                             for r, v in obj.db.resources.items():
-                                amounts[r] = round(v*factor+(obj.db.age/12),2)
+                                amounts[r] = int( v * ((1+factor) + (obj.db.age/12)) )
                             for r, v in amounts.items():
-                                amount_strs.append("%s %s" % (v*factor, r))
+                                amount_strs.append("%s %s" % (v , r))
                             ui = yield ("You will receive |y%s|n from harvesting %s. Continue? (Yes/No)" % (
                                 list_to_string(amount_strs), obj.name))
                             if ui.strip().lower() in ['yes', 'y']:
