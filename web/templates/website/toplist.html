@@ -15,11 +15,11 @@
             <div class="card card-body">
                 <table>
                     <thead>
-                        <th scope="col" class="col-xs-3">player name</th> <th scope="col" class="col-xs-1">rooms owned</th> <th scope="col" class="col-xs-1">gold</th>
+                        <th scope="col" class="col-xs-3">player name</th> <th scope="col" class="col-xs-1 text-right">world seen</th> <th scope="col" class="text-right">total owned</th> <th scope="col" class="col-xs-1 text-right">gold</th>
                     </thead>
                     {% for s in stats %}
                         <tr>
-                            <td><a href="/player/{{ s.name }}">{{ s.name }}</a></td><td>{{ s.owned }}</td><td>{{ s.gold }}</td>
+                            <td><a href="/player/{{ s.name }}">{{ s.name }}</a></td><td class="text-right">{{ s.pct_seen }}%</td><td class="text-right">{{ s.owned }}</td><td class="text-right">{{ s.gold }}</td>
                         </tr>
                     {% endfor %}
                 </table>
