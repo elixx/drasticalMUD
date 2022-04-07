@@ -55,7 +55,7 @@ class Account(DefaultAccount):
             if "grapewinebot" not in str(senders):
                sender_string = ", ".join(sender.get_display_name(self) for sender in senders)
             else:
-                sender_string = message.split(":")[0][:-1]
+                sender_string = "|C%s|n" % message.split(":")[0][:-1]
                 message = message.split(":")[1][1:]
 
             message_lstrip = message.lstrip()
@@ -63,8 +63,6 @@ class Account(DefaultAccount):
                 # this is a pose, should show as e.g. "User1 smiles to channel"
                 spacing = "" if message_lstrip[1:].startswith((":", "'", ",")) else " "
                 message = f"{sender_string}{spacing}{message_lstrip[1:]}"
-            elif "grapewinebot" in message.lstrip():
-                message = re.sub(pattern="grapewinebot-.*\:", string=message, repl='')
             else:
                 # normal message
                 message = f"{sender_string}: {message}"
