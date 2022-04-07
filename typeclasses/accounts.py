@@ -56,7 +56,8 @@ class Account(DefaultAccount):
                sender_string = ", ".join(sender.get_display_name(self) for sender in senders)
             else:
                 senders = message.split(":")[0]
-                senders = "|C" + senders + "|n"
+                #senders = "|C" + senders + "|n"
+                sender_string = ", ".join(sender.get_display_name(self) for sender in senders)
                 message = message.split(":")[1][1:]
 
             message_lstrip = message.lstrip()
