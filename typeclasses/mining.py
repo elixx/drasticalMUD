@@ -26,6 +26,9 @@ class MiningRoom(Room):
     def at_object_creation(self):
         self.tags.add("minable", "room")
 
+    def mining_callback(self, character, tool):
+        pass
+
 
 class MiningTool(Item):
     max_lifepan = AttributeProperty(default=10, autocreate=True)
