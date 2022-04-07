@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView, ListView, DetailView
 
 import evennia
-from world.utils import area_count
+from world.utils import area_count, visited_percent_global
 from string import capwords
 from evennia import ObjectDB
 from evennia.utils.logger import log_err
@@ -117,11 +117,22 @@ def _toplist_stats():
         else:
             stats[player] = {'name': player, 'claimed': '-', 'gold': g}
 
+    for player in stats.keys():
+        stats[player]['pct_seen'] = visited_percent_global(player)
+
+
     output = []
     for player in stats.keys():
         pid = evennia.search_object(player).first().id
         output.append(
-            {'name': player, 'owned': stats[player]['claimed'], 'gold': int(stats[player]['gold']), 'id': pid})
+            {'name': player,
+             'owned': stats[player]['claimed'],
+             'gold': int(stats[player]['gold']),
+             'id': pid,
+            'pct_seen': round(stats[player]['pct_seen'],2)
+             }
+        )
+
 
     pagevars = {"stats": output}
     return pagevars
