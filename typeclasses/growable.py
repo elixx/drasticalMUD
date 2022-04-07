@@ -129,7 +129,7 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                             amounts = {}
                             amount_strs = []
                             for r, v in obj.db.resources.items():
-                                amounts[r] = round(v*factor+(obj.db.age/2),2)
+                                amounts[r] = round(v*factor+(obj.db.age/12),2)
                             for r, v in amounts.items():
                                 amount_strs.append("%s %s" % (v*factor, r))
                             ui = yield ("You will receive |y%s|n from harvesting %s. Continue? (Yes/No)" % (
