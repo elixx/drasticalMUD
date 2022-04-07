@@ -3,7 +3,7 @@ from evennia import utils
 from typeclasses.objects import Item
 from evennia.commands.cmdset import CmdSet
 from evennia.utils.utils import list_to_string
-from world.resource_types import SIZES
+from world.resource_types import SIZES, BASE_VALUE
 
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -129,7 +129,7 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                             amounts = {}
                             amount_strs = []
                             for r, v in obj.db.resources.items():
-                                amounts[r] = round(v*factor,2)
+                                amounts[r] = round(v*factor+(obj.db.age/2),2)
                             for r, v in amounts.items():
                                 amount_strs.append("%s %s" % (v*factor, r))
                             ui = yield ("You will receive |y%s|n from harvesting %s. Continue? (Yes/No)" % (
