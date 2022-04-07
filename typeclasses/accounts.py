@@ -55,7 +55,7 @@ class Account(DefaultAccount):
             if "grapewinebot" not in str(senders):
                sender_string = ", ".join(sender.get_display_name(self) for sender in senders)
             else:
-                sender_string = "|C%s|n" % message.split(":")[0][:-1]
+                sender_string = "|C%s|n" % message.split(":")[0]
                 message = message.split(":")[1][1:]
 
             message_lstrip = message.lstrip()
