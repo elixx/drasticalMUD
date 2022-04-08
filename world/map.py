@@ -7,7 +7,8 @@ SYMBOLS = {None:           ' |n.|n ',  # for rooms without a sector_type attr
            'owned-other':  ' |R.|n ',  # owned by other player
            'you':          ' |r@|n ',          # self
            'SECT_INSIDE':    '[.]',
-           'attention':    ' |y*|n ' }
+           'attention':    ' |y*|n ',
+           'warning':      ' |r!|n '}
 
 
 class Map(object):
@@ -70,10 +71,14 @@ class Map(object):
             # map all other rooms
             self.worm_has_mapped[room] = [self.curX, self.curY]
             # this will use the sector_type Attribute or None if not set.
-            self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
-            if room.db.owner:
-                self.grid[self.curX][self.curY] = SYMBOLS['owned-self'] if room.db.owner == self.caller.id else SYMBOLS[
-                    'owned-other']
+            if room.db.sector_type in ['attention', 'warning']:
+                self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
+            elif room.db.owner:
+                if room.db.owner == self.caller.id:
+                    self.grid[self.curX][self.curY] = SYMBOLS['owned-self']
+                else: self.grid[self.curX][self.curY] = SYMBOLS['owned-other']
+            else:
+                self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
 
     def median(self, num):
         lst = sorted(range(0, num))
