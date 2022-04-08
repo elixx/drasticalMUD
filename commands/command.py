@@ -147,7 +147,7 @@ class CmdWho(COMMAND_DEFAULT_CLASS):
                 if puppet == None:
                     continue
                 location = puppet.location if puppet and puppet.location else "None"
-                if location is not "None":
+                if location != "None":
                     area = location.tags.get(category='area')
                     area = capwords(area) if area is not None else "None"
                 if puppet.db:
