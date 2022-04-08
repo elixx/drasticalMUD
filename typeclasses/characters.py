@@ -48,6 +48,8 @@ class Character(ClothedCharacter):
             self.db.stats['logins'] += 1
         except KeyError:
             self.db.stats['logins'] = 1
+        if "This is a character" in self.db.desc:
+            self.msg("You don't have a description set! Use |ysetdesc|n to set a description for your character.")
 
     def at_post_unpuppet(self, account, session=None, **kwargs):
         if session is not None:
