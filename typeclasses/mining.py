@@ -13,15 +13,16 @@ COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 class MiningRoom(Room):
     # quality is used as level for tool check
-    quality              = AttributeProperty(default=1, autocreate=True)
+    quality = AttributeProperty(default=1, autocreate=True)
     # how often stuff will drop when mining a wall
-    drop_rate            = AttributeProperty(default=1, autocreate=True)
+    drop_rate = AttributeProperty(default=1, autocreate=True)
     # how long is left on given wall
-    lifespan             = AttributeProperty(default={"north": 10,
-                                                      "south": 10,
-                                                      "west": 10,
-                                                      "east": 10,
-                                                      "down": 40}, autocreate=True)
+    lifespan = AttributeProperty(default={"north": 10,
+                                          "south": 10,
+                                          "west": 10,
+                                          "east": 10,
+                                          "down": 40}, autocreate=True)
+
     @property
     def x(self):
         """Return the X coordinate or None."""
@@ -77,15 +78,16 @@ class MiningRoom(Room):
         character.msg("You chip away to the %s with %s." % (direction, tool.name))
         character.db.is_busy = False
         character.db.busy_doing = None
+        character.db.busy_handler = None
 
 
 class MiningTool(Item):
     max_lifepan = AttributeProperty(default=10, autocreate=True)
-    lifespan =    AttributeProperty(default=10, autocreate=True)
-    strength =    AttributeProperty(default=1, autocreate=True)
-    speed =       AttributeProperty(default=1, autocreate=True)
-    quality =     AttributeProperty(default=10, autocreate=True)
-    broken =      AttributeProperty(default=False, autocreate=True)
+    lifespan = AttributeProperty(default=10, autocreate=True)
+    strength = AttributeProperty(default=1, autocreate=True)
+    speed = AttributeProperty(default=1, autocreate=True)
+    quality = AttributeProperty(default=10, autocreate=True)
+    broken = AttributeProperty(default=False, autocreate=True)
 
     def at_object_creation(self):
         self.cmdset.add(MiningCmdSet, persistent=True)
@@ -105,7 +107,7 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
 
     key = "mine"
     arg_regex = r"\s|$"
-    rhs_split = ("with","using")
+    rhs_split = ("with", "using")
 
     def func(self):
         caller = self.caller
@@ -120,7 +122,7 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             if self.rhs is None:
                 caller.msg("With which tool did you want to mine?")
                 return False
-            direction = self.lhs if self.lhs in ["north","south","east","west","down","up"] else False
+            direction = self.lhs if self.lhs in ["north", "south", "east", "west", "down", "up"] else False
             if direction is False:
                 caller.msg("You can't dig in that direction!")
                 return False
@@ -151,8 +153,10 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             caller.msg("You begin digging to the %s." % direction)
             caller.db.is_busy = True
             caller.db.busy_doing = 'mining'
-            caller.ndb.busy_handler = utils.delay(randint(6-tool.speed,16-tool.speed),
-                                    location.mining_callback, caller, tool, direction)
+            busy_handler = utils.delay(randint(6 - tool.speed, 16 - tool.speed),
+                                       location.mining_callback, caller, tool, direction)
+            caller.db.busy_handler = busy_handler.task_id
+
 
 class CmdStopMining(COMMAND_DEFAULT_CLASS):
     """
@@ -164,12 +168,17 @@ class CmdStopMining(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         caller = self.caller
-        location = caller.location
-        if caller.db.is_busy and caller.ndb.busy_handler and caller.db.busy_doing == 'mining':
-            caller.ndb.busy_handler.cancel()
+        if caller.db.is_busy and caller.db.busy_handler and caller.db.busy_doing == 'mining':
+            from evennia.scripts.taskhandler import TaskHandler
+            th = TaskHandler()
+            task = th.get_deferred(caller.db.busy_handler)
+            if task is not None:
+                task.cancel()
             caller.db.is_busy = False
             caller.db.busy_doing = None
             caller.msg("You stop mining.")
+        else:
+            caller.msg("But you are not mining!")
 
 
 class MiningCmdSet(CmdSet):
