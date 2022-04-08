@@ -62,7 +62,7 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
     aliases = ["combine"]
     #locks = "cmd:superuser()"
     arg_regex = r"\s|$"
-    rhs_split = ("with", " and ")  # Prefer = delimiter, but allow " to " usage.
+    rhs_split = ("with", "and")  # Prefer 'with' delimiter, but allow " and " usage.
 
     def func(self):
         if not self.args:
@@ -80,7 +80,18 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
                 return
             oldname = obj1.name
             oldname2 = obj2.name
-            result = obj1.join( obj2 )
+            if "join" not in dir(obj1):
+                if "join" not in dir(obj2):
+                    self.caller.msg("You can't use %s to make a resource bundle." % obj1.name)
+                    return
+                else:
+                    join = obj2.join
+                    target = obj1
+            else:
+                join = obj1.join
+                target = obj2
+#            result = obj1.join(obj2)
+            result = join(target)
             if result is False:
                 self.caller.msg("You can't do that!")
             else:
