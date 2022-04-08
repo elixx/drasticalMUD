@@ -5,8 +5,10 @@ from evennia.commands.cmdset import CmdSet
 from typeclasses.rooms import Room
 from typeclasses.objects import Item
 from random import randint
+from evennia.utils.create import create_object
 from evennia.utils.logger import log_err
 from world.resource_types import SIZES, GEM
+from core.utils import create_exit
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -70,15 +72,43 @@ class MiningRoom(Room):
 
     def at_object_creation(self):
         self.tags.add("minable", "room")
-        self.x = 0
-        self.y = 0
-        self.z = 0
+        if not self.x:
+            self.x = 0
+        if not self.y:
+            self.y = 0
+        if not self.z:
+            self.z = 0
 
     def mining_callback(self, character, tool, direction):
-        character.msg("You chip away to the %s with %s." % (direction, tool.name))
+        character.msg("You chip away %s with %s." % (direction, tool.name))
+
+        from evennia.scripts.taskhandler import TaskHandler
+        th = TaskHandler()
+        task = th.get_deferred(character.db.busy_handler)
+        if task is not None:
+            task.cancel()
         character.db.is_busy = False
         character.db.busy_doing = None
-        character.db.busy_handler = None
+
+        target_x = self.x+1 if direction == 'east' else self.x-1 if direction == 'west' else self.x
+        target_y = self.y+1 if direction == 'north' else self.y-1 if direction == 'south' else self.y
+        target_z = self.z+1 if direction == 'up' else self.z-1 if direction == 'down' else self.z
+
+        self.db.lifespan[direction] -= tool.strength
+        if self.lifespan[direction] <= 0:
+            character.msg("You break through the wall %s!" % direction)
+            newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
+                                    nohome=True, location=None,
+                                 attributes=[('desc', 'A good place for mining.')],
+                                    tags=[(target_x, 'mining_x'),
+                                          (target_y, 'mining_y'),
+                                          (target_z, 'mining_z')])
+            log_err("New MiningRoom created: %s %s" % (newroom.id, newroom))
+            from core import EXITS_REV, EXIT_ALIAS
+            revdir = EXITS_REV[direction]
+            create_exit(revdir, "#"+str(newroom.id), "#"+str(character.location.id), exit_aliases=EXIT_ALIAS[direction])
+            create_exit(direction, "#"+str(character.location.id), "#"+str(newroom.id), exit_aliases=EXIT_ALIAS[revdir])
+
 
 
 class MiningTool(Item):
@@ -127,7 +157,7 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
                 caller.msg("You can't dig in that direction!")
                 return False
             if direction in [str(i) for i in location.contents]:
-                caller.msg("There is already an exit to the %s." % direction)
+                caller.msg("There is already an exit %s." % direction)
                 return False
             tool = caller.search(self.rhs, quiet=True)
             tool = tool[0]
@@ -151,13 +181,11 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
                 caller.msg("You are too busy!")
                 return False
 
-            caller.msg("You begin digging to the %s." % direction)
+            caller.msg("You begin digging %s." % direction)
             caller.db.is_busy = True
             caller.db.busy_doing = 'mining'
-
             busy_handler = utils.delay(randint(6 - tool.speed, 16 - tool.speed),
                                        location.mining_callback, caller, tool, direction)
-
             caller.db.busy_handler = busy_handler.task_id
 
 
