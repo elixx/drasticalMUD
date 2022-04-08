@@ -85,6 +85,31 @@ class Character(ClothedCharacter):
         styled_message = "|y" + message + "|n"
         return styled_message
 
+    def at_pre_move(self, destination):
+        """
+        Called just before starting to move this object to
+        destination.
+
+        Args:
+            destination (Object): The object we are moving to
+
+        Returns:
+            shouldmove (bool): If we should move or not.
+
+        Notes:
+            If this method returns False/None, the move is cancelled
+            before it is even started.
+
+        """
+        if self.db.is_busy:
+            if self.db.busy_doing:
+                self.msg("You can't move until you stop %s." % self.db.busy_doing)
+            else:
+                self.msg("You are too busy!")
+            return False
+        else:
+            return True
+
     def at_post_move(self, source_location):
         if source_location is not None:
             if source_location.tags.get(category='area'):
