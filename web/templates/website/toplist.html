@@ -19,7 +19,9 @@
                     </thead>
                     {% for s in stats %}
                         <tr>
-                            <td><a href="/player/{{ s.name }}">{{ s.name }}</a></td><td class="text-right">{{ s.pct_seen }}%</td><td class="text-right">{{ s.owned }}</td><td class="text-right">{{ s.gold }}</td>
+                            {% autoescape off %}
+                            <td><a href="/player/{{ s.name }}">{{ s.dname }}</a></td><td class="text-right">{{ s.pct_seen }}%</td><td class="text-right">{{ s.owned }}</td><td class="text-right">{{ s.gold }}</td>
+                            {% endautoescape %}
                         </tr>
                     {% endfor %}
                 </table>
