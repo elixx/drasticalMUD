@@ -4,9 +4,12 @@ from evennia.typeclasses.attributes import AttributeProperty
 from evennia.commands.cmdset import CmdSet
 from typeclasses.rooms import Room
 from typeclasses.objects import Item
-from random import randint
+from random import randint, choice
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err
+from evennia.utils import list_to_string
+from world.utils import qual
+from core import EXITS_REV, EXIT_ALIAS
 from world.resource_types import SIZES, GEM
 from core.utils import create_exit
 
@@ -76,6 +79,7 @@ class MiningRoom(Room):
     def mining_callback(self, character, tool, direction):
         character.msg("You chip away %s with %s." % (direction, tool.name))
 
+        # Clear Busy
         from evennia.scripts.taskhandler import TaskHandler
         th = TaskHandler()
         task = th.get_deferred(character.db.busy_handler)
@@ -84,10 +88,25 @@ class MiningRoom(Room):
         character.db.is_busy = False
         character.db.busy_doing = None
 
+        # Get resource bundle
+        resources = {'trash': randint(0,10),
+                     'wood': choice(['0', '0', '0', randint(0, 10)]),
+                     'stone': randint(10+self.quality/2, 10+self.quality)}
+
+        bundle = create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=character, location=character,
+                      attributes=[('resources', resources)])
+        result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in bundle.db.resources.items()]
+        self.caller.msg("You get a bundle containing: %s - %s" % (qual(bundle), list_to_string(result)))
+
+
+        # Assign new coordinates
         target_x = self.x+1 if direction == 'east' else self.x-1 if direction == 'west' else self.x
         target_y = self.y+1 if direction == 'north' else self.y-1 if direction == 'south' else self.y
         target_z = self.z+1 if direction == 'up' else self.z-1 if direction == 'down' else self.z
 
+        ## TODO: Search for existing coordinate overlap
+
+        # Subtract wall life
         self.db.lifespan[direction] -= tool.strength
         if self.lifespan[direction] <= 0:
             character.msg("You break through the wall %s!" % direction)
@@ -103,7 +122,6 @@ class MiningRoom(Room):
                                           (target_z, 'mining_z')])
             newroom.db.lifespan = newroom.lifespan
             log_err("New MiningRoom created: %s %s" % (newroom.id, newroom))
-            from core import EXITS_REV, EXIT_ALIAS
             revdir = EXITS_REV[direction]
             create_exit(revdir, "#"+str(newroom.id), "#"+str(character.location.id), exit_aliases=EXIT_ALIAS[revdir])
             create_exit(direction, "#"+str(character.location.id), "#"+str(newroom.id), exit_aliases=EXIT_ALIAS[direction])

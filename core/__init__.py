@@ -9,6 +9,7 @@ EXITS_REV = {"up": "down",
              "south": "north",
              "in": "out",
              "out": "in"}
+EXIT_REV = EXITS_REV
 
 EXIT_ALIAS = {"up": "u",
               "down": "d",
