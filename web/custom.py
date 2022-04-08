@@ -2,7 +2,8 @@
 from django.views.generic import TemplateView, ListView, DetailView
 
 import evennia
-from world.utils import area_count, visited_percent_global
+from world.utils import area_count, total_visited, findStatsMachine
+from datetime import datetime
 from string import capwords
 from evennia import ObjectDB
 from evennia.utils.logger import log_err
@@ -68,6 +69,13 @@ class areaView(TemplateView):
 
 
 def _area_stats():
+    # statsDB = findStatsMachine().db
+    # if not statsDB.last_cache_area_stats:
+    #     statsDB.last_cache_area_stats = datetime.now()
+    # else:
+    #     delta = datetime.now() - statsDB.last_cache_area_stats
+
+
     ac = area_count()
     ac = sorted(ac.items(), key=lambda x: x[1], reverse=True)
 
@@ -116,20 +124,24 @@ def _toplist_stats():
             stats[player]['gold'] = g
         else:
             stats[player] = {'name': player, 'claimed': '-', 'gold': g}
-
+    totalrooms = sum(area_count().values())
     for player in stats.keys():
-        stats[player]['pct_seen'] = visited_percent_global(player)
-
+        stats[player]['pct_seen'] = total_visited(player) / totalrooms
 
     output = []
     for player in stats.keys():
-        pid = evennia.search_object(player).first().id
+        p = evennia.search_object(player).first()
+        pid = p.id
+        acct = p.account
+        online = acct.is_connected if acct is not None else False
+        visited = total_visited(p)
         output.append(
             {'name': player,
+             'dname': "%s <span class='text-success'>online</span>" % player if online else player,
              'owned': stats[player]['claimed'],
              'gold': int(stats[player]['gold']),
              'id': pid,
-            'pct_seen': round(stats[player]['pct_seen'],2)
+            'pct_seen': round(visited / totalrooms*100,1)
              }
         )
 
@@ -171,19 +183,16 @@ def _player_stats(**kwargs):
         if not inherits_from(character, settings.BASE_CHARACTER_TYPECLASS):
             raise Http404("I couldn't find a character with that ID. "
                           "Found something else instead.")
-        totalrooms = 0
-        e = ObjectDB.objects.object_totals()
-        for k in e.keys():
-            if "room" in k.lower():
-                totalrooms += e[k]
+
+        totalrooms = sum(area_count().values())
         explored = []
         visited = character.db.stats['visited']
-        totalvisited = 0
+        totalvisited = total_visited(character)
         for area in visited.keys():
             total = total_rooms_in_area(area)
             seen = len(visited_in_area(area, character.id))
             claimed = claimed_in_area(area, character.id)
-            totalvisited += seen
+            #totalvisited += seen
             owned = claimed.count()
             vpct = round(seen / total * 100, 1) if total > 0 else 0
             opct = round(owned / total * 100, 1) if total > 0 else 0
