@@ -72,12 +72,6 @@ class MiningRoom(Room):
 
     def at_object_creation(self):
         self.tags.add("minable", "room")
-        if not self.x:
-            self.x = 0
-        if not self.y:
-            self.y = 0
-        if not self.z:
-            self.z = 0
 
     def mining_callback(self, character, tool, direction):
         character.msg("You chip away %s with %s." % (direction, tool.name))
@@ -97,17 +91,28 @@ class MiningRoom(Room):
         self.db.lifespan[direction] -= tool.strength
         if self.lifespan[direction] <= 0:
             character.msg("You break through the wall %s!" % direction)
+            # Success at mining!
             newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
                                     nohome=True, location=None,
-                                 attributes=[('desc', 'A good place for mining.')],
+                                 attributes=[('desc', 'A good place for mining.'),
+                                             ('x', target_x),
+                                             ('y', target_y),
+                                             ('z', target_z)],
                                     tags=[(target_x, 'mining_x'),
                                           (target_y, 'mining_y'),
                                           (target_z, 'mining_z')])
+            newroom.db.lifespan = newroom.lifespan
             log_err("New MiningRoom created: %s %s" % (newroom.id, newroom))
             from core import EXITS_REV, EXIT_ALIAS
             revdir = EXITS_REV[direction]
-            create_exit(revdir, "#"+str(newroom.id), "#"+str(character.location.id), exit_aliases=EXIT_ALIAS[direction])
-            create_exit(direction, "#"+str(character.location.id), "#"+str(newroom.id), exit_aliases=EXIT_ALIAS[revdir])
+            create_exit(revdir, "#"+str(newroom.id), "#"+str(character.location.id), exit_aliases=EXIT_ALIAS[revdir])
+            create_exit(direction, "#"+str(character.location.id), "#"+str(newroom.id), exit_aliases=EXIT_ALIAS[direction])
+
+            if 'times_mined' in character.db.stats.keys():
+                character.db.stats['times_mined'] += 1
+            else:
+                character.db.stats['times_mined'] = 1
+
 
 
 
