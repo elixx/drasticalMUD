@@ -108,7 +108,6 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
     def func(self):
         caller = self.caller
         location = caller.location
-        log_err("%s %s" % (self.lhs, self.rhs))
         if not self.args:
             caller.msg("Mine which direction with what tool?")
             return False
