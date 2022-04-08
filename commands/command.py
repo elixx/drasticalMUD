@@ -265,15 +265,9 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         character = self.caller
         output = ""
         explored = {}
-        totalrooms = 0
+        totalrooms = sum(area_count().values())
         totalvisited = 0
         areas = [x.db_key for x in search_tag_object(category='area')]
-
-        # Systemwide room total:
-        e = ObjectDB.objects.object_totals()
-        for k in e.keys():
-            if "room" in k.lower():
-                totalrooms += e[k]
 
         # Sanity check
         if not self.caller.db.stats:
