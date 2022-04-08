@@ -76,7 +76,7 @@ class MiningRoom(Room):
     def mining_callback(self, character, tool, direction):
         character.msg("You chip away to the %s with %s." % (direction, tool.name))
         character.db.is_busy = False
-        character.db.doing = None
+        character.db.busy_doing = None
 
 
 class MiningTool(Item):
@@ -141,15 +141,35 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             if direction == "up" and location.z >= 0:
                 caller.msg("You are already at ground level!")
                 return False
-            if caller.db.is_mining:
-                caller.msg("You are already busy mining to the %s!" % caller.db.is_mining)
+            if caller.db.is_busy and caller.db.busy_doing:
+                caller.msg("You are already too busy %s!" % caller.db.busy_doing)
+                return False
+            if caller.db.is_busy:
+                caller.msg("You are too busy!")
                 return False
 
             caller.msg("You begin digging to the %s." % direction)
             caller.db.is_busy = True
             caller.db.busy_doing = 'mining'
-            caller.db.busy_handler = utils.delay(randint(6-tool.speed,16-tool.speed),
+            caller.ndb.busy_handler = utils.delay(randint(6-tool.speed,16-tool.speed),
                                     location.mining_callback, caller, tool, direction)
+
+class CmdStopMining(COMMAND_DEFAULT_CLASS):
+    """
+    stop mining - Stop any mining you presently are doing.
+
+    """
+
+    key = "stop mining"
+
+    def func(self):
+        caller = self.caller
+        location = caller.location
+        if caller.db.is_busy and caller.ndb.busy_handler and caller.db.busy_doing == 'mining':
+            caller.ndb.busy_handler.cancel()
+            caller.db.is_busy = False
+            caller.db.busy_doing = None
+            caller.msg("You stop mining.")
 
 
 class MiningCmdSet(CmdSet):
@@ -162,3 +182,4 @@ class MiningCmdSet(CmdSet):
     def at_cmdset_creation(self):
         self.duplicates = False
         self.add(CmdMine, allow_duplicates=False)
+        self.add(CmdStopMining, allow_duplicates=False)
