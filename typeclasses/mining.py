@@ -144,7 +144,8 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
                 caller.msg("You are already at ground level!")
                 return False
             if caller.db.is_busy and caller.db.busy_doing:
-                caller.msg("You are already too busy %s!" % caller.db.busy_doing)
+                doing = caller.db.busy_doing
+                caller.msg("You are too busy %s! See if you can |ystop %s|n." % (doing, doing))
                 return False
             if caller.db.is_busy:
                 caller.msg("You are too busy!")
@@ -153,8 +154,10 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             caller.msg("You begin digging to the %s." % direction)
             caller.db.is_busy = True
             caller.db.busy_doing = 'mining'
+
             busy_handler = utils.delay(randint(6 - tool.speed, 16 - tool.speed),
                                        location.mining_callback, caller, tool, direction)
+
             caller.db.busy_handler = busy_handler.task_id
 
 
