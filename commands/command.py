@@ -267,7 +267,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         explored = {}
         totalrooms = sum(area_count().values())
         totalvisited = 0
-        areas = [x.db_key for x in search_tag_object(category='area')]
+        ac = area_count()
+        areas = ac.keys()
 
         # Sanity check
         if not self.caller.db.stats:
@@ -327,7 +328,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             if area not in explored.keys():
                 unseen.append(area)
         areapct = color_percent(round(len(explored) / len(areas) * 100, 2))
-        areastats = "{y%s{n of {Y%s (%s%%){n" % (len(explored.keys()), len(unseen), areapct)
+        areastats = "{y%s{n of {Y%s (%s%%){n" % (len(explored.keys()), len(areas), areapct)
         table = self.styled_table(width=50, border='none')
         table.add_row(ff("Visited Areas:"), areastats)
         if totalvisited:
