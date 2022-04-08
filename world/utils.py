@@ -138,6 +138,18 @@ def visited_in_area(area, owner):
                 matches = o.db.stats['visited'][area]
         return (matches)
 
+def visited_percent_global(char):
+    if isinstance(char, int):
+        owner = "#" + str(char)
+    o = search_object(char)
+    if o is not None:
+        o = o.first()
+        totalrooms = sum(area_count().values())
+        totalvisited = 0
+        for area in o.db.stats['visited'].keys():
+            totalvisited += len(o.db.stats['visited'][area])
+        return (totalvisited / totalrooms * 100)
+
 
 def exploreReport(user):
     summary = {}

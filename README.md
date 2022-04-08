@@ -2,7 +2,12 @@
 
 **drasticalMUD**
 
-https://mud.drastical.tech/
+This is the public code repository of https://mud.drastical.tech/
+
+It is published to https://gitlab.drastical.net/elixx/drasticalmud
+and automatically mirrored to https://github.com/elixx/drasticalmud
+
+This will be updated manually after major changes, or automatically on a scheduled basis.
 
 ( more info to come )
 
