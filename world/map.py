@@ -3,7 +3,7 @@ from evennia.utils.logger import log_err
 
 # These are keys set with the Attribute sector_type on the room.
 # The keys None and "you" must always exist.
-SYMBOLS = {None:           ' |n.|n ',  # for rooms without a sector_type attr
+SYMBOLS = {None:           ' . ',  # for rooms without a sector_type attr
            'owned-self':   ' |g,|n ',   # owned by self
            'self-growing': ' |G%|n ',  # owned by self and growing
            'owned-other':  ' |R.|n ',  # owned by other player
