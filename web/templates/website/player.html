@@ -9,17 +9,18 @@
             <div class="card card-body">
                 <p class="lead">{{ character.db.desc }}</p>
 
-                <table class="col-8">
+                <table class="col-10">
                     <thead>
                         <tr>
-                            <th class="col-6">stat</th>         <th class="col-2">value</th>
+                            <th class="col-6">stat</th>         <th class="col-4">value</th>
                         </tr>
                     </thead>
                     <tbody>
-                            <tr><td class="col-6">Gold</td>           <td class="col-2">{{ gold }}</td></tr>
-                            <tr><td class="col-6">World Explored</td> <td class="col-2">{{ totalpct }} %</td></tr>
-                            <tr><td class="col-6">Rooms Claimed</td>   <td class="col-2">{{ claims }}</td></tr>
-                            <tr><td class="col-6">Takeovers</td>      <td class="col-2">{{ takeovers }}</td></tr>
+                            <tr><td class="col-6">Gold</td>           <td class="col-4">{{ gold }}</td></tr>
+                            <tr><td class="col-6">World Explored</td> <td class="col-4">{{ totalpct }} %</td></tr>
+                            <tr><td class="col-6">Rooms Claimed</td>   <td class="col-4">{{ claims }}</td></tr>
+                            <tr><td class="col-6">Takeovers</td>      <td class="col-4">{{ takeovers }}</td></tr>
+                            <tr><td class="col-6">Time online</td>    <td class="col-4">{{ conntime }}</td></tr>
                             <!-- tr><td>Gems</td>           <td>-</td></tr -->
                     </tbody>
                 </table>
@@ -37,9 +38,9 @@
                         <tr>
                             <td class="text-justify"><small>{{  area.name }}</small></td>
                             <td class="text-right">{{  area.owned }}</td>
-                            <td class="text-right"><sub>({{ area.opct }}%)</sub></td>
+                            <td class="text-right disabled ui-state-disabled text-muted"><sub>({{ area.opct }}%)</sub></td>
                             <td class="text-right">{{  area.seen  }}</td>
-                            <td class="text-right"><sub>({{ area.vpct }}%)</sub></td>
+                            <td class="text-right disabled ui-state-disabled text-muted"><sub>({{ area.vpct }}%)</sub></td>
                             <td class="text-right">{{  area.total }}</td>
                         </tr>
                     {% endfor %}
