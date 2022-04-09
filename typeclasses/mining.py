@@ -124,11 +124,12 @@ class MiningRoom(Room):
         resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
                      'wood': choice([0, 0, 0, randint(0, 10)]),
                      'stone': randint(int(10+self.quality/2), 10+self.quality)}
-
-        bundle = create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=character, location=character,
-                      attributes=[('resources', resources)])
-        result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in bundle.db.resources.items()]
-        character.msg("You get a bundle of %s quality, containing: %s" % (qual(bundle), list_to_string(result)))
+        result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in resources.items()]
+        agg = sum(resources.values())
+        bundlename = "%s resource bundle" % SIZES(agg)
+        bundle = create_object(key=bundlename, typeclass="typeclasses.resources.Resource", home=character,
+                               location=character, attributes=[('resources', resources)])
+        character.msg("You get %s of %s quality, containing: %s" % (bundlename, qual(bundle), list_to_string(result)))
 
         # Subtract wall life
         self.lifespan[direction] -= tool.strength
