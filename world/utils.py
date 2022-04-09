@@ -7,6 +7,7 @@ from random import choice, randint
 from core.utils import rainbow
 from string import capwords
 
+
 def findStatsMachine():
     results = search_object("a stats machine")
     if (len(results) == 0):
@@ -45,7 +46,6 @@ def warpArea(caller, area=None):
         caller.location = dest[0]
 
 
-
 def startContExplorers():
     def work(area, loc):
         create_object("typeclasses.mob_explorer.ContinentExplorer", key=area,
@@ -81,13 +81,13 @@ def qual(obj):
     if obj.db.quality:
         quality = obj.db.quality
         if quality == 0:
-            return "|111trash"
+            return "|111trash|n"
         elif quality > 95:
-            return rainbow("legendary")
+            return rainbow("legendary|n")
         elif quality > 85:
             return "|441exceptional|n"
         elif quality > 80:
-            return "|Rimpressive"
+            return "|Rimpressive|n"
         elif quality > 70:
             return "|ggreat|n"
         elif quality > 60:
@@ -138,6 +138,7 @@ def visited_in_area(area, owner):
                 matches = o.db.stats['visited'][area]
         return (matches)
 
+
 def total_visited(char):
     if str(char).isnumeric():
         char = "#" + str(char)
@@ -166,12 +167,15 @@ def exploreReport(user):
             summary[area] = {'total': total, 'visited': visited, 'claimed': claimed}
     return summary
 
+
 def topGold():
     from evennia.utils.search import search_object_attribute
     results = search_object_attribute('stats')
-    output = sorted([(v.name, round(v.db.stats['gold'],2)) for v in results if 'gold' in v.db.stats.keys()],key=lambda x: x[1],
+    output = sorted([(v.name, round(v.db.stats['gold'], 2)) for v in results if 'gold' in v.db.stats.keys()],
+                    key=lambda x: x[1],
                     reverse=True)
-    return(output)
+    return (output)
+
 
 def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
     from world.resource_types import trash
@@ -185,4 +189,4 @@ def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
     for n in range(0, int(results.count() * (BUNDLE_SPAWN_PERCENT / 100))):
         loc = choice(results)
         create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=loc, location=loc,
-                           attributes=[('resources', { 'wood': randint(0,10), 'stone': randint(0,10)})])
+                      attributes=[('resources', {'wood': randint(0, 10), 'stone': randint(0, 10)})])
