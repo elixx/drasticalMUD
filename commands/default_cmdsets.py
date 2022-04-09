@@ -32,6 +32,8 @@ from commands.command import CmdClaimed
 from commands.command import CmdTopList
 from commands.command import CmdProperty
 from commands.command import CmdWorth
+from commands.command import CmdNoMap
+from commands.command import CmdBrief
 
 from core.clothing import ClothedCharacterCmdSet
 from core import extended_room
@@ -70,6 +72,8 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(CmdTopList)
         self.add(CmdProperty)
         self.add(CmdWorth)
+        self.add(CmdNoMap)
+        self.add(CmdBrief)
 
         #
         # any commands you add below will overload the default ones.
