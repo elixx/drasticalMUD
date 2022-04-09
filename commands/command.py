@@ -566,3 +566,38 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
             table.add_row(i, v['claimed'], v['gold'])
         output = str(table) + '\n'
         self.caller.msg(output)
+
+
+class CmdNoMap(COMMAND_DEFAULT_CLASS):
+    """
+    Enable or disable the automap display
+
+    """
+    key = "nomap"
+    aliases = ["map"]
+    locks = "cmd:all()"
+
+    def func(self):
+        if self.caller.db.OPTION_NOMAP:
+            self.caller.db.OPTION_NOMAP = False
+            self.caller.msg("|xYou enable the automap display.|n")
+        else:
+            self.caller.db.OPTION_NOMAP = True
+            self.caller.msg("|xYou disable the automap display.|n")
+
+
+class CmdBrief(COMMAND_DEFAULT_CLASS):
+    """
+    Enable or disable display of long room descriptions.
+
+    """
+    key = "brief"
+    locks = "cmd:all()"
+
+    def func(self):
+        if self.caller.db.OPTION_BRIEF:
+            self.caller.db.OPTION_BRIEF = False
+            self.caller.msg("|xYou disable brief mode.|n")
+        else:
+            self.caller.db.OPTION_BRIEF = True
+            self.caller.msg("|xYou enable brief mode.|n")

@@ -139,6 +139,8 @@ class Map(object):
                        self.max_width % 2 != 0 else False
 
     def show_map(self):
+        if self.caller.db.OPTION_NOMAP:
+            return ""
         map_string = ""
         for row in self.grid:
             map_string += " ".join(row)
