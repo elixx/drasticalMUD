@@ -200,12 +200,18 @@ def _player_stats(**kwargs):
                              'opct': opct, 'vpct': vpct })
         explored = sorted(explored, key=lambda x: x['seen'], reverse=True)
         totalpct = round(totalvisited / totalrooms * 100, 2)
+        if 'conn_time' in character.db.stats.keys():
+            totaltime = character.db.stats['conn_time']
+            m, s = divmod(totaltime.seconds, 60)
+            h, m = divmod(m, 60)
+            totaltime = "%dh %02dm %02ds" % (h, m, s)
     return {'character': character,
             'gold': round(character.db.stats['gold'],2),
             'explored': explored,
             'totalpct': totalpct,
             'claims': character.db.stats['claims'],
-            'takeovers': character.db.stats['takeovers']}
+            'takeovers': character.db.stats['takeovers'],
+            'conntime': totaltime}
 
 
 class areaInfoView(TemplateView):
