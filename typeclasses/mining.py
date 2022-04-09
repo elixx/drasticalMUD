@@ -115,7 +115,7 @@ class MiningRoom(Room):
         self.ndb.shortdesc = shortdesc
         if "Coordinates" in self.db.desc:
             self.db.desc = self.RE_FOOTER.sub('', self.db.desc)
-        self.db.desc += shortdesc
+        self.db.desc += '\n' + shortdesc
 
     def at_object_creation(self):
         if not self.db.desc:
