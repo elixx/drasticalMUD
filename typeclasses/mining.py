@@ -8,6 +8,7 @@ from random import randint, choice
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err
 from evennia.utils import list_to_string
+from world.map import Map
 from world.utils import qual
 from core import EXITS_REV, EXIT_ALIAS
 from world.resource_types import SIZES
@@ -100,10 +101,21 @@ class MiningRoom(Room):
 
         return None
 
+
+    def return_appearance(self, looker, **kwargs):
+        string = "%s\n" % Map(looker).show_map()
+        # Add all the normal stuff like room description,
+        # contents, exits etc.
+        string += super().return_appearance(looker)
+        return string
+
+
     def update_description(self):
         shortdesc = "Coordinates: (%s, %s, %s)" % (self.x, self.y, self.z)
         self.ndb.shortdesc = shortdesc
-        self.db.desc += shortdesc
+        if "Coordinates" in self.db.desc:
+            self.db.desc = self.RE_FOOTER.sub('', self.db.desc)
+            self.db.desc += shortdesc
 
     def at_object_creation(self):
         if not self.db.desc:
@@ -154,9 +166,10 @@ class MiningRoom(Room):
         # Subtract wall life
         self.lifespan[direction] -= tool.strength
         if self.lifespan[direction] <= 0:
+            # Success at mining!
             character.msg("You break through the wall %s!" % direction)
             revdir = EXITS_REV[direction]
-            # Success at mining!
+
             # Assign new coordinates
             target_x = self.x + 1 if direction == 'east' else self.x - 1 if direction == 'west' else self.x
             target_y = self.y + 1 if direction == 'north' else self.y - 1 if direction == 'south' else self.y
