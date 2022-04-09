@@ -574,7 +574,7 @@ class CmdNoMap(COMMAND_DEFAULT_CLASS):
 
     """
     key = "nomap"
-    aliases = ["map"]
+    aliases = ["map", "@map", "@nomap"]
     locks = "cmd:all()"
 
     def func(self):
@@ -592,6 +592,7 @@ class CmdBrief(COMMAND_DEFAULT_CLASS):
 
     """
     key = "brief"
+    aliases = ["@brief", "compact", "@compact"]
     locks = "cmd:all()"
 
     def func(self):
