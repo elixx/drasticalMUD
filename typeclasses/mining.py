@@ -10,7 +10,7 @@ from evennia.utils.logger import log_err
 from evennia.utils import list_to_string
 from world.utils import qual
 from core import EXITS_REV, EXIT_ALIAS
-from world.resource_types import SIZES, GEM
+from world.resource_types import SIZES
 from core.utils import create_exit
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
