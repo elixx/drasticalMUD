@@ -81,13 +81,13 @@ def qual(obj):
     if obj.db.quality:
         quality = obj.db.quality
         if quality == 0:
-            return "|111trash"
+            return "|111trash|n"
         elif quality > 95:
-            return rainbow("legendary")
+            return rainbow("legendary|n")
         elif quality > 85:
             return "|441exceptional|n"
         elif quality > 80:
-            return "|Rimpressive"
+            return "|Rimpressive|n"
         elif quality > 70:
             return "|ggreat|n"
         elif quality > 60:

@@ -26,7 +26,8 @@ class MiningRoom(Room):
                                           "south": 10,
                                           "west": 10,
                                           "east": 10,
-                                          "down": 40}, autocreate=True)
+                                          "down": 40,
+                                          "up": 40}, autocreate=True)
 
     @property
     def x(self):
@@ -73,8 +74,39 @@ class MiningRoom(Room):
         if z is not None:
             self.tags.add(str(z), category="mining_z")
 
+    @classmethod
+    def get_room_at(cls, x, y, z):
+        """
+        Return the room at the given location or None if not found.
+
+        Args:
+            x (int): the X coord.
+            y (int): the Y coord.
+            z (int): the Z coord.
+
+        Return:
+            The room at this location (Room) or None if not found.
+
+        """
+        rooms = cls.objects.filter(
+                db_tags__db_key=str(x), db_tags__db_category="mining_x").filter(
+                db_tags__db_key=str(y), db_tags__db_category="mining_y").filter(
+                db_tags__db_key=str(z), db_tags__db_category="mining_z")
+        if rooms:
+            return rooms[0]
+
+        return None
+
     def at_object_creation(self):
         self.tags.add("minable", "room")
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        lifespan = self.lifespan
+
+    def at_init(self):
+        lifespan = self.lifespan
+
 
     def mining_callback(self, character, tool, direction):
         character.msg("You chip away %s with %s." % (direction, tool.name))
@@ -89,42 +121,45 @@ class MiningRoom(Room):
         character.db.busy_doing = None
 
         # Get resource bundle
-        resources = {'trash': randint(0,10),
-                     'wood': choice(['0', '0', '0', randint(0, 10)]),
-                     'stone': randint(10+self.quality/2, 10+self.quality)}
+        resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
+                     'wood': choice([0, 0, 0, randint(0, 10)]),
+                     'stone': randint(int(10+self.quality/2), 10+self.quality)}
 
         bundle = create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=character, location=character,
                       attributes=[('resources', resources)])
         result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in bundle.db.resources.items()]
-        self.caller.msg("You get a bundle containing: %s - %s" % (qual(bundle), list_to_string(result)))
-
-
-        # Assign new coordinates
-        target_x = self.x+1 if direction == 'east' else self.x-1 if direction == 'west' else self.x
-        target_y = self.y+1 if direction == 'north' else self.y-1 if direction == 'south' else self.y
-        target_z = self.z+1 if direction == 'up' else self.z-1 if direction == 'down' else self.z
-
-        ## TODO: Search for existing coordinate overlap
+        character.msg("You get a bundle of %s quality, containing: %s" % (qual(bundle), list_to_string(result)))
 
         # Subtract wall life
-        self.db.lifespan[direction] -= tool.strength
+        self.lifespan[direction] -= tool.strength
         if self.lifespan[direction] <= 0:
             character.msg("You break through the wall %s!" % direction)
-            # Success at mining!
-            newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
-                                    nohome=True, location=None,
-                                 attributes=[('desc', 'A good place for mining.'),
-                                             ('x', target_x),
-                                             ('y', target_y),
-                                             ('z', target_z)],
-                                    tags=[(target_x, 'mining_x'),
-                                          (target_y, 'mining_y'),
-                                          (target_z, 'mining_z')])
-            newroom.db.lifespan = newroom.lifespan
-            log_err("New MiningRoom created: %s %s" % (newroom.id, newroom))
             revdir = EXITS_REV[direction]
-            create_exit(revdir, "#"+str(newroom.id), "#"+str(character.location.id), exit_aliases=EXIT_ALIAS[revdir])
-            create_exit(direction, "#"+str(character.location.id), "#"+str(newroom.id), exit_aliases=EXIT_ALIAS[direction])
+            # Success at mining!
+            # Assign new coordinates
+            target_x = self.x + 1 if direction == 'east' else self.x - 1 if direction == 'west' else self.x
+            target_y = self.y + 1 if direction == 'north' else self.y - 1 if direction == 'south' else self.y
+            target_z = self.z + 1 if direction == 'up' else self.z - 1 if direction == 'down' else self.z
+
+            exists = self.get_room_at(target_x, target_y, target_z)
+            if exists:
+                create_exit(revdir, "#" + str(exists.id), "#" + str(character.location.id),
+                            exit_aliases=EXIT_ALIAS[revdir])
+                create_exit(direction, "#" + str(character.location.id), "#" + str(exists.id),
+                            exit_aliases=EXIT_ALIAS[direction])
+                character.msg("You break through the %s wall to an existing part of the mine!" % direction)
+            else:
+                newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
+                                         nohome=True, location=None,
+                                         attributes=[('desc', 'A good place for mining.')])
+                newroom.x = target_x
+                newroom.y = target_y
+                newroom.z = target_z
+
+                log_err("New MiningRoom created: %s %s" % (newroom.id, newroom))
+                revdir = EXITS_REV[direction]
+                create_exit(revdir, "#"+str(newroom.id), "#"+str(character.location.id), exit_aliases=EXIT_ALIAS[revdir])
+                create_exit(direction, "#"+str(character.location.id), "#"+str(newroom.id), exit_aliases=EXIT_ALIAS[direction])
 
             if 'times_mined' in character.db.stats.keys():
                 character.db.stats['times_mined'] += 1
@@ -207,7 +242,7 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             caller.msg("You begin digging %s." % direction)
             caller.db.is_busy = True
             caller.db.busy_doing = 'mining'
-            busy_handler = utils.delay(randint(6 - tool.speed, 16 - tool.speed),
+            busy_handler = utils.delay(randint(15-tool.speed, 20-tool.speed),
                                        location.mining_callback, caller, tool, direction)
             caller.db.busy_handler = busy_handler.task_id
 
