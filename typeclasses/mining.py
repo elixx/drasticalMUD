@@ -11,12 +11,15 @@ from evennia.utils import list_to_string
 from world.utils import qual
 from core import EXITS_REV, EXIT_ALIAS
 from world.resource_types import SIZES
+import re
 from core.utils import create_exit
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 
 class MiningRoom(Room):
+    RE_FOOTER = re.compile(r"Coordinates: \(.*\)", re.IGNORECASE)
+
     # quality is used as level for tool check
     quality = AttributeProperty(default=1, autocreate=True)
     # how often stuff will drop when mining a wall
@@ -97,14 +100,30 @@ class MiningRoom(Room):
 
         return None
 
+    def update_description(self):
+        shortdesc = "Coordinates: (%s, %s, %s)" % (self.x, self.y, self.z)
+        self.ndb.shortdesc = shortdesc
+        self.db.desc += shortdesc
+
     def at_object_creation(self):
+        if not self.db.desc:
+            self.db.desc = "This looks like a good place for mining."
         self.tags.add("minable", "room")
-        self.x = 0
-        self.y = 0
-        self.z = 0
+        if self.x is None:
+            self.x = 0
+        if self.y is None:
+            self.y = 0
+        if self.z is None:
+            self.z = 0
+
         lifespan = self.lifespan
 
     def at_init(self):
+        coordstring = "Coordinates: (%s, %s, %s)" % (self.x, self.y, self.z)
+        self.ndb.shortdesc = coordstring
+        if self.db.desc == "This looks like a good place for mining.":
+            self.update_description()
+
         lifespan = self.lifespan
 
 
@@ -130,6 +149,7 @@ class MiningRoom(Room):
         bundle = create_object(key=bundlename, typeclass="typeclasses.resources.Resource", home=character,
                                location=character, attributes=[('resources', resources)])
         character.msg("You get %s of %s quality, containing: %s" % (bundlename, qual(bundle), list_to_string(result)))
+        character.location.msg_contents("%s collects %s." % (character.name, bundlename), exclude=character)
 
         # Subtract wall life
         self.lifespan[direction] -= tool.strength
@@ -149,13 +169,15 @@ class MiningRoom(Room):
                 create_exit(direction, "#" + str(character.location.id), "#" + str(exists.id),
                             exit_aliases=EXIT_ALIAS[direction])
                 character.msg("You break through the %s wall to an existing part of the mine!" % direction)
+                character.location.msg_contents("%s breaks through the wall to the %s!" % (character.name, direction), exclude=character)
             else:
                 newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
                                          nohome=True, location=None,
-                                         attributes=[('desc', 'A good place for mining.')])
+                                         attributes=[('desc', 'This looks like a good place for mining.')])
                 newroom.x = target_x
                 newroom.y = target_y
                 newroom.z = target_z
+                newroom.update_description()
 
                 log_err("New MiningRoom created: %s %s" % (newroom.id, newroom))
                 revdir = EXITS_REV[direction]
@@ -241,6 +263,7 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
                 return False
 
             caller.msg("You begin digging %s." % direction)
+            caller.location.msg_contents("%s begins digging %s." % (caller.name, direction), exclude=caller)
             caller.db.is_busy = True
             caller.db.busy_doing = 'mining'
             busy_handler = utils.delay(randint(15-tool.speed, 20-tool.speed),
