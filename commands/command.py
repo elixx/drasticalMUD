@@ -204,8 +204,13 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     def func(self):
         table = EvTable(ff("Area"), ff("Rooms"), width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
-            table.add_row(capwords(key), value)
+            if key in list(self.caller.db.stats['visited'].keys()):
+                s = "|Y%s|x*|n" % capwords(key)
+            else:
+                s = capwords(key)
+            table.add_row(s, value)
         output = str(table) + '\n'
+        output += "  Areas marked with |x*|n have been |Yvisited|n\n"
         EvMore(self.caller, output)
 
 
