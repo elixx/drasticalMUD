@@ -82,7 +82,7 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
             oldname2 = obj2.name
             if "join" not in dir(obj1):
                 if "join" not in dir(obj2):
-                    self.caller.msg("You can't use %s to make a resource bundle." % obj1.name)
+                    self.caller.msg("You can't use %s or %s to make a resource bundle." % (obj1.name, obj2.name))
                     return
                 else:
                     join = obj2.join
