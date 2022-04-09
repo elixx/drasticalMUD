@@ -112,7 +112,7 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         if not self.args:
-            self.caller.msg("You daydream about having a good harvest.")
+            self.caller.msg("Harvest what?")
             self.caller.location.msg_contents("%s daydreams about a good harvest." % self.caller, exclude=self.caller)
         else:
             target = self.args.strip()
@@ -132,6 +132,8 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                                 amounts[r] = int( v * ((1+factor) + (obj.db.age/12)) )
                             for r, v in amounts.items():
                                 amount_strs.append("%s %s" % (v , r))
+                            if not self.db.harvest_spawn:
+                                self.caller.msg("%s will be consumed." % obj.name)
                             ui = yield ("You will receive |y%s|n from harvesting %s. Continue? (Yes/No)" % (
                                 list_to_string(amount_strs), obj.name))
                             if ui.strip().lower() in ['yes', 'y']:
@@ -141,7 +143,8 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                                 bundle = create_object(key=harvest_name, typeclass="typeclasses.resources.Resource",
                                                        home=self.caller, location=self.caller,
                                                        attributes=[('resources', amounts)])
-                                obj.delete()
+                                if not self.db.harvest_spawn:
+                                    obj.delete()
                     else:
                         self.caller.msg("You must own a room in order to harvest from things in it.")
 
@@ -189,9 +192,10 @@ class FruitTree(GrowableObject):
         if not self.db.tree_type:
             from resource_types import fruit_tree_type
             self.db.tree_type = fruit_tree_type()
-            self.tags.add("wood",category="growth")
-            self.tags.add("fruit",category="growth")
-            self.tags.remove("trash",category="growth")
+        self.db.harvest_spawn = True
+        self.tags.add("wood",category="growth")
+        self.tags.add("fruit",category="growth")
+        self.tags.remove("trash",category="growth")
 
         if not self.db.growth_phases:
             self.db.growth_phases = {
