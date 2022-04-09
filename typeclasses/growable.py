@@ -42,7 +42,7 @@ class GrowableObject(Item):
             factor = self.db.growth_factor if self.db.growth_factor else 1
             for level in levels:
                 if self.db.age > level:
-                    factor += 0.03                  # 3% bonus production per growth level
+                    factor += 0.06                  # bonus production per growth level
             if isinstance(growths, str): growths = [growths]
             growth_factor = self.db.growth_factor if self.db.growth_factor else 1
             for growth in growths:
