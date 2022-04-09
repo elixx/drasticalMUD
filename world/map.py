@@ -4,11 +4,13 @@
 # The keys None and "you" must always exist.
 SYMBOLS = {None:           ' |n.|n ',  # for rooms without a sector_type attr
            'owned-self':   ' |g,|n ',   # owned by self
+           'self-growing': ' |G%|n ',  # owned by self and growing
            'owned-other':  ' |R.|n ',  # owned by other player
-           'you':          ' |r@|n ',          # self
+           'other-growing': ' |R%|n ',  # owned by other and growing
+           'you':          ' |r@|n ',   # self
            'SECT_INSIDE':    '[.]',
-           'attention':    ' |y*|n ',
-           'warning':      ' |r!|n '}
+           'attention':    ' |y*|n ',   # this will take precedence if set as sector_type
+           'warning':      ' |r!|n '}   # this too
 
 
 class Map(object):
@@ -71,14 +73,25 @@ class Map(object):
             # map all other rooms
             self.worm_has_mapped[room] = [self.curX, self.curY]
             # this will use the sector_type Attribute or None if not set.
-            if room.db.sector_type in ['attention', 'warning']:
+            if room.db.sector_type in ['attention', 'warning']:                 # override sector for these
                 self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
-            elif room.db.owner:
+            elif room.db.owner:                                                 # show sector based on ownership
+                growing = False
+                for i in room.contents:
+                    if 'growable' in i.typeclass_path and i.db.planted:
+                        growing = True
                 if room.db.owner == self.caller.id:
-                    self.grid[self.curX][self.curY] = SYMBOLS['owned-self']
-                else: self.grid[self.curX][self.curY] = SYMBOLS['owned-other']
+                    if growing:
+                        self.grid[self.curX][self.curY] = SYMBOLS['self-growing']
+                    else:
+                        self.grid[self.curX][self.curY] = SYMBOLS['owned-self']
+                else:
+                    if growing:
+                        self.grid[self.curX][self.curY] = SYMBOLS['other-growing']
+                    else:
+                        self.grid[self.curX][self.curY] = SYMBOLS['owned-other']
             else:
-                self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
+                self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]   # or the room-defined property
 
     def median(self, num):
         lst = sorted(range(0, num))
