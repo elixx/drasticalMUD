@@ -93,14 +93,13 @@ class MiningRoom(Room):
 
         """
         rooms = cls.objects.filter(
-                db_tags__db_key=str(x), db_tags__db_category="mining_x").filter(
-                db_tags__db_key=str(y), db_tags__db_category="mining_y").filter(
-                db_tags__db_key=str(z), db_tags__db_category="mining_z")
+            db_tags__db_key=str(x), db_tags__db_category="mining_x").filter(
+            db_tags__db_key=str(y), db_tags__db_category="mining_y").filter(
+            db_tags__db_key=str(z), db_tags__db_category="mining_z")
         if rooms:
             return rooms[0]
 
         return None
-
 
     def return_appearance(self, looker, **kwargs):
         string = "%s\n" % Map(looker).show_map()
@@ -108,7 +107,6 @@ class MiningRoom(Room):
         # contents, exits etc.
         string += super().return_appearance(looker)
         return string
-
 
     def update_description(self):
         shortdesc = "Coordinates: (%s, %s, %s)" % (self.x, self.y, self.z)
@@ -138,7 +136,6 @@ class MiningRoom(Room):
 
         lifespan = self.lifespan
 
-
     def mining_callback(self, character, tool, direction):
         character.msg("You chip away %s with %s." % (direction, tool.name))
 
@@ -154,7 +151,7 @@ class MiningRoom(Room):
         # Get resource bundle
         resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
                      'wood': choice([0, 0, 0, randint(0, 10)]),
-                     'stone': randint(int(10+self.quality/2), 10+self.quality)}
+                     'stone': randint(int(10 + self.quality / 2), 10 + self.quality)}
         result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in resources.items()]
         agg = sum(resources.values())
         bundlename = "%s resource bundle" % SIZES(agg)
@@ -182,11 +179,12 @@ class MiningRoom(Room):
                 create_exit(direction, "#" + str(character.location.id), "#" + str(exists.id),
                             exit_aliases=EXIT_ALIAS[direction])
                 character.msg("You break through the %s wall to an existing part of the mine!" % direction)
-                character.location.msg_contents("%s breaks through the wall to the %s!" % (character.name, direction), exclude=character)
+                character.location.msg_contents("%s breaks through the wall to the %s!" % (character.name, direction),
+                                                exclude=character)
             else:
                 newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
-                                         nohome=True, location=None,
-                                         attributes=[('desc', 'This looks like a good place for mining.')])
+                                        nohome=True, location=None,
+                                        attributes=[('desc', 'This looks like a good place for mining.')])
                 newroom.x = target_x
                 newroom.y = target_y
                 newroom.z = target_z
@@ -194,20 +192,22 @@ class MiningRoom(Room):
 
                 log_err("New MiningRoom created: %s %s" % (newroom.id, newroom))
                 revdir = EXITS_REV[direction]
-                create_exit(revdir, "#"+str(newroom.id), "#"+str(character.location.id), exit_aliases=EXIT_ALIAS[revdir])
-                create_exit(direction, "#"+str(character.location.id), "#"+str(newroom.id), exit_aliases=EXIT_ALIAS[direction])
+                create_exit(revdir, "#" + str(newroom.id), "#" + str(character.location.id),
+                            exit_aliases=EXIT_ALIAS[revdir])
+                create_exit(direction, "#" + str(character.location.id), "#" + str(newroom.id),
+                            exit_aliases=EXIT_ALIAS[direction])
 
             if 'times_mined' in character.db.stats.keys():
                 character.db.stats['times_mined'] += 1
             else:
                 character.db.stats['times_mined'] = 1
 
-
+        tool.lifespan -= 1
 
 
 class MiningTool(Item):
-    max_lifepan = AttributeProperty(default=10, autocreate=True)
-    lifespan = AttributeProperty(default=10, autocreate=True)
+    max_lifepan = AttributeProperty(default=50, autocreate=True)
+    lifespan = AttributeProperty(default=50, autocreate=True)
     strength = AttributeProperty(default=1, autocreate=True)
     speed = AttributeProperty(default=1, autocreate=True)
     quality = AttributeProperty(default=10, autocreate=True)
@@ -264,6 +264,9 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             if tool.quality < location.quality:
                 caller.msg("Your %s is not of high enough quality to mine this room!" % tool.name)
                 return False
+            if tool.lifespan <= 0:
+                caller.msg("The %s is worn out and needs of repair." % tool.name)
+                return False
             if direction == "up" and location.z >= 0:
                 caller.msg("You are already at ground level!")
                 return False
@@ -279,7 +282,7 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             caller.location.msg_contents("%s begins digging %s." % (caller.name, direction), exclude=caller)
             caller.db.is_busy = True
             caller.db.busy_doing = 'mining'
-            busy_handler = utils.delay(randint(15-tool.speed, 20-tool.speed),
+            busy_handler = utils.delay(randint(15 - tool.speed, 20 - tool.speed),
                                        location.mining_callback, caller, tool, direction)
             caller.db.busy_handler = busy_handler.task_id
 
