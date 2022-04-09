@@ -1,56 +1,33 @@
 from random import choice
 
-
-# RESOURCE_TYPES=['wood','stone', 'trash', <fruit>]
-
-# GEMS = ['quartz', 'amethyst', 'topaz', 'emerald', 'aquamarine', 'ruby', 'amethyst', 'jade', 'diamond']
-# ESSENCES = ['mind', 'power', 'reality', 'soul', 'space', 'time']
-
-# sizes for identification of bundles
-# maybe other things too
-
 BASE_VALUE = { 'trash': 1.5,
                'stone': 3,
-               'wood': 4,
-               'essence': 10 }
-
-GEM_RARITY = { 0: ['stone','slate','silica','rock'],
-             45: ['quartz', 'amethyst', 'aquamarine','topaz','silver','lapiz lazuli','copper'],
-             85: ['jade', 'ruby', 'sapphire','gold'],
-             90: ['diamond'],
-             99: ['prismatic shard', 'magical essence', 'rare earth'] }
-
-def GEM(v):
-    gem = None
-    for k in GEM_RARITY.keys():
-        if v >= k:
-              gem = choice(GEM_RARITY[k])
-    return gem
+               'wood': 4 }
 
 def SIZES(v):
     if  v==0:
         return "empty"
     elif v<5:
-        return "tiny"
+        return "miniscule"
     elif v<10:
-        return "small"
-    elif v<20:
-        return "medium"
+        return "tiny"
     elif v<30:
+        return "small"
+    elif v<80:
+        return "medium"
+    elif v<120:
         return "large"
-    elif v<50:
-        return "giant"
-    elif v<100:
-        return "enormous"
     elif v<200:
+        return "enormous"
+    elif v<350:
         return "extravagant"
-    elif v<300:
-        return "gigantic"
     elif v<500:
-        return "ridiculous"
-    elif v<800:
-        return "cosmic"
+        return "gigantic"
     elif v<1000:
+        return "ridiculous"
+    elif v<2000:
+        return "cosmic"
+    elif v<5000:
         return "inconceivable"
     else:
         return "improperly balanced"
@@ -63,11 +40,6 @@ TRASH_OBS = ['soda', 'beer', 'spoon', 'fork', 'knife', 'wrapper', 'bag', 'can', 
 TRASH_ADJS = ['broken', 'greasy', 'damaged', 'empty', 'irreparable', 'dirty', 'old', 'used', 'smelly', 'stinky', 'worn',
               'inoperable', 'useless', 'rusted', 'dilapidated', 'busted', 'blasted', 'shattered', 'putrid', 'squeaky',
               'musty', 'musky', 'gross', 'ugly', 'horrid', 'obnoxious', 'intolerable', 'offensive']
-
-# TRASH =    ['soda can', 'beer bottle', 'rusty spoon', 'rusty fork', 'rusty knife', 'cellophane wrapper',
-#                'empty bag of chips', 'soggy paper bag', 'dirty napkin', 'broken CD', 'dirty tampon', 'dirty condom',
-#                'dirty sock', 'old trash bag', 'piece of trash', 'rotten egg', 'soiled diaper', 'dirty syringe',
-#                'broken record', 'smelly sock', 'broken tape', 'broken gizmo', 'greasy sprocket', 'piece of junk']
 
 WOOD = ['mahogany', 'oak', 'maple', 'birch', 'cedar', 'spruce', 'dogwood', 'fir', 'pine', "myrtle", "poplar", "sycamore"]
 
@@ -82,13 +54,3 @@ fruit_tree_type = lambda: choice(FRUIT_TREES)
 # gem = lambda: '%s gem' % choice(GEMS)
 
 
-
-"""
-
-.db.resources = { "trash": 100,
-                  "stone": 100,
-                  "wood": 100 }
-
-
-
-"""

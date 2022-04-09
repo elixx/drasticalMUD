@@ -87,13 +87,17 @@ class Room(ExtendedRoom):
         return self.appearance_template.format(
             header="",
             name=name,
-            desc=desc,
+            desc=desc if not looker.db.OPTION_BRIEF else self.ndb.shortdesc,
              exits=f"|wExits:|n {exits}" if exits else "",
             #exits=f"|wExits:|n %s" % exits if exits else "",
             characters=f"\n|wCharacters:|n {characters}" if characters else "",
             things=f"\n|wYou see:|n {things}" if things else "",
             footer="",
         ).strip()
+
+    def at_init(self):
+        if not self.ndb.shortdesc:
+            self.ndb.shortdesc = ''
 
 
 class ImportedRoom(Room):
@@ -141,13 +145,19 @@ class ImportedRoom(Room):
                 else:
                     owner = "{Wnobody{x"
 
+            shortdesc = ""
             if "ltclaimed" in self.db.desc:
                 self.db.desc = RE_FOOTER.sub('', self.db.desc)
             if self.db.value:
-                self.db.desc += "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
+                shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
                 season, daytime, self.db.value, owner)
+                self.ndb.shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
+                season, daytime, self.db.value, owner)
+                self.db.desc += shortdesc
             else:
-                self.db.desc += "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
+                shortdesc = "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
+                self.ndb.shortdesc = shortdesc
+                self.db.desc += shortdesc
 
     def return_appearance(self, looker, **kwargs):
         self.update_description()

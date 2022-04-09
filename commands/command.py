@@ -204,8 +204,13 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     def func(self):
         table = EvTable(ff("Area"), ff("Rooms"), width=60)
         for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
-            table.add_row(capwords(key), value)
+            if key in list(self.caller.db.stats['visited'].keys()):
+                s = "|Y%s|x*|n" % capwords(key)
+            else:
+                s = capwords(key)
+            table.add_row(s, value)
         output = str(table) + '\n'
+        output += "  Areas marked with |x*|n have been |Yvisited|n\n"
         EvMore(self.caller, output)
 
 
@@ -277,7 +282,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             owner = self.caller.id
             visited = self.caller.db.stats['visited']
 
-        for area in visited.keys():
+        for area in list(visited.keys())[:10]:
             if area not in explored.keys():
                 explored[area] = {}
             explored[area]['total'] = total_rooms_in_area(area)
@@ -290,7 +295,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         table = self.styled_table(ff("Area") + " " * 45, ff("Seen"), ff("%Seen"), ff("Owned"), ff("%Owned"),
                                   ff("Total"),
                                   border="none", width=80)
-        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
+        for key, value in sorted(sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True), key=lambda x: x[1]['owned'], reverse=True):
             if key is not None:
                 if value['total'] > value['seen']:
                     pct = round(value['seen'] / value['total'] * 100, 1)
@@ -319,8 +324,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                               opct + '%',
                               value['total'])
 
-        output += ff("----------------------------") + ff(" Exploration Stats ") + ff(
-            "----------------------------") + '\n'
+        output += ff("--------------------------------- ") + ff("Your Top 10 Areas") + ff(
+            " ---------------------------------") + '\n'
         output += str(table) + '\n'
         output += ff("-------------------") + ff(" Summary ") + ff("-------------------") + '\n'
         unseen = []
@@ -561,3 +566,39 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
             table.add_row(i, v['claimed'], v['gold'])
         output = str(table) + '\n'
         self.caller.msg(output)
+
+
+class CmdNoMap(COMMAND_DEFAULT_CLASS):
+    """
+    Enable or disable the automap display
+
+    """
+    key = "nomap"
+    aliases = ["map", "@map", "@nomap"]
+    locks = "cmd:all()"
+
+    def func(self):
+        if self.caller.db.OPTION_NOMAP:
+            self.caller.db.OPTION_NOMAP = False
+            self.caller.msg("|xYou enable the automap display.|n")
+        else:
+            self.caller.db.OPTION_NOMAP = True
+            self.caller.msg("|xYou disable the automap display.|n")
+
+
+class CmdBrief(COMMAND_DEFAULT_CLASS):
+    """
+    Enable or disable display of long room descriptions.
+
+    """
+    key = "brief"
+    aliases = ["@brief", "compact", "@compact"]
+    locks = "cmd:all()"
+
+    def func(self):
+        if self.caller.db.OPTION_BRIEF:
+            self.caller.db.OPTION_BRIEF = False
+            self.caller.msg("|xYou disable brief mode.|n")
+        else:
+            self.caller.db.OPTION_BRIEF = True
+            self.caller.msg("|xYou enable brief mode.|n")
