@@ -1,3 +1,4 @@
+from evennia.utils.logger import log_err
 # mygame/world/map.py
 
 # These are keys set with the Attribute sector_type on the room.
@@ -92,6 +93,16 @@ class Map(object):
                         self.grid[self.curX][self.curY] = SYMBOLS['owned-other']
             else:
                 self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]   # or the room-defined property
+
+            # for i in room.contents:                  # show up and down exits on top of existing symbol
+            #     if 'exit' in i.typeclass_path:
+            #         if i.key == 'up':
+            #             sym = self.grid[self.curX][self.curY][:-1]
+            #             self.grid[self.curX][self.curY] = "<" + sym
+            #         if i.key == 'down':
+            #             sym = self.grid[self.curX][self.curY][1:]
+            #             self.grid[self.curX][self.curY] = sym + ">"
+            #         log_err(self.grid[self.curX][self.curY])
 
     def median(self, num):
         lst = sorted(range(0, num))
