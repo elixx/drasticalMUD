@@ -96,8 +96,7 @@ class Room(ExtendedRoom):
         ).strip()
 
     def at_init(self):
-        if not self.ndb.shortdesc:
-            self.ndb.shortdesc = ''
+        self.ndb.shortdesc = ''
 
 
 class ImportedRoom(Room):
