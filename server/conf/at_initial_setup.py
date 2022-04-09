@@ -72,6 +72,8 @@ def at_initial_setup():
 
         # Check that room IDs align as expected"
         temple_square = search_object("#1219").first()
+        temple_square.db.sector_type = "important"
+
         assert temple_square.key == "The Temple Square"
 
         # Create recycle bin
