@@ -277,7 +277,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
             owner = self.caller.id
             visited = self.caller.db.stats['visited']
 
-        for area in visited.keys():
+        for area in list(visited.keys())[:10]:
             if area not in explored.keys():
                 explored[area] = {}
             explored[area]['total'] = total_rooms_in_area(area)
@@ -290,7 +290,7 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
         table = self.styled_table(ff("Area") + " " * 45, ff("Seen"), ff("%Seen"), ff("Owned"), ff("%Owned"),
                                   ff("Total"),
                                   border="none", width=80)
-        for key, value in sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True):
+        for key, value in sorted(sorted(list(explored.items()), key=lambda x: x[1]['seen'], reverse=True), key=lambda x: x[1]['owned'], reverse=True):
             if key is not None:
                 if value['total'] > value['seen']:
                     pct = round(value['seen'] / value['total'] * 100, 1)
@@ -319,8 +319,8 @@ class CmdScore(COMMAND_DEFAULT_CLASS):
                               opct + '%',
                               value['total'])
 
-        output += ff("----------------------------") + ff(" Exploration Stats ") + ff(
-            "----------------------------") + '\n'
+        output += ff("--------------------------------- ") + ff("Your Top 10 Areas") + ff(
+            " ---------------------------------") + '\n'
         output += str(table) + '\n'
         output += ff("-------------------") + ff(" Summary ") + ff("-------------------") + '\n'
         unseen = []
