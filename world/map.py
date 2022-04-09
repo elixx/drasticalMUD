@@ -102,7 +102,7 @@ class Map(object):
                     if i.key == 'down':
                         sym = self.grid[self.curX][self.curY][:-1]   # down exits on the right
                         self.grid[self.curX][self.curY] = sym + ">"
-                    log_err(self.grid[self.curX][self.curY])
+                    # log_err(self.grid[self.curX][self.curY])
 
     def median(self, num):
         lst = sorted(range(0, num))
