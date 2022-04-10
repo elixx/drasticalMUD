@@ -135,4 +135,5 @@ def at_initial_setup():
     th.add(86400, ticker_daily)
 
     from world.utils import spawnJunk
+    log_info("Spawning junk...")
     spawnJunk(TRASH_SPAWN_PERCENT=25)
