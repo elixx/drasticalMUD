@@ -269,7 +269,7 @@ class MovingExit(Exit):
     pass
 
 
-def createTrainStops(arg="#4", entries=None,numstops=20, wipe=False):
+def createTrainStops(arg="#4", entries=None,numstops=12, wipe=False):
     train = search_object(arg)
     if train is not None:
         train = train.first()
