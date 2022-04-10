@@ -93,6 +93,10 @@ class CmdPlant(COMMAND_DEFAULT_CLASS):
                             obj.db.planted = True
                             obj.locks.add("get:false()")
                             obj.grow()
+                            if 'times_planted' in self.caller.db.stats.keys():
+                                self.caller.db.stats['times_planted'] += 1
+                            else:
+                                self.caller.db.stats['times_planted'] = 1
                     else:
                         self.caller.msg("You must own a room in order to plant things in it.")
                         return
@@ -140,6 +144,10 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                                 from evennia.utils.create import create_object
                                 agg = sum(amounts.values())
                                 harvest_name = "%s resource bundle" % SIZES(agg)
+                                if 'times_harvested' in self.caller.db.stats.keys():
+                                    self.caller.db.stats['times_harvested'] += 1
+                                else:
+                                    self.caller.db.stats['times_harvested'] = 1
                                 bundle = create_object(key=harvest_name, typeclass="typeclasses.resources.Resource",
                                                        home=self.caller, location=self.caller,
                                                        attributes=[('resources', amounts)])

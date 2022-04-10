@@ -11,6 +11,7 @@ SYMBOLS = {None:           ' . ',  # for rooms without a sector_type attr
            'you':          ' |r@|n ',   # self
            'SECT_INSIDE':    '[.]',
            'attention':    ' |y*|n ',   # this will take precedence if set as sector_type
+           'important':     ' |C*|n ',
            'warning':      ' |r!|n '}   # this too
 
 

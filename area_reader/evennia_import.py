@@ -213,6 +213,7 @@ class AreaImporter(object):
         if self.rooms_created:
             log_err("! Rooms already created!")
         else:
+            entries=[]
             firstRoom = True
             count = 0
             for vnum in sorted(self.rooms):
@@ -240,12 +241,15 @@ class AreaImporter(object):
                     if room['area'] in self.entries.keys():
                         self.entries[room['area']].append(newroom.id)
                     else:
+                        entries.append(newroom.dbref)
                         self.entries[room['area']] = [newroom.id]
                     firstRoom = False
                 count += 1
             self.rooms_created = True
             log_info("%s rooms created." % count)
             self._spawnRooms_exits()
+        entries = set(entries)
+        return entries
 
     def _spawnRooms_exits(self):
         if self.exits_created:

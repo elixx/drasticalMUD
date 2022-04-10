@@ -40,7 +40,10 @@ class Character(ClothedCharacter):
                              'logins': 0,
                              'visited': {},
                              'takeovers': 0,
-                             'claims': 0}
+                             'claims': 0,
+                             'times_mined': 0,
+                             'times_planted': 0,
+                             'times_harvested': 0}
 
     def at_post_puppet(self):
         super().at_post_puppet()
