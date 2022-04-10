@@ -200,6 +200,7 @@ def _player_stats(**kwargs):
                              'opct': opct, 'vpct': vpct })
         explored = sorted(explored, key=lambda x: x['seen'], reverse=True)
         totalpct = round(totalvisited / totalrooms * 100, 2)
+        totaltime = "0"
         if 'conn_time' in character.db.stats.keys():
             totaltime = character.db.stats['conn_time']
             m, s = divmod(totaltime.seconds, 60)
