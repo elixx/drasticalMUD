@@ -100,19 +100,34 @@ def qual(obj):
         return "standard"
 
 
-def area_count():
-    from typeclasses.rooms import ImportedRoom
-    counts = {}
-    areas = search_tag_object(category='area')
-    allrooms = ImportedRoom.objects.all()
-    for area in areas:
-        counts[area.db_key] = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
-    return (counts)
+def area_count(refresh=False):
+    stats = findStatsMachine()
+    if refresh==False and not stats.db.area_counts:
+        refresh = True
+    if refresh:
+        from typeclasses.rooms import ImportedRoom
+        counts = {}
+        areas = search_tag_object(category='area')
+        allrooms = ImportedRoom.objects.all()
+        for area in areas:
+            counts[area.db_key] = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
+        stats.db.area_counts = counts
+        return (counts)
+    else:
+        return stats.db.area_counts
 
 
-def total_rooms_in_area(area):
-    results = search_tag(area, category="room")
-    return (results.count())
+def total_rooms_in_area(area, refresh=False):
+    stats = findStatsMachine()
+    if refresh==False and not stats.db.total_rooms_in_area:
+        stats.db.total_rooms_in_area = {}
+        refresh = True
+    if refresh or area not in stats.db.total_rooms_in_area.keys():
+        results = search_tag(area, category="room").count()
+        stats.db.total_rooms_in_area[area] = results
+        return results
+    else:
+        return(stats.db.total_rooms_in_area[area])
 
 
 def claimed_in_area(area, owner):
