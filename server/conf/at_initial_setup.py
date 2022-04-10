@@ -96,26 +96,29 @@ def at_initial_setup():
     first_mine  = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
                                  tags=[('0', 'mining_x'),
                                        ('0', 'mining_y'),
-                                       ('0', 'mining_z')])
+                                       ('0', 'mining_z'),
+                                       ('the drastical mines', 'area')])
     first_mine.x = first_mine.y = first_mine.z = 0
     first_mine.update_description()
-    create_exit("down", "#"+str(temple_square.id), "#"+str(first_mine.id),    exit_aliases='d')
-    create_exit("up",   "#"+str(first_mine.id),    "#"+str(temple_square.id), exit_aliases='u')
+    create_exit("enter mine", "#"+str(temple_square.id), "#"+str(first_mine.id),    exit_aliases='enter')
+    create_exit("leave mine",   "#"+str(first_mine.id),  "#"+str(temple_square.id), exit_aliases='leave')
 
-    x = -512
-    y = -512
+    x = -768
+    y = -768
     z = 0
-    for entry in list(entrypoints)[:-30]:
+    entrypoints = list(entrypoints)
+    for entry in entrypoints[60:]:
         mine = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
                                  tags=[(str(x), 'mining_x'),
                                        (str(y), 'mining_y'),
-                                       (str(z), 'mining_z')])
+                                       (str(z), 'mining_z'),
+                                       ('the drastical mines', 'area')])
         mine.x = x
         mine.y = y
         mine.z = z
         mine.update_description()
-        create_exit("down", entry, mine.dbref, exit_aliases='d')
-        create_exit("up", mine.dbref, entry, exit_aliases='u')
+        create_exit("enter mine", entry, mine.dbref, exit_aliases='enter')
+        create_exit("leave mine", mine.dbref, entry, exit_aliases='leave')
         x += randint(8,20)
         y += randint(8,20)
 
