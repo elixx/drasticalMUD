@@ -35,6 +35,11 @@ HELP_ENTRY_DICTS = [
             * DrasticalMUD working docs *
             
             _this might be outdated by the time you find it_
+            (But I'll try to keep it up to date)
+            
+            DrasticalMUD started out as a creation with importing lots of old ROM and Diku MUD areas from days of yore
+            into modern Evennia. It has since begun evolving into a exploring / farming / empire-building kind of game,
+            but I would like to continue to expand to accommodate different flavours and preferences of play. 
 
             # subtopics
 
