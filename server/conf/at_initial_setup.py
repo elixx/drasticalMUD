@@ -62,7 +62,7 @@ def at_initial_setup():
     log_info("Import complete.")
 
     if not TESTING:
-        # Connect Limbo to Limbo
+        # Connect our Limbo to stock Limbo
         create_exit("up", "#2", "#8", exit_aliases="u")
         create_exit("down", "#8", "#2", exit_aliases="d")
 
@@ -72,11 +72,12 @@ def at_initial_setup():
         create_exit("west", "#7", "#8", exit_aliases="w")
         create_exit("east", "#8", "#7", exit_aliases="e")
 
-        # Check that room IDs align as expected"
+        # Check that room IDs align as expected resulting from areafile data
         temple_square = search_object("#1219").first()
-        temple_square.db.sector_type = "important"
-
         assert temple_square.key == "The Temple Square"
+
+        # Flag symbol for mapping
+        temple_square.db.sector_type = "important"
 
         # Create recycle bin
         create_object("typeclasses.recycle_bin.RecycleBin",
@@ -90,7 +91,7 @@ def at_initial_setup():
                       ],
                       tags=[('drastical')])
 
-    # Create entrances to mines
+    # Create center entrance to mines
     mines = []
 
     first_mine  = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
@@ -103,8 +104,8 @@ def at_initial_setup():
     create_exit("enter mine", "#"+str(temple_square.id), "#"+str(first_mine.id),    exit_aliases='enter')
     create_exit("leave mine",   "#"+str(first_mine.id),  "#"+str(temple_square.id), exit_aliases='leave')
 
-    x = -768
-    y = -768
+    x = -384
+    y = -384
     z = 0
     entrypoints = list(entrypoints)
     for entry in entrypoints[60:]:
@@ -121,6 +122,7 @@ def at_initial_setup():
         create_exit("leave mine", mine.dbref, entry, exit_aliases='leave')
         x += randint(8,20)
         y += randint(8,20)
+        log_info("Mining entrance: %s - (%s, %s, %s)" % (entry, x,y,z))
 
 
     # # #30713 d (8,5,0)
