@@ -190,7 +190,9 @@ class MiningRoom(Room):
                 newroom.z = target_z
                 newroom.update_description()
 
-                log_err("New MiningRoom created: %s %s" % (newroom.id, newroom))
+                log_err("New MiningRoom created: %s %s (%s, %s, %s)" % (newroom.id, newroom, target_x,
+                                                                        target_y, target_z))
+
                 revdir = EXITS_REV[direction]
                 create_exit(revdir, "#" + str(newroom.id), "#" + str(character.location.id),
                             exit_aliases=EXIT_ALIAS[revdir])
