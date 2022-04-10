@@ -129,7 +129,7 @@ class MiningRoom(Room):
             self.z = 0
 
         for key in self.lifespan.keys():
-            self.lifespan[key] += int( self.lifesspan[key] * self.depth * .25 )
+            self.lifespan[key] += int( self.lifespan[key] * self.depth * .25 )
 
         lifespan = self.lifespan
 
