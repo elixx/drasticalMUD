@@ -154,7 +154,7 @@ class AreaImporter(object):
             vnum = m.vnum
             name = m.short_desc
             aliases = str(name).split(' ')
-            desc = m.description
+            desc = m.description if areaname not in FIX_DOUBLESPACE else m.description.replace("\n\n","\n")
             ext = m.long_desc
             size = m.size
             alignment = m.alignment
@@ -248,7 +248,6 @@ class AreaImporter(object):
             self.rooms_created = True
             log_info("%s rooms created." % count)
             self._spawnRooms_exits()
-        entries = set(entries)
         return entries
 
     def _spawnRooms_exits(self):

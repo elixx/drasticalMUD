@@ -100,7 +100,7 @@ class Map(object):
                     if i.key == 'up':
                         sym = self.grid[self.curX][self.curY][1:]    # up exits go on the left
                         self.grid[self.curX][self.curY] = "<" + sym
-                    if i.key == 'down':
+                    if i.key == 'down' or i.key == 'enter mine':
                         sym = self.grid[self.curX][self.curY][:-1]   # down exits on the right
                         self.grid[self.curX][self.curY] = sym + ">"
                     # log_err(self.grid[self.curX][self.curY])
