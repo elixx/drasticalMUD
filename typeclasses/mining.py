@@ -25,6 +25,8 @@ class MiningRoom(Room):
     quality = AttributeProperty(default=1, autocreate=True)
     # how often stuff will drop when mining a wall
     drop_rate = AttributeProperty(default=1, autocreate=True)
+    # depth from entry
+    depth = AttributeProperty(default=1, autocreate=True)
     # how long is left on given wall
     lifespan = AttributeProperty(default={"north": 10,
                                           "south": 10,
@@ -126,13 +128,17 @@ class MiningRoom(Room):
         if self.z is None:
             self.z = 0
 
+        for key in self.lifespan.keys():
+            self.lifespan[key] += int( self.lifespan[key] * self.depth * .25 )
+
         lifespan = self.lifespan
 
     def at_init(self):
         coordstring = "Coordinates: (%s, %s, %s)" % (self.x, self.y, self.z)
         self.ndb.shortdesc = coordstring
-        if self.db.desc == "This looks like a good place for mining.":
-            self.update_description()
+        if self.db.desc:
+            if "Coordinates" not in self.db.desc:
+                self.update_description()
 
         lifespan = self.lifespan
 
@@ -171,6 +177,7 @@ class MiningRoom(Room):
             target_x = self.x + 1 if direction == 'east' else self.x - 1 if direction == 'west' else self.x
             target_y = self.y + 1 if direction == 'north' else self.y - 1 if direction == 'south' else self.y
             target_z = self.z + 1 if direction == 'up' else self.z - 1 if direction == 'down' else self.z
+            target_depth = self.depth + 1
 
             exists = self.get_room_at(target_x, target_y, target_z)
             if exists:
@@ -184,7 +191,9 @@ class MiningRoom(Room):
             else:
                 newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
                                         nohome=True, location=None,
-                                        attributes=[('desc', 'This looks like a good place for mining.')])
+                                        attributes=[('desc', 'This looks like a good place for mining.'),
+                                                    ('depth', target_depth)])
+
                 newroom.x = target_x
                 newroom.y = target_y
                 newroom.z = target_z
@@ -274,7 +283,7 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
                 return False
             if caller.db.is_busy and caller.db.busy_doing:
                 doing = caller.db.busy_doing
-                caller.msg("You are too busy %s! See if you can |ystop %s|n." % (doing, doing))
+                caller.msg("You are too busy %s! See if you can |y|lcstop %s|ltstop %s|le|n." % (doing, doing, doing))
                 return False
             if caller.db.is_busy:
                 caller.msg("You are too busy!")
