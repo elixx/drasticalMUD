@@ -35,24 +35,25 @@ HELP_ENTRY_DICTS = [
             * DrasticalMUD working docs *
             
             _this might be outdated by the time you find it_
-
+            (But I'll try to keep it up to date)
+            
+            DrasticalMUD started out as a creation with importing lots of old ROM and Diku MUD areas from days of yore
+            into modern Evennia. It has since begun evolving into a exploring / farming / empire-building kind of game,
+            but I would like to continue to expand to accommodate different flavours and preferences of play. 
 
             # subtopics
 
-
-            ## Foraging ##
+            ## Foraging
 
             Random items and resource bundles will spawn around the world. These can be collected, combined into other
             resources / items, and / or recycled for gold.
-            
-            
-            ## Resources ##
+                        
+            ## Resources
             
             Gold is the form of currency. Resources types are Wood, Stone, and Trash. Other special resource types will 
             include gems and essences. Many items can be broken down for resources with a deconstructor.
 
-
-            ## Property ##
+            ## Property
 
             DrasticalMUD players can 'claim' ownership of almost any room in any area. Taking ownership costs 100 gold
             to start, but will increase each time it is claimed. With enough gold, any property can be taken from
@@ -60,22 +61,19 @@ HELP_ENTRY_DICTS = [
             structures that inhibit the capture or traversal of their property. 
             Players will also be able to consensually trade land for other land, items, gold, etc.
 
-
-            ## Movement ##
+            ## Movement
 
             A minor delay is incurred on moving from room-to-room to lessen the impact of speedwalking. Special items and
             buffs can increases a player's movement speed, providing an advantage in claiming or defending territory.
 
-
-            ## Farming ##
+            ## Farming
             
             On a claimed plot of land, trees and other plants can be planted from seeds. Over time, these will grow in size
             and be able to be harvested for resources. These will eventually be season dependant. Fruit trees will produce
             fruit on a repeating basis, while more regular types of trees will be chopped down when harvested. The older a tree
             is, the more resources it produces, so rooms that have long-growing plants will be valuable!
-
             
-            ## Mining ##
+            ## Mining
             
             There are entries to the mines spread out around the world. With a mining tool, one can mine for stone and other, 
             rarer gems by chipping away at the walls in the mines. As new ground is broken, the various mining entry-points
@@ -83,8 +81,7 @@ HELP_ENTRY_DICTS = [
             at which point will require either replacement or repair. Enhancements to mining equipment will also become
             available. 
 
-
-            ## Quality ##
+            ## Quality
             
             All items and bundles have an inherent 'quality' that provides a bonus percentage on rewards and production.
             
@@ -98,9 +95,8 @@ HELP_ENTRY_DICTS = [
             80-85   impressive
             85-95   exceptional   
             95-100  legendary
-            
-            
-            ## Credits ##
+                        
+            ## Credits
             
             Credits go to the maintainers of and contributors to:
             
@@ -108,7 +104,6 @@ HELP_ENTRY_DICTS = [
              - Area_Reader - https://github.com/ctoth/area_reader
              - Mud-Areas - https://github.com/vedicveko/Mud-Areas
              - windows-95-ui-kit - https://github.com/themesberg/windows-95-ui-kit
-            
             
          The DrasticalMUD Public source is available at: https://gitlab.drastical.net/elixx/drasticalmud
 
