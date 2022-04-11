@@ -93,11 +93,11 @@ def at_initial_setup():
 
     # Create center entrance to mines
     mines = []
-
+    x=y=z=str(0)
     first_mine  = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
-                                 tags=[('0', 'mining_x'),
-                                       ('0', 'mining_y'),
-                                       ('0', 'mining_z'),
+                                 tags=[(x, 'mining_x'),
+                                       (y, 'mining_y'),
+                                       (z, 'mining_z'),
                                        ('the drastical mines', 'area'),
                                        ('the drastical mines', 'room')])
     first_mine.x = first_mine.y = first_mine.z = 0
@@ -105,27 +105,31 @@ def at_initial_setup():
     create_exit("enter mine", "#"+str(temple_square.id), "#"+str(first_mine.id),    exit_aliases='enter')
     create_exit("leave mine",   "#"+str(first_mine.id),  "#"+str(temple_square.id), exit_aliases='leave')
 
-    x = -512
-    y = -512
-    z = 0
+
     entrypoints = list(entrypoints)
+    allcoords = [(x,y)]
     for entry in entrypoints[23:]:
+        while (x,y) in allcoords:
+            x = randint(-256,256)
+            y = randint(-256,256)
+
         mine = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
                                  tags=[(str(x), 'mining_x'),
                                        (str(y), 'mining_y'),
                                        (str(z), 'mining_z'),
                                        ('the drastical mines', 'area'),
                                        ('the drastical mines', 'room')])
+
+        allcoords.append((x, y))
         mine.x = x
         mine.y = y
         mine.z = z
         mine.update_description()
         create_exit("enter mine", entry, mine.dbref, exit_aliases='enter')
         create_exit("leave mine", mine.dbref, entry, exit_aliases='leave')
-        x += randint(6,15)
-        y += randint(6,15)
-        log_info("Mining entrance: %s - (%s, %s, %s)" % (entry, x,y,z))
 
+    allcoords = allcoords.sort(key=lambda x: x[0])
+    log_info(f"Mining coordinates: {allcoords}")
 
     # # #30713 d (8,5,0)
 
