@@ -196,7 +196,9 @@ class MiningRoom(Room):
                 newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
                                         nohome=True, location=None,
                                         attributes=[('desc', 'This looks like a good place for mining.'),
-                                                    ('depth', target_depth)])
+                                                    ('depth', target_depth)],
+                                        tags=[('the drastical mines', 'area'),
+                                             ('the drastical mines', 'room')])
 
                 newroom.x = target_x
                 newroom.y = target_y
@@ -272,11 +274,12 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             if (location.depth <= 1 or location.z == 0) and direction == "up":
                 caller.msg("You cannot mine in that direction!")
                 return False
-            tool = caller.search(self.rhs, quiet=True)
-            tool = tool[0]
+            tool = caller.search(self.rhs)
             if tool is None:
                 caller.msg("With which tool did you want to mine?")
                 return False
+            elif not tool.db:
+                tool = tool.first()
             if 'MiningTool' not in tool.db_typeclass_path:
                 caller.msg("That is not a mining tool!")
                 return False

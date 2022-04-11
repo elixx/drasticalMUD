@@ -98,7 +98,8 @@ def at_initial_setup():
                                  tags=[('0', 'mining_x'),
                                        ('0', 'mining_y'),
                                        ('0', 'mining_z'),
-                                       ('the drastical mines', 'area')])
+                                       ('the drastical mines', 'area'),
+                                       ('the drastical mines', 'room')])
     first_mine.x = first_mine.y = first_mine.z = 0
     first_mine.update_description()
     create_exit("enter mine", "#"+str(temple_square.id), "#"+str(first_mine.id),    exit_aliases='enter')
@@ -113,7 +114,8 @@ def at_initial_setup():
                                  tags=[(str(x), 'mining_x'),
                                        (str(y), 'mining_y'),
                                        (str(z), 'mining_z'),
-                                       ('the drastical mines', 'area')])
+                                       ('the drastical mines', 'area'),
+                                       ('the drastical mines', 'room')])
         mine.x = x
         mine.y = y
         mine.z = z
