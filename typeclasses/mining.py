@@ -4,7 +4,7 @@ from evennia.typeclasses.attributes import AttributeProperty
 from evennia.commands.cmdset import CmdSet
 from typeclasses.rooms import Room
 from typeclasses.objects import Item
-from random import randint, choice
+from random import randint, choice, random
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_err
 from evennia.utils import list_to_string
@@ -22,11 +22,11 @@ class MiningRoom(Room):
     RE_FOOTER = re.compile(r"Coordinates: \(.*\)", re.IGNORECASE)
 
     # quality is used as level for tool check
-    quality = AttributeProperty(default=1, autocreate=True)
+    mining_level = AttributeProperty(default=1, autocreate=True)
     # how often stuff will drop when mining a wall
-    drop_rate = AttributeProperty(default=1, autocreate=True)
+    drop_rate = AttributeProperty(default=-1, autocreate=True)
     # depth from entry
-    depth = AttributeProperty(default=1, autocreate=True)
+    depth = AttributeProperty(default=0, autocreate=True)
     # how long is left on given wall
     lifespan = AttributeProperty(default={"north": 10,
                                           "south": 10,
@@ -129,7 +129,7 @@ class MiningRoom(Room):
             self.z = 0
 
         for key in self.lifespan.keys():
-            self.lifespan[key] += int( self.lifespan[key] * self.depth * .25 )
+            self.lifespan[key] += int( self.lifespan[key] * self.depth * .65 )
 
         lifespan = self.lifespan
 
@@ -139,7 +139,7 @@ class MiningRoom(Room):
         if self.db.desc:
             if "Coordinates" not in self.db.desc:
                 self.update_description()
-
+        mining_level = self.mining_level
         lifespan = self.lifespan
 
     def mining_callback(self, character, tool, direction):
@@ -156,8 +156,7 @@ class MiningRoom(Room):
 
         # Get resource bundle
         resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
-                     'wood': choice([0, 0, 0, randint(0, 10)]),
-                     'stone': randint(int(10 + self.quality / 2), 10 + self.quality)}
+                     'stone': randint(int(10 + self.mining_level / 2), 10 + self.mining_level)}
         result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in resources.items()]
         agg = sum(resources.values())
         bundlename = "%s resource bundle" % SIZES(agg)
@@ -165,6 +164,10 @@ class MiningRoom(Room):
                                location=character, attributes=[('resources', resources)])
         character.msg("You get %s of %s quality, containing: %s" % (bundlename, qual(bundle), list_to_string(result)))
         character.location.msg_contents("%s collects %s." % (character.name, bundlename), exclude=character)
+
+        if (1-random()*10)+self.drop_rate > 0:
+            # random loot get
+            pass
 
         # Subtract wall life
         self.lifespan[direction] -= tool.strength
@@ -177,7 +180,7 @@ class MiningRoom(Room):
             target_x = self.x + 1 if direction == 'east' else self.x - 1 if direction == 'west' else self.x
             target_y = self.y + 1 if direction == 'north' else self.y - 1 if direction == 'south' else self.y
             target_z = self.z + 1 if direction == 'up' else self.z - 1 if direction == 'down' else self.z
-            target_depth = self.depth + 1
+            target_level = choice([self.mining_level, self.mining_level, self.mining_level, self.mining_level, self.mining_level+1])
 
             exists = self.get_room_at(target_x, target_y, target_z)
             if exists:
@@ -189,6 +192,7 @@ class MiningRoom(Room):
                 character.location.msg_contents("%s breaks through the wall to the %s!" % (character.name, direction),
                                                 exclude=character)
             else:
+                target_depth = self.depth + 1
                 newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
                                         nohome=True, location=None,
                                         attributes=[('desc', 'This looks like a good place for mining.'),
@@ -197,6 +201,7 @@ class MiningRoom(Room):
                 newroom.x = target_x
                 newroom.y = target_y
                 newroom.z = target_z
+                newroom.mining_level = target_level
                 newroom.update_description()
 
                 log_err("New MiningRoom created: %s %s (%s, %s, %s)" % (newroom.id, newroom, target_x,
@@ -221,7 +226,7 @@ class MiningTool(Item):
     lifespan = AttributeProperty(default=50, autocreate=True)
     strength = AttributeProperty(default=1, autocreate=True)
     speed = AttributeProperty(default=1, autocreate=True)
-    quality = AttributeProperty(default=10, autocreate=True)
+    mining_level = AttributeProperty(default=1, autocreate=True)
     broken = AttributeProperty(default=False, autocreate=True)
 
     def at_object_creation(self):
@@ -264,6 +269,9 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             if direction in [str(i) for i in location.contents]:
                 caller.msg("There is already an exit %s." % direction)
                 return False
+            if (location.depth <= 1 or location.z == 0) and direction == "up":
+                caller.msg("You cannot mine in that direction!")
+                return False
             tool = caller.search(self.rhs, quiet=True)
             tool = tool[0]
             if tool is None:
@@ -272,8 +280,8 @@ class CmdMine(COMMAND_DEFAULT_CLASS):
             if 'MiningTool' not in tool.db_typeclass_path:
                 caller.msg("That is not a mining tool!")
                 return False
-            if tool.quality < location.quality:
-                caller.msg("Your %s is not of high enough quality to mine this room!" % tool.name)
+            if tool.mining_level < location.mining_level:
+                caller.msg("Your %s is not of high enough level to mine this room!" % tool.name)
                 return False
             if tool.lifespan <= 0:
                 caller.msg("The %s is worn out and needs of repair." % tool.name)
