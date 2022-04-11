@@ -76,7 +76,7 @@ def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=N
     else:
         return None
 
-    print("create_exit: %s: %s - %s" % (exit_name, location, destination))
+    #print("create_exit: %s: %s - %s" % (exit_name, location, destination))
 
     exit_obj = location.search(exit_name, quiet=True, exact=True)
     if len(exit_obj) > 1:
