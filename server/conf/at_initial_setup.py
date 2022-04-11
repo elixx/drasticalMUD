@@ -104,11 +104,11 @@ def at_initial_setup():
     create_exit("enter mine", "#"+str(temple_square.id), "#"+str(first_mine.id),    exit_aliases='enter')
     create_exit("leave mine",   "#"+str(first_mine.id),  "#"+str(temple_square.id), exit_aliases='leave')
 
-    x = -384
-    y = -384
+    x = -512
+    y = -512
     z = 0
     entrypoints = list(entrypoints)
-    for entry in entrypoints[30:]:
+    for entry in entrypoints[23:]:
         mine = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
                                  tags=[(str(x), 'mining_x'),
                                        (str(y), 'mining_y'),
@@ -120,8 +120,8 @@ def at_initial_setup():
         mine.update_description()
         create_exit("enter mine", entry, mine.dbref, exit_aliases='enter')
         create_exit("leave mine", mine.dbref, entry, exit_aliases='leave')
-        x += randint(8,20)
-        y += randint(8,20)
+        x += randint(6,15)
+        y += randint(6,15)
         log_info("Mining entrance: %s - (%s, %s, %s)" % (entry, x,y,z))
 
 
