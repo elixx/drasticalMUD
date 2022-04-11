@@ -108,7 +108,7 @@ def at_initial_setup():
     y = -384
     z = 0
     entrypoints = list(entrypoints)
-    for entry in entrypoints[60:]:
+    for entry in entrypoints[30:]:
         mine = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
                                  tags=[(str(x), 'mining_x'),
                                        (str(y), 'mining_y'),
