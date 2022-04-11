@@ -281,6 +281,7 @@ class AreaImporter(object):
                                             tags=[(room['area'], 'area'),
                                                   (room['area'], 'exit'),
                                                   ('imported')],
+                                            locks=['puppet:false()', 'get:false()'],
                                             attributes=[('area', room['area']),
                                                         ('vnum', vnum)])
                     count += 1
