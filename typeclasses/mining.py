@@ -17,7 +17,6 @@ from core.utils import create_exit
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
-
 class MiningRoom(Room):
     RE_FOOTER = re.compile(r"Coordinates: \(.*\)", re.IGNORECASE)
 
