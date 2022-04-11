@@ -108,10 +108,10 @@ def at_initial_setup():
 
     entrypoints = list(entrypoints)
     allcoords = [(x,y)]
-    for entry in entrypoints[23:]:
+    for entry in entrypoints[20:]:
         while (x,y) in allcoords:
-            x = randint(-256,256)
-            y = randint(-256,256)
+            x = randint(-64, 64)
+            y = randint(-64, 64)
 
         mine = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
                                  tags=[(str(x), 'mining_x'),
@@ -128,7 +128,7 @@ def at_initial_setup():
         create_exit("enter mine", entry, mine.dbref, exit_aliases='enter')
         create_exit("leave mine", mine.dbref, entry, exit_aliases='leave')
 
-    allcoords = allcoords.sort(key=lambda x: x[0])
+    allcoords = sorted(sorted(allcoords,key=lambda s: int(s[0])), key=lambda s: int(s[1]))
     log_info(f"Mining coordinates: {allcoords}")
 
     # # #30713 d (8,5,0)

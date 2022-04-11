@@ -18,7 +18,7 @@ from core.utils import create_exit
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 class MiningRoom(Room):
-    RE_FOOTER = re.compile(r"Coordinates: \(.*\)", re.IGNORECASE)
+    RE_FOOTER = re.compile(r"Coordinates: \(.*\) Difficulty: [0-9]+ Depth: [0-9]+", re.IGNORECASE)
 
     # quality is used as level for tool check
     mining_level = AttributeProperty(default=1, autocreate=True)
@@ -110,7 +110,7 @@ class MiningRoom(Room):
         return string
 
     def update_description(self):
-        shortdesc = "Coordinates: (%s, %s, %s)" % (self.x, self.y, self.z)
+        shortdesc = "Coordinates: (%s, %s, %s) Difficulty: %s Depth: %s" % (self.x, self.y, self.z, self.mining_level, self.depth)
         self.ndb.shortdesc = shortdesc
         if "Coordinates" in self.db.desc:
             self.db.desc = self.RE_FOOTER.sub('', self.db.desc)
@@ -133,7 +133,7 @@ class MiningRoom(Room):
         lifespan = self.lifespan
 
     def at_init(self):
-        coordstring = "Coordinates: (%s, %s, %s)" % (self.x, self.y, self.z)
+        coordstring = "Coordinates: (%s, %s, %s) Difficulty: %s Depth: %s" % (self.x, self.y, self.z, self.mining_level, self.depth)
         self.ndb.shortdesc = coordstring
         if self.db.desc:
             if "Coordinates" not in self.db.desc:
@@ -155,7 +155,7 @@ class MiningRoom(Room):
 
         # Get resource bundle
         resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
-                     'stone': randint(int(10 + self.mining_level / 2), 10 + self.mining_level)}
+                     'stone': randint(int(10 + self.mining_level / 2), 10 + self.depth)}
         result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in resources.items()]
         agg = sum(resources.values())
         bundlename = "%s resource bundle" % SIZES(agg)
@@ -192,17 +192,16 @@ class MiningRoom(Room):
                                                 exclude=character)
             else:
                 target_depth = self.depth + 1
-                newroom = create_object("typeclasses.mining.MiningRoom", key="part of a mine",
+                newroom = create_object("typeclasses.mining.MiningRoom", key="Part of the mine",
                                         nohome=True, location=None,
-                                        attributes=[('desc', 'This looks like a good place for mining.'),
-                                                    ('depth', target_depth)],
+                                        attributes=[('depth', target_depth),
+                                                    ('mining_level', target_level)],
                                         tags=[('the drastical mines', 'area'),
                                              ('the drastical mines', 'room')])
 
                 newroom.x = target_x
                 newroom.y = target_y
                 newroom.z = target_z
-                newroom.mining_level = target_level
                 newroom.update_description()
 
                 log_err("New MiningRoom created: %s %s (%s, %s, %s)" % (newroom.id, newroom, target_x,

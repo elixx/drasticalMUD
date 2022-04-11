@@ -319,6 +319,7 @@ class AreaImporter(object):
 
                 newmob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
                                        typeclass=MOB_TYPECLASS,
+                                       locks=['get:false()'],
                                        attributes=[('desc', ob['desc']),
                                                    ('ext_desc', ob['ext']),
                                                    ('race', ob['race']),
