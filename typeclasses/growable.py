@@ -136,7 +136,7 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                                 amounts[r] = int( v * ((1+factor) + (obj.db.age/12)) )
                             for r, v in amounts.items():
                                 amount_strs.append("%s %s" % (v , r))
-                            if not self.db.harvest_spawn:
+                            if not obj.db.harvest_spawn:
                                 self.caller.msg("%s will be consumed." % obj.name)
                             ui = yield ("You will receive |y%s|n from harvesting %s. Continue? (Yes/No)" % (
                                 list_to_string(amount_strs), obj.name))
@@ -151,7 +151,7 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                                 bundle = create_object(key=harvest_name, typeclass="typeclasses.resources.Resource",
                                                        home=self.caller, location=self.caller,
                                                        attributes=[('resources', amounts)])
-                                if not self.db.harvest_spawn:
+                                if not obj.db.harvest_spawn:
                                     obj.delete()
                     else:
                         self.caller.msg("You must own a room in order to harvest from things in it.")
