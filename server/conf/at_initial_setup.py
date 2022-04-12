@@ -128,10 +128,11 @@ def at_initial_setup():
         create_exit("enter mine", entry, mine.dbref, exit_aliases='enter')
         create_exit("leave mine", mine.dbref, entry, exit_aliases='leave')
 
-    allcoords = sorted(sorted(allcoords,key=lambda s: int(s[0])), key=lambda s: int(s[1]))
-    log_info(f"Mining coordinates: {allcoords}")
-
-    # # #30713 d (8,5,0)
+    allcoords = sorted(allcoords,key=lambda s: int(s[0]))
+    mines = ""
+    for (cx, cy) in allcoords:
+        mines += "%s, %s\n" % (cx, cy)
+    log_info(f"Mining coordinates: {mines}")
 
     log_info("Train ID is #%s." % train.id)
     log_info("Bulletin board is #%s." % board.id)
