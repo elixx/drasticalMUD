@@ -223,6 +223,7 @@ class AreaImporter(object):
                     firstRoom = True
                 newroom = create_object(typeclass=ROOM_TYPECLASS,
                                         key=room['name'],
+                                        locks=['puppet:false()', 'get:false()'],
                                         attributes=[('desc', room['desc']),
                                                     ('vnum', vnum),
                                                     ('value', 100),
@@ -280,6 +281,7 @@ class AreaImporter(object):
                                             tags=[(room['area'], 'area'),
                                                   (room['area'], 'exit'),
                                                   ('imported')],
+                                            locks=['puppet:false()', 'get:false()'],
                                             attributes=[('area', room['area']),
                                                         ('vnum', vnum)])
                     count += 1
@@ -290,9 +292,8 @@ class AreaImporter(object):
 
     def spawnMobs(self):
         if self.mobs_created:
-            log_err("Objects already created!")
+            log_err("Mobs already created!")
         else:
-            log_info("spawning mobs")
             for vnum in sorted(self.mobs):
                 if vnum not in self.mobs.keys():
                     log_err("spawnMobs:322: %s not found" % vnum)
@@ -317,6 +318,7 @@ class AreaImporter(object):
 
                 newmob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
                                        typeclass=MOB_TYPECLASS,
+                                       locks=['get:false()'],
                                        attributes=[('desc', ob['desc']),
                                                    ('ext_desc', ob['ext']),
                                                    ('race', ob['race']),

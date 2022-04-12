@@ -8,6 +8,8 @@ from evennia.utils.evtable import EvTable as styled_table
 from evennia.utils.logger import log_err, log_info
 from datetime import datetime
 
+EXIT_TYPECLASS = "typeclasses.exits.LegacyExit"
+
 create = create_object
 search = search_object
 
@@ -58,7 +60,7 @@ def combineNames(name1, name2):
     return newname.strip()
 
 
-def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=None, bidirectional=False):
+def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=EXIT_TYPECLASS, bidirectional=False):
     """
     Helper function to avoid code duplication.
     At this point we know destination is a valid location
@@ -76,7 +78,7 @@ def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=N
     else:
         return None
 
-    print("create_exit: %s: %s - %s" % (exit_name, location, destination))
+    #print("create_exit: %s: %s - %s" % (exit_name, location, destination))
 
     exit_obj = location.search(exit_name, quiet=True, exact=True)
     if len(exit_obj) > 1:
@@ -85,17 +87,15 @@ def create_exit(exit_name, location, destination, exit_aliases=None, typeclass=N
         return None
     else:
         ## exit does not exist before. Create a new one.
-        # lockstring = self.new_obj_lockstring.format(id=.id)
         if exit_aliases is None:
             exit_aliases = [EXITS_REV[exit_name]]
-        if not typeclass:
-            typeclass = settings.BASE_EXIT_TYPECLASS
+
         exit_obj = create_object(
             typeclass,
             key=exit_name,
             location=location,
             aliases=exit_aliases,
-            # locks=lockstring,
+            locks=['puppet:false()', 'get:false()'],
             # report_to=caller,
         )
         if exit_obj:

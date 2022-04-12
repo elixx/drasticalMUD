@@ -42,6 +42,7 @@ TRASH_ADJS = ['broken', 'greasy', 'damaged', 'empty', 'irreparable', 'dirty', 'o
               'musty', 'musky', 'gross', 'ugly', 'horrid', 'obnoxious', 'intolerable', 'offensive']
 
 WOOD = ['mahogany', 'oak', 'maple', 'birch', 'cedar', 'spruce', 'dogwood', 'fir', 'pine', "myrtle", "poplar", "sycamore"]
+TREES = WOOD
 
 FRUIT_TREES = ['apple','orange','pineapple','cherry','apricot','plum','peach','pear','pomegranate','banana',
                'coconut','lemon','lime','tangerine','fig']
