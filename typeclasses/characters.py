@@ -33,9 +33,22 @@ class Character(ClothedCharacter):
     at_post_puppet - Echoes "AccountName has entered the game" to the room.
 
     """
+    @property
+    def gold(self):
+        total = 0
+        if self.db.stats is not None:
+            if 'gold' in self.db.stats.keys():
+                total += self.db.stats['gold']
+        return total
+
+    @gold.setter
+    def gold(self, amount):
+        if self.db.stats:
+            self.db.stats['gold'] = amount
+
     def at_object_creation(self):
         super().at_object_creation()
-        if self.db.stats == None:
+        if self.db.stats is None:
             self.db.stats = {'gold': 0,
                              'logins': 0,
                              'visited': {},
