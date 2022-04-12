@@ -12,6 +12,8 @@ TREE = {
     'prototype_key': 'TreeSeed',
     'prototype_desc': 'A harvestable tree',
     'prototype_tags': 'growable',
+    'key': 'tree seed',
+    'desc': 'This seed will grow into a tree of some kind.',
     'typeclass': 'typeclasses.growable.Tree'
 }
 
@@ -19,6 +21,8 @@ FRUIT_TREE = {
     'prototype_key': 'FruitTreeSeed',
     'prototype_desc': 'A fruit tree seed',
     'prototype_tags': 'growable',
+    'key': 'fruit tree seed',
+    'desc': 'This seed will grow into a fruit-bearing tree of some kind.',
     'typeclass': 'typeclasses.growable.FruitTree',
     'harvest_spawn': True
 }
@@ -27,15 +31,9 @@ PLANT = {
     'prototype_key': 'PlantSeed',
     'prototype_desc': 'plant seed',
     'prototype_tags': 'growable',
-    'typeclass': 'typeclasses.growable.FruitTree'
-}
-
-CROP_BEARING_PLANT = {
-    'prototype_parent': 'CropBearingSeed',
-    'prototype_key': 'CropBearingSeed',
-    'prototype_tags': 'growable',
-    'key': 'crop-bearing plant',
-    'harvest_spawn': True
+    'key': 'plant seed',
+    'desc': 'This looks like the kind of seed that grows crops.',
+    'typeclass': 'typeclasses.growable.Plant'
 }
 
 # ==[Mining Tools]==========================================================================================#
