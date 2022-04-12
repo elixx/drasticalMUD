@@ -171,6 +171,14 @@ class MiningRoom(Room):
 
         # Subtract wall life
         self.lifespan[direction] -= tool.strength
+
+        # Player stats counter
+        if 'times_mined' in character.db.stats.keys():
+            character.db.stats['times_mined'] += 1
+        else:
+            character.db.stats['times_mined'] = 1
+
+        # Wall break
         if self.lifespan[direction] <= 0:
             # Success at mining!
             character.msg("You break through the wall %s!" % direction)
@@ -216,11 +224,6 @@ class MiningRoom(Room):
                             exit_aliases=EXIT_ALIAS[revdir])
                 create_exit(direction, "#" + str(character.location.id), "#" + str(newroom.id),
                             exit_aliases=EXIT_ALIAS[direction])
-
-            if 'times_mined' in character.db.stats.keys():
-                character.db.stats['times_mined'] += 1
-            else:
-                character.db.stats['times_mined'] = 1
 
         tool.lifespan -= 1
         if 3 >= tool.lifespan > 0:
