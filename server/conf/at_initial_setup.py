@@ -118,7 +118,8 @@ def at_initial_setup():
                                        (str(y), 'mining_y'),
                                        (str(z), 'mining_z'),
                                        ('the drastical mines', 'area'),
-                                       ('the drastical mines', 'room')])
+                                       ('the drastical mines', 'room'),
+                                       ('mines_start', 'room')])
 
         allcoords.append((x, y))
         mine.x = x
