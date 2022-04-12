@@ -292,9 +292,8 @@ class AreaImporter(object):
 
     def spawnMobs(self):
         if self.mobs_created:
-            log_err("Objects already created!")
+            log_err("Mobs already created!")
         else:
-            log_info("spawning mobs")
             for vnum in sorted(self.mobs):
                 if vnum not in self.mobs.keys():
                     log_err("spawnMobs:322: %s not found" % vnum)
