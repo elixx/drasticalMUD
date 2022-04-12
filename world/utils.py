@@ -118,6 +118,8 @@ def area_count(refresh=False):
 
 
 def total_rooms_in_area(area, refresh=False):
+    if area.lower() == "the drastical mines":
+        refresh = True
     stats = findStatsMachine()
     if refresh==False and not stats.db.total_rooms_in_area:
         stats.db.total_rooms_in_area = {}

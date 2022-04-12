@@ -78,6 +78,11 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
                     if k in BASE_VALUE.keys():
                         val += BASE_VALUE[k] * self.obj1.db.resources[k]
 
+            if self.obj1.db.value:
+                for k in self.obj1.db.value.keys():
+                    if k == 'gold':
+                        val += self.obj1.db.value['gold'] / 8
+
             val += (val * factor)  # quality bonus
 
             val = round(val,2)
