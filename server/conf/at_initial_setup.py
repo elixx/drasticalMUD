@@ -94,24 +94,23 @@ def at_initial_setup():
     # Create center entrance to mines
     mines = []
     x=y=z=str(0)
-    first_mine  = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
-                                 tags=[(x, 'mining_x'),
-                                       (y, 'mining_y'),
-                                       (z, 'mining_z'),
-                                       ('the drastical mines', 'area'),
-                                       ('the drastical mines', 'room')])
-    first_mine.x = first_mine.y = first_mine.z = 0
-    first_mine.update_description()
-    create_exit("enter mine", "#"+str(temple_square.id), "#"+str(first_mine.id),    exit_aliases='enter')
-    create_exit("leave mine",   "#"+str(first_mine.id),  "#"+str(temple_square.id), exit_aliases='leave')
-
-
+    # first_mine  = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
+    #                              tags=[(x, 'mining_x'),
+    #                                    (y, 'mining_y'),
+    #                                    (z, 'mining_z'),
+    #                                    ('the drastical mines', 'area'),
+    #                                    ('the drastical mines', 'room')])
+    # first_mine.x = first_mine.y = first_mine.z = 0
+    # first_mine.update_description()
+    # create_exit("enter mine", "#"+str(temple_square.id), "#"+str(first_mine.id),    exit_aliases='enter')
+    # create_exit("leave mine",   "#"+str(first_mine.id),  "#"+str(temple_square.id), exit_aliases='leave')
     entrypoints = list(entrypoints)
-    allcoords = [(x,y)]
+    first = True
     for entry in entrypoints[20:]:
-        while (x,y) in allcoords:
-            x = randint(-64, 64)
-            y = randint(-64, 64)
+        if first == True:
+            (x,y) = (0,0)
+            allcoords = [(x, y)]
+            first = False
 
         mine = create_object("typeclasses.mining.MiningRoom", key="Entrance to the mines",
                                  tags=[(str(x), 'mining_x'),
@@ -128,6 +127,9 @@ def at_initial_setup():
         mine.update_description()
         create_exit("enter mine", entry, mine.dbref, exit_aliases='enter')
         create_exit("leave mine", mine.dbref, entry, exit_aliases='leave')
+        while (x,y) in allcoords:
+            x = randint(-64, 64)
+            y = randint(-64, 64)
 
     allcoords = sorted(allcoords,key=lambda s: int(s[0]))
     mines = ""
