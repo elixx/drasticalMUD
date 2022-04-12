@@ -33,9 +33,23 @@ class Character(ClothedCharacter):
     at_post_puppet - Echoes "AccountName has entered the game" to the room.
 
     """
+
+    @property
+    def gold(self):
+        total = 0
+        if self.db.stats is not None:
+            if 'gold' in self.db.stats.keys():
+                total += self.db.stats['gold']
+        return total
+
+    @gold.setter
+    def gold(self, amount):
+        if self.db.stats:
+            self.db.stats['gold'] = amount
+
     def at_object_creation(self):
         super().at_object_creation()
-        if self.db.stats == None:
+        if self.db.stats is None:
             self.db.stats = {'gold': 0,
                              'logins': 0,
                              'visited': {},
@@ -146,7 +160,6 @@ class Character(ClothedCharacter):
                 self.db.stats['visited'] = {}
                 log_err("at_post_move:110: Resettings stats on %s:%s - %s" % (self.id, self.name, e))
 
-
         super().at_after_move(source_location)
 
 
@@ -167,3 +180,24 @@ class Character(ClothedCharacter):
         target.at_desc(looker=self, **kwargs)
 
         return description
+
+
+    def create_gold(self, amount):
+        if amount <= self.gold:
+            from evennia.utils.create import create_object
+            from world.resource_types import SIZES
+            newkey = "%s pile of gold" % SIZES(amount)
+
+            ob = create_object(typeclass="typeclasses.resources.Resource",
+                               key=newkey,
+                               aliases=['gold','pile'],
+                               location=self,
+                               home=self,
+                               attributes=[
+                                   ('resources', {'gold': amount})
+                               ])
+
+            self.gold -= amount
+            return ob
+        else:
+            return False

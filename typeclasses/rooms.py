@@ -89,7 +89,6 @@ class Room(ExtendedRoom):
             name=name,
             desc=desc if not looker.db.OPTION_BRIEF else self.ndb.shortdesc,
              exits=f"|wExits:|n {exits}" if exits else "",
-            #exits=f"|wExits:|n %s" % exits if exits else "",
             characters=f"\n|wCharacters:|n {characters}" if characters else "",
             things=f"\n|wYou see:|n {things}" if things else "",
             footer="",
@@ -103,6 +102,25 @@ class ImportedRoom(Room):
     """
     Rooms imported by area_importer.
     """
+
+    @property
+    def owner(self):
+        if self.db.owner:
+            result = search_object(self.db.owner, use_dbref=True)
+            if result: result = result[0]
+            return result
+
+    @owner.setter
+    def owner(self, newowner):
+        if isinstance(newowner, str):
+            if newowner.isnumeric():
+                o = search_object('#'+newowner, use_dbref=True)
+            o = search_object(newowner)
+        elif isinstance(newowner, int):
+            o = search_object(newowner, use_dbref=True)
+        if o is not None:
+            o = o[0]
+            self.db.owner = o.id
 
     def at_object_creation(self):
         # @py from typeclasses.rooms import ImportedRoom; [obj.at_object_creation() for obj in ImportedRoom.objects.all()]

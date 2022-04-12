@@ -50,7 +50,7 @@ class LegacyExit(Exit):
         if 'BASE_MOVE_DELAY' in dir(settings):
             move_delay = settings.BASE_MOVE_DELAY
         else:
-            move_delay = 0.35
+            move_delay = 0.4
 
         if traversing_object.db.speed_boost:
             move_delay -= traversing_object.db.speed_boost
