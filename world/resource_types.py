@@ -7,27 +7,27 @@ BASE_VALUE = { 'trash': 1.5,
 def SIZES(v):
     if  v==0:
         return "empty"
-    elif v<5:
-        return "miniscule"
     elif v<10:
+        return "miniscule"
+    elif v<25:
         return "tiny"
-    elif v<30:
+    elif v<100:
         return "small"
-    elif v<80:
+    elif v<150:
         return "medium"
-    elif v<120:
+    elif v<250:
         return "large"
-    elif v<200:
-        return "enormous"
-    elif v<350:
-        return "extravagant"
     elif v<500:
-        return "gigantic"
+        return "enormous"
     elif v<1000:
-        return "ridiculous"
-    elif v<2000:
-        return "cosmic"
+        return "extravagant"
+    elif v<2500:
+        return "gigantic"
     elif v<5000:
+        return "ridiculous"
+    elif v<10000:
+        return "cosmic"
+    elif v<50000:
         return "inconceivable"
     else:
         return "improperly balanced"
