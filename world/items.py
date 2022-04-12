@@ -1,54 +1,44 @@
 from random import choice
 
-#==[Growables]==========================================================================================#
+# ==[Growables]==========================================================================================#
 GROWABLE = {
-    'prototype_key': 'Growable',
-    'prototype_desc': 'growable object',
+    'prototype_key': 'Spore',
+    'prototype_desc': 'fungus spore',
     'prototype_tags': 'growable',
     'typeclass': 'typeclasses.growable.GrowableObject'
 }
 
 TREE = {
-    'prototype_key': 'Tree',
+    'prototype_key': 'TreeSeed',
     'prototype_desc': 'A harvestable tree',
     'prototype_tags': 'growable',
     'typeclass': 'typeclasses.growable.Tree'
 }
 
-
 FRUIT_TREE = {
-    'prototype_key': 'FruitTree',
-    'prototype_desc': 'A fruit tree',
+    'prototype_key': 'FruitTreeSeed',
+    'prototype_desc': 'A fruit tree seed',
     'prototype_tags': 'growable',
     'typeclass': 'typeclasses.growable.FruitTree',
     'harvest_spawn': True
 }
 
-
-
 PLANT = {
-    'prototype_key': 'Plant',
-    'prototype_desc': 'growable object',
+    'prototype_key': 'PlantSeed',
+    'prototype_desc': 'plant seed',
     'prototype_tags': 'growable',
     'typeclass': 'typeclasses.growable.FruitTree'
 }
 
-
-
-
 CROP_BEARING_PLANT = {
-    'prototype_parent': 'Plant',
-    'prototype_key': 'CropBearingPlant',
+    'prototype_parent': 'CropBearingSeed',
+    'prototype_key': 'CropBearingSeed',
     'prototype_tags': 'growable',
     'key': 'crop-bearing plant',
     'harvest_spawn': True
 }
 
-
-
-
-
-#==[Mining Tools]==========================================================================================#
+# ==[Mining Tools]==========================================================================================#
 
 MINING_TOOL = {
     'prototype_key': 'miningTool',
@@ -68,7 +58,7 @@ BASIC_AXE = {
     'lifespan': 10,
     'max_lifespan': 10,
     'mining_level': 1,
-    'value': {'gold': 500 }
+    'value': {'gold': 500}
 }
 
 PRO_AXE = {
@@ -82,7 +72,7 @@ PRO_AXE = {
     'lifespan': 20,
     'max_lifespan': 20,
     'mining_level': 2,
-    'value': {'gold': 600 }
+    'value': {'gold': 600}
 }
 
 MASTER_AXE = {
@@ -96,7 +86,7 @@ MASTER_AXE = {
     'lifespan': 20,
     'max_lifespan': 20,
     'mining_level': 5,
-    'value': {'gold': 1500 }
+    'value': {'gold': 1500}
 }
 
 EXPLOSIVE_AXE = {
@@ -120,21 +110,23 @@ JACKHAMMER = {
     'key': 'jackhammer',
     'desc': 'a pneumatic jackhammer that can rapidly chip away at walls.',
     'strength': 1,
-    'speed': 5,
+    'speed': 8,
     'lifespan': 20,
     'max_lifespan': 30,
     'mining_level': 5,
     'value': {'gold': 2200}
 }
 
-#==[Gear]==========================================================================================#
+# ==[Gear]==========================================================================================#
 SPEED_BOOTS = {
     'prototype_key': 'speedBoots',
     'prototype_desc': 'basic speed boots',
+    'key': 'basic speed boots',
+    'desc': 'a basic pair of speed boots',
     'prototype_tags': 'gear',
-    'typeclass': 'typeclasses.gear.SpeedBoots',
+    'typeclass': 'typeclasses.gear.SpeedGear',
     'speed_boost': 0.1,
-    'value': {'gold': 8000 }
+    'value': {'gold': 8000}
 }
 
 PREMIUM_SPEED_BOOTS = {
@@ -142,8 +134,8 @@ PREMIUM_SPEED_BOOTS = {
     'prototype_key': 'premium speed boots',
     'key': 'premium speed boots',
     'desc': 'these boots allow you to move slightly faster',
-     'speed_boost': 0.25,
-    'value': {'gold': 10000 }
+    'speed_boost': 0.25,
+    'value': {'gold': 10000}
 }
 
 RUNNING_SHOES = {
@@ -151,11 +143,11 @@ RUNNING_SHOES = {
     'prototype_key': 'running shoes',
     'key': 'running shoes',
     'desc': 'a fancy pair of running shoes',
-     'speed_boost': 0.35,
-    'value': {'gold': 100000 }
+    'speed_boost': 0.35,
+    'value': {'gold': 100000}
 }
 
-#==[Misc]==========================================================================================#
+# ==[Misc]==========================================================================================#
 
 BAIT = {
     'prototype_key': 'bait',
@@ -172,4 +164,3 @@ FOUL_SMELLING_BAIT = {
     'lure': 1,
     'value': {'trash': 2}
 }
-

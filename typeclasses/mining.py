@@ -156,7 +156,7 @@ class MiningRoom(Room):
 
         # Get resource bundle
         resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
-                     'stone': randint(int(self.mining_level + self.depth / 2), int(10 * self.mining_level / 2) + self.depth)}
+                     'stone': randint(1+int(self.mining_level + self.depth / 2), int(10 * self.mining_level / 2) + self.depth)}
         result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in resources.items()]
         agg = sum(resources.values())
         bundlename = "%s resource bundle" % SIZES(agg)
