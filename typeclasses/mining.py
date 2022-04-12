@@ -6,11 +6,12 @@ from typeclasses.rooms import Room
 from typeclasses.objects import Item
 from random import randint, choice, random
 from evennia.utils.create import create_object
-from evennia.utils.logger import log_err
+from evennia.utils.logger import log_info
 from evennia.utils import list_to_string
 from world.map import Map
 from world.utils import qual
 from core import EXITS_REV, EXIT_ALIAS
+from core.utils import rainbow
 from world.resource_types import SIZES
 import re
 from core.utils import create_exit
@@ -18,7 +19,7 @@ from core.utils import create_exit
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
 class MiningRoom(Room):
-    RE_FOOTER = re.compile(r"Coordinates: \(.*\) Difficulty: [0-9]+ Depth: [0-9]+", re.IGNORECASE)
+    RE_FOOTER = re.compile(r"Coordinates: \(.*\) Mining Level: [0-9]+", re.IGNORECASE)
 
     # quality is used as level for tool check
     mining_level = AttributeProperty(default=1, autocreate=True)
@@ -110,7 +111,7 @@ class MiningRoom(Room):
         return string
 
     def update_description(self):
-        shortdesc = "Coordinates: (%s, %s, %s) Difficulty: %s Depth: %s" % (self.x, self.y, self.z, self.mining_level, self.depth)
+        shortdesc = "Coordinates: (%s, %s, %s) Mining Level: %s" % (self.x, self.y, self.z, self.mining_level)
         self.ndb.shortdesc = shortdesc
         if "Coordinates" in self.db.desc:
             self.db.desc = self.RE_FOOTER.sub('', self.db.desc)
@@ -128,12 +129,12 @@ class MiningRoom(Room):
             self.z = 0
 
         for key in self.lifespan.keys():
-            self.lifespan[key] += int( self.lifespan[key] * self.depth * .65 )
+            self.lifespan[key] += int( self.lifespan[key] * self.depth * 1.65 )
 
         lifespan = self.lifespan
 
     def at_init(self):
-        coordstring = "Coordinates: (%s, %s, %s) Difficulty: %s Depth: %s" % (self.x, self.y, self.z, self.mining_level, self.depth)
+        coordstring = "Coordinates: (%s, %s, %s) Mining Level: %s" % (self.x, self.y, self.z, self.mining_level)
         self.ndb.shortdesc = coordstring
         if self.db.desc:
             if "Coordinates" not in self.db.desc:
@@ -155,7 +156,7 @@ class MiningRoom(Room):
 
         # Get resource bundle
         resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
-                     'stone': randint(int(10 + self.mining_level / 2), 10 + self.depth)}
+                     'stone': randint(int(self.mining_level + self.depth / 2), int(10 * self.mining_level / 2) + self.depth)}
         result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in resources.items()]
         agg = sum(resources.values())
         bundlename = "%s resource bundle" % SIZES(agg)
@@ -165,8 +166,8 @@ class MiningRoom(Room):
         character.location.msg_contents("%s collects %s." % (character.name, bundlename), exclude=character)
 
         if (1-random()*10)+self.drop_rate > 0:
-            # random loot get
-            pass
+            # TODO: random loot get
+            character.msg("You get %s!" % rainbow("BONUS THING"))
 
         # Subtract wall life
         self.lifespan[direction] -= tool.strength
@@ -187,15 +188,18 @@ class MiningRoom(Room):
                             exit_aliases=EXIT_ALIAS[revdir])
                 create_exit(direction, "#" + str(character.location.id), "#" + str(exists.id),
                             exit_aliases=EXIT_ALIAS[direction])
+                log_info("Connected to existing mining room %s" % exists.id)
                 character.msg("You break through the %s wall to an existing part of the mine!" % direction)
                 character.location.msg_contents("%s breaks through the wall to the %s!" % (character.name, direction),
                                                 exclude=character)
             else:
                 target_depth = self.depth + 1
+                target_droprate = self.depth * 0.1
                 newroom = create_object("typeclasses.mining.MiningRoom", key="Part of the mine",
                                         nohome=True, location=None,
                                         attributes=[('depth', target_depth),
-                                                    ('mining_level', target_level)],
+                                                    ('mining_level', target_level),
+                                                    ('drop_rate', target_droprate)],
                                         tags=[('the drastical mines', 'area'),
                                              ('the drastical mines', 'room')])
 
@@ -204,7 +208,7 @@ class MiningRoom(Room):
                 newroom.z = target_z
                 newroom.update_description()
 
-                log_err("New MiningRoom created: %s %s (%s, %s, %s)" % (newroom.id, newroom, target_x,
+                log_info("New MiningRoom created: %s %s (%s, %s, %s)" % (newroom.id, newroom, target_x,
                                                                         target_y, target_z))
 
                 revdir = EXITS_REV[direction]
