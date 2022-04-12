@@ -157,12 +157,12 @@ class MiningRoom(Room):
         # Get resource bundle
         resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
                      'stone': randint(1+int(self.mining_level + self.depth / 2), int(10 * self.mining_level / 2) + self.depth)}
-        result = ["|Y%s|n: |w%s|n" % (k.title(), v) for k, v in resources.items()]
+        result = ["|w%s |Y%s|n" % (v, k) for k, v in resources.items() if v != 0]
         agg = sum(resources.values())
         bundlename = "%s resource bundle" % SIZES(agg)
         bundle = create_object(key=bundlename, typeclass="typeclasses.resources.Resource", home=character,
                                location=character, attributes=[('resources', resources)])
-        character.msg("You get %s of %s quality, containing: %s" % (bundlename, qual(bundle), list_to_string(result)))
+        character.msg("You get %s of %s quality, containing %s" % (bundlename, qual(bundle), list_to_string(result)))
         character.location.msg_contents("%s collects %s." % (character.name, bundlename), exclude=character)
 
         if (1-random()*10)+self.drop_rate > 0:
