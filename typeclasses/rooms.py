@@ -103,6 +103,25 @@ class ImportedRoom(Room):
     Rooms imported by area_importer.
     """
 
+    @property
+    def owner(self):
+        if self.db.owner:
+            result = search_object(self.db.owner, use_dbref=True)
+            if result: result = result[0]
+            return result
+
+    @owner.setter
+    def owner(self, newowner):
+        if isinstance(newowner, str):
+            if newowner.isnumeric():
+                o = search_object('#'+newowner, use_dbref=True)
+            o = search_object(newowner)
+        elif isinstance(newowner, int):
+            o = search_object(newowner, use_dbref=True)
+        if o is not None:
+            o = o[0]
+            self.db.owner = o.id
+
     def at_object_creation(self):
         # @py from typeclasses.rooms import ImportedRoom; [obj.at_object_creation() for obj in ImportedRoom.objects.all()]
         super().at_object_creation()

@@ -198,6 +198,6 @@ class Character(ClothedCharacter):
                                ])
 
             self.gold -= amount
-
+            return ob
         else:
-            self.msg("You don't have enough gold!")
+            return False
