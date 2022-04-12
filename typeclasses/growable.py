@@ -16,7 +16,8 @@ class GrowableObject(Item):
         self.db.planted = False
         self.tags.add("growable", category='object')
         self.tags.add("trash", category="growth")
-        self.db.resources={'trash': 1, 'wood': 1}
+        if not self.db.resources:
+            self.db.resources={'trash': 1, 'wood': 1}
 
         if not self.db.growth_phases:
             self.db.growth_phases = {
@@ -174,7 +175,6 @@ class GrowableCmdSet(CmdSet):
 
 class Tree(GrowableObject):
     def at_object_creation(self):
-        super().at_object_creation()
         if not self.db.tree_type:
             from world.resource_types import tree_type
             self.db.tree_type = tree_type()
@@ -193,6 +193,7 @@ class Tree(GrowableObject):
                 500: ("a giant old %s tree" % self.db.tree_type,
                       "Giant branches loom over you, this %s tree is of formidable size." % self.db.tree_type)}
 
+        super().at_object_creation()
 
 
 class FruitTree(GrowableObject):
