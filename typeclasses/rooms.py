@@ -89,7 +89,6 @@ class Room(ExtendedRoom):
             name=name,
             desc=desc if not looker.db.OPTION_BRIEF else self.ndb.shortdesc,
              exits=f"|wExits:|n {exits}" if exits else "",
-            #exits=f"|wExits:|n %s" % exits if exits else "",
             characters=f"\n|wCharacters:|n {characters}" if characters else "",
             things=f"\n|wYou see:|n {things}" if things else "",
             footer="",
