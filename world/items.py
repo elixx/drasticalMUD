@@ -146,19 +146,19 @@ RUNNING_SHOES = {
 }
 
 # ==[Misc]==========================================================================================#
-
-BAIT = {
-    'prototype_key': 'bait',
-    'prototype_desc': 'Fishing bait',
-    'prototype_tags': 'bait',
-    'typeclass': 'items.objects.Object',
-    'tags': [('bait', 'fishing', None)]
-}
-
-FOUL_SMELLING_BAIT = {
-    'prototype_parent': 'bait',
-    'prototype_key': 'foul-smelling bait',
-    'key': 'foul-smelling bait',
-    'lure': 1,
-    'value': {'trash': 2}
-}
+#
+# BAIT = {
+#     'prototype_key': 'bait',
+#     'prototype_desc': 'Fishing bait',
+#     'prototype_tags': 'bait',
+#     'typeclass': 'items.objects.Object',
+#     'tags': [('bait', 'fishing', None)]
+# }
+#
+# FOUL_SMELLING_BAIT = {
+#     'prototype_parent': 'bait',
+#     'prototype_key': 'foul-smelling bait',
+#     'key': 'foul-smelling bait',
+#     'lure': 1,
+#     'value': {'trash': 2}
+# }

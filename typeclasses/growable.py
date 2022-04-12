@@ -203,7 +203,7 @@ class FruitTree(GrowableObject):
             self.db.tree_type = fruit_tree_type()
         self.db.harvest_spawn = True
         self.tags.add("wood",category="growth")
-        self.tags.add("fruit",category="growth")
+        self.tags.add(self.db.tree_type, category="growth")
         self.tags.remove("trash",category="growth")
 
         if not self.db.growth_phases:
