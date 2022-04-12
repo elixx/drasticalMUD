@@ -126,7 +126,6 @@ class CmdResourceSplit(COMMAND_DEFAULT_CLASS):
            split <amount> gold
 
     Create a new resource bundle from an existing one.
-
     Also used to create a resource bundle containing some of your gold.
 
     """
