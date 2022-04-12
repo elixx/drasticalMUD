@@ -1,6 +1,7 @@
 from random import choice
 
-BASE_VALUE = { 'trash': 1.5,
+BASE_VALUE = { 'gold': 1,
+               'trash': 1.5,
                'stone': 3,
                'wood': 4 }
 
