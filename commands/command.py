@@ -509,7 +509,7 @@ class CmdProperty(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         from evennia.utils.search import search_object_attribute
-        claimed = [room for room in search_object_attribute(key='owner', value=self.caller.id)]
+        claimed = [room for room in search_tag(str(self.caller.id), category='owner')]
         claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
         table = EvTable(ff("Area   "), ff("Room Name"), border="none")
         totalclaimed = 0

@@ -80,7 +80,7 @@ class CmdPlant(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("You can't find it!")
             else:
                 if "growable" in obj.db_typeclass_path:
-                    if self.caller.id == self.caller.location.owner:
+                    if str(self.caller.id) == self.caller.location.owner:
                         if obj.db.planted == False:
                             for growing in self.caller.location.contents:
                                 if "growable" in growing.db_typeclass_path and growing.db.planted:
@@ -126,7 +126,7 @@ class CmdHarvest(COMMAND_DEFAULT_CLASS):
                 self.caller.msg("You can't find it!")
             else:
                 if "growable" in obj.db_typeclass_path:
-                    if self.caller.id == self.caller.location.owner:
+                    if str(self.caller.id) == self.caller.location.owner:
                         if obj.db.planted == True and obj.db.age > 1:
                             factor = 1
                             if obj.db.quality:
