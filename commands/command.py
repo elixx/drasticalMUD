@@ -235,8 +235,8 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
                 area = "unknown"
         areaname = capwords(area)
         self.caller.msg("The room |c%s|n is a part of |y%s|n." % (roomname, areaname))
-        if self.caller.location.db.owner:
-            ownerid = self.caller.location.db.owner
+        if self.caller.location.owner:
+            ownerid = self.caller.location.owner
             if ownerid == self.caller.id:
                 self.caller.msg("This property is currently claimed by you.")
             else:
