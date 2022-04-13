@@ -26,7 +26,7 @@ class MiningRoom(Room):
     # quality is used as level for tool check
     mining_level = AttributeProperty(default=1, autocreate=True)
     # how often stuff will drop when mining a wall
-    drop_rate = AttributeProperty(default=0, autocreate=True)
+    drop_rate = AttributeProperty(default=0.05, autocreate=True)
     # depth from entry
     depth = AttributeProperty(default=0, autocreate=True)
     # how long is left on given wall
@@ -173,16 +173,16 @@ class MiningRoom(Room):
         character.location.msg_contents("%s collects %s." % (character.name, bundlename), exclude=character)
 
         ###### Random drop #####
-        seed = (1 - (random() * self.mining_level)) + (self.drop_rate*0.1)
+        seed = (0 - random()) + (self.mining_level*0.05  ) + (self.drop_rate*0.01) + (self.depth * 0.01)
 
+        log_info(f"loot seed: {seed}")
         if seed >= 0:
             from world.items import REPAIR_KIT, PLANT, TREE, FRUIT_TREE
             # TODO: random loot drop function with tiering/rarity
             if not self.db.drops:
-                drop = choice([REPAIR_KIT, REPAIR_KIT, REPAIR_KIT,
+                drop = choice([REPAIR_KIT,
                                TREE, TREE,
-                               PLANT,
-                               FRUIT_TREE])
+                               PLANT])
             else:
                 drops = self.db.drops
                 drop = choice(drops)

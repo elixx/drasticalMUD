@@ -184,7 +184,7 @@ class Item(Object):
             self.db.resources = {'trash': randint(0,2), 'wood': randint(0,1), 'stone': randint(0,1)}
 
         if not self.db.quality:
-            self.db.quality = randint(90, 120)
+            self.db.quality = randint(85, 105)
 
         super().at_object_creation()
 

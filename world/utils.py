@@ -88,7 +88,7 @@ def qual(obj):
             q= "terrible"
         if quality > 45:
             q= "poor"
-        if quality > 60:
+        if quality > 70:
             q= "average"
         if quality > 90:
             q= "|ggood|n"
