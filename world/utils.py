@@ -136,7 +136,6 @@ def total_rooms_in_area(area, refresh=False):
 def claimed_in_area(area, owner):
     if isinstance(owner, int):
         from typeclasses.characters import Character
-        owner = "#" + str(owner)
         o = dbref_to_obj(owner, Character)
     else:
         o = search_object(owner)
@@ -152,7 +151,6 @@ def visited_in_area(area, owner):
     matches = []
     if isinstance(owner, int):
         from typeclasses.characters import Character
-        owner = "#" + str(owner)
         o = dbref_to_obj(owner, Character)
     else:
         o = search_object(owner)
