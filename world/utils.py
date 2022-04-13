@@ -142,8 +142,12 @@ def claimed_in_area(area, owner):
         if o is not None:
             o = o.first()
 
-    results = search_tag(area, category='room')
-    results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o.id)
+    # results = search_tag(area, category='room')
+    # results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o.id)
+
+    results = search_tag(o.id, category='owner')
+    results = results.filter(db_tags__db_key=area, db_tags__db_category='area')
+
     return (results)
 
 
