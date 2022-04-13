@@ -97,7 +97,7 @@ class Map(object):
 
             for i in room.contents:                  # show up and down exits on top of existing symbol
                 if 'exit' in i.typeclass_path:
-                    if i.key == 'up':
+                    if i.key == 'up' or i.key == 'leave mine':
                         sym = self.grid[self.curX][self.curY][1:]    # up exits go on the left
                         self.grid[self.curX][self.curY] = "<" + sym
                     if i.key == 'down' or i.key == 'enter mine':
