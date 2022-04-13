@@ -15,7 +15,7 @@ from core.gametime import get_time_and_season
 from core.utils import color_time as cc
 from world.map import Map
 from string import capwords
-from evennia.utils.search import search_channel
+from evennia.utils.search import search_channel, search_tag
 from evennia.utils.utils import list_to_string
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
@@ -259,7 +259,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
 
 def topClaimed():
     from evennia.utils.search import search_object_attribute
-    owned = [str(x.owner) for x in search_object_attribute("owner")]
+    owned = [str(x.owner) for x in search_tag(category="owner")]
     counts = {}
     for o in owned:
         owner = search_object('#' + o).first().name
