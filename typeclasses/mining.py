@@ -36,6 +36,10 @@ class MiningRoom(Room):
                                           "up": 40}, autocreate=True)
 
     @property
+    def owner(self):
+        return None
+
+    @property
     def x(self):
         """Return the X coordinate or None."""
         x = self.tags.get(category="mining_x")

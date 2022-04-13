@@ -77,12 +77,12 @@ class Map(object):
             # this will use the sector_type Attribute or None if not set.
             if room.db.sector_type in ['attention', 'warning']:                 # override sector for these
                 self.grid[self.curX][self.curY] = SYMBOLS[room.db.sector_type]
-            elif room.db.owner:                                                 # show sector based on ownership
+            elif room.owner:                                                 # show sector based on ownership
                 growing = False
                 for i in room.contents:
                     if 'growable' in i.typeclass_path and i.db.planted:
                         growing = True
-                if room.db.owner == self.caller.id:
+                if room.owner == str(self.caller.id):
                     if growing:
                         self.grid[self.curX][self.curY] = SYMBOLS['self-growing']
                     else:
