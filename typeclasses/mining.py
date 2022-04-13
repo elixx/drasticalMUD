@@ -1,10 +1,9 @@
 from django.conf import settings
+from random import randint, choice, random
 from evennia import utils
 from evennia.typeclasses.attributes import AttributeProperty
 from evennia.commands.cmdset import CmdSet
-from typeclasses.rooms import Room
-from typeclasses.objects import Item
-from random import randint, choice, random
+from evennia.prototypes.spawner import spawn
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_info
 from evennia.utils import list_to_string
@@ -12,11 +11,14 @@ from world.map import Map
 from world.utils import qual
 from core import EXITS_REV, EXIT_ALIAS
 from core.utils import rainbow
+from typeclasses.rooms import Room
+from typeclasses.objects import Item
 from world.resource_types import SIZES
 import re
 from core.utils import create_exit
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
+
 
 class MiningRoom(Room):
     RE_FOOTER = re.compile(r"Coordinates: \(.*\) Mining Level: [0-9]+", re.IGNORECASE)
@@ -24,7 +26,7 @@ class MiningRoom(Room):
     # quality is used as level for tool check
     mining_level = AttributeProperty(default=1, autocreate=True)
     # how often stuff will drop when mining a wall
-    drop_rate = AttributeProperty(default=-1, autocreate=True)
+    drop_rate = AttributeProperty(default=0, autocreate=True)
     # depth from entry
     depth = AttributeProperty(default=0, autocreate=True)
     # how long is left on given wall
@@ -133,7 +135,7 @@ class MiningRoom(Room):
             self.z = 0
 
         for key in self.lifespan.keys():
-            self.lifespan[key] += int( self.lifespan[key] * self.depth * 1.65 )
+            self.lifespan[key] += int(self.lifespan[key] * self.depth * 1.65)
 
         lifespan = self.lifespan
 
@@ -160,7 +162,8 @@ class MiningRoom(Room):
 
         # Get resource bundle
         resources = {'trash': choice([0, 0, 0, randint(0, 10)]),
-                     'stone': randint(1+int(self.mining_level + self.depth / 2), int(10 * self.mining_level / 2) + self.depth)}
+                     'stone': randint(1 + int(self.mining_level + self.depth / 2),
+                                      int(10 * self.mining_level / 2) + self.depth)}
         result = ["|w%s |Y%s|n" % (v, k) for k, v in resources.items() if v != 0]
         agg = sum(resources.values())
         bundlename = "%s resource bundle" % SIZES(agg)
@@ -169,9 +172,26 @@ class MiningRoom(Room):
         character.msg("You get %s of %s quality, containing %s|n." % (bundlename, qual(bundle), list_to_string(result)))
         character.location.msg_contents("%s collects %s." % (character.name, bundlename), exclude=character)
 
-        if (1-random()*10)+self.drop_rate > 0:
-            # TODO: random loot get
-            character.msg("You get %s!" % rainbow("BONUS THING"))
+        ###### Random drop #####
+        seed = (1 - (random() * self.mining_level)) + (self.drop_rate*0.1)
+
+        if seed >= 0:
+            from world.items import REPAIR_KIT, PLANT, TREE, FRUIT_TREE
+            # TODO: random loot drop function with tiering/rarity
+            if not self.db.drops:
+                drop = choice([REPAIR_KIT, REPAIR_KIT, REPAIR_KIT,
+                               TREE, TREE,
+                               PLANT,
+                               FRUIT_TREE])
+            else:
+                drops = self.db.drops
+                drop = choice(drops)
+
+            drop['location'] = character.dbref
+
+            obs = spawn(drop)
+            for ob in obs:
+                character.msg(f"You dug up a {ob}!")
 
         # Subtract wall life
         self.lifespan[direction] -= tool.strength
@@ -192,7 +212,8 @@ class MiningRoom(Room):
             target_x = self.x + 1 if direction == 'east' else self.x - 1 if direction == 'west' else self.x
             target_y = self.y + 1 if direction == 'north' else self.y - 1 if direction == 'south' else self.y
             target_z = self.z + 1 if direction == 'up' else self.z - 1 if direction == 'down' else self.z
-            target_level = choice([self.mining_level, self.mining_level, self.mining_level, self.mining_level, self.mining_level+1])
+            target_level = choice(
+                [self.mining_level, self.mining_level, self.mining_level, self.mining_level, self.mining_level + 1])
 
             exists = self.get_room_at(target_x, target_y, target_z)
             if exists:
@@ -206,14 +227,14 @@ class MiningRoom(Room):
                                                 exclude=character)
             else:
                 target_depth = self.depth + 1
-                target_droprate = self.depth * 0.1
+                target_drop_rate = (self.drop_rate + self.depth)/2
                 newroom = create_object("typeclasses.mining.MiningRoom", key="Part of the mine",
                                         nohome=True, location=None,
                                         attributes=[('depth', target_depth),
                                                     ('mining_level', target_level),
-                                                    ('drop_rate', target_droprate)],
+                                                    ('drop_rate', target_drop_rate)],
                                         tags=[('the drastical mines', 'area'),
-                                             ('the drastical mines', 'room')])
+                                              ('the drastical mines', 'room')])
 
                 newroom.x = target_x
                 newroom.y = target_y
@@ -221,7 +242,7 @@ class MiningRoom(Room):
                 newroom.update_description()
 
                 log_info("New MiningRoom created: %s %s (%s, %s, %s)" % (newroom.id, newroom, target_x,
-                                                                        target_y, target_z))
+                                                                         target_y, target_z))
 
                 revdir = EXITS_REV[direction]
                 create_exit(revdir, "#" + str(newroom.id), "#" + str(character.location.id),
@@ -232,7 +253,8 @@ class MiningRoom(Room):
         tool.lifespan -= 1
         if 3 >= tool.lifespan > 0:
             character.msg(f"{tool.name} is getting pretty worn out.")
-        elif tool.lifespan == 0:
+        elif tool.lifespan <= 0:
+            tool.db.broken = True
             character.msg(f"{tool.name} just broke! You should find a way to get it repaired.")
             character.location.msg_contents(f"{tool.name} breaks in {character.name}'s hands!", exclude=character)
 
@@ -357,3 +379,72 @@ class MiningCmdSet(CmdSet):
         self.duplicates = False
         self.add(CmdMine, allow_duplicates=False)
         self.add(CmdStopMining, allow_duplicates=False)
+
+
+class RepairKit(Item):
+    def at_object_creation(self):
+        if not self.db.resources:
+            self.db.resources = {'stone': 50, 'gold': 50}
+        if not self.db.value:
+            self.db.value = self.db.resources
+        if not self.db.strength:
+            self.db.strength = 10
+        self.cmdset.add(RepairKitCmdSet, persistent=True)
+
+
+class CmdRepairKitRepair(COMMAND_DEFAULT_CLASS):
+    key = "repair"
+    aliases = ["fix"]
+    arg_regex = r"\s|$"
+    rhs_split = ("with", "using")
+
+    def func(self):
+        if not self.args:
+            self.caller.msg("Repair what with what?")
+            return False
+
+        caller = self.caller
+        obj1 = caller.search(self.lhs)
+        obj2 = caller.search(self.rhs)
+        if obj1 == obj2:
+            self.caller.msg("You can't repair that with itself!")
+            return False
+        if obj1 is None or obj2 is None:
+            self.caller.msg("Can't find that!")
+            return False
+        # if obj1.db.lifespan:
+        #     pass
+        # else:
+        #     self.caller.msg(f"{obj1.name} is not repairable!")
+        #     return False
+
+        repaired = False
+        if obj1.db.max_lifespan:
+            if obj1.db.lifespan + obj2.db.strength >= obj1.db.max_lifespan:
+                caller.msg(f"You repair {obj1.name} to maximum capacity.")
+                caller.location.msg_contents(
+                    f"{caller.name} uses {obj2.name} to bring {obj1.name} to |ymaximum capacity|n.",
+                    exclude=caller)
+                obj1.db.lifespan = obj1.db.max_lifespan
+                repaired = True
+            else:
+                caller.msg(f"You repair {obj1.name} with {obj2.name}.")
+                caller.location.msg_contents(
+                    f"{caller.name} uses {obj2.name} to repair {obj1.name}.",
+                    exclude=caller)
+                obj1.db.lifespan += obj2.db.strength
+                repaired = True
+        elif obj1.db.lifespan:
+            obj1.db.lifespan += obj2.db.strength
+            obj1.db.broken = False
+            repaired = True
+        if repaired:
+            obj2.delete()
+
+
+class RepairKitCmdSet(CmdSet):
+    key = "RepairKitCmdSet"
+
+    def at_cmdset_creation(self):
+        self.duplicates = False
+        self.add(CmdRepairKitRepair, allow_duplicates=False)
