@@ -135,28 +135,31 @@ def total_rooms_in_area(area, refresh=False):
 
 def claimed_in_area(area, owner):
     if isinstance(owner, int):
-        owner = "#" + str(owner)
-    o = search_object(owner)
-    if o is not None:
-        o = o.first()
-        results = search_tag(area, category='room')
-        results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o.id)
-        return (results)
+        from typeclasses.characters import Character
+        o = dbref_to_obj("#"+str(owner), Character)
+    else:
+        o = search_object(owner)
+        if o is not None:
+            o = o.first()
 
+    results = search_tag(area, category='room')
+    results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o.id)
+    return (results)
 
 
 def visited_in_area(area, owner):
     matches = []
     if isinstance(owner, int):
-        owner = "#" + str(owner)
-    o = search_object(owner)
-    if o is not None:
-        o = o.first()
-        if o.db.stats['visited']:
-            if area in o.db.stats['visited'].keys():
-                matches = o.db.stats['visited'][area]
-        return (matches)
-
+        from typeclasses.characters import Character
+        o = dbref_to_obj("#"+str(owner), Character)
+    else:
+        o = search_object(owner)
+        if o is not None:
+            o = o.first()
+    if o.db.stats['visited']:
+        if area in o.db.stats['visited'].keys():
+            matches = o.db.stats['visited'][area]
+    return (matches)
 
 
 def total_visited(char):
