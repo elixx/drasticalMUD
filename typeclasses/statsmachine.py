@@ -153,7 +153,7 @@ class CmdStatsMachineStats(COMMAND_DEFAULT_CLASS):
                     if len(room) > 0:
                         room = room[0]
                         area = room.tags.get(category='area')
-                        if room.db.owner == self.caller.id:
+                        if room.owner == self.caller.id:
                             if area not in owned.keys():
                                 owned[area] = 1
                             else:
