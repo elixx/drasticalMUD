@@ -153,32 +153,13 @@ class Object(DefaultObject):
      """
 
     def at_server_reload(self):
+        # Deletion of objects flagged 'ephemeral'
         if (self.db.ephemeral):
             self.delete()
             return
         super().at_server_reload()
 
-class Item(Object):
-    def at_object_creation(self):
-        # All items have a 'resources' value
-        # This is what an item deconstructs into
-        # It is also what stacks of resources count into when stacks are formed.
-        # All items have a Quality value - this is a modifier of value in gold
-
-        if not self.db.resources:
-            self.db.resources = {'trash': randint(0,2), 'wood': randint(0,1), 'stone': randint(0,1)}
-            self.db.quality = randint(0, 100)
-
-        if not self.db.quality:
-            self.db.quality = randint(0, 100)
-
-        super().at_object_creation()
-
-    def at_server_reload(self):
-        # Deletion of objects flagged 'ephemeral'
-        super().at_server_reload()
-
-        # Respawn of objects flagged 'respawn'
+        # Respawn of objects flagged 'respawn' where appropriate
         go_home = False
         if self.db.respawn is True:
             if self.db.respawn_time:
@@ -191,7 +172,22 @@ class Item(Object):
                 self.location = self.home
                 self.location.msg_contents("%s materializes." % self.key)
 
-        super().at_server_reload()
+
+class Item(Object):
+    def at_object_creation(self):
+        # All items have a 'resources' value
+        # This is what an item deconstructs into
+        # It is also what stacks of resources count into when stacks are formed.
+        # All items have a Quality value - this is a modifier of value in gold
+
+        if not self.db.resources:
+            self.db.resources = {'trash': randint(0,2), 'wood': randint(0,1), 'stone': randint(0,1)}
+
+        if not self.db.quality:
+            self.db.quality = randint(90, 120)
+
+        super().at_object_creation()
+
 
     # Show looker an estimation of quality
     def at_desc(self, looker=None, **kwargs):
