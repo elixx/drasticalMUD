@@ -81,22 +81,30 @@ def fixContExplorers():
 def qual(obj):
     if obj.db.quality:
         quality = obj.db.quality
-        if quality > 0:
-            return "|111trash|n"
-        if quality > 130 :
-            return rainbow("legendary|n")
-        if quality > 110:
-            return "|441exceptional|n"
-        if quality > 100:
-            return "|rimpressive|n"
-        if quality > 90:
-            return "|ggood|n"
-        if quality > 60:
-            return "average"
-        if quality > 45:
-            return "poor"
+        q= ""
+        if quality < 10:
+            q= "|111trash|n"
         if quality <= 45:
-            return "terrible"
+            q= "terrible"
+        if quality > 45:
+            q= "poor"
+        if quality > 60:
+            q= "average"
+        if quality > 90:
+            q= "|ggood|n"
+        if quality > 100:
+            q= "|rimpressive|n"
+        if quality > 110:
+            q= "|441exceptional|n"
+        if quality > 130 :
+            q= rainbow("legendary|n")
+        return q
+
+
+
+
+
+
     else:
         return "standard"
 

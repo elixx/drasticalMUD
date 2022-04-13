@@ -45,6 +45,16 @@ MINING_TOOL = {
     'typeclass': 'typeclasses.mining.MiningTool'
 }
 
+REPAIR_KIT = {
+    'prototype_key': 'repairKit',
+    'prototype_desc': 'mining repair kit',
+    'prototype_tags': 'mining',
+    'typeclass': 'typeclasses.mining.RepairKit',
+    'key': 'repair kit',
+    'desc': 'a toolkit to repair mining equipment',
+    'strength': 10
+}
+
 BASIC_AXE = {
     'prototype_parent': 'miningTool',
     'prototype_key': 'basic pickaxe',
