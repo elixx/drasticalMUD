@@ -96,15 +96,9 @@ def qual(obj):
             q= "|rimpressive|n"
         if quality > 110:
             q= "|441exceptional|n"
-        if quality > 130 :
+        if quality > 115:
             q= rainbow("legendary|n")
         return q
-
-
-
-
-
-
     else:
         return "standard"
 
