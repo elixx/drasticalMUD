@@ -197,6 +197,49 @@ BLUE_SHIRT = {
     'worn': "looking nondescript",
     'value': {'gold': 15}
 }
+# ==[Bottoms]==========================================================================================#
+BASE_PANTS = {
+    'prototype_key': 'BasePants',
+    'prototype_tags': ['clothing', 'bottom'],
+    'typeclass': 'core.clothing.Clothing',
+    'clothing_type': 'bottom',
+}
+PANTS_PANTS = {
+    'prototype_parent': 'BasePants',
+    'key': 'a pair of pants',
+    'desc': 'They\'re pants.What more could you ask for?',
+    'value': {'gold': 15}
+}
+BLACK_SWEATS = {
+    'prototype_parent': 'BasePants',
+    'key': 'a pair of black sweats',
+    'desc': 'Plain, black sweatpants with an elastic waistband and drawstring.',
+    'value': {'gold': 35}
+}
+FADED_JEANS = {
+    'prototype_parent': 'BasePants',
+    'key': 'a pair of faded jeans',
+    'desc': 'These jeans have been bean the hell up. THey are very faded and worn.',
+    'value': {'gold': 50}
+}
+CAMO_PANTS = {
+    'prototype_parent': 'BasePants',
+    'key': 'a pair of camo pants',
+    'desc': 'Standard-issue military wear.',
+    'value': {'gold': 200}
+}
+COTTON_SHORTS = {
+    'prototype_parent': 'BasePants',
+    'key': 'a pair of cotton shorts',
+    'desc': 'A plain pair of gym shorts.',
+    'value': {'gold': 15}
+}
+BLACK_FATIGUES = {
+    'prototype_parent': 'BasePants',
+    'key': 'a pair of black fatigues',
+    'desc': 'Military-style tactical wear, but less obvious.',
+    'value': {'gold': 300}
+}
 # ==[Hats]==========================================================================================#
 BASE_HAT = {
     'prototype_key': 'BaseHat',
@@ -252,6 +295,17 @@ GRADUATION_CAP = {
     'value': {'gold': 35}
 }
 # ==[Misc]==========================================================================================#
+HAZMAT_SUIT = {
+    'prototype_key': 'HazmatSuit',
+    'prototype_tags': ['clothing', 'fullbody'],
+    'typeclass': 'core.clothing.Clothing',
+    'key': '|yyellow|n hazmat suit',
+    'desc': "A |yyellow|x h|ya|xz|ym|xa|yt|n suit|n, such as to protect from hazardous chemicals and radiation.",
+    "worn": "to protect from |yhazardous|g chemicals|n",
+    'clothing_type': 'fullbody',
+    'value': {'gold': 15000}
+}
+
 #
 # BAIT = {
 #     'prototype_key': 'bait',
