@@ -120,65 +120,6 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
                                                   exclude=self.caller)
 
 
-class CmdResourceSplit(COMMAND_DEFAULT_CLASS):
-    """
-    Usage: split <amount> <resources> from <bundle>
-           split <amount> gold
-
-    Create a new resource bundle from an existing one.
-    Also used to create a resource bundle containing some of your gold.
-
-    """
-    key = "split"
-    # arg_regex = r".* from .*|$"
-    rhs_split = (" from ")
-
-    def func(self):
-        if not self.args:
-            self.caller.msg("Split what?")
-            return False
-        else:
-            caller = self.caller
-            if not self.rhs:
-                self.msg("Split how many resources from what bundle?")
-                return False
-        if " from " not in self.args and "gold" in self.args:
-            obj = caller
-            resource = 'gold'
-            if not self.lhs.isnumeric():
-                caller.msg("Split how much?")
-                return False
-            amount = float(self.lhs) if '.' in self.lhs else int(self.lhs)
-            if caller.gold < amount:
-                caller.msg("You do not have enough gold!")
-            caller.gold -= amount
-        else:
-            amount = int(self.lhs.strip())
-            args = self.rhs.split(" from ")
-            resource = args[0].strip()
-            obj = caller.search(args[1].strip())
-            if obj is None:
-                caller.msg(f"Could not find {args[0].strip()}!")
-                return False
-            if resource not in obj.db.resources.keys():
-                caller.msg(f"There is no {resource} in {obj.name}!")
-                return False
-            if obj.db.resources[resource] < amount:
-                caller.msg(f"{obj.name} does not have enough {resource} to do that.")
-                return False
-            obj.db.resources[resource] -= amount
-
-        bundlename = f"{SIZES(amount)} bundle of {resource}"
-        resources = {resource: amount}
-        from evennia.utils.create import create_object
-        bundle = create_object(key=bundlename, typeclass="typeclasses.resources.Resource",
-                               home=caller, location=caller,
-                               attributes=[('resources', resources)])
-        caller.msg(f"You take {bundle.name} out of {obj.name if obj.name != caller.name else 'your pocket.'}.")
-        caller.location.msg_contents(
-            f"{caller.name} removes {bundle.name} from {obj.name if obj.name != caller.name else 'their pocket'}.",
-            exclude=caller)
-
 
 class ResourceCmdSet(CmdSet):
     key = "ResourceCmdSet"
@@ -186,4 +127,3 @@ class ResourceCmdSet(CmdSet):
     def at_cmdset_creation(self):
         self.duplicates = False
         self.add(CmdResourceJoin, allow_duplicates=False)
-        self.add(CmdResourceSplit, allow_duplicates=False)
