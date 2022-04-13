@@ -82,7 +82,7 @@ class Map(object):
                 for i in room.contents:
                     if 'growable' in i.typeclass_path and i.db.planted:
                         growing = True
-                if room.owner == self.caller.id:
+                if room.owner == str(self.caller.id):
                     if growing:
                         self.grid[self.curX][self.curY] = SYMBOLS['self-growing']
                     else:
