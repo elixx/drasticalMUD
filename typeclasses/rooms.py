@@ -105,22 +105,22 @@ class ImportedRoom(Room):
 
     @property
     def owner(self):
-        if self.db.owner:
-            result = search_object(self.db.owner, use_dbref=True)
-            if result: result = result[0]
-            return result
+        owner = self.tags.get(category="owner")
+        return owner if isinstance(owner,str) else None
 
     @owner.setter
-    def owner(self, newowner):
-        if isinstance(newowner, str):
-            if newowner.isnumeric():
-                o = search_object('#'+newowner, use_dbref=True)
-            o = search_object(newowner)
-        elif isinstance(newowner, int):
-            o = search_object(newowner, use_dbref=True)
-        if o is not None:
-            o = o[0]
-            self.db.owner = o.id
+    def owner(self, owner):
+        tag = self.tags.get(category="owner")
+        if tag is not None:
+            self.tags.remove(tag, category="owner")
+        if owner is not None:
+            if isinstance(owner,int):
+                self.tags.add(str(owner), category="owner")
+            elif isinstance(owner,str):
+                self.tags.add(owner, category="owner")
+            else:
+                self.tags.add(owner.id, category="owner")
+
 
     def at_object_creation(self):
         # @py from typeclasses.rooms import ImportedRoom; [obj.at_object_creation() for obj in ImportedRoom.objects.all()]
@@ -143,8 +143,8 @@ class ImportedRoom(Room):
         if daytime != self.ndb.last_timeslot:
             self.ndb.last_timeslot = daytime
             update = True
-        if self.ndb.last_owner != self.db.owner:
-            self.ndb.last_owner = self.db.owner
+        if self.ndb.last_owner != self.owner:
+            self.ndb.last_owner = self.owner
             update = True
 
         if self.db.desc and update == True:
@@ -152,10 +152,10 @@ class ImportedRoom(Room):
 
             daytime = "|" + cc(daytime) + daytime + "|x"
 
-            if not self.db.owner:
+            if not self.owner:
                 owner = "{Wnobody{x"
             else:
-                owner = search_object('#' + str(self.db.owner))
+                owner = search_object('#' + str(self.owner))
                 if len(owner) > 0:
                     owner = owner[0]
                     owner = '|W' + owner.name + '|x'
@@ -211,21 +211,21 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
         cost = location.db.value if location.db.value else 0
         claim = False
         caller_message = None
-        if caller.id == location.db.owner:
+        if str(caller.id) == location.owner:
             caller_message = "You already are the owner of |c%s|n." % location.name
         elif balance < cost:
             caller_message = "You don't have enough gold. %s costs |y%s gold|n to own." % (location.name, cost)
-        elif not location.db.owner:
+        elif not location.owner:
             ui = yield ("Are you sure you want to take |c%s|n for |Y%s gold|n? Type |c|lcyes|ltyes|le|n if sure." % (
                 location.name, cost))
             if ui.strip().lower() in ['yes', 'y']:
                 claim = True
                 caller_message = "You now own {y%s{n." % location.name
                 pub_message = "{w%s{n has taken over {y%s{n in {G%s{n!" % (caller.name, location.name, area)
-        elif location.db.owner == caller.id:
+        elif location.owner == caller.id:
             caller_message = "You already own %s." % location.name
         else:
-            curr_owner = '#' + str(location.db.owner)
+            curr_owner = '#' + str(location.owner)
             curr_owner = search_object(curr_owner)
             if curr_owner is not None: curr_owner = curr_owner.first()
 
@@ -239,8 +239,8 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
                     caller.name, curr_owner.name, location.name, area)
 
         if location.access(caller, "ownable") and claim == True:
-            location.db.last_owner = location.db.owner
-            location.db.owner = caller.id
+            location.db.last_owner = location.owner
+            location.owner = caller.id
             if 'claims' in caller.db.stats.keys():
                 caller.db.stats['claims'] += 1
             else:
@@ -259,7 +259,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
 
 def topClaimed():
     from evennia.utils.search import search_object_attribute
-    owned = [str(x.db.owner) for x in search_object_attribute("owner")]
+    owned = [str(x.owner) for x in search_object_attribute("owner")]
     counts = {}
     for o in owned:
         owner = search_object('#' + o).first().name
