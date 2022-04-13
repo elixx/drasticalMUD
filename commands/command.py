@@ -235,8 +235,8 @@ class CmdWhere(COMMAND_DEFAULT_CLASS):
                 area = "unknown"
         areaname = capwords(area)
         self.caller.msg("The room |c%s|n is a part of |y%s|n." % (roomname, areaname))
-        if self.caller.location.db.owner:
-            ownerid = self.caller.location.db.owner
+        if self.caller.location.owner:
+            ownerid = self.caller.location.owner
             if ownerid == self.caller.id:
                 self.caller.msg("This property is currently claimed by you.")
             else:
@@ -509,7 +509,7 @@ class CmdProperty(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         from evennia.utils.search import search_object_attribute
-        claimed = [room for room in search_object_attribute(key='owner', value=self.caller.id)]
+        claimed = [room for room in search_tag(str(self.caller.id), category='owner')]
         claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
         table = EvTable(ff("Area   "), ff("Room Name"), border="none")
         totalclaimed = 0
