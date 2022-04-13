@@ -6,7 +6,8 @@ from world.bookmarks import starts as start_rooms
 from random import choice, randint
 from core.utils import rainbow
 from string import capwords
-
+from evennia.utils import dbref_to_obj
+from evennia.utils.utils import variable_from_module
 
 def findStatsMachine():
     results = search_object("a stats machine")
@@ -134,40 +135,51 @@ def total_rooms_in_area(area, refresh=False):
 
 def claimed_in_area(area, owner):
     if isinstance(owner, int):
-        owner = "#" + str(owner)
-    o = search_object(owner)
-    if o is not None:
-        o = o.first()
-        results = search_tag(area, category='room')
-        results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o.id)
-        return (results)
+        from typeclasses.characters import Character
+        o = dbref_to_obj("#"+str(owner), Character)
+    else:
+        o = search_object(owner)
+        if o is not None:
+            o = o.first()
+
+    # results = search_tag(area, category='room')
+    # results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o.id)
+
+    results = search_tag(o.id, category='owner')
+    results = results.filter(db_tags__db_key=area, db_tags__db_category='area')
+
+    return (results)
 
 
 def visited_in_area(area, owner):
     matches = []
     if isinstance(owner, int):
-        owner = "#" + str(owner)
-    o = search_object(owner)
-    if o is not None:
-        o = o.first()
-        if o.db.stats['visited']:
-            if area in o.db.stats['visited'].keys():
-                matches = o.db.stats['visited'][area]
-        return (matches)
+        from typeclasses.characters import Character
+        o = dbref_to_obj("#"+str(owner), Character)
+    else:
+        o = search_object(owner)
+        if o is not None:
+            o = o.first()
+    if o.db.stats['visited']:
+        if area in o.db.stats['visited'].keys():
+            matches = o.db.stats['visited'][area]
+    return (matches)
 
 
 def total_visited(char):
     if str(char).isnumeric():
         char = "#" + str(char)
-    o = search_object(char)
-    if o is not None:
-        o = o.first()
-        if o is None:
-            return 0
-        totalvisited = 0
-        for area in o.db.stats['visited'].keys():
-            totalvisited += len(o.db.stats['visited'][area])
-        return (totalvisited)
+        o = dbref_to_obj(char)
+    else:
+        o = search_object(char)
+        if o is not None:
+            o = o.first()
+    if o is None:
+        return 0
+    totalvisited = 0
+    for area in o.db.stats['visited'].keys():
+        totalvisited += len(o.db.stats['visited'][area])
+    return (totalvisited)
 
 
 def exploreReport(user):
