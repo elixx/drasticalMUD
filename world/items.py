@@ -39,14 +39,14 @@ PLANT = {
 # ==[Mining Tools]==========================================================================================#
 
 MINING_TOOL = {
-    'prototype_key': 'miningTool',
+    'prototype_key': 'MiningTool',
     'prototype_desc': 'Mining tool',
     'prototype_tags': 'mining',
     'typeclass': 'typeclasses.mining.MiningTool'
 }
 
 REPAIR_KIT = {
-    'prototype_key': 'repairKit',
+    'prototype_key': 'MiningRepairKit',
     'prototype_desc': 'mining repair kit',
     'prototype_tags': 'mining',
     'typeclass': 'typeclasses.mining.RepairKit',
@@ -56,78 +56,80 @@ REPAIR_KIT = {
 }
 
 BASIC_AXE = {
-    'prototype_parent': 'miningTool',
-    'prototype_key': 'basic pickaxe',
+    'prototype_parent': 'MiningTool',
+    'prototype_key': 'BasicMiningPick',
     'prototype_tags': 'mining',
     'key': 'basic pickaxe',
+    'aliases': ['axe'],
     'desc': 'an entry-level mining axe',
     'strength': 1,
     'speed': 1,
-    'lifespan': 10,
-    'max_lifespan': 10,
+    'lifespan': 25,
+    'max_lifespan': 25,
     'mining_level': 1,
     'value': {'gold': 500}
 }
 
 PRO_AXE = {
-    'prototype_parent': 'miningTool',
-    'prototype_key': 'professional pickaxe',
+    'prototype_parent': 'MiningTool',
+    'prototype_key': 'ProMiningPick',
     'prototype_tags': 'mining',
     'key': 'professional pickaxe',
+    'aliases': ['axe'],
     'desc': 'a professional mining axe',
-    'strength': 1,
+    'strength': 2,
     'speed': 1,
-    'lifespan': 20,
-    'max_lifespan': 20,
+    'lifespan': 25,
+    'max_lifespan': 50,
     'mining_level': 2,
-    'value': {'gold': 600}
+    'value': {'gold': 1000}
 }
 
 MASTER_AXE = {
-    'prototype_parent': 'miningTool',
-    'prototype_key': 'master pickaxe',
+    'prototype_parent': 'MiningTool',
+    'prototype_key': 'MasterMiningPick',
     'prototype_tags': 'mining',
     'key': 'master pickaxe',
     'desc': 'a master mining axe',
-    'strength': 1,
+    'strength': 2,
     'speed': 2,
-    'lifespan': 20,
-    'max_lifespan': 20,
-    'mining_level': 5,
-    'value': {'gold': 1500}
-}
-
-EXPLOSIVE_AXE = {
-    'prototype_parent': 'miningTool',
-    'prototype_key': 'explosive axe',
-    'prototype_tags': 'mining',
-    'key': 'explosive axe',
-    'desc': 'a power axe equipped with explosives',
-    'strength': 3,
-    'speed': 2,
-    'lifespan': 5,
-    'max_lifespan': 15,
+    'lifespan': 30,
+    'max_lifespan': 100,
     'mining_level': 5,
     'value': {'gold': 2000}
 }
 
+EXPLOSIVE_AXE = {
+    'prototype_parent': 'MiningTool',
+    'prototype_key': 'ExplosiveMiningPick',
+    'prototype_tags': 'mining',
+    'key': 'explosive axe',
+    'desc': 'a power axe equipped with explosives',
+    'strength': 4,
+    'speed': 2,
+    'lifespan': 5,
+    'max_lifespan': 15,
+    'mining_level': 5,
+    'value': {'gold': 5000}
+}
+
 JACKHAMMER = {
-    'prototype_parent': 'miningTool',
-    'prototype_key': 'jackhammer',
+    'prototype_parent': 'MiningTool',
+    'prototype_key': 'JackhammerMiningPick',
     'prototype_tags': 'mining',
     'key': 'jackhammer',
     'desc': 'a pneumatic jackhammer that can rapidly chip away at walls.',
-    'strength': 1,
+    'strength': 2,
     'speed': 8,
-    'lifespan': 20,
-    'max_lifespan': 30,
+    'lifespan': 50,
+    'max_lifespan': 100,
     'mining_level': 5,
-    'value': {'gold': 2200}
+    'value': {'gold': 5000}
 }
 
 # ==[Gear]==========================================================================================#
 SPEED_BOOTS = {
-    'prototype_key': 'speedBoots',
+    'prototype_key': 'SpeedBoots',
     'prototype_tags': ['clothing', 'boots', 'buff'],
     'prototype_desc': 'basic speed boots',
     'key': 'basic speed boots',
@@ -139,8 +141,8 @@ SPEED_BOOTS = {
 }
 
 PREMIUM_SPEED_BOOTS = {
-    'prototype_parent': 'speedBoots',
-    'prototype_key': 'premium speed boots',
+    'prototype_parent': 'SpeedBoots',
+    'prototype_key': 'PremiumSpeedBoots',
     'prototype_tags': ['clothing', 'boots', 'buff'],
     'key': 'premium speed boots',
     'desc': 'these boots allow you to move slightly faster',
@@ -149,8 +151,8 @@ PREMIUM_SPEED_BOOTS = {
 }
 
 RUNNING_SHOES = {
-    'prototype_parent': 'speedBoots',
-    'prototype_key': 'running shoes',
+    'prototype_parent': 'SpeedBoots',
+    'prototype_key': 'RunningShoesSpeedBoots',
     'prototype_tags': ['clothing', 'boots', 'buff'],
     'key': 'running shoes',
     'desc': 'a fancy pair of running shoes',
@@ -168,7 +170,7 @@ BASE_SHIRT = {
 }
 HAWAIIAN_SHIRT = {
     'prototype_parent': 'BaseShirt',
-    'prototype_key': 'hawaiian shirt',
+    'prototype_key': 'HawaiianShirt',
     'prototype_tags': ['clothing', 'top'],
     'key': 'hawaiian shirt',
     'desc': 'a loud hawaiian shirt',
@@ -177,7 +179,7 @@ HAWAIIAN_SHIRT = {
 }
 BUTTON_UP_SHIRT = {
     'prototype_parent': 'BaseShirt',
-    'prototype_key': 'button-up shirt',
+    'prototype_key': 'ButtonUpShirt',
     'prototype_tags': ['clothing', 'top'],
     'key': 'button-up shirt',
     'desc': 'a plain, white button-up shirt',
@@ -186,7 +188,7 @@ BUTTON_UP_SHIRT = {
 }
 WHITE_TEE = {
     'prototype_parent': 'BaseShirt',
-    'prototype_key': 'XXL white tee',
+    'prototype_key': 'XXLTeeShirt',
     'prototype_tags': ['clothing', 'top'],
     'key': 'XXL white tee',
     'desc': 'an incredibly large, white T-shirt',
@@ -195,7 +197,7 @@ WHITE_TEE = {
 }
 LEATHER_SHIRT = {
     'prototype_parent': 'BaseShirt',
-    'prototype_key': 'leather shirt',
+    'prototype_key': 'LeatherShirt',
     'prototype_tags': ['clothing', 'top'],
     'key': 'leather shirt',
     'desc': 'It looks like something one of the Village people would wear.',
@@ -204,7 +206,7 @@ LEATHER_SHIRT = {
 }
 SHINY_KNIT_SHIRT = {
     'prototype_parent': 'BaseShirt',
-    'prototype_key': 'shiny, knit shirt',
+    'prototype_key': 'ShinyKnitShirt',
     'prototype_tags': ['clothing', 'top'],
     'key': 'shiny, knit shirt',
     'desc': "It's made out of some kind of shimmery fabric.",
@@ -213,7 +215,7 @@ SHINY_KNIT_SHIRT = {
 }
 BLUE_SHIRT = {
     'prototype_parent': 'BaseShirt',
-    'prototype_key': 'plain blue shirt',
+    'prototype_key': 'PlainBlueShirt',
     'prototype_tags': ['clothing', 'top'],
     'key': 'plain blue shirt',
     'desc': "It's blue. It's a shirt.",
@@ -229,6 +231,7 @@ BASE_PANTS = {
 }
 PANTS_PANTS = {
     'prototype_parent': 'BasePants',
+    'prototype_key': 'GenericPants',
     'prototype_tags': ['clothing', 'bottom'],
     'key': 'a pair of pants',
     'desc': 'They\'re pants.What more could you ask for?',
@@ -236,6 +239,7 @@ PANTS_PANTS = {
 }
 BLACK_SWEATS = {
     'prototype_parent': 'BasePants',
+    'prototype_key': 'BlackSweatPants',
     'prototype_tags': ['clothing', 'bottom'],
     'key': 'a pair of black sweats',
     'desc': 'Plain, black sweatpants with an elastic waistband and drawstring.',
@@ -243,6 +247,7 @@ BLACK_SWEATS = {
 }
 FADED_JEANS = {
     'prototype_parent': 'BasePants',
+    'prototype_key': 'FadedJeansPants',
     'prototype_tags': ['clothing', 'bottom'],
     'key': 'a pair of faded jeans',
     'desc': 'These jeans have been bean the hell up. THey are very faded and worn.',
@@ -250,6 +255,7 @@ FADED_JEANS = {
 }
 CAMO_PANTS = {
     'prototype_parent': 'BasePants',
+    'prototype_key': 'CamoPants',
     'prototype_tags': ['clothing', 'bottom'],
     'key': 'a pair of camo pants',
     'desc': 'Standard-issue military wear.',
@@ -257,6 +263,7 @@ CAMO_PANTS = {
 }
 COTTON_SHORTS = {
     'prototype_parent': 'BasePants',
+    'prototype_key': 'CottonShortsPants',
     'prototype_tags': ['clothing', 'bottom'],
     'key': 'a pair of cotton shorts',
     'desc': 'A plain pair of gym shorts.',
@@ -264,6 +271,7 @@ COTTON_SHORTS = {
 }
 BLACK_FATIGUES = {
     'prototype_parent': 'BasePants',
+    'prototype_key': 'BlackFatiguesPants',
     'prototype_tags': ['clothing', 'bottom'],
     'key': 'a pair of black fatigues',
     'desc': 'Military-style tactical wear, but less obvious.',
@@ -279,7 +287,7 @@ BASE_HAT = {
 VIKING_HELM = {
     'prototype_parent': 'BaseHat',
     'prototype_tags': ['clothing', 'hat'],
-    'prototype_key': 'a viking helmet',
+    'prototype_key': 'VikingHelmetHat',
     'key': 'a viking helmet',
     'desc': 'A horned, metal viking helmet',
     'worn': 'just like Flava Flav',
@@ -288,16 +296,16 @@ VIKING_HELM = {
 WOOL_BEANIE = {
     'prototype_parent': 'BaseHat',
     'prototype_tags': ['clothing', 'hat'],
-    'prototype_key': 'a woolen beanie',
-    'key': 'a woolen beanie',
+    'prototype_key': 'WoolenBeanieHat',
+    'key': 'woolen beanie',
     'desc': 'A knit ski cap',
     'value': {'gold': 25}
 }
 BASEBALL_CAP = {
     'prototype_parent': 'BaseHat',
     'prototype_tags': ['clothing', 'hat'],
-    'prototype_key': 'a baseball cap',
-    'key': 'a baseball cap',
+    'prototype_key': 'BaseballCapHat',
+    'key': 'baseball cap',
     'desc': 'A plain, brimmed baseball cap',
     'worn': 'pulled down low',
     'value': {'gold': 35}
@@ -305,7 +313,7 @@ BASEBALL_CAP = {
 PITH_HELMET = {
     'prototype_parent': 'BaseHat',
     'prototype_tags': ['clothing', 'hat'],
-    'prototype_key': 'a pith helmet',
+    'prototype_key': 'PithHelmetHat',
     'key': 'a pith helmet',
     'desc': 'You\'ll look just like an African explorer in this!',
     'worn': 'like an African explorer',
@@ -314,8 +322,8 @@ PITH_HELMET = {
 FEZ = {
     'prototype_parent': 'BaseHat',
     'prototype_tags': ['clothing', 'hat'],
-    'prototype_key': 'a fez',
-    'key': 'a fez',
+    'prototype_key': 'FezHat',
+    'key': 'fez',
     'desc': 'A red velvet fez, complete with tassle.',
     'worn': 'with a fuzzy tassle',
     'value': {'gold': 30}
@@ -323,7 +331,7 @@ FEZ = {
 GRADUATION_CAP = {
     'prototype_parent': 'BaseHat',
     'prototype_tags': ['clothing', 'hat'],
-    'prototype_key': 'a graduation cap',
+    'prototype_key': 'GraduationCapHat',
     'key': 'a graduation cap',
     'desc': 'You feel smart just looking at this!',
     'worn': 'that makes them look smart',
