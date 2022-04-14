@@ -51,7 +51,7 @@ REPAIR_KIT = {
     'key': 'repair kit',
     'desc': 'a toolkit to repair mining equipment',
     'strength': 10,
-    'value': {'gold': 200}
+    'value': {'gold': 100}
 }
 BASIC_AXE = {
     'prototype_parent': 'MiningTool',
@@ -65,6 +65,20 @@ BASIC_AXE = {
     'lifespan': 25,
     'max_lifespan': 25,
     'mining_level': 1,
+    'value': {'gold': 200}
+}
+AMATEUR_AXE = {
+    'prototype_parent': 'MiningTool',
+    'prototype_key': 'AmateurMiningPick',
+    'prototype_tags': 'mining',
+    'key': 'basic pickaxe',
+    'aliases': ['axe'],
+    'desc': 'A slightly improved mining axe.',
+    'strength': 1,
+    'speed': 2,
+    'lifespan': 25,
+    'max_lifespan': 30,
+    'mining_level': 2,
     'value': {'gold': 500}
 }
 PRO_AXE = {
@@ -78,7 +92,7 @@ PRO_AXE = {
     'speed': 1,
     'lifespan': 25,
     'max_lifespan': 50,
-    'mining_level': 2,
+    'mining_level': 4,
     'value': {'gold': 1000}
 }
 MASTER_AXE = {
