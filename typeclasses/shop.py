@@ -66,7 +66,7 @@ class CmdShopRoomBuy(COMMAND_DEFAULT_CLASS):
             category = i[0] if i[0] is not None else "-"
             quantity = i[1] if i[1] >= 0 else "Inf"
             item = variable_from_module(module='world.items', variable=i[2])
-            cost = i[3] if i[3] is not None else ' '.join(["|w%s |Y%s|n" % (v, k) for k, v in item['value'].items() if v != 0])
+            cost = i[3] if i[3] is not None else item['value']
             stock[str(c)] = {'quantity': quantity, 'item': item, 'cost': cost, 'category': category}
             c+=1
 
@@ -75,10 +75,17 @@ class CmdShopRoomBuy(COMMAND_DEFAULT_CLASS):
             return False
 
         newob = stock[selection]['item']
-        newob['location'] = caller
-        newob['home'] = caller
-
-        caller.msg(str(newob))
+        cost = stock[selection]['cost']
+        if list(cost.keys()) == ['gold']:
+            if cost['gold'] > caller.db.stats['gold']:
+                caller.msg("You do not have enough gold!")
+            else:
+                caller.db.stats['gold'] -= cost['gold']
+                newob['location'] = caller
+                newob['home'] = caller
+                from evennia.prototypes.spawner import spawn
+                spawn(newob)
+                caller.msg(f"You pay {cost['gold']} gold and receive {newob['key']} from {merchant}.")
 
 # class CmdShopRoomAddItem(COMMAND_DEFAULT_CLASS):
 #     key = "add"
