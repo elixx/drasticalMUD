@@ -5,9 +5,10 @@ GROWABLE = {
     'prototype_key': 'Spore',
     'prototype_desc': 'fungus spore',
     'prototype_tags': 'growable',
+    'key': 'fungal spore',
     'typeclass': 'typeclasses.growable.GrowableObject'
 }
-
+SPORE = GROWABLE
 TREE = {
     'prototype_key': 'TreeSeed',
     'prototype_desc': 'A harvestable tree',
@@ -16,7 +17,6 @@ TREE = {
     'desc': 'This seed will grow into a tree of some kind.',
     'typeclass': 'typeclasses.growable.Tree'
 }
-
 FRUIT_TREE = {
     'prototype_key': 'FruitTreeSeed',
     'prototype_desc': 'A fruit tree seed',
@@ -26,7 +26,6 @@ FRUIT_TREE = {
     'typeclass': 'typeclasses.growable.FruitTree',
     'harvest_spawn': True
 }
-
 PLANT = {
     'prototype_key': 'PlantSeed',
     'prototype_desc': 'plant seed',
@@ -37,7 +36,6 @@ PLANT = {
 }
 
 # ==[Mining Tools]==========================================================================================#
-
 MINING_TOOL = {
     'prototype_key': 'MiningTool',
     'prototype_desc': 'Mining tool',
@@ -52,9 +50,9 @@ REPAIR_KIT = {
     'typeclass': 'typeclasses.mining.RepairKit',
     'key': 'repair kit',
     'desc': 'a toolkit to repair mining equipment',
-    'strength': 10
+    'strength': 10,
+    'value': {'gold': 200}
 }
-
 BASIC_AXE = {
     'prototype_parent': 'MiningTool',
     'prototype_key': 'BasicMiningPick',
@@ -69,7 +67,6 @@ BASIC_AXE = {
     'mining_level': 1,
     'value': {'gold': 500}
 }
-
 PRO_AXE = {
     'prototype_parent': 'MiningTool',
     'prototype_key': 'ProMiningPick',
@@ -84,7 +81,6 @@ PRO_AXE = {
     'mining_level': 2,
     'value': {'gold': 1000}
 }
-
 MASTER_AXE = {
     'prototype_parent': 'MiningTool',
     'prototype_key': 'MasterMiningPick',
@@ -98,7 +94,6 @@ MASTER_AXE = {
     'mining_level': 5,
     'value': {'gold': 2000}
 }
-
 EXPLOSIVE_AXE = {
     'prototype_parent': 'MiningTool',
     'prototype_key': 'ExplosiveMiningPick',
@@ -112,7 +107,6 @@ EXPLOSIVE_AXE = {
     'mining_level': 5,
     'value': {'gold': 5000}
 }
-
 JACKHAMMER = {
     'prototype_parent': 'MiningTool',
     'prototype_key': 'JackhammerMiningPick',
@@ -139,7 +133,6 @@ SPEED_BOOTS = {
     'speed_boost': 0.1,
     'value': {'gold': 8000}
 }
-
 PREMIUM_SPEED_BOOTS = {
     'prototype_parent': 'SpeedBoots',
     'prototype_key': 'PremiumSpeedBoots',
@@ -149,7 +142,6 @@ PREMIUM_SPEED_BOOTS = {
     'speed_boost': 0.25,
     'value': {'gold': 10000}
 }
-
 RUNNING_SHOES = {
     'prototype_parent': 'SpeedBoots',
     'prototype_key': 'RunningShoesSpeedBoots',
@@ -168,6 +160,7 @@ BASE_SHIRT = {
     'typeclass': 'core.clothing.Clothing',
     'clothing_type': 'top',
 }
+
 HAWAIIAN_SHIRT = {
     'prototype_parent': 'BaseShirt',
     'prototype_key': 'HawaiianShirt',
@@ -222,6 +215,7 @@ BLUE_SHIRT = {
     'worn': "looking nondescript",
     'value': {'gold': 15}
 }
+
 # ==[Bottoms]==========================================================================================#
 BASE_PANTS = {
     'prototype_key': 'BasePants',
@@ -229,6 +223,7 @@ BASE_PANTS = {
     'typeclass': 'core.clothing.Clothing',
     'clothing_type': 'bottom',
 }
+
 PANTS_PANTS = {
     'prototype_parent': 'BasePants',
     'prototype_key': 'GenericPants',
@@ -277,6 +272,7 @@ BLACK_FATIGUES = {
     'desc': 'Military-style tactical wear, but less obvious.',
     'value': {'gold': 300}
 }
+
 # ==[Hats]==========================================================================================#
 BASE_HAT = {
     'prototype_key': 'BaseHat',
@@ -284,6 +280,7 @@ BASE_HAT = {
     'typeclass': 'core.clothing.Clothing',
     'clothing_type': 'hat',
 }
+
 VIKING_HELM = {
     'prototype_parent': 'BaseHat',
     'prototype_tags': ['clothing', 'hat'],
@@ -337,6 +334,7 @@ GRADUATION_CAP = {
     'worn': 'that makes them look smart',
     'value': {'gold': 35}
 }
+
 # ==[Misc]==========================================================================================#
 HAZMAT_SUIT = {
     'prototype_key': 'HazmatSuit',
