@@ -512,11 +512,18 @@ class CmdProperty(COMMAND_DEFAULT_CLASS):
         from evennia.utils.search import search_object_attribute
         claimed = [room for room in search_tag(str(self.caller.id), category='owner')]
         claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
-        table = EvTable(ff("Area   "), ff("Room Name"), border="none")
+        table = EvTable(ff("Area   "), ff("Room Name"), ff("Growing"), border="none")
         totalclaimed = 0
+        rows = []
         for room in claimed:
-            table.add_row(capwords(room.tags.get(category='area')), room.name)
+            growing = [x for x in room.contents if x.tags.get('growable', category='object')]
+            growing = len(growing) if len(growing) > 0 else '-'
+            rows.append((capwords(room.tags.get(category='area')),
+                         str(room.id)+':'+utils.crop(room.name,width=35),
+                         growing))
             totalclaimed += 1
+        [ table.add_row(*row) for row in sorted(rows, key=lambda x: x[2] if isinstance(x[2],int) else 0, reverse=True) ]
+
         output = str(table) + '\n'
         output += "|xTotal Owned|n: |y%s|n\n" % totalclaimed
         output += "|xAll Time|n: |y%s|n" % self.caller.db.stats['claims']
