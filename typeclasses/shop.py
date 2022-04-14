@@ -21,8 +21,9 @@ class Merchant(Object):
                 #Category, Stock,  Prototype,  Cost
                 ("Farming",     -1,    'SPORE', 150),
                 ("Farming",     -1,    'TREE', 200),
-                ("Mining",     -1,    'REPAIR_KIT', 150),
-                ("Mining",     -1,    'BASIC_AXE', 500),
+                ("Mining",     -1,    'REPAIR_KIT', 100),
+                ("Mining",     -1,    'BASIC_AXE', 200),
+                ("Mining",     -1, 'AMATEUR_AXE', 500),
                 ("Mining",     -1,    'PRO_AXE', 1000),
                 ("Buffs",     -1,    'SPEED_BOOTS', 5000),
             ]
