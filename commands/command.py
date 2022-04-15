@@ -203,15 +203,27 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     priority = -60
 
     def func(self):
-        table = EvTable(ff("Area"), ff("Rooms"), width=60)
-        for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
-            if key in list(self.caller.db.stats['visited'].keys()):
-                s = "|Y%s|x*|n" % capwords(key)
-            else:
-                s = capwords(key)
-            table.add_row(s, value)
-        output = str(table) + '\n'
-        output += "  Areas marked with |x*|n have been |Yvisited|n\n"
+        refresh = True if 'refresh' in self.args else False
+        if 'unclaimed' not in self.args:
+            table = EvTable(ff("Area"), ff("Rooms"), width=60)
+            for (key, value) in sorted(area_count(refresh=refresh).items(), key=lambda x: x[1], reverse=True):
+                if key in list(self.caller.db.stats['visited'].keys()):
+                    s = "|Y%s|x*|n" % capwords(key)
+                else:
+                    s = capwords(key)
+                table.add_row(s, value)
+            output = str(table) + '\n'
+            output += "  Areas marked with |x*|n have been |Yvisited|n\n"
+        elif "unclaimed" in self.args:
+            table = EvTable(ff("Area"), ff("Amount Available"), width=60)
+            for (key, value) in sorted(area_count(unclaimed=True, refresh=True).items(), key=lambda x: x[1], reverse=True):
+                if key in list(self.caller.db.stats['visited'].keys()):
+                    s = "|Y%s|x*|n" % capwords(key)
+                else:
+                    s = capwords(key)
+                table.add_row(s, str(value)+'%')
+            output = str(table) + '\n'
+            output += "  Areas marked with |x*|n have been |Yvisited|n\n"
         EvMore(self.caller, output)
 
 

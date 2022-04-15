@@ -25,6 +25,8 @@ class Merchant(Object):
                 ("Mining",     -1,    'BASIC_AXE', 200),
                 ("Mining",     -1, 'AMATEUR_AXE', 500),
                 ("Mining",     -1,    'PRO_AXE', 1000),
+                ("Mining",     -1,    'MASTER_AXE', 8000),
+                ("Mining",     -1,    'JACKHAMMER', 15000),
                 ("Buffs",     -1,    'SPEED_BOOTS', 5000),
             ]
 
