@@ -203,15 +203,27 @@ class CmdAreas(COMMAND_DEFAULT_CLASS):
     priority = -60
 
     def func(self):
-        table = EvTable(ff("Area"), ff("Rooms"), width=60)
-        for (key, value) in sorted(area_count().items(), key=lambda x: x[1], reverse=True):
-            if key in list(self.caller.db.stats['visited'].keys()):
-                s = "|Y%s|x*|n" % capwords(key)
-            else:
-                s = capwords(key)
-            table.add_row(s, value)
-        output = str(table) + '\n'
-        output += "  Areas marked with |x*|n have been |Yvisited|n\n"
+        refresh = True if 'refresh' in self.args else False
+        if 'unclaimed' not in self.args:
+            table = EvTable(ff("Area"), ff("Rooms"), width=60)
+            for (key, value) in sorted(area_count(refresh=refresh).items(), key=lambda x: x[1], reverse=True):
+                if key in list(self.caller.db.stats['visited'].keys()):
+                    s = "|Y%s|x*|n" % capwords(key)
+                else:
+                    s = capwords(key)
+                table.add_row(s, value)
+            output = str(table) + '\n'
+            output += "  Areas marked with |x*|n have been |Yvisited|n\n"
+        elif "unclaimed" in self.args:
+            table = EvTable(ff("Area"), ff("Amount Available"), width=60)
+            for (key, value) in sorted(area_count(unclaimed=True, refresh=True).items(), key=lambda x: x[1], reverse=True):
+                if key in list(self.caller.db.stats['visited'].keys()):
+                    s = "|Y%s|x*|n" % capwords(key)
+                else:
+                    s = capwords(key)
+                table.add_row(s, str(value)+'%')
+            output = str(table) + '\n'
+            output += "  Areas marked with |x*|n have been |Yvisited|n\n"
         EvMore(self.caller, output)
 
 
@@ -512,11 +524,18 @@ class CmdProperty(COMMAND_DEFAULT_CLASS):
         from evennia.utils.search import search_object_attribute
         claimed = [room for room in search_tag(str(self.caller.id), category='owner')]
         claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
-        table = EvTable(ff("Area   "), ff("Room Name"), border="none")
+        table = EvTable(ff("Area   "), ff("Room Name"), ff("Growing"), border="none")
         totalclaimed = 0
+        rows = []
         for room in claimed:
-            table.add_row(capwords(room.tags.get(category='area')), room.name)
+            growing = [x for x in room.contents if x.tags.get('growable', category='object')]
+            growing = len(growing) if len(growing) > 0 else '-'
+            rows.append((capwords(room.tags.get(category='area')),
+                         str(room.id)+':'+utils.crop(room.name,width=35),
+                         growing))
             totalclaimed += 1
+        [ table.add_row(*row) for row in sorted(rows, key=lambda x: x[2] if isinstance(x[2],int) else 0, reverse=True) ]
+
         output = str(table) + '\n'
         output += "|xTotal Owned|n: |y%s|n\n" % totalclaimed
         output += "|xAll Time|n: |y%s|n" % self.caller.db.stats['claims']

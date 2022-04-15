@@ -96,22 +96,17 @@ def qual(obj):
             q= "|rimpressive|n"
         if quality > 110:
             q= "|441exceptional|n"
-        if quality > 130 :
+        if quality > 115:
             q= rainbow("legendary|n")
         return q
-
-
-
-
-
-
     else:
         return "standard"
 
 
-def area_count(refresh=False):
+def area_count(unclaimed=False, refresh=False):
     stats = findStatsMachine()
-    if refresh==False and not stats.db.area_counts:
+    if (refresh==False and not stats.db.area_counts) or \
+       (refresh==False and unclaimed and not stats.db.area_counts_unclaimed):
         refresh = True
     if refresh:
         from typeclasses.rooms import ImportedRoom
@@ -119,11 +114,26 @@ def area_count(refresh=False):
         areas = search_tag_object(category='area')
         allrooms = ImportedRoom.objects.all()
         for area in areas:
-            counts[area.db_key] = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
-        stats.db.area_counts = counts
+            if unclaimed:
+                totaltemp = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
+                totalclaimed = allrooms.filter(db_tags__db_key=area.db_key,
+                                               db_tags__db_category="room").filter(db_tags__db_category="owner").count()
+                if totaltemp == 0:
+                    continue
+                if totaltemp > 0 and totalclaimed > 0:
+                    counts[area.db_key] = 100-round(totalclaimed / totaltemp * 100,2)
+            else:
+                counts[area.db_key] = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
+        if unclaimed:
+            stats.db.area_counts_unclaimed = counts
+        else:
+            stats.db.area_counts = counts
         return (counts)
     else:
-        return stats.db.area_counts
+        if unclaimed:
+            return stats.db.area_counts_unclaimed
+        else:
+            return stats.db.area_counts
 
 
 def total_rooms_in_area(area, refresh=False):
@@ -223,7 +233,14 @@ def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
         loc = choice(results)
         create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
 
+    from world.items import PRO_AXE, REPAIR_KIT
+    from evennia.prototypes.spawner import spawn
     for n in range(0, int(results.count() * (BUNDLE_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=loc, location=loc,
+        ob = choice(PRO_AXE, REPAIR_KIT, 0)
+        if ob == 0:
+            create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=loc, location=loc,
                       attributes=[('resources', {'wood': randint(0, 10), 'stone': randint(0, 10)})])
+        else:
+            ob['location'] = loc
+            spawn(ob)
