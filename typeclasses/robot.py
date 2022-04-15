@@ -94,9 +94,9 @@ class robot(DefaultObject):
                 chosen = False
             if chosen:
                 from_obj.msg(
-                    "{xYou must have hit something! Sparks fly and the {Y%s{x makes a frizzing noise." % obj)
+                    "|xYou must have hit something! Sparks fly and the |Y%s|x makes a frizzing noise." % obj)
                 from_obj.location.msg_contents(
-                    "{xSparks fly and you hear a frizzing noise. It looks like {Y%s{x just {rbroke{x %s." % (
+                    "|xSparks fly and you hear a frizzing noise. It looks like |Y%s|x just |rbroke|x %s." % (
                         from_obj, self.name),
                     exclude=from_obj)
                 self.malfunction()
@@ -328,17 +328,17 @@ class CmdRobotFix(COMMAND_DEFAULT_CLASS):
 
                                 self.caller.msg("You got it! The %s is fixed!" % obj.name)
                                 self.caller.location.msg_contents(
-                                    "{Y%s{x has saved the day! The {Y%s{x is {yfixed{x!" % (self.caller, obj.name),
+                                    "|Y%s|x has saved the day! The |Y%s|x is |yfixed|x!" % (self.caller, obj.name),
                                     exclude=self.caller)
-                                message = "{Y%s{x just fixed the robot, again"
+                                message = "|Y%s|x just fixed the robot, again"
                                 if len(heroes) >= 1:
-                                    message += ", with help from: {Y%s{x !"
+                                    message += ", with help from: |Y%s|x !"
                                     search_channel("public")[0].msg(message % (self.caller, ', '.join(heroes)))
                                 else:
                                     message += "!"
                                     search_channel("public")[0].msg(message % (self.caller))
                                 yield 1
-                                search_channel("public")[0].msg("{xThe {Y%s{x has been fixed {Y%i{x times." % (
+                                search_channel("public")[0].msg("|xThe |Y%s|x has been fixed |Y%i|x times." % (
                                     obj.name, machine.db.stats['robot_fixed']))
                                 obj.repair()
                                 yield 1
@@ -349,8 +349,8 @@ class CmdRobotFix(COMMAND_DEFAULT_CLASS):
                                 self.caller.location.msg_contents(
                                     "%s starts work on the robot, looking perplexed." % self.caller,
                                     exclude=self.caller)
-                                obj.db.desc = "Open panels reveal a loose wiring harness and other gizmos. It is being worked on by: {Y" + " ".join(
-                                    obj.db.fixers) + "{x."
+                                obj.db.desc = "Open panels reveal a loose wiring harness and other gizmos. It is being worked on by: |Y" + " ".join(
+                                    obj.db.fixers) + "|x."
                     else:
                         self.caller.msg(
                             "You try to fix %s, but it beeps angrily and gives you an electric shock." % obj.name)
