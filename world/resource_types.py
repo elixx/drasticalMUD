@@ -1,9 +1,9 @@
 from random import choice
 
 BASE_VALUE = { 'gold': 1,
-               'trash': 1.5,
-               'stone': 3,
-               'wood': 4 }
+               'trash': 0.9,
+               'stone': 1.5,
+               'wood': 1.75 }
 
 def SIZES(v):
     if  v==0:

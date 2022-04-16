@@ -277,7 +277,7 @@ class CmdRobotUngag(COMMAND_DEFAULT_CLASS):
             else:
                 if 'doQuote' in dir(obj):
                     if obj.db.gagged:
-                        self.caller.msg("You yank the piece of take off of %s's speaker." % obj)
+                        self.caller.msg("You yank the piece of tape off of %s's speaker." % obj)
                         self.caller.location.msg_contents(
                             "%s violently rips the masking tape from %s's speaker." % (self.caller, obj),
                             exclude=self.caller)
