@@ -161,3 +161,23 @@ def fixContinentExplorers():
 #                       patrolling,
 #                       len(areas_seen),
 #                       rooms_seen)
+
+def findUnions():
+    from typeclasses.mob_explorer import ContinentExplorer
+    mobs = ContinentExplorer.objects.all()
+    areas = []
+    temp = {}
+    c = 0
+    for m in mobs:
+        temp[c] = set(m.db.seen.keys())
+        areas = areas + list(temp[c])
+        c += 1
+    areas = set(areas)
+    print(areas)
+    print(len(areas))
+    c=0
+    for bot in areas.keys():
+        for si, s in enumerate(temp):
+            if areas[bot].intersection(s):
+                areas[bot] = areas[bot].union(s)
+    print(areas)

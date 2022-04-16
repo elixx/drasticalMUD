@@ -38,6 +38,7 @@ server/logs/*
 *.bak
 
 # web cache
+server/.static
 server/.static/*
 
 # Installer logs
