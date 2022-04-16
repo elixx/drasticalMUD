@@ -85,12 +85,12 @@ class ContinentExplorer(ExplorerMob):
             self.at_object_creation()
 
 
-def restartExplorers():
+def restartContinentExplorers():
     for mob in ContinentExplorer.objects.all():
         mob.location = mob.home
         mob.db.patrolling = True
         mob.db.is_dead = False
-    mob.at_object_creation()
+        mob.at_object_creation()
 
 
 def fixContinentExplorers():
