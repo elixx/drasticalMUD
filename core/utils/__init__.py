@@ -234,7 +234,7 @@ def fade(s, rmin=0, rmax=5, gmin=0, gmax=5, bmin=0, bmax=5, ascending=True):
         b += 1 if b1 else -1
     return o+'|n'
 
-def rainbow(s, r1=None, rmin=0, rmax=5, g1=None, gmin=0, gmax=5, b1=None, bmin=0, bmax=5):
+def rainbow(s, r1=None, rmin=1, rmax=5, g1=None, gmin=1, gmax=5, b1=None, bmin=1, bmax=5):
     r=g=b=1
     o = ""
     skip = False
