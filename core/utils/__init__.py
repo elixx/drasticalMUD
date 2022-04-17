@@ -161,7 +161,7 @@ def fingerPlayer(character, privileged=False):
     if len(character) > 0:
         character = character.first()
     else:
-        return
+        return False
     if character.db.title:
         title = character.db.title
     else:

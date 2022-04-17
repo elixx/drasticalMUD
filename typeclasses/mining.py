@@ -7,6 +7,7 @@ from evennia.prototypes.spawner import spawn
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_info
 from evennia.utils import list_to_string
+from evennia.scripts.taskhandler import TaskHandler
 from world.map import Map
 from world.utils import qual
 from core import EXITS_REV, EXIT_ALIAS
@@ -14,6 +15,7 @@ from core.utils import rainbow
 from typeclasses.rooms import Room
 from typeclasses.objects import Item
 from world.resource_types import SIZES
+from world.items import *
 import re
 from core.utils import create_exit
 
@@ -152,7 +154,6 @@ class MiningRoom(Room):
         character.msg("You chip away %s with %s." % (direction, tool.name))
 
         # Clear Busy
-        from evennia.scripts.taskhandler import TaskHandler
         th = TaskHandler()
         task = th.get_deferred(character.db.busy_handler)
         if task is not None:
@@ -177,7 +178,6 @@ class MiningRoom(Room):
 
         log_info(f"loot seed: {seed}")
         if seed >= 0:
-            from world.items import *
             # TODO: random loot drop function with tiering/rarity
             if not self.db.drops:
                 drop = choice([REPAIR_KIT,
