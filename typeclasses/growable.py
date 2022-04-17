@@ -199,7 +199,7 @@ class Tree(GrowableObject):
 class FruitTree(GrowableObject):
     def at_object_creation(self):
         if not self.db.tree_type:
-            from resource_types import fruit_tree_type
+            from world.resource_types import fruit_tree_type
             self.db.tree_type = fruit_tree_type()
         self.db.harvest_spawn = True
         self.tags.add("wood",category="growth")
