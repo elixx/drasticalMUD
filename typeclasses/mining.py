@@ -177,12 +177,30 @@ class MiningRoom(Room):
 
         log_info(f"loot seed: {seed}")
         if seed >= 0:
-            from world.items import REPAIR_KIT, PLANT, TREE, FRUIT_TREE
+            from world.items import *
             # TODO: random loot drop function with tiering/rarity
             if not self.db.drops:
                 drop = choice([REPAIR_KIT,
                                TREE, TREE,
                                PLANT])
+                if self.depth >= 4:
+                    drop = choice([drop, drop, drop, 
+                                   HAZMAT_SUIT,
+                                   SPEED_BOOTS,
+                                   REPAIR_KIT,
+                                   TREE,
+                                   SHINY_KNIT_SHIRT,
+                                   COTTON_SHORTS,
+                                   LEATHER_SHIRT,
+                                   BLUE_SHIRT,
+                                   PANTS_PANTS,
+                                   FADED_JEANS,
+                                   CAMO_PANTS,
+                                   VIKING_HELM,
+                                   WOOL_BEANIE,
+                                   BASEBALL_CAP,
+                                   PITH_HELMET
+                                   ])
             else:
                 drops = self.db.drops
                 drop = choice(drops)
