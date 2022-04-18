@@ -7,6 +7,7 @@ from evennia.prototypes.spawner import spawn
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_info
 from evennia.utils import list_to_string
+from evennia.scripts.taskhandler import TaskHandler
 from world.map import Map
 from world.utils import qual
 from core import EXITS_REV, EXIT_ALIAS
@@ -14,6 +15,7 @@ from core.utils import rainbow
 from typeclasses.rooms import Room
 from typeclasses.objects import Item
 from world.resource_types import SIZES
+from world.items import *
 import re
 from core.utils import create_exit
 
@@ -152,7 +154,6 @@ class MiningRoom(Room):
         character.msg("You chip away %s with %s." % (direction, tool.name))
 
         # Clear Busy
-        from evennia.scripts.taskhandler import TaskHandler
         th = TaskHandler()
         task = th.get_deferred(character.db.busy_handler)
         if task is not None:
@@ -177,12 +178,29 @@ class MiningRoom(Room):
 
         log_info(f"loot seed: {seed}")
         if seed >= 0:
-            from world.items import REPAIR_KIT, PLANT, TREE, FRUIT_TREE
             # TODO: random loot drop function with tiering/rarity
             if not self.db.drops:
                 drop = choice([REPAIR_KIT,
                                TREE, TREE,
                                PLANT])
+                if self.depth >= 4:
+                    drop = choice([drop, drop, drop, 
+                                   HAZMAT_SUIT,
+                                   SPEED_BOOTS,
+                                   REPAIR_KIT,
+                                   TREE,
+                                   SHINY_KNIT_SHIRT,
+                                   COTTON_SHORTS,
+                                   LEATHER_SHIRT,
+                                   BLUE_SHIRT,
+                                   PANTS_PANTS,
+                                   FADED_JEANS,
+                                   CAMO_PANTS,
+                                   VIKING_HELM,
+                                   WOOL_BEANIE,
+                                   BASEBALL_CAP,
+                                   PITH_HELMET
+                                   ])
             else:
                 drops = self.db.drops
                 drop = choice(drops)

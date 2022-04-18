@@ -205,7 +205,8 @@ def _player_stats(**kwargs):
             totaltime = character.db.stats['conn_time']
             m, s = divmod(totaltime.seconds, 60)
             h, m = divmod(m, 60)
-            totaltime = "%dh %02dm %02ds" % (h, m, s)
+            d,h = divmod(h, 24)
+            totaltime = "%dd %dh %02dm %02ds" % (d, h, m, s)
         mined = character.db.stats['times_mined'] if "times_mined" in character.db.stats.keys() else 0
         planted = character.db.stats['times_planted'] if "times_planted" in character.db.stats.keys() else 0
         harvested = character.db.stats['times_harvested'] if "times_harvested" in character.db.stats.keys() else 0

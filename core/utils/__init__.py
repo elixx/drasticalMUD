@@ -1,6 +1,6 @@
 from django.conf import settings
 from evennia.utils.create import create_object
-from evennia.utils.search import search_object
+from evennia.utils.search import search_object, search_account
 from core import EXITS_REV, EXIT_ALIAS
 from area_reader.evennia_import import AREA_TRANSLATIONS
 from random import choice, randint
@@ -158,10 +158,10 @@ def createTrain(key="a cosmic train", aliases=['train']):
 
 def fingerPlayer(character, privileged=False):
     character = search_object(character)
-    if len(character) > 0:
-        character = character.first()
+    if character is not None:
+        character = character[0]
     else:
-        return
+        return False
     if character.db.title:
         title = character.db.title
     else:
@@ -198,7 +198,8 @@ def fingerPlayer(character, privileged=False):
     if privileged:
         log = character.db.lastsite
         if log is None:
-            log = character.account.db.lastsite
+            ac = search_account(character)[0]
+            log = ac.db.lastsite
             if log is None:
                 raise("NoLoginHistory")
         table.add_row()
