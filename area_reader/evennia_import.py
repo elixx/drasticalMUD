@@ -153,10 +153,10 @@ class AreaImporter(object):
         for i in self.area_file.area.mobs.keys():
             m = self.area_file.area.mobs[i]
             vnum = m.vnum
-            name = m.short_desc
-            aliases = str(name).split(' ')
-            desc = m.description if areaname not in FIX_DOUBLESPACE else m.description.replace("\n\n","\n")
-            ext = m.long_desc
+            name = m.short_desc.replace("{","|")
+            aliases = str(name).replace("|","").split(' ')
+            desc = m.description if areaname not in FIX_DOUBLESPACE else m.description.replace("\n\n", "\n")
+            ext = m.long_desc.replace("{","|")
             size = m.size
             alignment = m.alignment
             race = m.race
@@ -214,7 +214,7 @@ class AreaImporter(object):
         if self.rooms_created:
             log_err("! Rooms already created!")
         else:
-            entries=[]
+            entries = []
             firstRoom = True
             count = 0
             for vnum in sorted(self.rooms):
@@ -223,9 +223,9 @@ class AreaImporter(object):
                     self.last_area = room['area']
                     firstRoom = True
                 newroom = create_object(typeclass=ROOM_TYPECLASS,
-                                        key=room['name'],
+                                        key=room['name'].replace("{","|"),
                                         locks=['puppet:false()', 'get:false()'],
-                                        attributes=[('desc', room['desc']),
+                                        attributes=[('desc', room['desc'].replace("{","|")),
                                                     ('vnum', vnum),
                                                     ('value', 100),
                                                     ('area', room['area'])],
@@ -261,7 +261,7 @@ class AreaImporter(object):
                 count = 0
                 for exitDir, exitData in room['exits'].items():
                     evid = "#" + str(self.room_translate[vnum])
-                    loc = search_object(evid,use_dbref=True)[0]
+                    loc = search_object(evid, use_dbref=True)[0]
                     if loc is None:
                         loc = search_object(room['name'])[0]
                         if loc is None:
@@ -272,19 +272,19 @@ class AreaImporter(object):
                             evid) + " skipped, " + str(exitData['dest']) + " not found.")
                         continue
                     evdestid = "#" + str(self.room_translate[exitData['dest']])
-                    dest = search_object(evdestid,use_dbref=True)[0]
+                    dest = search_object(evdestid, use_dbref=True)[0]
                     if dest is None:
                         log_err('! no destination: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
                             evid) + " skipped, " + str(exitData['dest']) + " not found.")
                         continue
                     create_object(typeclass=EXIT_TYPECLASS,
-                                            key=exitDir, location=loc, destination=dest, aliases=[DIRALIAS[exitDir]],
-                                            tags=[(room['area'], 'area'),
-                                                  (room['area'], 'exit'),
-                                                  ('imported')],
-                                            locks=['puppet:false()', 'get:false()'],
-                                            attributes=[('area', room['area']),
-                                                        ('vnum', vnum)])
+                                  key=exitDir, location=loc, destination=dest, aliases=[DIRALIAS[exitDir]],
+                                  tags=[(room['area'], 'area'),
+                                        (room['area'], 'exit'),
+                                        ('imported')],
+                                  locks=['puppet:false()', 'get:false()'],
+                                  attributes=[('area', room['area']),
+                                              ('vnum', vnum)])
                     count += 1
                 if count == 0:
                     log_err("! blackhole detected - vnum %s, EvId %s" % (vnum, self.room_translate[vnum]))
@@ -297,7 +297,7 @@ class AreaImporter(object):
         else:
             for vnum in sorted(self.mobs):
                 if vnum not in self.mobs.keys():
-                    log_err("spawnMobs:322: %s not found" % vnum)
+                    log_err("spawnMobs():300: %s not found" % vnum)
                     continue
                 ob = self.mobs[vnum]
                 if vnum not in self.mob_location.keys():
@@ -311,10 +311,10 @@ class AreaImporter(object):
 
                 evid = "#" + str(self.room_translate[self.mob_location[vnum]])
                 try:
-                    loc = search_object(evid,use_dbref=True)[0]
+                    loc = search_object(evid, use_dbref=True)[0]
                 except Exception as e:
                     # TODO: try vnum
-                    log_err("! spawnMobs:252: vnum %s - location %s - %s" % (vnum, evid, str(e)))
+                    log_err("! spawnMobs:317: vnum %s - location %s - %s" % (vnum, evid, str(e)))
                     continue
 
                 newmob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
@@ -347,7 +347,7 @@ class AreaImporter(object):
                         evid = "#" + str(self.room_translate[self.object_location[vnum]])
                     elif self.room_translate[self.mob_location[vnum]]:
                         evid = "#" + str(self.room_translate[self.mob_location[vnum]])
-                    loc = search_object(evid,use_dbref=True)
+                    loc = search_object(evid, use_dbref=True)
                     if len(loc) > 1:
                         loc = loc.filter(db_tags__db_key=self.objects[vnum]['area'])
                     if loc is None:
@@ -360,14 +360,15 @@ class AreaImporter(object):
                         if 'QuerySet' in str(loc.__class__):
                             loc = loc[0]
                         if 'weight' in ob.keys():
-                            weight=ob['weight']
+                            weight = ob['weight']
                         else:
-                            weight=5
+                            weight = 5
                         if 'cost' in ob.keys():
-                            cost=ob['cost']
+                            cost = ob['cost']
                         else:
-                            cost=10
-                        newob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
+                            cost = 10
+                        newob = create_object(key=ob['name'].replace("{", "|"), location=loc, home=loc,
+                                              aliases=ob['aliases'],
                                               typeclass=ITEM_TYPECLASS,
                                               attributes=[('desc', ob['desc']),
                                                           ('ext_desc', ob['ext']),
@@ -381,4 +382,4 @@ class AreaImporter(object):
                                               tags=[("imported"),
                                                     (self.areaname, 'area'),
                                                     (self.areaname, 'item')])
-                        log_info("%s created in %s:%s - #%s" % (ob['name'], loc.id, loc.name, newob.id))
+                        # log_info("%s created in %s:%s - #%s" % (ob['name'], loc.id, loc.name, newob.id))
