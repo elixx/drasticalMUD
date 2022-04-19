@@ -7,7 +7,6 @@ from evennia.prototypes import spawner
 from typeclasses.objects import Object
 from evennia.utils.evtable import EvTable
 from core.utils import ff
-from world import items
 
 COMMAND_DEFAULT_CLASS = class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -49,7 +48,7 @@ class CmdShopRoomList(COMMAND_DEFAULT_CLASS):
         for i in merchant.db.stock:
             category = i[0] if i[0] is not None else "-"
             quantity = i[1] if i[1] >= 0 else "Inf"
-            item = variable_from_module(module='world.items', variable=i[2])
+            item = variable_from_module(module='items', variable=i[2])
             cost = "%s gold" % i[3] if i[3] is not None else ' '.join(["|w%s |Y%s|n" % (v, k) for k, v in item['value'].items() if v != 0])
             rows.append((c, quantity, item['key'], cost, category))
             c+=1

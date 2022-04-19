@@ -1,13 +1,12 @@
 from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object, search_channel, search_tag
+from evennia.utils.search import search_tag
 from evennia.utils.create import create_object
-from evennia.utils.logger import log_err, log_info
+from evennia.utils.logger import log_err
 from world.bookmarks import starts as start_rooms
 from random import choice, randint
 from core.utils import rainbow
 from string import capwords
-from evennia.utils import dbref_to_obj
-from evennia.utils.utils import variable_from_module
+
 
 def findStatsMachine():
     results = search_object("a stats machine")
@@ -103,103 +102,6 @@ def qual(obj):
         return "standard"
 
 
-def area_count(unclaimed=False, refresh=False):
-    stats = findStatsMachine()
-    if (refresh==False and not stats.db.area_counts) or \
-       (refresh==False and unclaimed and not stats.db.area_counts_unclaimed):
-        refresh = True
-    if refresh:
-        from typeclasses.rooms import ImportedRoom
-        counts = {}
-        areas = search_tag_object(category='area')
-        allrooms = ImportedRoom.objects.all()
-        for area in areas:
-            if unclaimed:
-                totaltemp = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
-                totalclaimed = allrooms.filter(db_tags__db_key=area.db_key,
-                                               db_tags__db_category="room").filter(db_tags__db_category="owner").count()
-                if totaltemp == 0:
-                    continue
-                if totaltemp > 0 and totalclaimed > 0:
-                    counts[area.db_key] = 100-round(totalclaimed / totaltemp * 100,2)
-            else:
-                counts[area.db_key] = allrooms.filter(db_tags__db_key=area.db_key, db_tags__db_category="room").count()
-        if unclaimed:
-            stats.db.area_counts_unclaimed = counts
-        else:
-            stats.db.area_counts = counts
-        return (counts)
-    else:
-        if unclaimed:
-            return stats.db.area_counts_unclaimed
-        else:
-            return stats.db.area_counts
-
-
-def total_rooms_in_area(area, refresh=False):
-    if area.lower() == "the drastical mines":
-        refresh = True
-    stats = findStatsMachine()
-    if refresh==False and not stats.db.total_rooms_in_area:
-        stats.db.total_rooms_in_area = {}
-        refresh = True
-    if refresh or area not in stats.db.total_rooms_in_area.keys():
-        results = search_tag(area, category="room").count()
-        stats.db.total_rooms_in_area[area] = results
-        return results
-    else:
-        return(stats.db.total_rooms_in_area[area])
-
-
-def claimed_in_area(area, owner):
-    if isinstance(owner, int):
-        from typeclasses.characters import Character
-        o = dbref_to_obj("#"+str(owner), Character)
-    else:
-        o = search_object(owner)
-        if o is not None:
-            o = o.first()
-
-    # results = search_tag(area, category='room')
-    # results = results.filter(db_attributes__db_key="owner", db_attributes__db_value=o.id)
-
-    results = search_tag(o.id, category='owner')
-    results = results.filter(db_tags__db_key=area, db_tags__db_category='area')
-
-    return (results)
-
-
-def visited_in_area(area, owner):
-    matches = []
-    if isinstance(owner, int):
-        from typeclasses.characters import Character
-        o = dbref_to_obj("#"+str(owner), Character)
-    else:
-        o = search_object(owner)
-        if o is not None:
-            o = o.first()
-    if o.db.stats['visited']:
-        if area in o.db.stats['visited'].keys():
-            matches = o.db.stats['visited'][area]
-    return (matches)
-
-
-def total_visited(char):
-    if str(char).isnumeric():
-        char = "#" + str(char)
-        o = dbref_to_obj(char)
-    else:
-        o = search_object(char)
-        if o is not None:
-            o = o.first()
-    if o is None:
-        return 0
-    totalvisited = 0
-    for area in o.db.stats['visited'].keys():
-        totalvisited += len(o.db.stats['visited'][area])
-    return (totalvisited)
-
-
 def exploreReport(user):
     summary = {}
     o = search_object(user)
@@ -207,21 +109,13 @@ def exploreReport(user):
         o = o.first()
         stats = o.db.stats
         seen = stats['visited']
+        from world.stats import total_rooms_in_area, claimed_in_area, visited_in_area
         for area in seen.keys():
             total = total_rooms_in_area(area)
             claimed = len(claimed_in_area(area, o))
             visited = len(visited_in_area(area, o))
             summary[area] = {'total': total, 'visited': visited, 'claimed': claimed}
     return summary
-
-
-def topGold():
-    from evennia.utils.search import search_object_attribute
-    results = search_object_attribute('stats')
-    output = sorted([(v.name, round(v.db.stats['gold'], 2)) for v in results if 'gold' in v.db.stats.keys()],
-                    key=lambda x: x[1],
-                    reverse=True)
-    return (output)
 
 
 def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
@@ -231,16 +125,20 @@ def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
 
     for n in range(0, int(results.count() * (TRASH_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
+        create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc,
+                      attributes=[('resources', {'trash': randint(1,10)}),
+                                  ('quality', randint(1,110))],
+                      tags=[('random_spawn','object')])
 
-    from world.items import PRO_AXE, REPAIR_KIT
+    from items.mining import PRO_AXE, REPAIR_KIT
     from evennia.prototypes.spawner import spawn
     for n in range(0, int(results.count() * (BUNDLE_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        ob = choice([PRO_AXE, REPAIR_KIT, 0])
+        ob = choice([PRO_AXE, REPAIR_KIT, 0, 0])
         if ob == 0:
             create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=loc, location=loc,
-                      attributes=[('resources', {'wood': randint(0, 10), 'stone': randint(0, 10)})])
+                      attributes=[('resources', {'wood': randint(0, 10), 'stone': randint(0, 10)})],
+                          tags=[('random_spawn','object')])
         else:
             ob['location'] = loc
             spawn(ob)

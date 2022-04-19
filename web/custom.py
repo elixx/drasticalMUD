@@ -2,7 +2,8 @@
 from django.views.generic import TemplateView, ListView, DetailView
 
 import evennia
-from world.utils import area_count, total_visited, findStatsMachine
+from world.utils import findStatsMachine
+from stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, total_visited, topGold
 from datetime import datetime
 from string import capwords
 from evennia import ObjectDB
@@ -110,7 +111,6 @@ class toplistView(TemplateView):
 
 def _toplist_stats():
     from typeclasses.rooms import topClaimed
-    from world.utils import topGold
     claimed = topClaimed()
     gold = topGold()
     stats = {}
@@ -166,7 +166,6 @@ def _player_stats(**kwargs):
     from django.http import Http404
     # from django.shortcuts import render
     from evennia.utils.utils import inherits_from
-    from world.utils import claimed_in_area, total_rooms_in_area, visited_in_area
     from django.conf import settings
 
     object_id = kwargs['object_id']
