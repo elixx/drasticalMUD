@@ -11,11 +11,10 @@ from evennia.scripts.taskhandler import TaskHandler
 from world.map import Map
 from world.utils import qual
 from core import EXITS_REV, EXIT_ALIAS
-from core.utils import rainbow
 from typeclasses.rooms import Room
 from typeclasses.objects import Item
 from world.resource_types import SIZES
-from world.items import *
+from items import *
 import re
 from core.utils import create_exit
 

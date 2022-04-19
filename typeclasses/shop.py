@@ -1,12 +1,14 @@
 from django.conf import settings
 
-import evennia
+from random import choice
 from evennia.commands.cmdset import CmdSet
 from evennia.utils import class_from_module, variable_from_module
-from evennia.prototypes import spawner
 from typeclasses.objects import Object
+from evennia.utils import list_to_string
 from evennia.utils.evtable import EvTable
 from core.utils import ff
+import items
+from evennia.utils.logger import log_err
 
 COMMAND_DEFAULT_CLASS = class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -29,6 +31,19 @@ class Merchant(Object):
                 ("Buffs",     -1,    'SPEED_BOOTS', 5000),
             ]
 
+    def new_stock(self, stock=None, num_items=5):
+        if stock is None and num_items >= 0:
+            self.db.stock = []
+            ALLITEMS = [x for x in dir(items) if '__' not in x and isinstance(eval("items."+x),dict)]
+            for n in range(1,num_items+1):
+                i = {}
+                while 'value' not in i.keys() or v in [x[3] for x in self.db.stock]:
+                    v = choice(ALLITEMS)
+                    i = variable_from_module(module='items', variable=v)
+                self.db.stock.append((i['prototype_tags'],
+                                      -1,
+                                      v,
+                                      i['value']['gold']))
 
 class ShopRoomCmdSet(CmdSet):
     key = "ShopRoomCmdSet"
@@ -46,7 +61,7 @@ class CmdShopRoomList(COMMAND_DEFAULT_CLASS):
         rows = []
         c = 1
         for i in merchant.db.stock:
-            category = i[0] if i[0] is not None else "-"
+            category = list_to_string(i[0]) if i[0] is not None else "-"
             quantity = i[1] if i[1] >= 0 else "Inf"
             item = variable_from_module(module='items', variable=i[2])
             cost = "%s gold" % i[3] if i[3] is not None else ' '.join(["|w%s |Y%s|n" % (v, k) for k, v in item['value'].items() if v != 0])
