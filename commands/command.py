@@ -10,7 +10,7 @@ from evennia import default_cmds
 from django.conf import settings
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, topGold
+from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, topGold
 from core import sendWebHook
 from core.utils import fingerPlayer, rainbow, fade, color_percent, ff
 from evennia.utils.search import object_search as search_object
