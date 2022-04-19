@@ -21,4 +21,9 @@ def ticker_5min():
 def ticker_daily():
     log("-- start world.ticker.daily --")
     spawnJunk()
+
+    from typeclasses.shop import Merchant
+    merchants = Merchant.objects.all()
+    for m in merchants:
+        m.new_stock(new_items=6)
     log("-- finish world.ticker.daily --")
