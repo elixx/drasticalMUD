@@ -1,6 +1,6 @@
 from evennia.utils import dbref_to_obj
 from evennia.utils.search import search_tag_object, search_tag, object_search as search_object
-from utils import findStatsMachine
+from world.utils import findStatsMachine
 
 
 def area_count(unclaimed=False, refresh=False):

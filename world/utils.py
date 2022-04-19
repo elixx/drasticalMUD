@@ -125,13 +125,15 @@ def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
 
     for n in range(0, int(results.count() * (TRASH_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc)
+        create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc,
+                      attributes=[('resources', {'trash': randint(1,10)}),
+                                  ('quality', randint(1,110))])
 
-    from world.items import PRO_AXE, REPAIR_KIT
+    from items.mining import PRO_AXE, REPAIR_KIT
     from evennia.prototypes.spawner import spawn
     for n in range(0, int(results.count() * (BUNDLE_SPAWN_PERCENT / 100))):
         loc = choice(results)
-        ob = choice([PRO_AXE, REPAIR_KIT, 0])
+        ob = choice([PRO_AXE, REPAIR_KIT, 0, 0])
         if ob == 0:
             create_object(key='resource bundle', typeclass="typeclasses.resources.Resource", home=loc, location=loc,
                       attributes=[('resources', {'wood': randint(0, 10), 'stone': randint(0, 10)})])

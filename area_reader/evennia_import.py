@@ -1,4 +1,5 @@
-from evennia import create_object, search_object
+from evennia.utils.create import create_object
+from evennia.utils.search import search_object
 from evennia.utils.logger import log_info, log_err, log_warn
 from . import area_reader
 
@@ -260,7 +261,7 @@ class AreaImporter(object):
                 count = 0
                 for exitDir, exitData in room['exits'].items():
                     evid = "#" + str(self.room_translate[vnum])
-                    loc = search_object(evid)[0]
+                    loc = search_object(evid,use_dbref=True)[0]
                     if loc is None:
                         loc = search_object(room['name'])[0]
                         if loc is None:
@@ -271,7 +272,7 @@ class AreaImporter(object):
                             evid) + " skipped, " + str(exitData['dest']) + " not found.")
                         continue
                     evdestid = "#" + str(self.room_translate[exitData['dest']])
-                    dest = search_object(evdestid)[0]
+                    dest = search_object(evdestid,use_dbref=True)[0]
                     if dest is None:
                         log_err('! no destination: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
                             evid) + " skipped, " + str(exitData['dest']) + " not found.")
@@ -310,7 +311,7 @@ class AreaImporter(object):
 
                 evid = "#" + str(self.room_translate[self.mob_location[vnum]])
                 try:
-                    loc = search_object(evid)[0]
+                    loc = search_object(evid,use_dbref=True)[0]
                 except Exception as e:
                     # TODO: try vnum
                     log_err("! spawnMobs:252: vnum %s - location %s - %s" % (vnum, evid, str(e)))
@@ -338,22 +339,22 @@ class AreaImporter(object):
         else:
             for vnum in sorted(self.objects):
                 ob = self.objects[vnum]
-                if vnum not in self.object_location.keys() or self.mob_location.keys():
-                    # log_err("! %s - vnum not found in object_location table: %s" % (ob.name, vnum))
+                if vnum not in self.object_location.keys():
+                    log_err("! %s - vnum not found in object_location table: %s" % (ob.name, vnum))
                     continue
                 else:
                     if self.room_translate[self.object_location[vnum]]:
                         evid = "#" + str(self.room_translate[self.object_location[vnum]])
                     elif self.room_translate[self.mob_location[vnum]]:
                         evid = "#" + str(self.room_translate[self.mob_location[vnum]])
-                    loc = search_object(evid)
+                    loc = search_object(evid,use_dbref=True)
                     if len(loc) > 1:
                         loc = loc.filter(db_tags__db_key=self.objects[vnum]['area'])
                     if loc is None:
                         if vnum in self.mob_location.keys():
                             loc = self.mob_location[vnum]
                         else:
-                           # log_err("! spawnObjects(): vnum %s - location %s not found" % (vnum, evid))
+                            log_err("! spawnObjects(): vnum %s - location %s not found" % (vnum, evid))
                             continue
                     if loc is not None:
                         if 'QuerySet' in str(loc.__class__):
