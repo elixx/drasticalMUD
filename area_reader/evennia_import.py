@@ -340,7 +340,7 @@ class AreaImporter(object):
             for vnum in sorted(self.objects):
                 ob = self.objects[vnum]
                 if vnum not in self.object_location.keys():
-                    log_err("! %s - vnum not found in object_location table: %s" % (ob.name, vnum))
+                    log_err("! %s - vnum not found in object_location table: %s" % (ob, vnum))
                     continue
                 else:
                     if self.room_translate[self.object_location[vnum]]:
@@ -359,12 +359,12 @@ class AreaImporter(object):
                     if loc is not None:
                         if 'QuerySet' in str(loc.__class__):
                             loc = loc[0]
-                        if 'weight' in ob.__dict__.keys():
-                            weight=ob.weight
+                        if 'weight' in ob.keys():
+                            weight=ob['weight']
                         else:
                             weight=5
-                        if 'cost' in ob.__dict__.keys():
-                            cost=ob.cost
+                        if 'cost' in ob.keys():
+                            cost=ob['cost']
                         else:
                             cost=10
                         newob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
