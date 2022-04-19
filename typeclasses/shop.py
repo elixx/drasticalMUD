@@ -7,7 +7,6 @@ from evennia.prototypes import spawner
 from typeclasses.objects import Object
 from evennia.utils.evtable import EvTable
 from core.utils import ff
-from world import items
 
 COMMAND_DEFAULT_CLASS = class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
