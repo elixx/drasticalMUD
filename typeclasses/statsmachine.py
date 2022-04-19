@@ -7,7 +7,7 @@ from evennia import search_object
 from datetime import datetime
 from core.utils import color_percent
 from string import capwords
-from world.utils import area_count
+from stats import area_count
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
