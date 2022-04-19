@@ -3,7 +3,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 
 import evennia
 from world.utils import findStatsMachine
-from stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, total_visited, topGold
+from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, total_visited, topGold
 from datetime import datetime
 from string import capwords
 from evennia import ObjectDB
