@@ -340,7 +340,7 @@ class AreaImporter(object):
             for vnum in sorted(self.objects):
                 ob = self.objects[vnum]
                 if vnum not in self.object_location.keys():
-                    log_err("! %s - vnum not found in object_location table: %s" % (ob, vnum))
+                    log_err("! vnum %s not found in object_location table for %s" % (vnum, ob['name']))
                     continue
                 else:
                     if self.room_translate[self.object_location[vnum]]:

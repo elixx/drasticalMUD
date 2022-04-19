@@ -1,5 +1,5 @@
 from clothing import *
-from farming import *
-from mining import *
-from misc import *
+from items.farming import *
+from items.mining import *
+from items.misc import *
 
