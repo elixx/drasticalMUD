@@ -10,14 +10,13 @@ from evennia import default_cmds
 from django.conf import settings
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from world.utils import area_count
+from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, topGold
 from core import sendWebHook
 from core.utils import fingerPlayer, rainbow, fade, color_percent, ff
 from evennia.utils.search import object_search as search_object
 from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
 from evennia.utils.evtable import EvTable
-from world.utils import visited_in_area, claimed_in_area, total_rooms_in_area
 from string import capwords
 from core.extended_room import CmdExtendedRoomLook
 from world.resource_types import SIZES
@@ -566,7 +565,6 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
 
     def func(self):
         from typeclasses.rooms import topClaimed
-        from world.utils import topGold
         claimed = topClaimed()
         gold = topGold()
         stats = {}

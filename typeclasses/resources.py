@@ -30,9 +30,6 @@ class Resource(Item):
         for (k, v) in self.db.resources.items():
             if int(v) == 0 or v is None:
                 del self.db.resources[k]
-        keys = self.db.resources.keys()
-        if len(keys) == 1 and 'trash' in keys:
-            self.key = trash()
         self.cmdset.add(ResourceCmdSet, persistent=True)
         super().at_object_creation()
 
@@ -115,10 +112,9 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
                 result = ["|w%s |Y%s|n" % (v, k) for k, v in obj1.db.resources.items() if v != 0]
 
                 self.caller.msg("You create %s %s out of %s and %s, containing %s." % (
-                qual(obj1), obj1.name, oldname, oldname2, list_to_string(result)))
+                    qual(obj1), obj1.name, oldname, oldname2, list_to_string(result)))
                 self.caller.location.msg_contents("%s combines %s with %s." % (self.caller.name, oldname, obj2.name),
                                                   exclude=self.caller)
-
 
 
 class ResourceCmdSet(CmdSet):
