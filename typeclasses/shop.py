@@ -1,12 +1,13 @@
 from django.conf import settings
 
-import evennia
+from random import choice
 from evennia.commands.cmdset import CmdSet
 from evennia.utils import class_from_module, variable_from_module
-from evennia.prototypes import spawner
 from typeclasses.objects import Object
 from evennia.utils.evtable import EvTable
 from core.utils import ff
+import items
+from evennia.utils.logger import log_err
 
 COMMAND_DEFAULT_CLASS = class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -29,6 +30,18 @@ class Merchant(Object):
                 ("Buffs",     -1,    'SPEED_BOOTS', 5000),
             ]
 
+    def new_stock(self, stock=None, num_items=5):
+        if stock is None and num_items >= 0:
+            self.db.stock = []
+            ALLITEMS = [x for x in dir(items) if '__' not in x and isinstance(eval("items."+x),dict)]
+            for n in range(1,num_items):
+                v = choice(ALLITEMS)
+                i = variable_from_module(module='items',variable=v)
+                log_err(v + ' ' + str(i))
+                self.db.stock.append((i['prototype_tags'],
+                                      -1,
+                                      i.__name__,
+                                      i['value']['gold']))
 
 class ShopRoomCmdSet(CmdSet):
     key = "ShopRoomCmdSet"
