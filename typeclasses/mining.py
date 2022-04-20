@@ -184,21 +184,7 @@ class MiningRoom(Room):
                                PLANT])
                 if self.depth >= 4:
                     drop = choice([drop, drop, drop, 
-                                   HAZMAT_SUIT,
-                                   SPEED_BOOTS,
                                    REPAIR_KIT,
-                                   TREE,
-                                   SHINY_KNIT_SHIRT,
-                                   COTTON_SHORTS,
-                                   LEATHER_SHIRT,
-                                   BLUE_SHIRT,
-                                   PANTS_PANTS,
-                                   FADED_JEANS,
-                                   CAMO_PANTS,
-                                   VIKING_HELM,
-                                   WOOL_BEANIE,
-                                   BASEBALL_CAP,
-                                   PITH_HELMET
                                    ])
             else:
                 drops = self.db.drops
@@ -286,6 +272,10 @@ class MiningTool(Item):
 
     def at_object_creation(self):
         self.cmdset.add(MiningCmdSet, persistent=True)
+
+    def at_desc(self, looker=None, **kwargs):
+        super().at_desc(looker, **kwargs)
+        looker.msg(f"It has |y{self.lifespan}|n/|Y{self.max_lifepan}|n life left.")
 
 
 class CmdMine(COMMAND_DEFAULT_CLASS):
