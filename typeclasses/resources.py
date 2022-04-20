@@ -66,21 +66,30 @@ class Resource(Item):
 class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
     """
     Usage: join/combine <item1> with <item2>
+           join all bundles
     Combine two different items to create a resource bundle.
     Both objects will be consumed. The bundle will contain all of both items' resources.
     The bundle will have an average quality of the two items.
+    "join all bundles" will combine all Resource bundles into one.
 
     """
     key = "join"
     aliases = ["combine"]
     # locks = "cmd:superuser()"
-    arg_regex = r"\s|$"
-    rhs_split = ("with", "and")  # Prefer 'with' delimiter, but allow " and " usage.
+    #arg_regex = r"\s|$"
+    #rhs_split = ("with", "and")  # Prefer 'with' delimiter, but allow " and " usage.
 
     def func(self):
+        log_err(self.args)
         if not self.args:
             self.caller.msg("Join what with what?")
             return
+        elif "all bundles" in self.args:
+            bundles = [o for o in self.caller.contents if "Resource" in o.db_typeclass_path]
+            b = bundles.pop()
+            for bundle in bundles:
+                b.join(bundle)
+            self.caller.msg(f'Joined all bundles to create {b.key}.')
         else:
             caller = self.caller
             obj1 = caller.search(self.lhs)
