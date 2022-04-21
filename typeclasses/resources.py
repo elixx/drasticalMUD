@@ -89,7 +89,7 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
             b = bundles.pop()
             for bundle in bundles:
                 b.join(bundle)
-            self.caller.msg(f'Joined all bundles to create {b.key}.')
+            self.caller.msg(f'Joined all bundles to create {b.key} of {qual(b)} quality.')
         else:
             caller = self.caller
             obj1 = caller.search(self.lhs)
