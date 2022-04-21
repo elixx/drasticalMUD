@@ -419,11 +419,11 @@ class CmdRepairKitRepair(COMMAND_DEFAULT_CLASS):
         if obj1 is None or obj2 is None:
             self.caller.msg("Can't find that!")
             return False
-        # if obj1.db.lifespan:
-        #     pass
-        # else:
-        #     self.caller.msg(f"{obj1.name} is not repairable!")
-        #     return False
+        if obj1.db.lifespan:
+            pass
+        else:
+            self.caller.msg(f"{obj1.name} is not repairable!")
+            return False
 
         repaired = False
         if obj1.db.max_lifespan:
