@@ -419,7 +419,7 @@ class CmdRepairKitRepair(COMMAND_DEFAULT_CLASS):
         if obj1 is None or obj2 is None:
             self.caller.msg("Can't find that!")
             return False
-        if obj1.db.lifespan:
+        if isinstance(obj1.db.lifespan, int):
             pass
         else:
             self.caller.msg(f"{obj1.name} is not repairable!")
@@ -447,6 +447,7 @@ class CmdRepairKitRepair(COMMAND_DEFAULT_CLASS):
             repaired = True
         if repaired:
             obj2.delete()
+            caller.msg(f"{obj2.name} is consumed.")
 
 
 class RepairKitCmdSet(CmdSet):
