@@ -89,7 +89,8 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
             b = bundles.pop()
             for bundle in bundles:
                 b.join(bundle)
-            self.caller.msg(f'Joined all bundles to create {b.key} of {qual(b)} quality.')
+            result = ["|w%s |Y%s|n" % (v, k) for k, v in b.db.resources.items() if v != 0]
+            self.caller.msg(f'Joined all resources in inventory to create {b.key} of {qual(b)} quality containing {list_to_string(result)}.')
         else:
             caller = self.caller
             obj1 = caller.search(self.lhs)
