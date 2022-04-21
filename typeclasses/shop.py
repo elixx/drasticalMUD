@@ -87,7 +87,7 @@ class CmdShopRoomBuy(COMMAND_DEFAULT_CLASS):
         for i in merchant.db.stock:
             category = i[0] if i[0] is not None else "-"
             quantity = i[1] if i[1] >= 0 else "Inf"
-            item = variable_from_module(module='world.items', variable=i[2])
+            item = variable_from_module(module='items', variable=i[2])
             cost = i[3] if i[3] is not None else item['value']
             stock[str(c)] = {'quantity': quantity, 'item': item, 'cost': cost, 'category': category}
             c+=1
