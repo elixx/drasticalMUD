@@ -224,7 +224,7 @@ class AreaImporter(object):
                     firstRoom = True
                 newroom = create_object(typeclass=ROOM_TYPECLASS,
                                         key=room['name'].replace("{","|"),
-                                        locks=['puppet:false()', 'get:false()'],
+                                        #locks=['puppet:false()', 'get:false()'],
                                         attributes=[('desc', room['desc'].replace("{","|")),
                                                     ('vnum', vnum),
                                                     ('value', 100),
@@ -282,7 +282,7 @@ class AreaImporter(object):
                                   tags=[(room['area'], 'area'),
                                         (room['area'], 'exit'),
                                         ('imported')],
-                                  locks=['puppet:false()', 'get:false()'],
+                                  #locks=['puppet:false()', 'get:false()'],
                                   attributes=[('area', room['area']),
                                               ('vnum', vnum)])
                     count += 1
