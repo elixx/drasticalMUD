@@ -102,7 +102,7 @@ class Character(ClothedCharacter):
         styled_message = "|y" + message + "|n"
         return styled_message
 
-    def at_pre_move(self, destination):
+    def at_pre_move(self, destination, move_type=None):
         """
         Called just before starting to move this object to
         destination.
@@ -127,7 +127,7 @@ class Character(ClothedCharacter):
         else:
             return True
 
-    def at_post_move(self, source_location):
+    def at_post_move(self, source_location, move_type=None):
         if source_location is not None:
             if source_location.tags.get(category='area'):
                 source_area = source_location.tags.get(category='area')
