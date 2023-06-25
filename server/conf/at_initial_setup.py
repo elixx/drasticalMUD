@@ -11,7 +11,7 @@ from random import randint
 from evennia import TICKER_HANDLER as th
 from world.ticker import ticker_5min, ticker_daily
 
-TESTING = False
+TESTING = True
 
 
 def at_initial_setup():
@@ -116,6 +116,7 @@ def at_initial_setup():
                                  tags=[(str(x), 'mining_x'),
                                        (str(y), 'mining_y'),
                                        (str(z), 'mining_z'),
+
                                        ('the drastical mines', 'area'),
                                        ('the drastical mines', 'room'),
                                        ('mines_start', 'room')])
@@ -135,7 +136,7 @@ def at_initial_setup():
     mines = ""
     for (cx, cy) in allcoords:
         mines += "%s, %s\n" % (cx, cy)
-    log_info(f"Mining coordinates: {mines}")
+    log_info(f"Mine entrances: {mines}")
 
     log_info("Train ID is #%s." % train.id)
     log_info("Bulletin board is #%s." % board.id)
@@ -143,9 +144,9 @@ def at_initial_setup():
     createTrainStops(entries=importer.entries)
 
     # Set up global ticker functions
-    th.add(300, ticker_5min)
-    th.add(86400, ticker_daily)
+    #th.add(300, ticker_5min)
+    #th.add(86400, ticker_daily)
 
-    from world.utils import spawnJunk
-    log_info("Spawning junk...")
-    spawnJunk(TRASH_SPAWN_PERCENT=25)
+    #from world.utils import spawnJunk
+    #log_info("Spawning junk...")
+    #spawnJunk(TRASH_SPAWN_PERCENT=25)
