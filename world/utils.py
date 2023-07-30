@@ -118,7 +118,7 @@ def exploreReport(user):
     return summary
 
 
-def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
+def spawnJunk(TRASH_SPAWN_PERCENT=5, BUNDLE_SPAWN_PERCENT=1):
     from world.resource_types import trash
     results = search_tag("random_spawn", category='room')
     ob = None
@@ -127,7 +127,7 @@ def spawnJunk(TRASH_SPAWN_PERCENT=10, BUNDLE_SPAWN_PERCENT=5):
         loc = choice(results)
         create_object(key=trash(), typeclass="typeclasses.resources.Resource", home=loc, location=loc,
                       attributes=[('resources', {'trash': randint(1,10)}),
-                                  ('quality', randint(1,110))],
+                                  ('quality', randint(1,60))],
                       tags=[('random_spawn','object')])
 
     from items.mining import PRO_AXE, REPAIR_KIT
