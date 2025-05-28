@@ -87,6 +87,7 @@ class Room(ExtendedRoom):
         return self.appearance_template.format(
             header="",
             name=name,
+            extra_name_info=f' ({self.dbref})',
             desc=desc if not looker.db.OPTION_BRIEF else self.ndb.shortdesc,
              exits=f"|wExits:|n {exits}" if exits else "",
             characters=f"\n|wCharacters:|n {characters}" if characters else "",
