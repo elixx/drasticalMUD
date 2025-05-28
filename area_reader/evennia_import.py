@@ -97,7 +97,11 @@ class AreaImporter(object):
 
     def load(self, filename):
         self.area_file = area_reader.RomAreaFile(filename)
-        self.area_file.load_sections()
+        try:
+            self.area_file.load_sections()
+        except Exception as e:
+            print(str(e))
+            return
         self.areaname = self.area_file.area.name.lower()
         if self.areaname == "" or (".are" in self.areaname):
             if "\\" in filename:
@@ -145,7 +149,7 @@ class AreaImporter(object):
                                   'exits': exits,
                                   'area': areaname}
             count += 1
-        log_info("enumerateRooms(): %s rooms" % count)
+        log_info(f"enumerateRooms(): {areaname} - {count} rooms")
         self.rooms_enumerated = True
 
     def enumerateMobs(self):
