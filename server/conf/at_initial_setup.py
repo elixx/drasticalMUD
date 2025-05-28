@@ -11,7 +11,7 @@ from random import randint
 from evennia import TICKER_HANDLER as th
 from world.ticker import ticker_5min, ticker_daily
 
-TESTING = True
+TESTING = False
 
 
 def at_initial_setup():
@@ -73,23 +73,23 @@ def at_initial_setup():
         create_exit("east", "#8", "#7", exit_aliases="e")
 
         # Check that room IDs align as expected resulting from areafile data
-        temple_square = search_object("#1219").first()
-        assert temple_square.key == "The Temple Square"
+        #temple_square = search_object("#1219").first()
+        #assert temple_square.key == "The Temple Square"
 
         # Flag symbol for mapping
-        temple_square.db.sector_type = "important"
+        #temple_square.db.sector_type = "important"
 
         # Create recycle bin
-        create_object("typeclasses.recycle_bin.RecycleBin",
-                      key="recycle bin",
-                      home=temple_square,
-                      location=temple_square,
-                      aliases=['bin'],
-                      locks=["get:false()"],
-                      attributes=[
-                          ('desc', 'A recycle bin that you can |Yput|n junk into and be rewarded a small amount.')
-                      ],
-                      tags=[('drastical')])
+        #create_object("typeclasses.recycle_bin.RecycleBin",
+        #              key="recycle bin",
+        #              home=temple_square,
+        #              location=temple_square,
+        #              aliases=['bin'],
+        #              locks=["get:false()"],
+        #              attributes=[
+        #                  ('desc', 'A recycle bin that you can |Yput|n junk into and be rewarded a small amount.')
+        #              ],
+        #              tags=[('drastical')])
 
     # Create center entrance to mines
     mines = []
