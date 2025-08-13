@@ -86,18 +86,29 @@ def visited_in_area(area, owner):
 
 
 def total_visited(char):
-    if str(char).isnumeric():
-        char = "#" + str(char)
-        o = dbref_to_obj(char)
+    """Return total number of rooms visited by a character.
+
+    Accepts a Character object, name, numeric id, or dbref string ("#<id>").
+    """
+    # Resolve character object
+    if hasattr(char, "db") and hasattr(char, "id"):
+        o = char
+    elif str(char).lstrip("#").isnumeric():
+        # Numeric id or dbref; resolve via dbref_to_obj with Character class
+        from typeclasses.characters import Character
+        dbref = "#" + str(char).lstrip("#")
+        o = dbref_to_obj(dbref, Character)
     else:
         o = search_object(char)
         if o is not None:
             o = o.first()
     if o is None:
         return 0
+    stats = getattr(o.db, "stats", None) or {}
+    visited = stats.get("visited") or {}
     totalvisited = 0
-    for area in o.db.stats['visited'].keys():
-        totalvisited += len(o.db.stats['visited'][area])
+    for area in visited.keys():
+        totalvisited += len(visited[area])
     return (totalvisited)
 
 
