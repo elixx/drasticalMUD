@@ -47,6 +47,12 @@ class Character(ClothedCharacter):
     def gold(self, amount):
         if self.db.stats:
             self.db.stats['gold'] = amount
+            # Invalidate gold-based leaderboards and toplist context
+            try:
+                from world.stats import invalidate_topGold_cache
+                invalidate_topGold_cache()
+            except Exception:
+                pass
 
     def at_object_creation(self):
         super().at_object_creation()
@@ -154,6 +160,14 @@ class Character(ClothedCharacter):
                         self.db.stats['visited'][cur_area] = list(set(self.db.stats['visited'][cur_area]))
                 else:
                     self.db.stats['visited'] = { cur_area: [self.location.id] }
+
+                # Invalidate cached total_visited and toplist context so /toplist updates promptly
+                try:
+                    from world.stats import invalidate_total_visited_cache, invalidate_toplist_context
+                    invalidate_total_visited_cache(self.id)
+                    invalidate_toplist_context()
+                except Exception:
+                    pass
 
             except Exception as e:
                 self.db.stats['visited'] = {}

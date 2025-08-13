@@ -109,6 +109,7 @@ class toplistView(TemplateView):
 
 def _toplist_stats():
     # Cache the computed toplist to avoid repeated expensive queries
+    # TTL: 60 seconds. Invalidated when gold changes, claims change, or visited counts update.
     cache_key = "toplist_stats_v1"
     cached = cache.get(cache_key)
     if cached:

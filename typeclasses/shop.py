@@ -115,6 +115,12 @@ class CmdShopRoomBuy(COMMAND_DEFAULT_CLASS):
                 cost = {'gold': cost}
 
             caller.db.stats['gold'] -= cost['gold']
+            # Invalidate gold-based leaderboards and toplist context
+            try:
+                from world.stats import invalidate_topGold_cache
+                invalidate_topGold_cache()
+            except Exception:
+                pass
             newob['location'] = caller
             newob['home'] = caller
             from evennia.prototypes.spawner import spawn

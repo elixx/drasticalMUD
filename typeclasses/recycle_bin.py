@@ -99,6 +99,13 @@ class CmdRecycleBinPut(COMMAND_DEFAULT_CLASS):
                 else:
                     self.caller.db.stats['gold'] = val
 
+                # Invalidate gold-based leaderboards and toplist context
+                try:
+                    from world.stats import invalidate_topGold_cache
+                    invalidate_topGold_cache()
+                except Exception:
+                    pass
+
                 self.caller.msg("{nYou receive {y%s gold{n for cleaning up." % val)
                 self.obj1.location = self.obj
 

@@ -254,6 +254,13 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
                 if location.db.value:
                     location.db.value = int(location.db.value * 1.5)
                 caller.db.stats['gold'] -= cost
+                # Invalidate leaderboards and toplist context after claim and gold change
+                try:
+                    from world.stats import invalidate_topClaimed_cache, invalidate_topGold_cache
+                    invalidate_topClaimed_cache()
+                    invalidate_topGold_cache()
+                except Exception:
+                    pass
             except Exception as e:
                 utils.logger.log_err(str(e))
         caller.msg(caller_message)
