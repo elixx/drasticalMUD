@@ -10,6 +10,7 @@ import random
 import os
 from typing import List, Dict, Optional
 from attr import Factory, fields
+from cattrs import converters
 from operator import setitem
 
 from .constants import *
@@ -242,7 +243,7 @@ class AreaFile(object):
             if reader is None:
                 self.skip_section(section_name)
             else:
-                #logger.info("Processing section %s" % section_name)
+                logger.info("Processing section %s" % section_name)
                 try:
                     readers[section_name]()
                 except Exception:
@@ -315,7 +316,10 @@ class AreaFile(object):
         return self.data[self.index - window:self.index + window]
 
     def as_dict(self):
-        return asdict(self.area, dict_factory=OrderedDict)
+        return EnumNameConverter().unstructure(self.area)
+
+    def as_json(self, indent=None):
+        return json.dumps(self.as_dict(), indent=indent)
 
     def save_as_json(self):
         fname = os.path.splitext(self.filename)[0] + '.json'
@@ -360,7 +364,7 @@ class Item(MudBase):
     short_desc = field(default='', type=str)
     item_type = field(default=-1, type=int)
     extra_flags = field(default=0, type=int)
-    wear_flags = field(default=0, type=WEAR_LOCATIONS)
+    wear_flags = field(default=0, type=WEAR_FLAGS, converter=WEAR_FLAGS)
     cost = field(default=0, type=int)
     level = field(default=0, type=int)
     weight = field(default=0, type=int)
@@ -515,13 +519,16 @@ class RomMobprog(object):
 
 
 @attributes
-class RomCharacter(RomItem):
+class RomCharacter(MudBase):
+    short_desc = field(default='', type=str)
     long_desc = attr(default="", type=str)
+    level = field(default=0, type=int)
     race = attr(default="", type=str)
     group = attr(default=0, type=int)
     hitroll = attr(default=0, type=int)
     hit = attr(default=Factory(Dice), type=Dice)
     mana = attr(default=Factory(Dice), type=Dice)
+    material = field(default='', type=str)
     damage = attr(default=Factory(Dice), type=Dice)
     damtype = attr(default='', type=Word)
     ac = attr(default=Factory(RomArmorClass), type=RomArmorClass)
@@ -533,7 +540,7 @@ mark_as_npc = lambda act_flags: ROM_ACT_TYPES(act_flags) | ROM_ACT_TYPES.IS_NPC
 
 
 @attributes
-class RomMob(RomCharacter, RomItem):
+class RomMob(RomCharacter):
     shop = field(default=None, read=False)
     act = field(default=0, type=ROM_ACT_TYPES, converter=ROM_ACT_TYPES)
     alignment = field(default=0, type=int)
@@ -651,7 +658,7 @@ class Help(object):
 class Exit(object):
     keyword = attr(default='', type=Word)
     description = attr(default="", type=str)
-    door = attr(default=None, type=EXIT_DIRECTIONS)
+    door = attr(default=None, type=EXIT_DIRECTIONS, converter=EXIT_DIRECTIONS)
     exit_info = attr(default=0, type=EXIT_FLAGS, converter=EXIT_FLAGS)
     rs_flags = attr(default=0, type=int)
     key = attr(default=0, type=int)
@@ -686,7 +693,7 @@ class Room(MudBase):
     area = attr(default=None)
     area_number = attr(default=0, type=int)
     room_flags = attr(default=0, type=ROM_ROOM_FLAGS, converter=ROM_ROOM_FLAGS)
-    sector_type = attr(default=0, type=SECTOR_TYPES)  # FIXME
+    sector_type = attr(default=0, type=SECTOR_TYPES, converter=SECTOR_TYPES)  # FIXME
     heal_rate = attr(default=100, type=int)
     mana_rate = attr(default=100, type=int)
     exits = attr(default=Factory(list), type=List[Exit])
@@ -699,6 +706,8 @@ class Room(MudBase):
         area_number = reader.read_number()
         room_flags = reader.read_flag()
         sector_type = reader.read_number()
+        if sector_type == -1:
+            sector_type = 0
         room = cls(vnum=vnum, name=name, description=description, area_number=area_number, room_flags=room_flags,
                    sector_type=sector_type)
         room.read_metadata(reader)
@@ -984,9 +993,19 @@ class SmaugAreaFile(RomAreaFile):
         return self.read_to_eol()
 
 
-if __name__ == '__main__':
-    area_file = RomAreaFile('under2.are')
+class EnumNameConverter(converters.Converter):
+    def _unstructure_enum(self, obj):
+        return obj.__class__.__name__ + "." + obj.name
+
+
+def print_area(area_file_path, area_type=RomAreaFile):
+    area_file = area_type(area_file_path)
     area_file.load_sections()
-    area = area_file.area
-    from attr import asdict
-#	pprint.pprint(asdict(area))
+    print(area_file.as_json())
+
+
+if __name__ == '__main__':
+    print('Invoking __main__')
+    # area_file = RomAreaFile('under2.are')
+    # area_file.load_sections()
+    # area = area_file.area

@@ -108,6 +108,7 @@ class ROM_ACT_TYPES(enum.IntFlag):
 	UNUSED9 = BITFLAGS['EE']
 
 class AFFECTED_BY(enum.IntFlag):
+    NONE = 0
 	BLIND = BITFLAGS['A']
 	INVISIBLE = BITFLAGS['B']
 	EVIL = BITFLAGS['C']
@@ -140,6 +141,8 @@ class AFFECTED_BY(enum.IntFlag):
 	SLOW = BITFLAGS['DD']
 
 class WEAR_FLAGS(enum.IntFlag):
+    NONE = 0
+    TAKE = BITFLAGS['A']
 	FINGER = BITFLAGS['B']
 	NECK = BITFLAGS['C']
 	BODY = BITFLAGS['D']
@@ -158,6 +161,7 @@ class WEAR_FLAGS(enum.IntFlag):
 	FLOAT = BITFLAGS['Q']
 
 class OFFENSE(enum.IntFlag):
+    NONE = 0
 	AREA_ATTACK = BITFLAGS['A']
 	BACKSTAB = BITFLAGS['B']
 	BASH = BITFLAGS['C']
@@ -181,6 +185,7 @@ class OFFENSE(enum.IntFlag):
 	ASSIST_VNUM = BITFLAGS['U']
 
 class IMM_FLAGS(enum.IntFlag):
+    NONE = 0
 	SUMMON = BITFLAGS['A']
 	CHARM = BITFLAGS['B']
 	MAGIC = BITFLAGS['C']
@@ -206,6 +211,7 @@ class IMM_FLAGS(enum.IntFlag):
 	IRON = BITFLAGS['Z']
 
 class FORMS(enum.IntFlag):
+    NONE = 0
 	EDIBLE = BITFLAGS['A']
 	POISON = BITFLAGS['B']
 	MAGICAL = BITFLAGS['C']
@@ -218,7 +224,6 @@ class FORMS(enum.IntFlag):
 	CONSTRUCT = BITFLAGS['J']
 	MIST = BITFLAGS['K']
 	INTANGIBLE = BITFLAGS['L']
-
 	BIPED = BITFLAGS['M']
 	CENTAUR = BITFLAGS['N']
 	INSECT = BITFLAGS['O']
@@ -240,6 +245,7 @@ class FORMS(enum.IntFlag):
 	UNUSED5 = BITFLAGS['EE']
 
 class PARTS(enum.IntFlag):
+    NONE = 0
 	HEAD = BITFLAGS['A']
 	ARMS = BITFLAGS['B']
 	LEGS = BITFLAGS['C']
@@ -288,6 +294,7 @@ class WEAR_LOCATIONS(enum.Enum):
 	MAX = 19
 
 class ROM_ROOM_FLAGS(enum.IntFlag):
+    NONE = 0
 	DARK = BITFLAGS['A']
 	unused1 = enum.auto()
 	NO_MOB = BITFLAGS['C']
@@ -309,7 +316,8 @@ class ROM_ROOM_FLAGS(enum.IntFlag):
 	LAW = BITFLAGS['S']
 	NOWHERE = BITFLAGS['T']
 
-class MERC_ROOM_FLAGS(enum.Enum):
+
+class MERC_ROOM_FLAGS(enum.IntFlag):
 	DARK = 1
 	NO_MOB = 4
 	INDOORS = 8
@@ -318,7 +326,7 @@ class MERC_ROOM_FLAGS(enum.Enum):
 	SOLITARY = 2048
 	PETSHOP = 4096
 	NO_RECALL = 8192
-	
+
 class EXIT_DIRECTIONS(enum.Enum):
 	NORTH = 0
 	EAST = 1
@@ -328,6 +336,7 @@ class EXIT_DIRECTIONS(enum.Enum):
 	DOWN = 5
 
 class EXIT_FLAGS(enum.IntFlag):
+    NONE = 0
 	ISDOOR = BITFLAGS['A']
 	CLOSED = BITFLAGS['B']
 	LOCKED = BITFLAGS['C']
