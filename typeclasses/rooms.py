@@ -260,12 +260,13 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
 
 
 def topClaimed():
-    owned = [str(x.owner) for x in search_tag(category="owner")]
-    counts = {}
-    for o in owned:
-        owner = search_object('#' + o).first().name
-        if owner not in counts.keys():
-            counts[owner] = 1
-        else:
-            counts[owner] += 1
-    return (sorted(counts.items(), key=lambda x: x[1], reverse=True))
+    from collections import Counter
+    owned_ids = [str(x.owner) for x in search_tag(category="owner")]
+    id_counts = Counter(owned_ids)
+    results = []
+    for oid, count in id_counts.items():
+        obj = search_object('#' + oid)
+        obj = obj.first() if obj is not None else None
+        name = obj.name if obj is not None else f'#{oid}'
+        results.append((name, count))
+    return sorted(results, key=lambda x: x[1], reverse=True)
