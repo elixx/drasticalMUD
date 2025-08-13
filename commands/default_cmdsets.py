@@ -31,6 +31,7 @@ from commands.command import CmdTopList
 from commands.command import CmdWhere
 from commands.command import CmdWho
 from commands.command import CmdWorth
+from commands.social import *
 from core import extended_room
 from core import mail
 from core.clothing import ClothedCharacterCmdSet
