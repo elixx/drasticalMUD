@@ -260,6 +260,12 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
 
 
 def topClaimed():
+    from django.core.cache import cache
+    cache_key = "topClaimed_v1"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
     from collections import Counter
     owned_ids = [str(x.owner) for x in search_tag(category="owner")]
     id_counts = Counter(owned_ids)
@@ -269,4 +275,7 @@ def topClaimed():
         obj = obj.first() if obj is not None else None
         name = obj.name if obj is not None else f'#{oid}'
         results.append((name, count))
-    return sorted(results, key=lambda x: x[1], reverse=True)
+    results = sorted(results, key=lambda x: x[1], reverse=True)
+    # Cache for 5 minutes
+    cache.set(cache_key, results, timeout=300)
+    return results

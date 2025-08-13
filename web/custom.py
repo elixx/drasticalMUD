@@ -136,20 +136,25 @@ def _toplist_stats():
     # If there are many players, limit to a reasonable top N by primary metric (claimed then gold)
     # This reduces rendering and per-player lookups.
     players_sorted = sorted(stats.items(), key=lambda kv: (kv[1]["claimed"], kv[1]["gold"]), reverse=True)
-    TOP_N = 200
+    TOP_N = 100
     players_sorted = players_sorted[:TOP_N]
 
     totalrooms = sum(area_count().values()) or 1  # avoid div-by-zero
 
+    # Batch-resolve player objects to avoid per-player queries
+    try:
+        from evennia.objects.models import ObjectDB
+        names = [player for player, _ in players_sorted]
+        obj_qs = ObjectDB.objects.filter(db_key__in=names).select_related("db_account")
+        name_to_info = {o.db_key: (o.id, bool(getattr(o.db_account, "db_is_connected", False))) for o in obj_qs}
+    except Exception:
+        # Fallback if ORM import fails
+        name_to_info = {}
+
     # Build output; avoid duplicate lookups and repeated total_visited calls
     output = []
     for player, pdata in players_sorted:
-        # Look up Evennia object only once per player
-        pobj = evennia.search_object(player)
-        pobj = pobj.first() if pobj else None
-        pid = getattr(pobj, "id", None)
-        acct = getattr(pobj, "account", None)
-        online = getattr(acct, "is_connected", False) if acct is not None else False
+        pid, online = name_to_info.get(player, (None, False))
 
         # Compute visited once using id when available to avoid extra lookups
         visited_count = total_visited(pid if pid is not None else player)
