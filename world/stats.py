@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.cache import cache
 from evennia.utils import dbref_to_obj
 from evennia.utils.search import search_tag_object, search_tag, object_search as search_object
@@ -163,8 +164,8 @@ def total_visited(char):
         totalvisited += len(visited[area])
 
     if oid is not None:
-        # Cache for 10 minutes
-        cache.set(cache_key, totalvisited, timeout=600)
+        # Cache result using configured TTL
+        cache.set(cache_key, totalvisited, timeout=settings.CACHE_TTL)
     return totalvisited
 
 
@@ -187,6 +188,6 @@ def topGold():
         key=lambda x: x[1],
         reverse=True,
     )
-    # Cache for 5 minutes; adjust if needed
-    cache.set(cache_key, output, timeout=300)
+    # Cache using configured TTL
+    cache.set(cache_key, output, timeout=settings.CACHE_TTL)
     return output

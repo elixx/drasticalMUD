@@ -3,6 +3,7 @@ from string import capwords
 
 from django.views.generic import TemplateView
 from django.core.cache import cache
+from django.conf import settings
 
 import evennia
 from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, total_visited, topGold
@@ -173,8 +174,8 @@ def _toplist_stats():
         )
 
     pagevars = {"stats": output}
-    # Cache for a short time to keep page responsive while staying fresh
-    cache.set(cache_key, pagevars, timeout=60)
+    # Cache using configured TTL
+    cache.set(cache_key, pagevars, timeout=settings.CACHE_TTL)
     return pagevars
 
 

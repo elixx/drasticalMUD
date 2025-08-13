@@ -566,6 +566,7 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
         from typeclasses.rooms import topClaimed
         claimed = topClaimed()
         gold = topGold()
+        # Merge stats from claimed and gold leaderboards
         stats = {}
         for (player, count) in claimed:
             if player in stats.keys():
@@ -573,14 +574,25 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
             else:
                 stats[player] = {'claimed': count, 'gold': '-'}
         for (player, g) in gold:
-            if player in stats.keys():
-                stats[player]['gold'] = g
-            else:
-                stats[player] = {'claimed': '-', 'gold': g}
+            if g and g > 0:
+                if player in stats.keys():
+                    stats[player]['gold'] = g
+                else:
+                    stats[player] = {'claimed': '-', 'gold': g}
+
+        # Sort by gold (desc) then claimed rooms (desc); treat '-' as 0 for sorting
+        def sort_key(item):
+            name, data = item
+            g = data['gold'] if isinstance(data['gold'], (int, float)) else 0
+            c = data['claimed'] if isinstance(data['claimed'], int) else 0
+            return (g, c)
+
+        # Take only top 10 after sorting
+        top_items = sorted(stats.items(), key=sort_key, reverse=True)[:10]
 
         table = EvTable(ff("Player"), ff("Rooms Owned"), ff("Total Gold"), border="none")
-        for i, v in stats.items():
-            table.add_row(i, v['claimed'], v['gold'])
+        for name, data in top_items:
+            table.add_row(name, data['claimed'], data['gold'])
         output = str(table) + '\n'
         self.caller.msg(output)
 

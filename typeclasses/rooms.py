@@ -266,7 +266,7 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
         caller.msg(caller_message)
 
 
-def topClaimed():
+def topClaimed(top=10):
     from django.core.cache import cache
     cache_key = "topClaimed_v1"
     cached = cache.get(cache_key)
@@ -283,6 +283,6 @@ def topClaimed():
         name = obj.name if obj is not None else f'#{oid}'
         results.append((name, count))
     results = sorted(results, key=lambda x: x[1], reverse=True)
-    # Cache for 5 minutes
-    cache.set(cache_key, results, timeout=300)
-    return results
+    # Cache using configured TTL
+    cache.set(cache_key, results, timeout=settings.CACHE_TTL)
+    return results[:top]
