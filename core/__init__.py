@@ -1,5 +1,7 @@
-from matterhook import Webhook
 from django.conf import settings
+from matterhook import Webhook
+
+from .color_markups import *
 
 EXITS_REV = {"up": "down",
              "down": "up",

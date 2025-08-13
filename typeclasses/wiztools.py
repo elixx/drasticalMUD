@@ -1,12 +1,14 @@
-from evennia import DefaultObject
-from evennia.commands.cmdset import CmdSet
-from evennia import ObjectDB
-from django.conf import settings
-from evennia.utils import utils
-from commands.command import CmdExamine
 from string import capwords
-from evennia.utils.evtable import EvTable
+
+from django.conf import settings
+
+from commands.command import CmdExamine
+from evennia import DefaultObject
+from evennia import ObjectDB
+from evennia.commands.cmdset import CmdSet
+from evennia.utils import utils
 from evennia.utils.evmore import EvMore
+from evennia.utils.evtable import EvTable
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

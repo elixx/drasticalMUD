@@ -6,10 +6,11 @@ help.
 """
 
 from django.urls import path, include
-from web.custom import areaView, toplistView, playerView, areaInfoView
-# default evennia patterns
 
 from evennia.web.website.urls import urlpatterns as evennia_default_urlpatterns
+from web.custom import areaView, toplistView, playerView, areaInfoView
+
+# default evennia patterns
 
 # add patterns
 urlpatterns = [

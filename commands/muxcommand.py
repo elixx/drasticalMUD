@@ -1,5 +1,5 @@
-from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
 from core import genPrompt
+from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
 
 
 class MuxCommand(DefaultMuxCommand):

@@ -1,13 +1,10 @@
 # from evennia.web.website import views as website_views
-from django.views.generic import TemplateView, ListView, DetailView
+from string import capwords
+
+from django.views.generic import TemplateView
 
 import evennia
-from world.utils import findStatsMachine
 from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, total_visited, topGold
-from datetime import datetime
-from string import capwords
-from evennia import ObjectDB
-from evennia.utils.logger import log_err
 
 
 class areaView(TemplateView):
@@ -162,7 +159,7 @@ class playerView(TemplateView):
 
 
 def _player_stats(**kwargs):
-    from evennia.utils.search import search_object as object_search, search_tag_object
+    from evennia.utils.search import search_object as object_search
     from django.http import Http404
     # from django.shortcuts import render
     from evennia.utils.utils import inherits_from

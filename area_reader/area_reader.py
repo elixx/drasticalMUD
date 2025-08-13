@@ -4,13 +4,12 @@ logger = logging.getLogger('area_reader')
 logging.basicConfig(level=logging.INFO)
 
 from collections import OrderedDict
-import enum
 import io
 import json
 import random
 import os
 from typing import List, Dict, Optional
-from attr import asdict, attr, attributes, Factory, fields
+from attr import Factory, fields
 from operator import setitem
 
 from .constants import *
@@ -989,6 +988,5 @@ if __name__ == '__main__':
     area_file = RomAreaFile('under2.are')
     area_file.load_sections()
     area = area_file.area
-    import pprint
     from attr import asdict
 #	pprint.pprint(asdict(area))

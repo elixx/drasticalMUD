@@ -1,9 +1,11 @@
-from evennia import utils
+import re
+
 from django.conf import settings
+
 from evennia import DefaultObject
+from evennia import utils
 from evennia.commands.cmdset import CmdSet
 from world.resource_types import BASE_VALUE
-import re
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 _RE_ARGSPLIT = re.compile(r"\s(with|on|to|in|at)\s", re.I + re.U)

@@ -1,6 +1,7 @@
 from random import randint
-from world.utils import qual
+
 from evennia.utils import delay
+from world.utils import qual
 
 """
 Object

@@ -6,17 +6,19 @@ Rooms are simple containers that has no location of their own.
 """
 
 import re
+from string import capwords
+
 from django.conf import settings
-from evennia import search_object
-from evennia.commands.cmdset import CmdSet
-from evennia.utils import utils
+
 from core.extended_room import ExtendedRoom
 from core.gametime import get_time_and_season
 from core.utils import color_time as cc
-from world.map import Map
-from string import capwords
+from evennia import search_object
+from evennia.commands.cmdset import CmdSet
+from evennia.utils import utils
 from evennia.utils.search import search_channel, search_tag
 from evennia.utils.utils import list_to_string
+from world.map import Map
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -162,20 +164,19 @@ class ImportedRoom(Room):
                     owner = '|W' + owner.name + '|x'
                 else:
                     owner = "{Wnobody{x"
+                shortdesc = ""
+                if "ltclaimed" in self.db.desc:
+                    self.db.desc = RE_FOOTER.sub('', self.db.desc)
+                if self.db.value:
+                    shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
+                        season, daytime, self.db.value, owner)
+                    self.ndb.shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
+                        season, daytime, self.db.value, owner)
+                    self.db.desc += shortdesc
 
-            shortdesc = ""
-            if "ltclaimed" in self.db.desc:
-                self.db.desc = RE_FOOTER.sub('', self.db.desc)
-            if self.db.value:
-                shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
-                season, daytime, self.db.value, owner)
-                self.ndb.shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
-                season, daytime, self.db.value, owner)
-                self.db.desc += shortdesc
-            else:
-                shortdesc = "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
-                self.ndb.shortdesc = shortdesc
-                self.db.desc += shortdesc
+            shortdesc = "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
+            self.ndb.shortdesc = shortdesc
+            self.db.desc += shortdesc
 
     def return_appearance(self, looker, **kwargs):
         self.update_description()
@@ -259,7 +260,6 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
 
 
 def topClaimed():
-    from evennia.utils.search import search_object_attribute
     owned = [str(x.owner) for x in search_tag(category="owner")]
     counts = {}
     for o in owned:

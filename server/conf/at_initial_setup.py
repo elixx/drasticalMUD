@@ -1,15 +1,14 @@
-from django.conf import settings
-from area_reader.evennia_import import AreaImporter
-from evennia.utils.logger import log_info, log_err
-from evennia.utils.create import create_object
-from evennia.utils.search import search_object
-from core.utils import create_exit
-from typeclasses.movingroom import createTrainStops
 from glob import glob
 from random import randint
 
-from evennia import TICKER_HANDLER as th
-from world.ticker import ticker_5min, ticker_daily
+from django.conf import settings
+
+from area_reader.evennia_import import AreaImporter
+from core.utils import create_exit
+from evennia.utils.create import create_object
+from evennia.utils.logger import log_info
+from evennia.utils.search import search_object
+from typeclasses.movingroom import createTrainStops
 
 TESTING = False
 
@@ -106,7 +105,7 @@ def at_initial_setup():
     # create_exit("leave mine",   "#"+str(first_mine.id),  "#"+str(temple_square.id), exit_aliases='leave')
     entrypoints = list(entrypoints)
     first = True
-    for entry in entrypoints[20:]:
+    for entry in entrypoints:  # [20:]:
         if first == True:
             (x,y) = (0,0)
             allcoords = [(x, y)]
@@ -141,7 +140,7 @@ def at_initial_setup():
     log_info("Train ID is #%s." % train.id)
     log_info("Bulletin board is #%s." % board.id)
 
-    createTrainStops(entries=importer.entries)
+    createTrainStops(entries=importer.entries, numstops=25)
 
     # Set up global ticker functions
     #th.add(300, ticker_5min)

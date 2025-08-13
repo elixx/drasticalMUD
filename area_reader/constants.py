@@ -1,5 +1,7 @@
 import enum
+
 from attr import attr, attributes
+
 
 def flag_convert(letter):
 	if len(letter) > 1:

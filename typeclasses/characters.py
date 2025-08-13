@@ -7,11 +7,12 @@ is setup to be the "default" character type created by the default
 creation commands.
 
 """
-from core.clothing.clothing import ClothedCharacter
+from string import capwords
+
 from core.clothing import ClothedCharacter
 from evennia import gametime
 from evennia.utils.logger import log_err
-from string import capwords
+
 
 class Character(ClothedCharacter):
     """
@@ -100,7 +101,7 @@ class Character(ClothedCharacter):
         styled_message = "|y" + message + "|n"
         return styled_message
 
-    def at_pre_move(self, destination, move_type=None):
+    def at_pre_move(self, destination, **kwargs):
         """
         Called just before starting to move this object to
         destination.
@@ -125,7 +126,7 @@ class Character(ClothedCharacter):
         else:
             return True
 
-    def at_post_move(self, source_location, move_type=None):
+    def at_post_move(self, source_location, move_type=None, **kwargs):
         if source_location is not None:
             if source_location.tags.get(category='area'):
                 source_area = source_location.tags.get(category='area')

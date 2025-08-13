@@ -1,7 +1,7 @@
-from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object, search_tag
-from evennia.utils.logger import log_info as log
+from evennia.utils.search import search_tag
+from evennia.utils.search import search_tag
 from world.utils import spawnJunk
+
 
 def ticker_5min():
     log("-- start world.ticker.ticker_5min --")

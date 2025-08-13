@@ -1,6 +1,6 @@
 from evennia.utils.create import create_object
-from evennia.utils.search import search_object
 from evennia.utils.logger import log_info, log_err, log_warn
+from evennia.utils.search import search_object
 from . import area_reader
 
 ROOM_TYPECLASS = "typeclasses.rooms.ImportedRoom"

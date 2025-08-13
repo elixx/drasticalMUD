@@ -1,14 +1,14 @@
+from random import choice
+
 from django.conf import settings
 
-from random import choice
+import items
+from core.utils import ff
 from evennia.commands.cmdset import CmdSet
 from evennia.utils import class_from_module, variable_from_module
-from typeclasses.objects import Object
 from evennia.utils import list_to_string
 from evennia.utils.evtable import EvTable
-from core.utils import ff
-import items
-from evennia.utils.logger import log_err
+from typeclasses.objects import Object
 
 COMMAND_DEFAULT_CLASS = class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

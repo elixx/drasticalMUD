@@ -1,8 +1,10 @@
+from random import choice
+
+from django.conf import settings
+
 from evennia import DefaultObject
 from evennia.commands.cmdset import CmdSet
-from django.conf import settings
 from evennia.utils import utils
-from random import choice
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

@@ -4,24 +4,24 @@ Commands
 Commands describe the input the account can do to the game.
 
 """
-# from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
-from evennia import ObjectDB
-from evennia import default_cmds
+import time
+from string import capwords
+
 from django.conf import settings
+
+from core import sendWebHook
+from core.extended_room import CmdExtendedRoomLook
+from core.utils import fingerPlayer, rainbow, color_percent, ff
+# from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
+from evennia import default_cmds
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, topGold
-from core import sendWebHook
-from core.utils import fingerPlayer, rainbow, fade, color_percent, ff
-from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
 from evennia.utils.evtable import EvTable
-from string import capwords
-from core.extended_room import CmdExtendedRoomLook
+from evennia.utils.search import object_search as search_object
+from evennia.utils.search import search_tag
 from world.resource_types import SIZES
-
-import time
+from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, topGold
 
 COMMAND_DEFAULT_CLASS = utils.utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -520,7 +520,6 @@ class CmdProperty(COMMAND_DEFAULT_CLASS):
     locks = "cmd:all()"
 
     def func(self):
-        from evennia.utils.search import search_object_attribute
         claimed = [room for room in search_tag(str(self.caller.id), category='owner')]
         claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
         table = EvTable(ff("Area   "), ff("Room Name"), ff("Growing"), border="none")
