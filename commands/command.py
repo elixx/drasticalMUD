@@ -714,7 +714,10 @@ class CmdGet(default_cmds.CmdGet):
             if not location:
                 self.msg("You have nowhere to get things from.")
                 return
-            candidates = [obj for obj in location.contents if obj is not caller]
+            candidates = [
+                obj for obj in location.contents
+                if obj is not caller and not obj.is_typeclass("typeclasses.exits.Exit", exact=False)
+            ]
             moved = []
             for obj in candidates:
                 # respect permissions and pre-hooks; skip disallowed instead of aborting
