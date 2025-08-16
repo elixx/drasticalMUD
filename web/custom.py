@@ -105,6 +105,22 @@ class toplistView(TemplateView):
         # Add game statistics and other pagevars
         context.update(_toplist_stats())
 
+        # Apply sorting based on query parameters
+        sort = self.request.GET.get("sort", None)
+        order = self.request.GET.get("order", "desc")
+        allowed = {"seen": "pct_seen", "owned": "owned", "gold": "gold"}
+        keyname = allowed.get(sort)
+        if keyname and "stats" in context:
+            try:
+                reverse = False if order == "asc" else True
+                context["stats"] = sorted(context["stats"], key=lambda s: s.get(keyname, 0), reverse=reverse)
+            except Exception:
+                # leave unsorted on error
+                pass
+        # Pass sort state to template
+        context["sort"] = sort
+        context["order"] = order
+
         return context
 
 
