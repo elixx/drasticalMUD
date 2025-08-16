@@ -30,8 +30,9 @@ def ticker_5min():
     objs_qs = search_tag("random_spawn", category="object")
     # Only fetch minimal fields to reduce memory; keep instances to preserve delete hooks
     # Must include db_sessid since Evennia's delete() accesses sessions -> db_sessid
+    # Also include db_account_id since delete() checks self.account which reads the local FK field.
     if hasattr(objs_qs, "only"):
-        objs_qs = objs_qs.only("id", "db_sessid")
+        objs_qs = objs_qs.only("id", "db_sessid", "db_account_id", "db_location_id", "db_home_id")
 
     # Configurable limits with safe defaults for constrained systems
     max_delete = getattr(settings, "RANDOM_SPAWN_CLEANUP_MAX_PER_TICK", 500)

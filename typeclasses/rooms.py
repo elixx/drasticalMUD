@@ -152,9 +152,9 @@ class ImportedRoom(Room):
 
         if self.db.desc and update == True:
             season = "|" + cc(season) + season + "|x"
-
             daytime = "|" + cc(daytime) + daytime + "|x"
 
+            # resolve owner display name
             if not self.owner:
                 owner = "{Wnobody{x"
             else:
@@ -164,17 +164,18 @@ class ImportedRoom(Room):
                     owner = '|W' + owner.name + '|x'
                 else:
                     owner = "{Wnobody{x"
-                shortdesc = ""
-                if "ltclaimed" in self.db.desc:
-                    self.db.desc = RE_FOOTER.sub('', self.db.desc)
-                if self.db.value:
-                    shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
-                        season, daytime, self.db.value, owner)
-                    self.ndb.shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
-                        season, daytime, self.db.value, owner)
-                    self.db.desc += shortdesc
 
-            shortdesc = "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
+            # strip existing footer if present
+            if "ltclaimed" in self.db.desc:
+                self.db.desc = RE_FOOTER.sub('', self.db.desc)
+
+            # build short description (worth + owner if value exists, else only owner)
+            if self.db.value:
+                shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
+                    season, daytime, self.db.value, owner)
+            else:
+                shortdesc = "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
+
             self.ndb.shortdesc = shortdesc
             self.db.desc += shortdesc
 
