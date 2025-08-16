@@ -31,6 +31,7 @@ from commands.command import CmdTopList
 from commands.command import CmdWhere
 from commands.command import CmdWho
 from commands.command import CmdWorth
+from commands.command import CmdGet
 from commands.social import *
 from core import extended_room
 from core import mail
@@ -72,6 +73,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(CmdResourceSplit)
         self.add(CmdNoMap)
         self.add(CmdBrief)
+        self.add(CmdGet)
 
         #
         # any commands you add below will overload the default ones.

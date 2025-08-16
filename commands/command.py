@@ -691,3 +691,52 @@ class CmdResourceSplit(COMMAND_DEFAULT_CLASS):
             f"{caller.name} removes {bundle.name} from {obj.name if obj.name != caller.name else 'their pocket'}.",
             exclude=caller)
 
+
+
+
+class CmdGet(default_cmds.CmdGet):
+    """
+    Override of Evennia's get command to add support for 'get all'.
+
+    Usage:
+      get <obj>
+      get all
+    """
+
+    def func(self):
+        caller = self.caller
+        if not self.args:
+            self.msg("Get what?")
+            return
+
+        if self.args.strip().lower() == "all":
+            location = caller.location
+            if not location:
+                self.msg("You have nowhere to get things from.")
+                return
+            candidates = [obj for obj in location.contents if obj is not caller]
+            moved = []
+            for obj in candidates:
+                # respect permissions and pre-hooks; skip disallowed instead of aborting
+                if not obj.access(caller, "get"):
+                    continue
+                if not obj.at_pre_get(caller):
+                    continue
+                if obj.move_to(caller, quiet=True, move_type="get"):
+                    moved.append(obj)
+                    obj.at_get(caller)
+            if not moved:
+                self.msg("There is nothing you can pick up.")
+                return
+            # Feedback: summarize what was picked up
+            if len(moved) == 1:
+                obj_name = moved[0].get_numbered_name(1, caller, return_string=True)
+                caller.location.msg_contents(f"$You() $conj(pick) up {obj_name}.", from_obj=caller)
+            else:
+                names = [obj.get_display_name(caller) for obj in moved]
+                name_list = utils.list_to_string(names)
+                caller.location.msg_contents(f"$You() $conj(pick) up {name_list}.", from_obj=caller)
+            return
+
+        # Fallback to original behavior for specific targets/numbered
+        super().func()
