@@ -1,10 +1,10 @@
 from django.conf import settings
+
 from evennia import utils
-from typeclasses.objects import Item
 from evennia.commands.cmdset import CmdSet
 from evennia.utils.utils import list_to_string
-from world.resource_types import SIZES, BASE_VALUE
-
+from typeclasses.objects import Item
+from world.resource_types import SIZES
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

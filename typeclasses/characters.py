@@ -7,11 +7,12 @@ is setup to be the "default" character type created by the default
 creation commands.
 
 """
-from core.clothing.clothing import ClothedCharacter
+from string import capwords
+
 from core.clothing import ClothedCharacter
 from evennia import gametime
 from evennia.utils.logger import log_err
-from string import capwords
+
 
 class Character(ClothedCharacter):
     """
@@ -46,6 +47,12 @@ class Character(ClothedCharacter):
     def gold(self, amount):
         if self.db.stats:
             self.db.stats['gold'] = amount
+            # Invalidate gold-based leaderboards and toplist context
+            try:
+                from world.stats import invalidate_topGold_cache
+                invalidate_topGold_cache()
+            except Exception:
+                pass
 
     def at_object_creation(self):
         super().at_object_creation()
@@ -65,8 +72,6 @@ class Character(ClothedCharacter):
             self.db.stats['logins'] += 1
         except KeyError:
             self.db.stats['logins'] = 1
-        if "This is a character" in self.db.desc:
-            self.msg("You don't have a description set! Use |ysetdesc|n to set a description for your character.")
 
     def at_post_unpuppet(self, account, session=None, **kwargs):
         if session is not None:
@@ -102,7 +107,7 @@ class Character(ClothedCharacter):
         styled_message = "|y" + message + "|n"
         return styled_message
 
-    def at_pre_move(self, destination, move_type=None):
+    def at_pre_move(self, destination, **kwargs):
         """
         Called just before starting to move this object to
         destination.
@@ -127,7 +132,7 @@ class Character(ClothedCharacter):
         else:
             return True
 
-    def at_post_move(self, source_location, move_type=None):
+    def at_post_move(self, source_location, move_type=None, **kwargs):
         if source_location is not None:
             if source_location.tags.get(category='area'):
                 source_area = source_location.tags.get(category='area')
@@ -155,6 +160,14 @@ class Character(ClothedCharacter):
                         self.db.stats['visited'][cur_area] = list(set(self.db.stats['visited'][cur_area]))
                 else:
                     self.db.stats['visited'] = { cur_area: [self.location.id] }
+
+                # Invalidate cached total_visited and toplist context so /toplist updates promptly
+                try:
+                    from world.stats import invalidate_total_visited_cache, invalidate_toplist_context
+                    invalidate_total_visited_cache(self.id)
+                    invalidate_toplist_context()
+                except Exception:
+                    pass
 
             except Exception as e:
                 self.db.stats['visited'] = {}

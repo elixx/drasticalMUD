@@ -1,12 +1,12 @@
-from django.conf import settings
 from evennia.utils.create import create_object
-from evennia.utils.search import search_object, search_account
-from core import EXITS_REV, EXIT_ALIAS
-from area_reader.evennia_import import AREA_TRANSLATIONS
-from random import choice, randint
-from evennia.utils.evtable import EvTable as styled_table
-from evennia.utils.logger import log_err, log_info
 from datetime import datetime
+from random import randint
+
+from area_reader.evennia_import import AREA_TRANSLATIONS
+from core import EXITS_REV, EXIT_ALIAS
+from evennia.utils.create import create_object
+from evennia.utils.evtable import EvTable as styled_table
+from evennia.utils.search import search_object, search_account
 
 EXIT_TYPECLASS = "typeclasses.exits.LegacyExit"
 

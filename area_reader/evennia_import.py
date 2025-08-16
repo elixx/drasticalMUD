@@ -1,7 +1,7 @@
 from evennia.utils.create import create_object
-from evennia.utils.search import search_object
 from evennia.utils.logger import log_info, log_err, log_warn
-from . import area_reader
+from evennia.utils.search import search_object
+from .area_reader import *
 
 ROOM_TYPECLASS = "typeclasses.rooms.ImportedRoom"
 EXIT_TYPECLASS = "typeclasses.exits.LegacyExit"
@@ -81,6 +81,7 @@ class AreaImporter(object):
         self.object_translate = {}
         self.objects_enumerated = False
         self.objects_created = False
+        self.mob_equipment_enumerated = False
 
         self.mobs = {}
         self.mob_translate = {}
@@ -89,6 +90,8 @@ class AreaImporter(object):
 
         self.object_location = {}
         self.mob_location = {}
+        self.mob_equipment = {}  # Maps object vnum to mob vnum for equipment
+        self.container_objects = {}  # Maps object vnum to container vnum for P commands
 
         self.last_area = ""
 
@@ -96,8 +99,14 @@ class AreaImporter(object):
             self.load(filename)
 
     def load(self, filename):
-        self.area_file = area_reader.RomAreaFile(filename)
-        self.area_file.load_sections()
+        try_other_classes = False
+        self.area_file = RomAreaFile(filename)
+        try:
+            self.area_file.load_sections()
+        except Exception as e:
+            try_other_classes = True
+            print(str(e))
+            pass
         self.areaname = self.area_file.area.name.lower()
         if self.areaname == "" or (".are" in self.areaname):
             if "\\" in filename:
@@ -118,8 +127,15 @@ class AreaImporter(object):
         self.exits_created = False
         self.objects_created = False
         self.objects_enumerated = False
+        self.mob_equipment_enumerated = False
         self.mobs_created = False
         self.mobs_enumerated = False
+
+        # Reset location tracking dictionaries
+        self.object_location = {}
+        self.mob_location = {}
+        self.mob_equipment = {}
+        self.container_objects = {}
 
         self.enumerateRooms()
         self.enumerateMobs()
@@ -137,15 +153,15 @@ class AreaImporter(object):
             desc = v.description
             exits = {}
             for x in v.exits:
-                exits[DIRS[x.door]] = {'desc': x.description,
-                                       'dest': x.destination}
+                exits[x.door] = {'desc': x.description,
+                                 'dest': x.destination}
 
             self.rooms[v.vnum] = {'name': name,
                                   'desc': desc,
                                   'exits': exits,
                                   'area': areaname}
             count += 1
-        log_info("enumerateRooms(): %s rooms" % count)
+        log_info(f"enumerateRooms(): {areaname} - {count} rooms")
         self.rooms_enumerated = True
 
     def enumerateMobs(self):
@@ -180,7 +196,8 @@ class AreaImporter(object):
                     self.mob_location[mob] = room
                 except Exception as e:
                     log_err(
-                        "! enumerateMobLocations(): " + str(e) + "\n\targ1=" + str(r.arg1) + " arg3=" + str(r.arg3))
+                        "! enumerateMobLocations(): " + str(e) + "\n\tmob_vnum=v" + str(r.arg1) + " room_vnum=v" + str(
+                            r.arg3))
 
     def enumerateObjects(self):
         areaname = self.areaname
@@ -197,18 +214,66 @@ class AreaImporter(object):
         self.objects_enumerated = True
 
     def enumerateObjectLocations(self):
+        last_mob_vnum = None
         for r in self.area_file.area.resets:
             # O - Object into room
-            # P - Object into object
-            # E - Object into mob
-            if r.command == 'O':
+            # P - Object into object (container)
+            # E - Object into mob (equipment)
+            # G - Object into mob inventory
+            # M - Mobile (track for subsequent E/G commands)
+            if r.command == 'M':
+                last_mob_vnum = r.arg1
+            elif r.command == 'O':
                 try:
                     object = r.arg1
                     room = r.arg3
                     self.object_location[object] = room
+                    log_info(f"enumerateObjectLocations(O): Object v{object} placed in room v{room}")
                 except Exception as e:
                     log_err(
-                        "! enumerateObjectLocations(): " + str(e) + "\n\targ1=" + str(r.arg1) + " arg3=" + str(r.arg3))
+                        "! enumerateObjectLocations(O): " + str(e) + "\n\tobject_vnum=v" + str(
+                            r.arg1) + " room_vnum=v" + str(r.arg3))
+            elif r.command == 'E':
+                try:
+                    object = r.arg1
+                    wear_loc = r.arg3
+                    if last_mob_vnum is not None:
+                        # Store that this object should be equipped on the last spawned mob
+                        self.mob_equipment[object] = last_mob_vnum
+                        log_info(
+                            f"enumerateObjectLocations(E): Object v{object} equipped on mob v{last_mob_vnum} at wear_loc {wear_loc}")
+                    else:
+                        log_err(
+                            f"! enumerateObjectLocations(E): Object v{object} has E command but no previous M command")
+                except Exception as e:
+                    log_err(
+                        "! enumerateObjectLocations(E): " + str(e) + "\n\tobject_vnum=v" + str(
+                            r.arg1) + " wear_location=" + str(r.arg3))
+            elif r.command == 'G':
+                try:
+                    object = r.arg1
+                    if last_mob_vnum is not None:
+                        # Store that this object should be given to the last spawned mob's inventory
+                        self.mob_equipment[object] = last_mob_vnum
+                        log_info(
+                            f"enumerateObjectLocations(G): Object v{object} given to mob v{last_mob_vnum} inventory")
+                    else:
+                        log_err(
+                            f"! enumerateObjectLocations(G): Object v{object} has G command but no previous M command")
+                except Exception as e:
+                    log_err(
+                        "! enumerateObjectLocations(G): " + str(e) + "\n\tobject_vnum=v" + str(r.arg1))
+            elif r.command == 'P':
+                try:
+                    object = r.arg1
+                    container = r.arg3
+                    # Store container relationship for P commands
+                    self.container_objects[object] = container
+                    log_info(f"enumerateObjectLocations(P): Object v{object} put inside container v{container}")
+                except Exception as e:
+                    log_err(
+                        "! enumerateObjectLocations(P): " + str(e) + "\n\tobject_vnum=v" + str(
+                            r.arg1) + " container_vnum=v" + str(r.arg3))
 
     def spawnRooms(self):
         if self.rooms_created:
@@ -237,9 +302,11 @@ class AreaImporter(object):
 
                 self.room_translate[vnum] = newroom.id
                 # log_info(
-                #     "spawnRooms(): Area:%s Room:'%s' Vnum:%s Evid:%s" % (room['area'], room['name'], vnum, newroom.id))
+                #     "spawnRooms(): Area:%s Room:'%s' Vnum:v%s Evid:#%s" % (room['area'], room['name'], vnum, newroom.id))
                 if (firstRoom):
-                    log_warn("* Entry to " + room['area'] + ' - #' + str(newroom.id) + " = " + room['name'])
+                    log_warn(
+                        "* Entry to " + room['area'] + ' - #' + str(newroom.id) + " (v" + str(vnum) + ") = " + room[
+                            'name'])
                     if room['area'] in self.entries.keys():
                         self.entries[room['area']].append(newroom.id)
                     else:
@@ -256,10 +323,18 @@ class AreaImporter(object):
         if self.exits_created:
             log_err("Exits already created!")
         else:
+            # Track exit statistics
+            total_exits = 0
+            successful_exits = 0
+            nowhere_exits = 0
+            cross_area_exits = 0
+            blackhole_rooms = 0
             for vnum in sorted(self.rooms):
                 room = self.rooms[vnum]
                 count = 0
-                for exitDir, exitData in room['exits'].items():
+                for exit, exitData in room['exits'].items():
+                    total_exits += 1
+                    exitDir = exit.name.lower()
                     evid = "#" + str(self.room_translate[vnum])
                     loc = search_object(evid, use_dbref=True)[0]
                     if loc is None:
@@ -268,14 +343,52 @@ class AreaImporter(object):
                             log_err('! missing source: ' + str(loc))
                             continue
                     if exitData['dest'] not in self.room_translate.keys():
-                        log_err('! no source: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
-                            evid) + " skipped, " + str(exitData['dest']) + " not found.")
-                        continue
+                        # Handle special cases for one-way exits and cross-area connections
+                        if exitData['dest'] == -1:
+                            # -1 is a common "nowhere" destination for one-way traps or dead ends
+                            log_info(
+                                f"Creating one-way exit '{exitDir}' in {room['area']} room v{vnum} (nowhere destination)")
+                            create_object(typeclass=EXIT_TYPECLASS,
+                                          key=exitDir, location=loc, destination=None, aliases=[DIRALIAS[exitDir]],
+                                          tags=[(room['area'], 'area'),
+                                                (room['area'], 'exit'),
+                                                ('imported'),
+                                                ('one_way_trap', 'exit')],
+                                          attributes=[('area', room['area']),
+                                                      ('vnum', vnum),
+                                                      ('dest_vnum', exitData['dest']),
+                                                      ('exit_type', 'nowhere')])
+                            count += 1
+                            nowhere_exits += 1
+                            continue
+                        else:
+                            # This is likely a cross-area exit - create a one-way exit with stored destination info
+                            log_warn(
+                                f"Creating one-way exit '{exitDir}' in {room['area']} room v{vnum} -> cross-area destination v{exitData['dest']}")
+                            create_object(typeclass=EXIT_TYPECLASS,
+                                          key=exitDir, location=loc, destination=None, aliases=[DIRALIAS[exitDir]],
+                                          tags=[(room['area'], 'area'),
+                                                (room['area'], 'exit'),
+                                                ('imported'),
+                                                ('cross_area', 'exit')],
+                                          attributes=[('area', room['area']),
+                                                      ('vnum', vnum),
+                                                      ('dest_vnum', exitData['dest']),
+                                                      ('exit_type', 'cross_area')])
+                            count += 1
+                            cross_area_exits += 1
+                            continue
                     evdestid = "#" + str(self.room_translate[exitData['dest']])
-                    dest = search_object(evdestid, use_dbref=True)[0]
-                    if dest is None:
-                        log_err('! no destination: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
-                            evid) + " skipped, " + str(exitData['dest']) + " not found.")
+                    try:
+                        dest = search_object(evdestid, use_dbref=True)[0]
+                        if dest is None:
+                            log_err(
+                                '! no destination object: ' + room['area'] + ": Exit " + exitDir + " in EVid " + str(
+                                    evid) + " (v" + str(vnum) + ") skipped, v" + str(exitData['dest']) + " not found.")
+                            continue
+                    except Exception as e:
+                        log_err(
+                            f"! destination lookup failed: {room['area']}: Exit {exitDir} in EVid {evid} (v{vnum}) -> v{exitData['dest']}: {str(e)}")
                         continue
                     create_object(typeclass=EXIT_TYPECLASS,
                                   key=exitDir, location=loc, destination=dest, aliases=[DIRALIAS[exitDir]],
@@ -286,10 +399,26 @@ class AreaImporter(object):
                                   attributes=[('area', room['area']),
                                               ('vnum', vnum)])
                     count += 1
+                    successful_exits += 1
                 if count == 0:
-                    log_err("! blackhole detected - vnum %s, EvId %s" % (vnum, self.room_translate[vnum]))
+                    # Blackhole detection - room has no valid exits
+                    # This could be intentional (dead end, special room) or an error
+                    log_warn(
+                        f"Blackhole room detected - vnum v{vnum}, EvId #{self.room_translate[vnum]} in {room['area']} - '{room['name']}'")
+                    # Add a tag to identify blackhole rooms for potential special handling
+                    evid_obj = "#" + str(self.room_translate[vnum])
+                    try:
+                        room_obj = search_object(evid_obj, use_dbref=True)[0]
+                        room_obj.tags.add('blackhole', category='room')
+                        room_obj.tags.add('dead_end', category='room')
+                    except Exception as e:
+                        log_err(f"! Failed to tag blackhole room v{vnum}: {str(e)}")
                     # TODO: check IDs listed in self.entries and remove if present
+                    blackhole_rooms += 1
+            
             self.exits_created = True
+            log_info(
+                f"Exit creation summary for {self.areaname}: {successful_exits}/{total_exits} successful, {nowhere_exits} nowhere, {cross_area_exits} cross-area, {blackhole_rooms} blackhole rooms")
 
     def spawnMobs(self):
         if self.mobs_created:
@@ -297,16 +426,16 @@ class AreaImporter(object):
         else:
             for vnum in sorted(self.mobs):
                 if vnum not in self.mobs.keys():
-                    log_err("spawnMobs():300: %s not found" % vnum)
+                    log_err("spawnMobs():300: v%s not found" % vnum)
                     continue
                 ob = self.mobs[vnum]
                 if vnum not in self.mob_location.keys():
                     # mob location could not be found
-                    log_err("! %s - vnum not found in mob_location: %s" % (ob['name'], vnum))
+                    log_err("! %s - vnum v%s not found in mob_location" % (ob['name'], vnum))
                     continue
 
                 if self.mob_location[vnum] not in self.room_translate.keys():
-                    log_err("! %s - vnum not found in room_translate: %s" % (ob['name'], vnum))
+                    log_err("! %s - vnum v%s not found in room_translate" % (ob['name'], vnum))
                     continue
 
                 evid = "#" + str(self.room_translate[self.mob_location[vnum]])
@@ -314,7 +443,7 @@ class AreaImporter(object):
                     loc = search_object(evid, use_dbref=True)[0]
                 except Exception as e:
                     # TODO: try vnum
-                    log_err("! spawnMobs:317: vnum %s - location %s - %s" % (vnum, evid, str(e)))
+                    log_err("! spawnMobs:317: vnum v%s - location %s - %s" % (vnum, evid, str(e)))
                     continue
 
                 newmob = create_object(key=ob['name'], location=loc, home=loc, aliases=ob['aliases'],
@@ -339,47 +468,88 @@ class AreaImporter(object):
         else:
             for vnum in sorted(self.objects):
                 ob = self.objects[vnum]
-                if vnum not in self.object_location.keys():
-                    log_err("! vnum %s not found in object_location table for %s" % (vnum, ob['name']))
-                    continue
-                else:
-                    if self.room_translate[self.object_location[vnum]]:
-                        evid = "#" + str(self.room_translate[self.object_location[vnum]])
-                    elif self.room_translate[self.mob_location[vnum]]:
-                        evid = "#" + str(self.room_translate[self.mob_location[vnum]])
-                    loc = search_object(evid, use_dbref=True)
-                    if len(loc) > 1:
-                        loc = loc.filter(db_tags__db_key=self.objects[vnum]['area'])
-                    if loc is None:
-                        if vnum in self.mob_location.keys():
-                            loc = self.mob_location[vnum]
-                        else:
-                            log_err("! spawnObjects(): vnum %s - location %s not found" % (vnum, evid))
+                loc = None
+
+                # Check if this object should be equipped on a mob
+                if vnum in self.mob_equipment:
+                    mob_vnum = self.mob_equipment[vnum]
+                    if mob_vnum in self.mob_translate:
+                        mob_evid = "#" + str(self.mob_translate[mob_vnum])
+                        try:
+                            loc = search_object(mob_evid, use_dbref=True)[0]
+                            # Determine if this is equipment or inventory based on the reset command type
+                            # This is a simplified approach - in a full implementation you'd track the command type
+                            log_info(
+                                f"spawnObjects(): Giving object v{vnum} ({ob['name']}) to mob v{mob_vnum} evid:{mob_evid}")
+                        except Exception as e:
+                            log_err(f"! spawnObjects(): Failed to find mob v{mob_vnum} for equipment v{vnum}: {str(e)}")
                             continue
-                    if loc is not None:
-                        if 'QuerySet' in str(loc.__class__):
-                            loc = loc[0]
-                        if 'weight' in ob.keys():
-                            weight = ob['weight']
-                        else:
-                            weight = 5
-                        if 'cost' in ob.keys():
-                            cost = ob['cost']
-                        else:
-                            cost = 10
-                        newob = create_object(key=ob['name'].replace("{", "|"), location=loc, home=loc,
-                                              aliases=ob['aliases'],
-                                              typeclass=ITEM_TYPECLASS,
-                                              attributes=[('desc', ob['desc']),
-                                                          ('ext_desc', ob['ext']),
-                                                          ('item_type', ob['type']),
-                                                          ('area', ob['area']),
-                                                          ('vnum', vnum),
-                                                          ('quality', weight),
-                                                          ('resources', {'trash': cost}),
-                                                          ('respawn', True),
-                                                          ('respawn_time', 60)],
-                                              tags=[("imported"),
-                                                    (self.areaname, 'area'),
-                                                    (self.areaname, 'item')])
-                        # log_info("%s created in %s:%s - #%s" % (ob['name'], loc.id, loc.name, newob.id))
+                    else:
+                        log_err(f"! spawnObjects(): Mob v{mob_vnum} not found in mob_translate for equipment v{vnum}")
+                        continue
+
+                # Check if this object should be placed in a container
+                elif vnum in self.container_objects:
+                    container_vnum = self.container_objects[vnum]
+                    if container_vnum in self.object_translate:
+                        container_evid = "#" + str(self.object_translate[container_vnum])
+                        try:
+                            loc = search_object(container_evid, use_dbref=True)[0]
+                            log_info(
+                                f"spawnObjects(): Placing object v{vnum} ({ob['name']}) inside container v{container_vnum} evid:{container_evid}")
+                        except Exception as e:
+                            log_err(
+                                f"! spawnObjects(): Failed to find container v{container_vnum} for object v{vnum}: {str(e)}")
+                            continue
+                    else:
+                        log_err(
+                            f"! spawnObjects(): Container v{container_vnum} not found in object_translate for object v{vnum}")
+                        continue
+
+                # Check if this object should be placed in a room
+                elif vnum in self.object_location:
+                    room_vnum = self.object_location[vnum]
+                    if room_vnum in self.room_translate:
+                        evid = "#" + str(self.room_translate[room_vnum])
+                        try:
+                            loc = search_object(evid, use_dbref=True)[0]
+                        except Exception as e:
+                            log_err(f"! spawnObjects(): Failed to find room v{room_vnum} for object v{vnum}: {str(e)}")
+                            continue
+                    else:
+                        log_err(f"! spawnObjects(): Room v{room_vnum} not found in room_translate for object v{vnum}")
+                        continue
+                else:
+                    log_err(
+                        "! vnum v%s not found in object_location, mob_equipment, or container_objects for %s" % (vnum,
+                                                                                                                 ob[
+                                                                                                                     'name']))
+                    continue
+
+                if loc is not None:
+                    if 'weight' in ob.keys():
+                        weight = ob['weight']
+                    else:
+                        weight = 5
+                    if 'cost' in ob.keys():
+                        cost = ob['cost']
+                    else:
+                        cost = 10
+                    newob = create_object(key=ob['name'].replace("{", "|"), location=loc, home=loc,
+                                          aliases=ob['aliases'],
+                                          typeclass=ITEM_TYPECLASS,
+                                          attributes=[('desc', ob['desc']),
+                                                      ('ext_desc', ob['ext']),
+                                                      ('item_type', ob['type']),
+                                                      ('area', ob['area']),
+                                                      ('vnum', vnum),
+                                                      ('quality', weight),
+                                                      ('resources', {'trash': cost}),
+                                                      ('respawn', True),
+                                                      ('respawn_time', 60)],
+                                          tags=[("imported"),
+                                                (self.areaname, 'area'),
+                                                (self.areaname, 'item')])
+                    self.object_translate[vnum] = newob.id
+                    # log_info("%s (v%s) created in #%s:%s - #%s" % (ob['name'], vnum, loc.id, loc.name, newob.id))
+            self.objects_created = True

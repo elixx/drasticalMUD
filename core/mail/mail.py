@@ -42,11 +42,11 @@ ic/ooc to switch in and out of IC/OOC modes.
 """
 
 import re
+
 from evennia import ObjectDB, AccountDB
 from evennia import default_cmds
-from evennia.utils import create, evtable, make_iter, inherits_from, datetime_format
 from evennia.comms.models import Msg
-
+from evennia.utils import create, evtable, make_iter, inherits_from, datetime_format
 
 _HEAD_CHAR = "|015-|n"
 _SUB_HEAD_CHAR = "-"

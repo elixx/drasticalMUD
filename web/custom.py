@@ -1,13 +1,12 @@
 # from evennia.web.website import views as website_views
-from django.views.generic import TemplateView, ListView, DetailView
+from string import capwords
+
+from django.views.generic import TemplateView
+from django.core.cache import cache
+from django.conf import settings
 
 import evennia
-from world.utils import findStatsMachine
 from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, total_visited, topGold
-from datetime import datetime
-from string import capwords
-from evennia import ObjectDB
-from evennia.utils.logger import log_err
 
 
 class areaView(TemplateView):
@@ -106,47 +105,93 @@ class toplistView(TemplateView):
         # Add game statistics and other pagevars
         context.update(_toplist_stats())
 
+        # Apply sorting based on query parameters
+        sort = self.request.GET.get("sort", None)
+        order = self.request.GET.get("order", "desc")
+        allowed = {"seen": "pct_seen", "owned": "owned", "gold": "gold"}
+        keyname = allowed.get(sort)
+        if keyname and "stats" in context:
+            try:
+                reverse = False if order == "asc" else True
+                context["stats"] = sorted(context["stats"], key=lambda s: s.get(keyname, 0), reverse=reverse)
+            except Exception:
+                # leave unsorted on error
+                pass
+        # Pass sort state to template
+        context["sort"] = sort
+        context["order"] = order
+
         return context
 
 
 def _toplist_stats():
+    # Cache the computed toplist to avoid repeated expensive queries
+    # TTL: 60 seconds. Invalidated when gold changes, claims change, or visited counts update.
+    cache_key = "toplist_stats_v1"
+    cached = cache.get(cache_key)
+    if cached:
+        return cached
+
     from typeclasses.rooms import topClaimed
-    claimed = topClaimed()
-    gold = topGold()
+
+    # Heavy queries: get claimed-rooms leaderboard and gold leaderboard
+    claimed = topClaimed()  # list of (player_name, count)
+    gold = topGold()        # list of (player_name, gold_amount)
+
+    # Merge results into a stats dict
     stats = {}
     for (player, count) in claimed:
-        if player in stats.keys():
-            stats[player]['claimed'] = count
-        else:
-            stats[player] = {'claimed': count, 'gold': '-'}
+        entry = stats.setdefault(player, {"claimed": 0, "gold": 0})
+        entry["claimed"] = count
     for (player, g) in gold:
-        if player in stats:
-            stats[player]['gold'] = g
-        else:
-            stats[player] = {'name': player, 'claimed': '-', 'gold': g}
-    totalrooms = sum(area_count().values())
-    for player in stats.keys():
-        stats[player]['pct_seen'] = total_visited(player) / totalrooms
+        entry = stats.setdefault(player, {"claimed": 0, "gold": 0})
+        # Ensure numeric gold
+        try:
+            entry["gold"] = int(g)
+        except Exception:
+            entry["gold"] = 0
 
+    # If there are many players, limit to a reasonable top N by primary metric (claimed then gold)
+    # This reduces rendering and per-player lookups.
+    players_sorted = sorted(stats.items(), key=lambda kv: (kv[1]["claimed"], kv[1]["gold"]), reverse=True)
+    TOP_N = 100
+    players_sorted = players_sorted[:TOP_N]
+
+    totalrooms = sum(area_count().values()) or 1  # avoid div-by-zero
+
+    # Batch-resolve player objects to avoid per-player queries
+    try:
+        from evennia.objects.models import ObjectDB
+        names = [player for player, _ in players_sorted]
+        obj_qs = ObjectDB.objects.filter(db_key__in=names).select_related("db_account")
+        name_to_info = {o.db_key: (o.id, bool(getattr(o.db_account, "db_is_connected", False))) for o in obj_qs}
+    except Exception:
+        # Fallback if ORM import fails
+        name_to_info = {}
+
+    # Build output; avoid duplicate lookups and repeated total_visited calls
     output = []
-    for player in stats.keys():
-        p = evennia.search_object(player).first()
-        pid = p.id
-        acct = p.account
-        online = acct.is_connected if acct is not None else False
-        visited = total_visited(p)
+    for player, pdata in players_sorted:
+        pid, online = name_to_info.get(player, (None, False))
+
+        # Compute visited once using id when available to avoid extra lookups
+        visited_count = total_visited(pid if pid is not None else player)
+        pct_seen = round(visited_count / totalrooms * 100, 1)
+
         output.append(
-            {'name': player,
-             'dname': "%s <span class='text-success'>online</span>" % player if online else player,
-             'owned': stats[player]['claimed'],
-             'gold': int(stats[player]['gold']),
-             'id': pid,
-            'pct_seen': round(visited / totalrooms*100,1)
-             }
+            {
+                "name": player,
+                "dname": f"{player} <span class='text-success'>online</span>" if online else player,
+                "owned": pdata.get("claimed", 0),
+                "gold": int(pdata.get("gold", 0)),
+                "id": pid,
+                "pct_seen": pct_seen,
+            }
         )
 
-
     pagevars = {"stats": output}
+    # Cache using configured TTL
+    cache.set(cache_key, pagevars, timeout=settings.CACHE_TTL)
     return pagevars
 
 
@@ -162,7 +207,7 @@ class playerView(TemplateView):
 
 
 def _player_stats(**kwargs):
-    from evennia.utils.search import search_object as object_search, search_tag_object
+    from evennia.utils.search import search_object as object_search
     from django.http import Http404
     # from django.shortcuts import render
     from evennia.utils.utils import inherits_from

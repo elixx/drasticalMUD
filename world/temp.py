@@ -1,5 +1,3 @@
-from evennia import search_object
-
 # from typeclasses.rooms import ImportedRoom
 # [obj.at_object_creation() for obj in ImportedRoom.objects.all()]
 

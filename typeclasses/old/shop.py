@@ -1,11 +1,13 @@
-from django.conf import settings
-from evennia.utils import utils
-from evennia.utils.evmenu import EvMenu
-from typeclasses.rooms import Room
-from evennia.commands.cmdset import CmdSet
-from evennia.utils.create import create_object
-from typeclasses.objects import Object
 from random import choice
+
+from django.conf import settings
+
+from evennia.commands.cmdset import CmdSet
+from evennia.utils import utils
+from evennia.utils.create import create_object
+from evennia.utils.evmenu import EvMenu
+from typeclasses.objects import Object
+from typeclasses.rooms import Room
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

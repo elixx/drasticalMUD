@@ -6,6 +6,7 @@ This is a IMC2 complacent version.
 """
 
 import re
+
 from evennia.utils import ansi
 
 

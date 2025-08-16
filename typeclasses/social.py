@@ -1,4 +1,5 @@
 from django.conf import settings
+
 from evennia.utils import utils
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)

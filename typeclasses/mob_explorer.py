@@ -1,11 +1,9 @@
+import random
+
+from core.utils import combineNames
+from evennia.utils.logger import log_warn
 from typeclasses.mob_talker import ChattyMob
 from typeclasses.rooms import CmdClaimRoom
-from core.utils import combineNames
-from evennia import ObjectDB
-from evennia.utils.logger import log_warn
-from evennia.utils.utils import crop
-import random
-import time
 
 
 class ExplorerMob(ChattyMob):

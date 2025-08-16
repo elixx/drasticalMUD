@@ -1,4 +1,5 @@
 from django.conf import settings
+
 from evennia import utils
 
 log_err = utils.logger.log_err
@@ -66,6 +67,7 @@ class Resource(Item):
 class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
     """
     Usage: join/combine <item1> with <item2>
+           join/combine <item1> and <item2>
            join all bundles
     Combine two different items to create a resource bundle.
     Both objects will be consumed. The bundle will contain all of both items' resources.
@@ -77,7 +79,7 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
     aliases = ["combine"]
     # locks = "cmd:superuser()"
     #arg_regex = r"\s|$"
-    #rhs_split = ("with", "and")  # Prefer 'with' delimiter, but allow " and " usage.
+    rhs_split = (" with ", " and ", "=")  # Support natural 'with/and' and classic '=' syntax.
 
     def func(self):
         log_err(self.args)
@@ -86,6 +88,9 @@ class CmdResourceJoin(COMMAND_DEFAULT_CLASS):
             return
         elif "all bundles" in self.args:
             bundles = [o for o in self.caller.contents if "Resource" in o.db_typeclass_path]
+            if not bundles:
+                self.caller.msg("You have no resource bundles to join.")
+                return
             b = bundles.pop()
             for bundle in bundles:
                 b.join(bundle)

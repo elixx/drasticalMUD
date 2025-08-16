@@ -7,8 +7,10 @@ for allowing Characters to traverse the exit to its destination.
 
 """
 from django.conf import settings
+
 from evennia import DefaultExit
 from evennia import utils
+
 
 class Exit(DefaultExit):
     """

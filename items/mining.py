@@ -33,7 +33,7 @@ AMATEUR_AXE = {
     'prototype_parent': 'MiningTool',
     'prototype_key': 'AmateurMiningPick',
     'prototype_tags': 'mining',
-    'key': 'basic pickaxe',
+    'key': 'amateur pickaxe',
     'aliases': ['axe'],
     'desc': 'A slightly improved mining axe.',
     'strength': 1,
