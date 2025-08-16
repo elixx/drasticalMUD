@@ -1,5 +1,6 @@
-from django.conf import settings
 import datetime
+
+from django.conf import settings
 
 MONTHS_PER_YEAR = settings.MONTHS_PER_YEAR
 SEASONAL_BOUNDARIES = settings.SEASONAL_BOUNDARIES

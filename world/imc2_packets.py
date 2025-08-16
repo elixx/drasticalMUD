@@ -4,8 +4,10 @@ http://www.mudbytes.net/index.php?a=articles&s=imc2_protocol
 
 """
 from __future__ import print_function
-from builtins import object
+
 import shlex
+from builtins import object
+
 from django.conf import settings
 
 

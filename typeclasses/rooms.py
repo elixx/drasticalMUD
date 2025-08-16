@@ -6,17 +6,19 @@ Rooms are simple containers that has no location of their own.
 """
 
 import re
+from string import capwords
+
 from django.conf import settings
-from evennia import search_object
-from evennia.commands.cmdset import CmdSet
-from evennia.utils import utils
+
 from core.extended_room import ExtendedRoom
 from core.gametime import get_time_and_season
 from core.utils import color_time as cc
-from world.map import Map
-from string import capwords
+from evennia import search_object
+from evennia.commands.cmdset import CmdSet
+from evennia.utils import utils
 from evennia.utils.search import search_channel, search_tag
 from evennia.utils.utils import list_to_string
+from world.map import Map
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -87,6 +89,7 @@ class Room(ExtendedRoom):
         return self.appearance_template.format(
             header="",
             name=name,
+            extra_name_info=f' ({self.dbref})',
             desc=desc if not looker.db.OPTION_BRIEF else self.ndb.shortdesc,
              exits=f"|wExits:|n {exits}" if exits else "",
             characters=f"\n|wCharacters:|n {characters}" if characters else "",
@@ -149,9 +152,9 @@ class ImportedRoom(Room):
 
         if self.db.desc and update == True:
             season = "|" + cc(season) + season + "|x"
-
             daytime = "|" + cc(daytime) + daytime + "|x"
 
+            # resolve owner display name
             if not self.owner:
                 owner = "{Wnobody{x"
             else:
@@ -162,19 +165,19 @@ class ImportedRoom(Room):
                 else:
                     owner = "{Wnobody{x"
 
-            shortdesc = ""
+            # strip existing footer if present
             if "ltclaimed" in self.db.desc:
                 self.db.desc = RE_FOOTER.sub('', self.db.desc)
+
+            # build short description (worth + owner if value exists, else only owner)
             if self.db.value:
                 shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
-                season, daytime, self.db.value, owner)
-                self.ndb.shortdesc = "|xIt is %s %s. This room is worth |y%s gold|x and |lcclaim|ltclaimed|le by %s|x." % (
-                season, daytime, self.db.value, owner)
-                self.db.desc += shortdesc
+                    season, daytime, self.db.value, owner)
             else:
                 shortdesc = "|xIt is %s %s. This room is |lcclaim|ltclaimed|le by %s|x." % (season, daytime, owner)
-                self.ndb.shortdesc = shortdesc
-                self.db.desc += shortdesc
+
+            self.ndb.shortdesc = shortdesc
+            self.db.desc += shortdesc
 
     def return_appearance(self, looker, **kwargs):
         self.update_description()
@@ -252,19 +255,35 @@ class CmdClaimRoom(COMMAND_DEFAULT_CLASS):
                 if location.db.value:
                     location.db.value = int(location.db.value * 1.5)
                 caller.db.stats['gold'] -= cost
+                # Invalidate leaderboards and toplist context after claim and gold change
+                try:
+                    from world.stats import invalidate_topClaimed_cache, invalidate_topGold_cache
+                    invalidate_topClaimed_cache()
+                    invalidate_topGold_cache()
+                except Exception:
+                    pass
             except Exception as e:
                 utils.logger.log_err(str(e))
         caller.msg(caller_message)
 
 
-def topClaimed():
-    from evennia.utils.search import search_object_attribute
-    owned = [str(x.owner) for x in search_tag(category="owner")]
-    counts = {}
-    for o in owned:
-        owner = search_object('#' + o).first().name
-        if owner not in counts.keys():
-            counts[owner] = 1
-        else:
-            counts[owner] += 1
-    return (sorted(counts.items(), key=lambda x: x[1], reverse=True))
+def topClaimed(top=10):
+    from django.core.cache import cache
+    cache_key = "topClaimed_v1"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    from collections import Counter
+    owned_ids = [str(x.owner) for x in search_tag(category="owner")]
+    id_counts = Counter(owned_ids)
+    results = []
+    for oid, count in id_counts.items():
+        obj = search_object('#' + oid)
+        obj = obj.first() if obj is not None else None
+        name = obj.name if obj is not None else f'#{oid}'
+        results.append((name, count))
+    results = sorted(results, key=lambda x: x[1], reverse=True)
+    # Cache using configured TTL
+    cache.set(cache_key, results, timeout=settings.CACHE_TTL)
+    return results[:top]

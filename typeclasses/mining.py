@@ -1,22 +1,24 @@
-from django.conf import settings
+import re
 from random import randint, choice, random
+
+from django.conf import settings
+
+from core import EXITS_REV, EXIT_ALIAS
+from core.utils import create_exit
 from evennia import utils
-from evennia.typeclasses.attributes import AttributeProperty
 from evennia.commands.cmdset import CmdSet
 from evennia.prototypes.spawner import spawn
+from evennia.scripts.taskhandler import TaskHandler
+from evennia.typeclasses.attributes import AttributeProperty
+from evennia.utils import list_to_string
 from evennia.utils.create import create_object
 from evennia.utils.logger import log_info
-from evennia.utils import list_to_string
-from evennia.scripts.taskhandler import TaskHandler
-from world.map import Map
-from world.utils import qual
-from core import EXITS_REV, EXIT_ALIAS
-from typeclasses.rooms import Room
-from typeclasses.objects import Item
-from world.resource_types import SIZES
 from items import *
-import re
-from core.utils import create_exit
+from typeclasses.objects import Item
+from typeclasses.rooms import Room
+from world.map import Map
+from world.resource_types import SIZES
+from world.utils import qual
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

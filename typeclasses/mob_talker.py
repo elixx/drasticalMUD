@@ -1,6 +1,7 @@
-from typeclasses.mob import LegacyMob
-from evennia import TICKER_HANDLER
 import random
+
+from evennia import TICKER_HANDLER
+from typeclasses.mob import LegacyMob
 
 
 class ChattyMob(LegacyMob):

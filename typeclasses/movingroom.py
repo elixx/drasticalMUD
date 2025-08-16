@@ -1,18 +1,18 @@
 
-from random import choice, randint
-from evennia import utils
+from random import choice
+from random import randint
+from string import capwords
+
 from evennia import TICKER_HANDLER
-from typeclasses.exits import Exit
 from evennia import search_object
+from evennia import utils
 from evennia.utils.create import create_object
-from typeclasses.rooms import Room
-from typeclasses.objects import Object
 from evennia.utils.evtable import EvTable
 from evennia.utils.logger import log_info
-from string import capwords
+from typeclasses.exits import Exit
+from typeclasses.objects import Object
+from typeclasses.rooms import Room
 from world.bookmarks import starts as start_rooms
-
-from random import choice
 
 
 # WIP:

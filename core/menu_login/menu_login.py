@@ -6,13 +6,14 @@ Contribution - Vincent-lg 2016, Griatch 2019 (rework for modern EvMenu)
 This changes the Evennia login to ask for the account name and password in
 sequence instead of requiring you to enter both at once.
 
-To install, add this line to the settings file (`mygame/server/conf/settings.py`):
+To install, add these lines to the settings file (`mygame/server/conf/settings.py`):
 
     CMDSET_UNLOGGEDIN = "evennia.contrib.base_systems.menu_login.UnloggedinCmdSet"
+    CONNECTION_SCREEN_MODULE = "evennia.contrib.base_systems.menu_login.connection_screens"
 
-Reload the server and the new connection method will be active. Note that you must
-independently change the connection screen to match this login style, by editing
-`mygame/server/conf/connection_screens.py`.
+Reload the server and the new connection method will be active. If you want to modify the
+way the connection screen looks, use the current one as a guide and create a new one in your
+game folder. Then update the settings file CONNECTION_SCREEN_MODULE to point to yours.
 
 This uses Evennia's menu system EvMenu and is triggered by a command that is
 called automatically when a new user connects.
@@ -21,10 +22,13 @@ called automatically when a new user connects.
 
 from django.conf import settings
 
-from evennia import Command, CmdSet
-from evennia import syscmdkeys
+from evennia import CmdSet, Command, syscmdkeys
 from evennia.utils.evmenu import EvMenu
-from evennia.utils.utils import random_string_from_module, class_from_module, callables_from_module
+from evennia.utils.utils import (
+    callables_from_module,
+    class_from_module,
+    random_string_from_module,
+)
 
 _CONNECTION_SCREEN_MODULE = settings.CONNECTION_SCREEN_MODULE
 _GUEST_ENABLED = settings.GUEST_ENABLED
@@ -58,9 +62,9 @@ def node_enter_username(caller, raw_text, **kwargs):
         """
         'Goto-callable', set up to be called from the _default option below.
 
-        Called when user enters a username string. Check if this username already exists and set the flag
-        'new_user' if not. Will also directly login if the username is 'guest'
-        and GUEST_ENABLED is True.
+        Called when user enters a username string. Check if this username already exists and set the
+        flag 'new_user' if not. Will also directly login if the username is 'guest' and
+        GUEST_ENABLED is True.
 
         The return from this goto-callable determines which node we go to next
         and what kwarg it will be called with.
@@ -85,6 +89,10 @@ def node_enter_username(caller, raw_text, **kwargs):
             new_user = True
         else:
             new_user = False
+
+        if new_user and not settings.NEW_ACCOUNT_REGISTRATION_ENABLED:
+            caller.msg("Registration is currently disabled.")
+            return None
 
         # pass username/new_user into next node as kwargs
         return "node_enter_password", {"new_user": new_user, "username": username}
@@ -163,12 +171,11 @@ def node_enter_password(caller, raw_string, **kwargs):
 
     username = kwargs["username"]
     if kwargs["new_user"]:
-
         if kwargs.get("retry_password"):
             # Attempting to fix password
             text = "Enter a new password:"
         else:
-            text = "Creating a new account |c{}|n. " "Enter a password (empty to abort):".format(
+            text = "Creating a new account |c{}|n. Enter a password (empty to abort):".format(
                 username
             )
     else:
@@ -200,15 +207,24 @@ def node_quit_or_login(caller, raw_text, **kwargs):
 # EvMenu helper function
 
 
-def _node_formatter(nodetext, optionstext, caller=None):
-    """Do not display the options, only the text.
-
-    This function is used by EvMenu to format the text of nodes. The menu login
-    is just a series of prompts so we disable all automatic display decoration
-    and let the nodes handle everything on their own.
+class MenuLoginEvMenu(EvMenu):
+    """
+    Version of EvMenu that does not display any of its options.
 
     """
-    return nodetext
+
+    def node_formatter(self, nodetext, optionstext):
+        return nodetext
+
+    def options_formatter(self, optionlist):
+        """Do not display the options, only the text.
+
+        This function is used by EvMenu to format the text of nodes. The menu login
+        is just a series of prompts so we disable all automatic display decoration
+        and let the nodes handle everything on their own.
+
+        """
+        return ""
 
 
 # Commands and CmdSets
@@ -216,6 +232,7 @@ def _node_formatter(nodetext, optionstext, caller=None):
 
 class UnloggedinCmdSet(CmdSet):
     "Cmdset for the unloggedin state"
+
     key = "DefaultUnloggedin"
     priority = 0
 
@@ -241,12 +258,17 @@ class CmdUnloggedinLook(Command):
         Run the menu using the nodes in this module.
 
         """
-        EvMenu(
+        menu_nodes = {
+            "node_enter_username": node_enter_username,
+            "node_enter_password": node_enter_password,
+            "node_quit_or_login": node_quit_or_login,
+        }
+
+        MenuLoginEvMenu(
             self.caller,
-            "evennia.contrib.base_systems.menu_login.menu_login",
+            menu_nodes,
             startnode="node_enter_username",
             auto_look=False,
             auto_quit=False,
             cmd_on_exit=None,
-            node_formatter=_node_formatter,
         )

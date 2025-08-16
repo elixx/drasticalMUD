@@ -4,24 +4,24 @@ Commands
 Commands describe the input the account can do to the game.
 
 """
-# from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
-from evennia import ObjectDB
-from evennia import default_cmds
+import time
+from string import capwords
+
 from django.conf import settings
+
+from core import sendWebHook
+from core.extended_room import CmdExtendedRoomLook
+from core.utils import fingerPlayer, rainbow, color_percent, ff
+# from evennia.commands.default.muxcommand import MuxCommand as DefaultMuxCommand
+from evennia import default_cmds
 from evennia import utils
 from evennia.server.sessionhandler import SESSIONS
-from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, topGold
-from core import sendWebHook
-from core.utils import fingerPlayer, rainbow, fade, color_percent, ff
-from evennia.utils.search import object_search as search_object
-from evennia.utils.search import search_tag_object, search_tag
 from evennia.utils.evmore import EvMore
 from evennia.utils.evtable import EvTable
-from string import capwords
-from core.extended_room import CmdExtendedRoomLook
+from evennia.utils.search import object_search as search_object
+from evennia.utils.search import search_tag
 from world.resource_types import SIZES
-
-import time
+from world.stats import area_count, total_rooms_in_area, claimed_in_area, visited_in_area, topGold
 
 COMMAND_DEFAULT_CLASS = utils.utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 
@@ -520,7 +520,6 @@ class CmdProperty(COMMAND_DEFAULT_CLASS):
     locks = "cmd:all()"
 
     def func(self):
-        from evennia.utils.search import search_object_attribute
         claimed = [room for room in search_tag(str(self.caller.id), category='owner')]
         claimed = sorted(claimed, key=lambda x: x.tags.get(category="area"))
         table = EvTable(ff("Area   "), ff("Room Name"), ff("Growing"), border="none")
@@ -567,6 +566,7 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
         from typeclasses.rooms import topClaimed
         claimed = topClaimed()
         gold = topGold()
+        # Merge stats from claimed and gold leaderboards
         stats = {}
         for (player, count) in claimed:
             if player in stats.keys():
@@ -574,14 +574,25 @@ class CmdTopList(COMMAND_DEFAULT_CLASS):
             else:
                 stats[player] = {'claimed': count, 'gold': '-'}
         for (player, g) in gold:
-            if player in stats.keys():
-                stats[player]['gold'] = g
-            else:
-                stats[player] = {'claimed': '-', 'gold': g}
+            if g and g > 0:
+                if player in stats.keys():
+                    stats[player]['gold'] = g
+                else:
+                    stats[player] = {'claimed': '-', 'gold': g}
+
+        # Sort by gold (desc) then claimed rooms (desc); treat '-' as 0 for sorting
+        def sort_key(item):
+            name, data = item
+            g = data['gold'] if isinstance(data['gold'], (int, float)) else 0
+            c = data['claimed'] if isinstance(data['claimed'], int) else 0
+            return (g, c)
+
+        # Take only top 10 after sorting
+        top_items = sorted(stats.items(), key=sort_key, reverse=True)[:10]
 
         table = EvTable(ff("Player"), ff("Rooms Owned"), ff("Total Gold"), border="none")
-        for i, v in stats.items():
-            table.add_row(i, v['claimed'], v['gold'])
+        for name, data in top_items:
+            table.add_row(name, data['claimed'], data['gold'])
         output = str(table) + '\n'
         self.caller.msg(output)
 
@@ -680,3 +691,55 @@ class CmdResourceSplit(COMMAND_DEFAULT_CLASS):
             f"{caller.name} removes {bundle.name} from {obj.name if obj.name != caller.name else 'their pocket'}.",
             exclude=caller)
 
+
+
+
+class CmdGet(default_cmds.CmdGet):
+    """
+    Override of Evennia's get command to add support for 'get all'.
+
+    Usage:
+      get <obj>
+      get all
+    """
+
+    def func(self):
+        caller = self.caller
+        if not self.args:
+            self.msg("Get what?")
+            return
+
+        if self.args.strip().lower() == "all":
+            location = caller.location
+            if not location:
+                self.msg("You have nowhere to get things from.")
+                return
+            candidates = [
+                obj for obj in location.contents
+                if obj is not caller and not obj.is_typeclass("typeclasses.exits.Exit", exact=False)
+            ]
+            moved = []
+            for obj in candidates:
+                # respect permissions and pre-hooks; skip disallowed instead of aborting
+                if not obj.access(caller, "get"):
+                    continue
+                if not obj.at_pre_get(caller):
+                    continue
+                if obj.move_to(caller, quiet=True, move_type="get"):
+                    moved.append(obj)
+                    obj.at_get(caller)
+            if not moved:
+                self.msg("There is nothing you can pick up.")
+                return
+            # Feedback: summarize what was picked up
+            if len(moved) == 1:
+                obj_name = moved[0].get_numbered_name(1, caller, return_string=True)
+                caller.location.msg_contents(f"$You() $conj(pick) up {obj_name}.", from_obj=caller)
+            else:
+                names = [obj.get_display_name(caller) for obj in moved]
+                name_list = utils.list_to_string(names)
+                caller.location.msg_contents(f"$You() $conj(pick) up {name_list}.", from_obj=caller)
+            return
+
+        # Fallback to original behavior for specific targets/numbered
+        super().func()

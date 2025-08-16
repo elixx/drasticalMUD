@@ -1,9 +1,11 @@
-from evennia import utils
-from django.conf import settings
-from evennia import DefaultObject
-from evennia.commands.cmdset import CmdSet
-from evennia import search_channel
 from datetime import datetime
+
+from django.conf import settings
+
+from evennia import DefaultObject
+from evennia import search_channel
+from evennia import utils
+from evennia.commands.cmdset import CmdSet
 from evennia.utils import wrap
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)

@@ -14,32 +14,29 @@ own cmdsets by inheriting from them or directly from `evennia.CmdSet`.
 
 """
 
-from evennia import default_cmds
-
 import commands.social
-from commands.social import *
-
-from commands.command import CmdLook
-from commands.command import CmdWho
-from commands.command import CmdExamine
 from commands.command import CmdAreas
-from commands.command import CmdWhere
-from commands.command import CmdRecall
-from commands.command import CmdQuit
-from commands.command import CmdFinger
-from commands.command import CmdScore
-from commands.command import CmdClaimed
-from commands.command import CmdTopList
-from commands.command import CmdProperty
-from commands.command import CmdWorth
-from commands.command import CmdNoMap
 from commands.command import CmdBrief
+from commands.command import CmdClaimed
+from commands.command import CmdExamine
+from commands.command import CmdFinger
+from commands.command import CmdLook
+from commands.command import CmdNoMap
+from commands.command import CmdProperty
+from commands.command import CmdQuit
+from commands.command import CmdRecall
 from commands.command import CmdResourceSplit
-
-from core.clothing import ClothedCharacterCmdSet
+from commands.command import CmdScore
+from commands.command import CmdTopList
+from commands.command import CmdWhere
+from commands.command import CmdWho
+from commands.command import CmdWorth
+from commands.command import CmdGet
+from commands.social import *
 from core import extended_room
 from core import mail
-
+from core.clothing import ClothedCharacterCmdSet
+from evennia import default_cmds
 
 
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
@@ -76,6 +73,7 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         self.add(CmdResourceSplit)
         self.add(CmdNoMap)
         self.add(CmdBrief)
+        self.add(CmdGet)
 
         #
         # any commands you add below will overload the default ones.

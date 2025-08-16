@@ -96,6 +96,13 @@ WEBCLIENT_OPTIONS = {
 }
 
 
+# Cache TTL for Django cache and app-level caching
+CACHE_TTL = 60 * 60 * 24  # 24 hours
+#CACHE_TTL = 3600 # 1 hour
+
+RANDOM_SPAWN_CLEANUP_MAX_PER_TICK = 200
+RANDOM_SPAWN_CLEANUP_CHUNK_SIZE = 10
+
 
 ######################################################################
 # Settings given in secret_settings.py override those in this file.

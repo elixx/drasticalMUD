@@ -1,6 +1,6 @@
 {% extends "website/base.html" %}
 
-{% block titleblock %}Areas{% endblock %}
+{% block titleblock %}Top Players{% endblock %}
 
 
 {% block header_ext %}
@@ -15,7 +15,16 @@
             <div class="card card-body">
                 <table>
                     <thead>
-                        <th scope="col" class="col-xs-3">player name</th> <th scope="col" class="col-xs-1 text-right">world seen</th> <th scope="col" class="text-right">rooms owned</th> <th scope="col" class="col-xs-1 text-right">gold</th>
+                        <th scope="col" class="col-xs-3">player name</th>
+                        <th scope="col" class="col-xs-1 text-right">
+                            <a href="?sort=seen&order={% if sort == 'seen' and order == 'desc' %}asc{% else %}desc{% endif %}">world seen{% if sort == 'seen' %}{% if order == 'asc' %} ▲{% else %} ▼{% endif %}{% endif %}</a>
+                        </th>
+                        <th scope="col" class="text-right">
+                            <a href="?sort=owned&order={% if sort == 'owned' and order == 'desc' %}asc{% else %}desc{% endif %}">rooms owned{% if sort == 'owned' %}{% if order == 'asc' %} ▲{% else %} ▼{% endif %}{% endif %}</a>
+                        </th>
+                        <th scope="col" class="col-xs-1 text-right">
+                            <a href="?sort=gold&order={% if sort == 'gold' and order == 'desc' %}asc{% else %}desc{% endif %}">gold{% if sort == 'gold' %}{% if order == 'asc' %} ▲{% else %} ▼{% endif %}{% endif %}</a>
+                        </th>
                     </thead>
                     {% for s in stats %}
                         <tr>

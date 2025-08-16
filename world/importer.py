@@ -1,7 +1,9 @@
-from glob import glob
-from evennia.utils.logger import log_info, log_err
-from area_reader.evennia_import import AreaImporter
 import os
+from glob import glob
+
+from area_reader.evennia_import import AreaImporter
+from evennia.utils.logger import log_info, log_err
+
 
 def globPath(path="C:\\_SRC\\drasticalMUD\\area_reader\\areas\\*.are"):
     areas = glob(path)

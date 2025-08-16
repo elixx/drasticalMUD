@@ -1,9 +1,11 @@
-from evennia import utils
-from django.conf import settings
-from typeclasses.objects import Object
-from evennia.commands.cmdset import CmdSet
-from evennia import TICKER_HANDLER
 import random
+
+from django.conf import settings
+
+from evennia import TICKER_HANDLER
+from evennia import utils
+from evennia.commands.cmdset import CmdSet
+from typeclasses.objects import Object
 
 COMMAND_DEFAULT_CLASS = utils.class_from_module(settings.COMMAND_DEFAULT_CLASS)
 

@@ -1,4 +1,3 @@
-from evennia.utils.logger import log_err
 # mygame/world/map.py
 
 # These are keys set with the Attribute sector_type on the room.
