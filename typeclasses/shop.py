@@ -17,6 +17,7 @@ class Merchant(Object):
     def at_object_creation(self):
         super().at_object_creation()
         self.cmdset.add_default(ShopRoomCmdSet, persistent=True)
+        self.locks.add('get:false()')
         if not self.db.stock:
             self.db.stock = [
                 #Category, Stock,  Prototype,  Cost
